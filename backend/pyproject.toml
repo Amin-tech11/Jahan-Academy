@@ -1,0 +1,58 @@
+[project]
+name = "jahan-academy-backend"
+version = "0.1.0"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "alembic>=1.20,<1.21",
+  "aiosmtplib>=5,<6",
+  "argon2-cffi>=25.1,<26",
+  "asyncpg>=0.31,<0.32",
+  "authlib>=1.6,<2",
+  "celery[redis]>=5.6,<5.7",
+  "email-validator>=2.2,<3",
+  "fastapi>=0.141,<0.142",
+  "httpx>=0.28,<0.29",
+  "pydantic>=2.12,<3",
+  "pydantic-settings>=2.10,<3",
+  "psycopg[binary]>=3.2,<4",
+  "pyjwt>=2.10,<3",
+  "pyyaml>=6,<7",
+  "redis>=6,<6.5",
+  "sentry-sdk[fastapi]>=2.40,<3",
+  "sqlalchemy>=2.0,<2.1",
+  "sqlparse>=0.5,<0.6",
+  "structlog>=25,<27",
+  "uvicorn[standard]>=0.35,<1",
+]
+
+[dependency-groups]
+dev = [
+  "mypy>=1.17,<2",
+  "pytest>=9,<10",
+  "pytest-asyncio>=1.2,<2",
+  "ruff>=0.12,<1",
+  "types-pyyaml>=6,<7",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["app"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "ASYNC"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+plugins = ["pydantic.mypy"]

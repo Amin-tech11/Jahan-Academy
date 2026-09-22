@@ -1,0 +1,18 @@
+services:
+  postgres:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_DB: jahan_academy
+      POSTGRES_USER: jahan
+      POSTGRES_PASSWORD: jahan_local
+    ports:
+      - "55432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U jahan -d jahan_academy"]
+      interval: 2s
+      timeout: 3s
+      retries: 20
+    tmpfs:
+      - /var/lib/postgresql
+    volumes:
+      - ./sql:/migrations:ro
