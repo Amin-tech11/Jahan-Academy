@@ -1,0 +1,1 @@
+"""consultations domain module."""

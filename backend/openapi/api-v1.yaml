@@ -1,0 +1,904 @@
+openapi: 3.1.0
+info:
+  title: Jahan Academy API
+  version: 1.0.0-draft
+  description: Contract-first API. x-phase identifies MVP and later complete-product operations.
+servers:
+  - url: /api/v1
+tags:
+  - name: Public Catalog
+  - name: Consultations
+  - name: Staff Authentication
+  - name: Lead Operations
+  - name: User Authentication
+  - name: Applications
+  - name: Courses
+  - name: Commerce
+paths:
+  /countries:
+    get:
+      tags: [Public Catalog]
+      operationId: listCountries
+      x-phase: MVP
+      parameters:
+        - $ref: '#/components/parameters/Locale'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+        - name: featured
+          in: query
+          schema: { type: boolean }
+      responses:
+        '200':
+          description: Published countries
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PageEnvelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items: { $ref: '#/components/schemas/CountrySummary' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /countries/{slug}:
+    get:
+      tags: [Public Catalog]
+      operationId: getCountry
+      x-phase: MVP
+      parameters:
+        - $ref: '#/components/parameters/Slug'
+        - $ref: '#/components/parameters/Locale'
+      responses:
+        '200':
+          description: Published country
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CountryEnvelope'
+        '404': { $ref: '#/components/responses/NotFound' }
+  /universities:
+    get:
+      tags: [Public Catalog]
+      operationId: listUniversities
+      x-phase: MVP
+      parameters:
+        - $ref: '#/components/parameters/Locale'
+        - $ref: '#/components/parameters/Search'
+        - { name: country, in: query, schema: { type: string } }
+        - { name: city, in: query, schema: { type: string } }
+        - { name: type, in: query, schema: { type: string } }
+        - { name: ranking, in: query, schema: { type: integer, minimum: 1 } }
+        - { name: sort, in: query, schema: { type: string, enum: [name, -name, ranking, -ranking] } }
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200': { $ref: '#/components/responses/UniversityPage' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /universities/{slug}:
+    get:
+      tags: [Public Catalog]
+      operationId: getUniversity
+      x-phase: MVP
+      parameters:
+        - $ref: '#/components/parameters/Slug'
+        - $ref: '#/components/parameters/Locale'
+      responses:
+        '200':
+          description: Published university details
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data: { $ref: '#/components/schemas/UniversityDetail' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /programs:
+    get:
+      tags: [Public Catalog]
+      operationId: listPrograms
+      x-phase: MVP
+      parameters:
+        - $ref: '#/components/parameters/Locale'
+        - $ref: '#/components/parameters/Search'
+        - { name: country, in: query, schema: { type: string } }
+        - { name: university, in: query, schema: { type: string } }
+        - { name: level, in: query, schema: { type: string } }
+        - { name: field, in: query, schema: { type: string } }
+        - { name: language, in: query, schema: { type: string } }
+        - { name: intake, in: query, schema: { type: string, enum: [SPRING, SUMMER, FALL, WINTER, UNKNOWN] } }
+        - { name: tuitionMin, in: query, schema: { type: string, pattern: '^\d+(\.\d{1,2})?$' } }
+        - { name: tuitionMax, in: query, schema: { type: string, pattern: '^\d+(\.\d{1,2})?$' } }
+        - { name: currency, in: query, schema: { type: string, pattern: '^[A-Z]{3}$' } }
+        - { name: sort, in: query, schema: { type: string, enum: [name, -name, tuition, -tuition, deadline, -deadline] } }
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200': { $ref: '#/components/responses/ProgramPage' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /programs/{slug}:
+    get:
+      tags: [Public Catalog]
+      operationId: getProgram
+      x-phase: MVP
+      parameters:
+        - $ref: '#/components/parameters/Slug'
+        - $ref: '#/components/parameters/Locale'
+      responses:
+        '200':
+          description: Published program details
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data: { $ref: '#/components/schemas/ProgramDetail' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /articles:
+    get:
+      tags: [Public Catalog]
+      operationId: listArticles
+      x-phase: MVP
+      parameters:
+        - $ref: '#/components/parameters/Locale'
+        - $ref: '#/components/parameters/Search'
+        - { name: category, in: query, schema: { type: string } }
+        - { name: tag, in: query, schema: { type: string } }
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200': { $ref: '#/components/responses/ArticlePage' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /articles/{slug}:
+    get:
+      tags: [Public Catalog]
+      operationId: getArticle
+      x-phase: MVP
+      parameters:
+        - $ref: '#/components/parameters/Slug'
+        - $ref: '#/components/parameters/Locale'
+      responses:
+        '200':
+          description: Published article
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data: { $ref: '#/components/schemas/ArticleDetail' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /consultation-requests:
+    post:
+      tags: [Consultations]
+      operationId: createConsultationRequest
+      x-phase: MVP
+      parameters:
+        - $ref: '#/components/parameters/OptionalIdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ConsultationCreate' }
+      responses:
+        '200':
+          description: Duplicate accepted submission; existing reference returned
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ConsultationReceiptEnvelope' }
+        '201':
+          description: Consultation request persisted locally
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ConsultationReceiptEnvelope' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+        '503': { $ref: '#/components/responses/DependencyUnavailable' }
+  /admin/auth/login:
+    post:
+      tags: [Staff Authentication]
+      operationId: loginStaff
+      x-phase: MVP
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/StaffLogin' }
+      responses:
+        '200':
+          description: Authenticated; session and CSRF cookies are set
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/StaffEnvelope' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  /admin/auth/logout:
+    post:
+      tags: [Staff Authentication]
+      operationId: logoutStaff
+      x-phase: MVP
+      security: [{ StaffSession: [], CsrfToken: [] }]
+      responses:
+        '204': { description: Session revoked }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /admin/auth/me:
+    get:
+      tags: [Staff Authentication]
+      operationId: getCurrentStaff
+      x-phase: MVP
+      security: [{ StaffSession: [] }]
+      responses:
+        '200':
+          description: Current staff identity and effective permissions
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/StaffEnvelope' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /admin/leads:
+    get:
+      tags: [Lead Operations]
+      operationId: listLeads
+      x-phase: MVP
+      x-permissions: [lead.read.all, lead.read.assigned]
+      security: [{ StaffSession: [] }]
+      parameters:
+        - { name: q, in: query, schema: { type: string, minLength: 2, maxLength: 100 } }
+        - { name: status, in: query, schema: { $ref: '#/components/schemas/LeadStatus' } }
+        - { name: syncStatus, in: query, schema: { $ref: '#/components/schemas/SyncStatus' } }
+        - { name: assigneeId, in: query, schema: { $ref: '#/components/schemas/Uuid' } }
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Scope-filtered lead page
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PageEnvelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items: { $ref: '#/components/schemas/LeadSummary' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /admin/leads/{id}:
+    get:
+      tags: [Lead Operations]
+      operationId: getLead
+      x-phase: MVP
+      x-permissions: [lead.read.all, lead.read.assigned]
+      security: [{ StaffSession: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200':
+          description: Lead details
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data: { $ref: '#/components/schemas/LeadDetail' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /auth/register:
+    post:
+      tags: [User Authentication]
+      operationId: registerUser
+      x-phase: Final
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/UserRegister' }
+      responses:
+        '202': { description: Pending user created; verification email requested }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /auth/email-verification-requests:
+    post:
+      tags: [User Authentication]
+      operationId: requestEmailVerification
+      x-phase: Final
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/EmailRequest' }
+      responses:
+        '202': { description: Neutral acknowledgement }
+        '422': { $ref: '#/components/responses/ValidationError' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  /auth/email-verifications:
+    post:
+      tags: [User Authentication]
+      operationId: verifyEmail
+      x-phase: Final
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/TokenRequest' }
+      responses:
+        '200': { description: Email verified; access token and auth cookies issued }
+        '400': { $ref: '#/components/responses/InvalidRequest' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /auth/login:
+    post:
+      tags: [User Authentication]
+      operationId: loginUser
+      x-phase: Final
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/UserLogin' }
+      responses:
+        '200': { description: User session established }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  /auth/refresh:
+    post:
+      tags: [User Authentication]
+      operationId: refreshUserSession
+      x-phase: Final
+      security: [{ RefreshToken: [], CsrfToken: [] }]
+      responses:
+        '200': { description: Refresh token rotated and new access token issued }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  /auth/logout:
+    post:
+      tags: [User Authentication]
+      operationId: logoutUser
+      x-phase: Final
+      security: [{ UserAccessToken: [], CsrfToken: [] }]
+      responses:
+        '204': { description: Current session revoked and cookies cleared }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /auth/password-reset-requests:
+    post:
+      tags: [User Authentication]
+      operationId: requestPasswordReset
+      x-phase: Final
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/EmailRequest' }
+      responses:
+        '202': { description: Neutral acknowledgement }
+        '422': { $ref: '#/components/responses/ValidationError' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  /auth/password-resets:
+    post:
+      tags: [User Authentication]
+      operationId: resetPassword
+      x-phase: Final
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PasswordResetConfirm' }
+      responses:
+        '204': { description: Password replaced and all sessions revoked }
+        '400': { $ref: '#/components/responses/InvalidRequest' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /users/me:
+    get:
+      tags: [User Authentication]
+      operationId: getCurrentUser
+      x-phase: Final
+      security: [{ UserAccessToken: [] }]
+      responses:
+        '200': { description: Current public user profile }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /applications:
+    get:
+      tags: [Applications]
+      operationId: listApplications
+      x-phase: Final
+      security: [{ UserAccessToken: [] }]
+      responses:
+        '200': { description: Current user's applications }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+    post:
+      tags: [Applications]
+      operationId: createApplication
+      x-phase: Final
+      security: [{ UserAccessToken: [], CsrfToken: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdempotencyKey' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ApplicationCreate' }
+      responses:
+        '201': { description: Draft application created }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /applications/{id}:
+    get:
+      tags: [Applications]
+      operationId: getApplication
+      x-phase: Final
+      security: [{ UserAccessToken: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200': { description: Application details }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /courses:
+    get:
+      tags: [Courses]
+      operationId: listCourses
+      x-phase: Final
+      parameters:
+        - $ref: '#/components/parameters/Locale'
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200': { description: Published course page }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /courses/{slug}:
+    get:
+      tags: [Courses]
+      operationId: getCourse
+      x-phase: Final
+      parameters:
+        - $ref: '#/components/parameters/Slug'
+        - $ref: '#/components/parameters/Locale'
+      responses:
+        '200': { description: Published course details }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /orders:
+    post:
+      tags: [Commerce]
+      operationId: createOrder
+      x-phase: Final
+      security: [{ UserAccessToken: [], CsrfToken: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdempotencyKey' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/OrderCreate' }
+      responses:
+        '201': { description: Server-priced order created }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+components:
+  securitySchemes:
+    StaffSession:
+      type: apiKey
+      in: cookie
+      name: jahan_staff_session
+    UserAccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    RefreshToken:
+      type: apiKey
+      in: cookie
+      name: jahan_refresh
+    CsrfToken:
+      type: apiKey
+      in: header
+      name: X-CSRF-Token
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      schema: { $ref: '#/components/schemas/Uuid' }
+    Slug:
+      name: slug
+      in: path
+      required: true
+      schema: { type: string, minLength: 1, maxLength: 160, pattern: '^[a-z0-9]+(?:-[a-z0-9]+)*$' }
+    Locale:
+      name: locale
+      in: query
+      schema: { type: string, enum: [fa, en], default: fa }
+    Search:
+      name: q
+      in: query
+      schema: { type: string, minLength: 2, maxLength: 100 }
+    Page:
+      name: page
+      in: query
+      schema: { type: integer, minimum: 1, default: 1 }
+    Limit:
+      name: limit
+      in: query
+      schema: { type: integer, minimum: 1, maximum: 100, default: 20 }
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema: { type: string, minLength: 16, maxLength: 128 }
+    OptionalIdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: false
+      schema: { type: string, minLength: 16, maxLength: 128 }
+  responses:
+    UniversityPage:
+      description: Published universities
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/PageEnvelope'
+              - type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/UniversitySummary' }
+    ProgramPage:
+      description: Published programs
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/PageEnvelope'
+              - type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/ProgramSummary' }
+    ArticlePage:
+      description: Published articles
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/PageEnvelope'
+              - type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/ArticleSummary' }
+    Unauthorized:
+      description: Authentication required or invalid
+      content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+    Forbidden:
+      description: Authenticated but not permitted
+      content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+    NotFound:
+      description: Resource does not exist or is not visible to this caller
+      content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+    Conflict:
+      description: Resource or idempotency conflict
+      content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+    InvalidRequest:
+      description: Invalid, expired, or consumed token/request
+      content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+    ValidationError:
+      description: Request failed field or domain validation
+      content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+    RateLimited:
+      description: Rate limit exceeded
+      headers:
+        Retry-After: { schema: { type: integer, minimum: 1 } }
+      content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+    DependencyUnavailable:
+      description: Authoritative local persistence is unavailable
+      content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  schemas:
+    Uuid:
+      type: string
+      format: uuid
+    Meta:
+      type: object
+      additionalProperties: false
+      required: [page, limit, total, totalPages]
+      properties:
+        page: { type: integer, minimum: 1 }
+        limit: { type: integer, minimum: 1, maximum: 100 }
+        total: { type: integer, minimum: 0 }
+        totalPages: { type: integer, minimum: 0 }
+    PageEnvelope:
+      type: object
+      required: [data, meta]
+      properties:
+        data: { type: array, items: {} }
+        meta: { $ref: '#/components/schemas/Meta' }
+    ErrorEnvelope:
+      type: object
+      additionalProperties: false
+      required: [error]
+      properties:
+        error:
+          type: object
+          additionalProperties: false
+          required: [code, message, fieldErrors, requestId]
+          properties:
+            code: { type: string, pattern: '^[A-Z][A-Z0-9_]+$' }
+            message: { type: string }
+            fieldErrors:
+              type: object
+              additionalProperties:
+                type: array
+                items: { type: string }
+            requestId: { type: string }
+    CountrySummary:
+      type: object
+      additionalProperties: false
+      required: [id, slug, code, name, featured]
+      properties:
+        id: { $ref: '#/components/schemas/Uuid' }
+        slug: { type: string }
+        code: { type: string, pattern: '^[A-Z]{2}$' }
+        name: { type: string }
+        featured: { type: boolean }
+        imageUrl: { type: [string, 'null'], format: uri }
+    CountryEnvelope:
+      type: object
+      required: [data]
+      properties:
+        data: { $ref: '#/components/schemas/CountrySummary' }
+    UniversitySummary:
+      type: object
+      required: [id, slug, name, country]
+      properties:
+        id: { $ref: '#/components/schemas/Uuid' }
+        slug: { type: string }
+        name: { type: string }
+        summary: { type: [string, 'null'] }
+        country: { $ref: '#/components/schemas/CountrySummary' }
+        city: { type: [string, 'null'] }
+        institutionType: { type: [string, 'null'] }
+        ranking: { type: [integer, 'null'], minimum: 1 }
+        imageUrl: { type: [string, 'null'], format: uri }
+    UniversityDetail:
+      allOf:
+        - $ref: '#/components/schemas/UniversitySummary'
+        - type: object
+          properties:
+            body: { type: string }
+            foundedYear: { type: [integer, 'null'], minimum: 1000, maximum: 3000 }
+            websiteUrl: { type: [string, 'null'], format: uri }
+    Tuition:
+      oneOf:
+        - type: object
+          required: [type, amount, currency]
+          properties:
+            type: { const: EXACT }
+            amount: { type: string, pattern: '^\d+(\.\d{1,2})?$' }
+            currency: { type: string, pattern: '^[A-Z]{3}$' }
+        - type: object
+          required: [type, minimum, maximum, currency]
+          properties:
+            type: { const: RANGE }
+            minimum: { type: string, pattern: '^\d+(\.\d{1,2})?$' }
+            maximum: { type: string, pattern: '^\d+(\.\d{1,2})?$' }
+            currency: { type: string, pattern: '^[A-Z]{3}$' }
+        - type: object
+          required: [type]
+          properties:
+            type: { const: CONTACT }
+    ProgramSummary:
+      type: object
+      required: [id, slug, name, university, level, tuition]
+      properties:
+        id: { $ref: '#/components/schemas/Uuid' }
+        slug: { type: string }
+        name: { type: string }
+        summary: { type: [string, 'null'] }
+        university: { $ref: '#/components/schemas/UniversitySummary' }
+        level: { type: string }
+        field: { type: [string, 'null'] }
+        durationMonths: { type: [integer, 'null'], minimum: 1 }
+        language: { type: [string, 'null'] }
+        tuition: { $ref: '#/components/schemas/Tuition' }
+    ProgramDetail:
+      allOf:
+        - $ref: '#/components/schemas/ProgramSummary'
+        - type: object
+          properties:
+            body: { type: string }
+            officialUrl: { type: [string, 'null'], format: uri }
+            admissionRequirements: { type: array, items: { type: string } }
+            intakes: { type: array, items: { type: object } }
+    ArticleSummary:
+      type: object
+      required: [id, slug, title, excerpt, publishedAt]
+      properties:
+        id: { $ref: '#/components/schemas/Uuid' }
+        slug: { type: string }
+        title: { type: string }
+        excerpt: { type: string }
+        coverImageUrl: { type: [string, 'null'], format: uri }
+        publishedAt: { type: string, format: date-time }
+    ArticleDetail:
+      allOf:
+        - $ref: '#/components/schemas/ArticleSummary'
+        - type: object
+          required: [body]
+          properties:
+            body: { type: string }
+    ConsultationCreate:
+      type: object
+      additionalProperties: false
+      required:
+        - firstName
+        - lastName
+        - mobile
+        - intakeTerm
+        - startYear
+        - locale
+        - source
+        - privacyConsent
+        - contactConsent
+      properties:
+        firstName: { type: string, minLength: 1, maxLength: 100 }
+        lastName: { type: string, minLength: 1, maxLength: 100 }
+        mobile: { type: string, minLength: 7, maxLength: 32 }
+        email: { type: [string, 'null'], format: email, maxLength: 254 }
+        desiredCountryId: { oneOf: [{ $ref: '#/components/schemas/Uuid' }, { type: 'null' }] }
+        desiredCountryText: { type: [string, 'null'], maxLength: 100 }
+        intakeTerm: { type: string, enum: [SPRING, SUMMER, FALL, WINTER, UNKNOWN] }
+        startYear: { type: integer, minimum: 2026, maximum: 2036 }
+        age: { type: [integer, 'null'], minimum: 18, maximum: 100 }
+        gender: { type: [string, 'null'], maxLength: 50 }
+        genderSelfDescription: { type: [string, 'null'], maxLength: 100 }
+        occupation: { type: [string, 'null'], maxLength: 120 }
+        maritalStatus: { type: [string, 'null'], maxLength: 50 }
+        investmentBudget:
+          oneOf:
+            - type: 'null'
+            - type: object
+              additionalProperties: false
+              required: [rangeCode, currency]
+              properties:
+                rangeCode: { type: string, maxLength: 50 }
+                currency: { type: string, pattern: '^[A-Z]{3}$' }
+        message: { type: [string, 'null'], maxLength: 2000 }
+        locale: { type: string, enum: [fa, en] }
+        source:
+          type: object
+          additionalProperties: false
+          required: [pageUrl]
+          properties:
+            pageUrl: { type: string, maxLength: 2048, pattern: '^/' }
+            entityType: { type: [string, 'null'], enum: [UNIVERSITY, PROGRAM, null] }
+            entityId: { oneOf: [{ $ref: '#/components/schemas/Uuid' }, { type: 'null' }] }
+        privacyConsent: { const: true }
+        contactConsent: { const: true }
+    ConsultationReceiptEnvelope:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: object
+          additionalProperties: false
+          required: [reference, duplicate, receivedAt, message]
+          properties:
+            reference: { type: string, minLength: 8, maxLength: 32 }
+            duplicate: { type: boolean }
+            receivedAt: { type: string, format: date-time }
+            message: { type: string }
+    StaffLogin:
+      type: object
+      additionalProperties: false
+      required: [email, password]
+      properties:
+        email: { type: string, format: email, maxLength: 254 }
+        password: { type: string, minLength: 8, maxLength: 128 }
+    StaffEnvelope:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: object
+          required: [id, email, name, permissions]
+          properties:
+            id: { $ref: '#/components/schemas/Uuid' }
+            email: { type: string, format: email }
+            name: { type: string }
+            permissions: { type: array, items: { type: string } }
+    LeadStatus:
+      type: string
+      enum: [NEW, ASSIGNED, CONTACTED, QUALIFIED, NOT_QUALIFIED, CONVERTED, CLOSED]
+    SyncStatus:
+      type: string
+      enum: [PENDING, SYNCED, FAILED]
+    LeadSummary:
+      type: object
+      required: [id, reference, firstName, lastName, mobile, status, syncStatus, createdAt]
+      properties:
+        id: { $ref: '#/components/schemas/Uuid' }
+        reference: { type: string }
+        firstName: { type: string }
+        lastName: { type: string }
+        mobile: { type: string }
+        status: { $ref: '#/components/schemas/LeadStatus' }
+        syncStatus: { $ref: '#/components/schemas/SyncStatus' }
+        assigneeId: { oneOf: [{ $ref: '#/components/schemas/Uuid' }, { type: 'null' }] }
+        createdAt: { type: string, format: date-time }
+    LeadDetail:
+      allOf:
+        - $ref: '#/components/schemas/LeadSummary'
+        - type: object
+          properties:
+            email: { type: [string, 'null'], format: email }
+            intakeTerm: { type: string }
+            startYear: { type: integer }
+            source: { type: object }
+    UserRegister:
+      type: object
+      additionalProperties: false
+      required: [email, password, firstName, lastName, locale, acceptedTermsVersion, acceptedPrivacyVersion]
+      properties:
+        email: { type: string, format: email, maxLength: 254 }
+        password: { type: string, minLength: 12, maxLength: 128 }
+        firstName: { type: string, minLength: 1, maxLength: 100 }
+        lastName: { type: string, minLength: 1, maxLength: 100 }
+        locale: { type: string, enum: [fa, en] }
+        acceptedTermsVersion: { type: string }
+        acceptedPrivacyVersion: { type: string }
+    UserLogin:
+      type: object
+      additionalProperties: false
+      required: [email, password]
+      properties:
+        email: { type: string, format: email, maxLength: 254 }
+        password: { type: string, minLength: 1, maxLength: 128 }
+    EmailRequest:
+      type: object
+      additionalProperties: false
+      required: [email]
+      properties:
+        email: { type: string, format: email, maxLength: 254 }
+    TokenRequest:
+      type: object
+      additionalProperties: false
+      required: [token]
+      properties:
+        token: { type: string, minLength: 32, maxLength: 256 }
+    PasswordResetConfirm:
+      type: object
+      additionalProperties: false
+      required: [token, newPassword]
+      properties:
+        token: { type: string, minLength: 32, maxLength: 256 }
+        newPassword: { type: string, minLength: 12, maxLength: 128 }
+    ApplicationCreate:
+      type: object
+      additionalProperties: false
+      required: [programId, intakeId]
+      properties:
+        programId: { $ref: '#/components/schemas/Uuid' }
+        intakeId: { $ref: '#/components/schemas/Uuid' }
+    OrderCreate:
+      type: object
+      additionalProperties: false
+      required: [items]
+      properties:
+        items:
+          type: array
+          minItems: 1
+          maxItems: 20
+          items:
+            type: object
+            additionalProperties: false
+            required: [priceId, quantity]
+            properties:
+              priceId: { $ref: '#/components/schemas/Uuid' }
+              quantity: { type: integer, minimum: 1, maximum: 20 }

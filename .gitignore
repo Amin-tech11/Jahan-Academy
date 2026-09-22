@@ -1,0 +1,29 @@
+# Python
+**/__pycache__/
+**/*.py[cod]
+**/.venv/
+**/.mypy_cache/
+**/.pytest_cache/
+**/.ruff_cache/
+
+# Environment and secrets
+**/.env
+**/.env.*
+!**/.env.example
+
+# JavaScript
+**/node_modules/
+**/.next/
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Test and build output
+**/.coverage
+**/coverage.xml
+**/htmlcov/
+**/dist/
+**/build/
