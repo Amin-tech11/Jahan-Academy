@@ -20,7 +20,7 @@ dependencies = [
   "redis>=6,<6.5",
   "sentry-sdk[fastapi]>=2.40,<3",
   "sqlalchemy>=2.0,<2.1",
-  "sqlparse>=0.5,<0.6",
+  "sqlparse>=0.6,<0.7",
   "structlog>=25,<27",
   "uvicorn[standard]>=0.35,<1",
 ]
