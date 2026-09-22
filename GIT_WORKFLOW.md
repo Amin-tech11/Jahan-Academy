@@ -92,7 +92,7 @@ Every pull request must:
 1. Target `develop`, except release/hotfix pull requests.
 2. Explain the outcome, scope, tests, migration impact, and security impact.
 3. Link relevant requirement IDs or design documents.
-4. Pass formatting, Ruff, mypy, pytest, migration integration, and container-build checks.
+4. Pass Lint, Unit Tests, Integration Tests, Build, and Security Checks.
 5. Have no unresolved review conversation.
 6. Receive at least one approval when another reviewer is available.
 7. Update contracts and documentation before changing externally visible behavior.
@@ -116,7 +116,7 @@ Configure rulesets for both `main` and `develop`:
 - Require a pull request before merging.
 - Require one approval; dismiss stale approvals after new commits.
 - Require resolution of all conversations.
-- Require status checks: `Backend Quality`, `Migration Integration`, and `Backend Image`.
+- Require status checks: `Lint`, `Unit Tests`, `Integration Tests`, `Build`, and `Security Checks`.
 - Require branches to be up to date before merge.
 - Block force pushes and branch deletion.
 - Restrict bypass to the repository owner for recovery only.

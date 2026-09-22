@@ -15,6 +15,7 @@ authorization framework.
 - [Backend architecture](BACKEND_ARCHITECTURE.md)
 - [Database design](DATABASE_DESIGN.md)
 - [Git workflow](GIT_WORKFLOW.md)
+- [CI/CD pipeline](CI_CD.md)
 
 ## Backend Development
 

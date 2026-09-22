@@ -1,0 +1,48 @@
+name: jahan-academy
+
+x-backend: &backend
+  image: ${BACKEND_IMAGE:?BACKEND_IMAGE must be set}
+  env_file:
+    - ${RUNTIME_ENV_FILE:-.env}
+  networks:
+    - application
+  restart: unless-stopped
+
+services:
+  migrate:
+    <<: *backend
+    restart: "no"
+    command: ["/app/.venv/bin/alembic", "-c", "alembic.ini", "upgrade", "head"]
+
+  api:
+    <<: *backend
+    ports:
+      - "127.0.0.1:8000:8000"
+    healthcheck:
+      test:
+        - CMD
+        - /app/.venv/bin/python
+        - -c
+        - >-
+          import urllib.request;
+          urllib.request.urlopen('http://127.0.0.1:8000/health/live', timeout=3)
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  worker:
+    <<: *backend
+    command:
+      - /app/.venv/bin/celery
+      - -A
+      - app.workers.celery_app:celery_app
+      - worker
+      - --loglevel=INFO
+      - --concurrency=2
+    healthcheck:
+      disable: true
+
+networks:
+  application:
+    driver: bridge

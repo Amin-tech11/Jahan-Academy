@@ -1,0 +1,352 @@
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - "**"
+    tags:
+      - "v*.*.*"
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-cd-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  UV_VERSION: "0.11.18"
+  PYTHON_VERSION: "3.12"
+  BACKEND_IMAGE: jahan-academy-backend:${{ github.sha }}
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v10.2.0
+        with:
+          version: ${{ env.UV_VERSION }}
+          enable-cache: true
+          cache-dependency-glob: backend/uv.lock
+
+      - name: Install Python
+        run: uv python install ${{ env.PYTHON_VERSION }}
+
+      - name: Sync locked dependencies
+        run: uv sync --frozen --dev
+
+      - name: Check formatting
+        run: uv run ruff format --check app tests
+
+      - name: Lint
+        run: uv run ruff check app tests
+
+      - name: Type-check
+        run: uv run mypy app tests
+
+  unit-tests:
+    name: Unit Tests
+    needs: lint
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v10.2.0
+        with:
+          version: ${{ env.UV_VERSION }}
+          enable-cache: true
+          cache-dependency-glob: backend/uv.lock
+
+      - name: Install Python
+        run: uv python install ${{ env.PYTHON_VERSION }}
+
+      - name: Sync locked dependencies
+        run: uv sync --frozen --dev
+
+      - name: Run unit, architecture, and contract tests
+        run: uv run pytest tests/unit tests/architecture tests/contract -v
+
+  integration-tests:
+    name: Integration Tests
+    needs: unit-tests
+    runs-on: ubuntu-24.04
+    services:
+      postgres:
+        image: postgres:18-alpine
+        env:
+          POSTGRES_DB: jahan_academy
+          POSTGRES_USER: jahan
+          POSTGRES_PASSWORD: jahan_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U jahan -d jahan_academy"
+          --health-interval 2s
+          --health-timeout 3s
+          --health-retries 20
+      redis:
+        image: redis:8-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 2s
+          --health-timeout 3s
+          --health-retries 20
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v10.2.0
+        with:
+          version: ${{ env.UV_VERSION }}
+          enable-cache: true
+          cache-dependency-glob: backend/uv.lock
+
+      - name: Install Python
+        run: uv python install ${{ env.PYTHON_VERSION }}
+
+      - name: Sync locked dependencies
+        run: uv sync --frozen --dev
+
+      - name: Apply migrations
+        env:
+          DATABASE_URL: postgresql+psycopg://jahan:jahan_ci@localhost:5432/jahan_academy
+        run: uv run alembic -c alembic.ini upgrade head
+
+      - name: Run integration tests
+        env:
+          JAHAN_RUN_INTEGRATION: "1"
+          JAHAN_ENVIRONMENT: test
+          JAHAN_DATABASE_URL: postgresql+asyncpg://jahan:jahan_ci@localhost:5432/jahan_academy
+          JAHAN_REDIS_URL: redis://localhost:6379/0
+          JAHAN_SESSION_SECRET: ci-only-secret-that-is-longer-than-32-characters
+        run: uv run pytest tests/integration -v
+
+      - name: Verify latest migration rollback and re-upgrade
+        env:
+          DATABASE_URL: postgresql+psycopg://jahan:jahan_ci@localhost:5432/jahan_academy
+        run: |
+          uv run alembic -c alembic.ini downgrade -1
+          uv run alembic -c alembic.ini upgrade head
+
+  build:
+    name: Build
+    needs: integration-tests
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Build production image
+        run: docker build -f backend/Dockerfile -t "${BACKEND_IMAGE}" .
+
+      - name: Smoke-test production image
+        run: |
+          docker run --detach --name jahan-backend --publish 8000:8000 "${BACKEND_IMAGE}"
+          for _ in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:8000/health/live; then
+              exit 0
+            fi
+            sleep 1
+          done
+          docker logs jahan-backend
+          exit 1
+
+      - name: Stop smoke-test container
+        if: always()
+        run: docker rm --force jahan-backend 2>/dev/null || true
+
+  security:
+    name: Security Checks
+    needs: build
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - name: Check out repository with full history
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v10.2.0
+        with:
+          version: ${{ env.UV_VERSION }}
+          enable-cache: true
+          cache-dependency-glob: backend/uv.lock
+
+      - name: Install Python
+        run: uv python install ${{ env.PYTHON_VERSION }}
+
+      - name: Export production dependencies
+        run: uv export --frozen --no-dev --no-emit-project --output-file requirements-audit.txt
+
+      - name: Audit Python dependencies
+        run: uvx --from pip-audit==2.9.0 pip-audit --requirement requirements-audit.txt
+
+      - name: Run Python security static analysis
+        run: uvx --from bandit==1.8.6 bandit --recursive app --quiet
+
+      - name: Scan Git history for secrets
+        working-directory: .
+        run: >-
+          docker run --rm --volume "${PWD}:/repo"
+          zricethezav/gitleaks:v8.28.0
+          detect --source=/repo --redact --verbose
+
+      - name: Build image for vulnerability scanning
+        working-directory: .
+        run: docker build -f backend/Dockerfile -t "${BACKEND_IMAGE}" .
+
+      - name: Scan image for high and critical vulnerabilities
+        working-directory: .
+        run: >-
+          docker run --rm
+          --volume /var/run/docker.sock:/var/run/docker.sock
+          aquasec/trivy:0.68.2
+          image --exit-code 1 --ignore-unfixed
+          --severity HIGH,CRITICAL "${BACKEND_IMAGE}"
+
+  publish:
+    name: Publish Image
+    needs: security
+    if: >-
+      github.event_name == 'push' &&
+      (github.ref == 'refs/heads/develop' ||
+      github.ref == 'refs/heads/main' ||
+      startsWith(github.ref, 'refs/tags/v'))
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      image: ${{ steps.image.outputs.value }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set registry and immutable image references
+        id: registry
+        shell: bash
+        run: |
+          echo "image=ghcr.io/${GITHUB_REPOSITORY,,}/backend" >> "$GITHUB_OUTPUT"
+
+      - name: Set immutable image reference
+        id: image
+        shell: bash
+        run: echo "value=ghcr.io/${GITHUB_REPOSITORY,,}/backend:${GITHUB_SHA}" >> "$GITHUB_OUTPUT"
+
+      - name: Generate image metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ steps.registry.outputs.image }}
+          tags: |
+            type=sha,format=long
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+
+      - name: Build and publish production image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: backend/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+  deploy-staging:
+    name: Deploy Staging
+    needs: publish
+    if: github.ref == 'refs/heads/develop' && vars.DEPLOY_ENABLED == 'true'
+    runs-on: ubuntu-24.04
+    environment:
+      name: staging
+      url: ${{ vars.APP_URL }}
+    steps:
+      - name: Deploy immutable image over SSH
+        uses: appleboy/ssh-action@v1.2.2
+        env:
+          BACKEND_IMAGE: ${{ needs.publish.outputs.image }}
+          DEPLOY_PATH: ${{ vars.DEPLOY_PATH }}
+          HEALTHCHECK_URL: ${{ vars.HEALTHCHECK_URL }}
+          DEPLOY_REF: origin/develop
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          envs: BACKEND_IMAGE,DEPLOY_PATH,HEALTHCHECK_URL,DEPLOY_REF
+          script_stop: true
+          script: |
+            cd "$DEPLOY_PATH"
+            git fetch --prune origin develop
+            git checkout --detach "$DEPLOY_REF"
+            export BACKEND_IMAGE
+            docker compose -f deploy/compose.yml pull
+            docker compose -f deploy/compose.yml run --rm migrate
+            docker compose -f deploy/compose.yml up -d --remove-orphans api worker
+            curl --fail --retry 12 --retry-delay 5 "$HEALTHCHECK_URL"
+
+  deploy-production:
+    name: Deploy Production
+    needs: publish
+    if: startsWith(github.ref, 'refs/tags/v') && vars.DEPLOY_ENABLED == 'true'
+    runs-on: ubuntu-24.04
+    environment:
+      name: production
+      url: ${{ vars.APP_URL }}
+    steps:
+      - name: Deploy immutable image over SSH
+        uses: appleboy/ssh-action@v1.2.2
+        env:
+          BACKEND_IMAGE: ${{ needs.publish.outputs.image }}
+          DEPLOY_PATH: ${{ vars.DEPLOY_PATH }}
+          HEALTHCHECK_URL: ${{ vars.HEALTHCHECK_URL }}
+          DEPLOY_REF: ${{ github.ref_name }}
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          envs: BACKEND_IMAGE,DEPLOY_PATH,HEALTHCHECK_URL,DEPLOY_REF
+          script_stop: true
+          script: |
+            cd "$DEPLOY_PATH"
+            git fetch --prune --tags origin
+            git checkout --detach "$DEPLOY_REF"
+            export BACKEND_IMAGE
+            docker compose -f deploy/compose.yml pull
+            docker compose -f deploy/compose.yml run --rm migrate
+            docker compose -f deploy/compose.yml up -d --remove-orphans api worker
+            curl --fail --retry 12 --retry-delay 5 "$HEALTHCHECK_URL"
