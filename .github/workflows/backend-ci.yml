@@ -1,0 +1,117 @@
+name: Backend CI
+
+on:
+  pull_request:
+    branches: [main, develop]
+  push:
+    branches: [main, develop]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: backend-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Backend Quality
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v10
+        with:
+          version: "0.11.18"
+          enable-cache: true
+          cache-dependency-glob: backend/uv.lock
+
+      - name: Install Python 3.12
+        run: uv python install 3.12
+
+      - name: Sync locked dependencies
+        run: uv sync --frozen --dev
+
+      - name: Check formatting
+        run: uv run ruff format --check app tests
+
+      - name: Lint
+        run: uv run ruff check app tests
+
+      - name: Type-check
+        run: uv run mypy app tests
+
+      - name: Unit, architecture, and contract tests
+        run: uv run pytest
+
+  migration-integration:
+    name: Migration Integration
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:18-alpine
+        env:
+          POSTGRES_DB: jahan_academy
+          POSTGRES_USER: jahan
+          POSTGRES_PASSWORD: jahan_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U jahan -d jahan_academy"
+          --health-interval 2s
+          --health-timeout 3s
+          --health-retries 20
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v10
+        with:
+          version: "0.11.18"
+          enable-cache: true
+          cache-dependency-glob: backend/uv.lock
+
+      - name: Install Python 3.12
+        run: uv python install 3.12
+
+      - name: Sync locked dependencies
+        run: uv sync --frozen --dev
+
+      - name: Apply migrations
+        env:
+          DATABASE_URL: postgresql+psycopg://jahan:jahan_ci@localhost:5432/jahan_academy
+        run: uv run alembic -c alembic.ini upgrade head
+
+      - name: Run PostgreSQL authentication integration
+        env:
+          JAHAN_RUN_INTEGRATION: "1"
+          JAHAN_ENVIRONMENT: test
+          JAHAN_DATABASE_URL: postgresql+asyncpg://jahan:jahan_ci@localhost:5432/jahan_academy
+          JAHAN_SESSION_SECRET: ci-only-secret-that-is-longer-than-32-characters
+        run: uv run pytest tests/integration -v
+
+      - name: Verify latest migration rollback and re-upgrade
+        env:
+          DATABASE_URL: postgresql+psycopg://jahan:jahan_ci@localhost:5432/jahan_academy
+        run: |
+          uv run alembic -c alembic.ini downgrade -1
+          uv run alembic -c alembic.ini upgrade head
+
+  image:
+    name: Backend Image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Build production image
+        run: docker build -f backend/Dockerfile -t jahan-academy-backend:${{ github.sha }} .
