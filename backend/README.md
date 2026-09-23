@@ -29,3 +29,9 @@ Implemented public authentication routes are under `/api/v1/auth`: register, ema
 login, refresh, logout, password-reset request and password reset. The local SMTP defaults target a
 mail-capture service at `localhost:1025`; production must provide real SMTP settings and a strong
 `JAHAN_SESSION_SECRET`.
+
+Reference-data APIs are implemented under `/api/v1/reference-data/{kind}` for localized public
+reads and `/api/v1/admin/reference-data/{kind}` for permission-protected management. Supported
+kinds are countries, cities, academic levels, fields of study, intakes, and currencies. Admin writes
+require complete Persian and English translations and the `reference_data.write` permission;
+deletion archives/deactivates records and produces an audit entry.

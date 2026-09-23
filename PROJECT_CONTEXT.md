@@ -544,16 +544,16 @@ Names below are logical; exact migration names may follow code conventions.
 | `password_reset_tokens` | hashed token, admin_user_id, expires_at, used_at |
 | `countries` | id, ISO code, slug, status, featured, display_order |
 | `country_translations` | country_id, locale, name, summary, body, SEO fields |
-| `cities` | id, country_id, normalized name; bilingual display fields when managed explicitly |
+| `cities` | id, country_id, slug, normalized name, active, display_order, timestamps; bilingual translations |
 | `universities` | id, country_id, city_id/name, slug, type, founded_year, website_url, contact data, status, featured, timestamps, deleted_at |
 | `university_translations` | university_id, locale, name, short_description, body, SEO title/description, media alt fields |
 | `programs` | id, university_id, slug, level_id, field_id, tuition_mode, tuition_min/max, currency_id, duration data, application_fee data, official_url, status, featured, timestamps, deleted_at |
 | `program_translations` | program_id, locale, title, short_description, body, admission_requirements, teaching_language labels, SEO fields |
-| `academic_levels` | id, code, display order and bilingual label |
-| `fields_of_study` | id, slug/code and bilingual label |
-| `intakes` | id, code (`spring`, `summer`, `fall`, `winter`, `unknown`) and bilingual label |
+| `academic_levels` | id, code, active, display order, timestamps and bilingual label/description |
+| `fields_of_study` | id, optional parent_id, slug/code, active, display order, timestamps and bilingual label/description |
+| `intakes` | id, code (`spring`, `summer`, `fall`, `winter`, `unknown`), active, display order and bilingual label/description |
 | `program_intakes` | program_id, intake_id, year, deadline, optional notes |
-| `currencies` | ISO code, symbol, decimals, active |
+| `currencies` / `currency_translations` | ISO alpha/numeric code, symbol, decimals, active, display order and bilingual name/description |
 | `news_articles` | id, slug, author_admin_id, featured_media_id, status, published_at, timestamps, deleted_at |
 | `news_translations` | article_id, locale, title, summary, body, SEO fields |
 | `faqs` / `faq_translations` | reusable item, locale question/answer, status |
@@ -838,7 +838,7 @@ The logo asset and AI screens show different logo treatments. The standalone sup
 - [x] Complete system architecture documented, including routing, deployment units, backend modules, data ownership, queues, trust boundaries, critical flows, failure behavior, and scaling strategy.
 - [x] Backend runtime compatibility reviewed and Python 3.12 frozen across API, workers, scheduler, migrations, tests, and containers to prevent a mid-project feature-version migration.
 - [x] Complete-product database entities extracted and grouped by domain; duplicate identity concepts and aggregate ownership decisions documented before physical ERD work.
-- [x] PostgreSQL 18 baseline plus authentication hardening implemented as eight reversible Alembic/SQL migrations; 106 tables, constraints, refresh-token family state, login lockout state, rollback/re-upgrade, and Python 3.12 Alembic execution verified.
+- [x] PostgreSQL 18 baseline, authentication hardening, and reference-data extension implemented as nine reversible Alembic/SQL migrations; 110 tables, constraints, refresh-token family state, login lockout state, rollback/re-upgrade, and Python 3.12 Alembic execution verified.
 - [x] FastAPI backend scaffold implemented as a domain-oriented modular monolith with 13 domain modules, thin API composition, shared infrastructure, Celery queue entrypoints, architecture tests, locked Python dependencies, and a production container definition.
 - [x] API v1 designed contract-first: endpoint registry, authentication, permissions, request/response schemas, validation, stable errors, status codes, idempotency/concurrency rules, phase boundaries, OpenAPI 3.1 baseline, and automated contract validation documented.
 - [x] Public email/password authentication implemented: registration, email verification/resend, login lockout, Argon2id hashing, short-lived access JWTs, rotating opaque refresh tokens with reuse detection, logout/revocation, password reset, CSRF cookies, SMTP adapter, and PostgreSQL-backed end-to-end coverage.
@@ -846,6 +846,7 @@ The logo asset and AI screens show different logo treatments. The standalone sup
 - [x] GitHub repository connected with `main`/`develop`/short-lived branch workflow, Conventional Commits, pull-request template, CODEOWNERS, and review policy.
 - [x] GitHub Actions CI/CD implemented as ordered Lint, Unit Tests, Integration Tests, Build, Security Checks, immutable GHCR publish, staging deploy, and production release-tag deploy gates; deployment remains disabled until environment infrastructure is provisioned.
 - [x] Full Docker integration environment implemented with a single Nginx ingress, Next.js standalone Web container, FastAPI API and one-shot migration containers, internal PostgreSQL 18/Redis 8 services, persistent volumes, isolated networks, dependency health checks, and no public data-service ports.
+- [x] Reference Data Management implemented for countries, cities, academic levels, fields of study, intakes, and currencies: bilingual validation, public localized reads, protected admin CRUD/archive, relation validation, search/filter/pagination, seed data, RBAC permissions, audit logging, ETag/If-Match concurrency control, reversible migration `009_reference_data`, and automated coverage.
 - [x] Application repository/scaffold implemented.
 - [x] Database schema and migrations implemented.
 - [ ] Public UI and administration panel implemented.
