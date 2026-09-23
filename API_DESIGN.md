@@ -223,6 +223,12 @@ publication. Delete means hard delete only for dependency-free drafts; otherwise
 
 | ID | Method and endpoint | Request | Response | Status / errors | Permission |
 |---|---|---|---|---|---|
+| REF-01 | `GET /reference-data/{kind}` | `kind`, `locale`, `q`, relation filters, page/limit | Localized active `ReferencePage` | `200`, `422` | Guest |
+| REF-02 | `GET /admin/reference-data/{kind}` | Locale/search/relation filters/page | All active and archived items | `200`; `401`; `403`; `422` | `reference_data.read` |
+| REF-03 | `POST /admin/reference-data/{kind}` | Kind-specific write model with complete `fa`/`en` translations | `ReferenceItem` | `201`; `409 REFERENCE_DATA_ALREADY_EXISTS`; `422` | `reference_data.write` |
+| REF-04 | `GET /admin/reference-data/{kind}/{id}` | UUID | Item with both translations | `200`; `404` | `reference_data.read` |
+| REF-05 | `PUT /admin/reference-data/{kind}/{id}` | Complete kind-specific write model + `If-Match` | Updated item + new ETag | `200`; `404`; `409`; `412`; `422`; `428` | `reference_data.write` |
+| REF-06 | `DELETE /admin/reference-data/{kind}/{id}` | UUID + `If-Match` | Archived item + new ETag | `200`; `404`; `412`; `428` | `reference_data.write` |
 | CAT-01 | `GET /admin/countries` | Filters, lifecycle, page/limit | Page of `AdminCountry` | `200`, `422` | `catalog.read` |
 | CAT-02 | `POST /admin/countries` | `CountryWrite` | `AdminCountry` | `201`; `409 SLUG_TAKEN`; `422` | `catalog.write` |
 | CAT-03 | `GET /admin/countries/{id}` | UUID | `AdminCountry` | `200`, `404` | `catalog.read` |
@@ -260,6 +266,15 @@ publication. Delete means hard delete only for dependency-free drafts; otherwise
 `CountryWrite`, `UniversityWrite`, `ProgramWrite`, `ArticleWrite`, and `FaqWrite` reject unknown
 fields, require stable shared slugs, validate all referenced IDs, and store separate complete `fa`/`en`
 translations. Publication additionally validates required SEO and domain fields.
+
+`kind` is one of `countries`, `cities`, `academic-levels`, `fields-of-study`, `intakes`, or
+`currencies`. Reference-data deletion is deliberately an archive operation: countries transition to
+`archived`, while the other reference entities become inactive. Public reads expose only published
+countries and active items. Every write records a safe before/after audit entry. Country catalog
+endpoints below remain the richer country-content contract; the reference-data endpoints provide
+the implemented shared lookup-management boundary.
+Admin create/detail responses include an ETag derived from the row version. Update and archive
+require that ETag in `If-Match`; stale writes fail atomically with `412 STALE_WRITE`.
 
 ## 8. MVP Media API
 
