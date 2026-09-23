@@ -42,3 +42,9 @@ a public `JA-...` tracking code, and reuses that code for equivalent requests re
 hours. Lead persistence, initial status history, and the pending Noura outbox/sync records commit in
 one database transaction. Clients may send a 16–128 character `Idempotency-Key` when retrying the
 same request.
+
+Lead-management APIs are available under `/api/v1/admin/leads`. Staff with `lead.read.all` can
+search and filter every lead; callers with only `lead.read.assigned` are scoped to their own current
+assignments inside the SQL query. Detail responses include an ETag. Partial edits and Archive
+require `lead.write.all` plus a matching `If-Match`; Archive requires a reason and never permanently
+deletes the lead. Mutations write PII-safe audit evidence.

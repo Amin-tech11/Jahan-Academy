@@ -3,7 +3,7 @@
 **Status:** Implemented and tested
 **Database:** PostgreSQL 18
 **Migration engine:** Alembic on Python 3.12
-**Head revision:** `010_consultation_submission`
+**Head revision:** `011_lead_management`
 
 ## Migration Chain
 
@@ -19,6 +19,7 @@
 | `008_harden_auth` | `008_harden_authentication` | Login lockout state and rotating refresh-token session families |
 | `009_reference_data` | `009_create_reference_data_management` | Bilingual reference-data lifecycle, currencies, seed data, permissions, and indexes |
 | `010_consultation_submission` | `010_create_consultation_submission` | Consultation deduplication state, optional gender description, and immutable submission-event history |
+| `011_lead_management` | `011_create_lead_management` | Lead row versions, durable archive evidence, list index, and canonical lead-management permissions |
 
 Each Alembic revision executes a paired, reviewable `.up.sql` and `.down.sql` file. SQL is split into individual statements by the migration runner, while Alembic keeps one transaction per revision on PostgreSQL.
 
@@ -36,7 +37,7 @@ Each Alembic revision executes a paired, reviewable `.up.sql` and `.down.sql` fi
 
 The baseline was tested against the official `postgres:18-alpine` image:
 
-1. Applied all ten raw up migrations with `ON_ERROR_STOP=1`.
+1. Applied all eleven raw up migrations with `ON_ERROR_STOP=1`.
 2. Confirmed 111 application tables in the `public` schema.
 3. Ran required-table checks for identity, catalog/reference data, lead, application, document, LMS, commerce, support, notification, outbox, and audit domains.
 4. Verified representative `CHECK` and foreign-key violations are rejected.
@@ -45,7 +46,7 @@ The baseline was tested against the official `postgres:18-alpine` image:
 7. Re-applied all migrations successfully.
 8. Compiled Alembic code under Python 3.12.
 9. Ran Alembic `upgrade head → current → downgrade base → upgrade head` against a separate PostgreSQL database.
-10. Confirmed final Alembic revision `010_consultation_submission` and 111 public tables on PostgreSQL 18;
+10. Confirmed final Alembic revision `011_lead_management` and 111 public tables on PostgreSQL 18;
     latest-revision rollback/re-upgrade remains a required CI gate.
 
 ## Implementation Rules
