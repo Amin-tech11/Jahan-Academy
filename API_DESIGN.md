@@ -201,6 +201,9 @@ translations.
 | PUB-04 | `GET /universities/{slug}` | Guest | Slug and `locale` | `UniversityDetail` | `200`, `404` | Published only; related items are also public |
 | PUB-05 | `GET /programs` | Guest | `locale,q,country,university,level,field,language,intake,tuitionMin,tuitionMax,currency,sort,page,limit` | Page of `ProgramSummary` | `200`; `422 INVALID_FILTER` | Ranges non-negative/min≤max; allowlisted sort |
 | PUB-06 | `GET /programs/{slug}` | Guest | Slug and `locale` | `ProgramDetail` | `200`, `404` | Published only; full structured facts in MVP |
+| PUB-07 | `GET /discovery/suggestions` | Guest | `q,locale,entityType,limit` | `SuggestionEnvelope` | `200`; `422` | Published University/Program only; `q` 2–100; limit 1–10 |
+| PUB-08 | `GET /universities/{slug}/related` | Guest | Slug, `locale`, `limit` | `RelatedEnvelope` | `200`, `404`, `422` | Explainable ranking; excludes source; limit 1–12 |
+| PUB-09 | `GET /programs/{slug}/related` | Guest | Slug, `locale`, `limit` | `RelatedEnvelope` | `200`, `404`, `422` | Published Program and parent University only; excludes source; limit 1–12 |
 | PUB-07 | `GET /articles` | Guest | `locale,q,category,tag,page,limit` | Page of `ArticleSummary` newest first | `200`; `422` | Published and `publishedAt <= now` |
 | PUB-08 | `GET /articles/{slug}` | Guest | Slug and `locale` | `ArticleDetail` | `200`, `404` | Sanitized published body only |
 | PUB-09 | `POST /consultation-requests` | Guest | `ConsultationCreate`; optional `Idempotency-Key` | `ConsultationReceipt` | `201`; duplicate `200`; `409 IDEMPOTENCY_KEY_REUSED`; `422`; `429`; `503` only if local persistence unavailable | Public; honeypot/rate limit; persist lead+outbox atomically; Noura failure never changes acceptance |

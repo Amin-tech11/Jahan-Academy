@@ -35,6 +35,7 @@ class IntakeStatus(StrEnum):
 
 
 class ProgramSort(StrEnum):
+    RELEVANCE = "relevance"
     FEATURED = "featured"
     TITLE_ASC = "title_asc"
     TITLE_DESC = "title_desc"
