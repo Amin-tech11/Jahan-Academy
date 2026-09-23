@@ -1,0 +1,1 @@
+"""University catalog management module."""
