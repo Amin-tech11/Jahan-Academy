@@ -148,6 +148,9 @@ The following table remains deliberately unapproved until the Product Owner defi
 
 | Role | Permission | Scope | Resource condition | Phase | Status |
 |---|---|---|---|---|---|
+| Super Admin | `lead.read.all`, `lead.write.all` | Global | All consultation leads | MVP | Implemented |
+| Support | `lead.read.all`, `lead.write.all` | Global | All consultation leads | MVP | Implemented |
+| Consultant | `lead.read.assigned` | Global | SQL query restricts rows to `assigned_consultant_id = actor.user_id` | MVP | Implemented |
 | TBD | TBD | Global or scoped | Owner/assignee/state rule | MVP/Final | Pending |
 
 Each approved row must answer:

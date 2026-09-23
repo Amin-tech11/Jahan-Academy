@@ -41,6 +41,34 @@ class MaritalStatusCode(StrEnum):
     PREFER_NOT_TO_SAY = "prefer_not_to_say"
 
 
+class LeadStatus(StrEnum):
+    NEW = "new"
+    ASSIGNED = "assigned"
+    CONTACTED = "contacted"
+    QUALIFIED = "qualified"
+    NOT_QUALIFIED = "not_qualified"
+    CONVERTED = "converted"
+    CLOSED = "closed"
+
+
+class SyncStatus(StrEnum):
+    PENDING = "pending"
+    SYNCED = "synced"
+    FAILED = "failed"
+
+
+class LeadArchiveFilter(StrEnum):
+    ACTIVE = "active"
+    ARCHIVED = "archived"
+    ALL = "all"
+
+
+class LeadSort(StrEnum):
+    CREATED_DESC = "created_desc"
+    CREATED_ASC = "created_asc"
+    UPDATED_DESC = "updated_desc"
+
+
 @dataclass(frozen=True, slots=True)
 class ConsultationReceiptData:
     reference: str

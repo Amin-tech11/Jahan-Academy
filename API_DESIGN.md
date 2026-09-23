@@ -299,7 +299,7 @@ Uploaded files are not usable until checksum, type, size and malware checks pass
 | LEAD-05 | `POST /admin/leads/{id}/status-transitions` | `toStatus`, optional reason, `If-Match` | `LeadDetail` | `200`; `400 INVALID_STATE_TRANSITION`; `403`; `412`; `422` | All-lead writer or assigned consultant; transition matrix enforced |
 | LEAD-06 | `POST /admin/leads/{id}/notes` | Plain text 1–5,000, visibility `INTERNAL` | `LeadNote` | `201`; `403`; `404`; `422` | Support/Super Admin or assigned Consultant |
 | LEAD-07 | `GET /admin/leads/{id}/history` | Page/limit | Page of immutable `LeadEvent` | `200`; `403`; `404` | Same scope as lead detail |
-| LEAD-08 | `POST /admin/leads/{id}/archive` | Reason, `If-Match` | `LeadDetail` | `200`; `403`; `412`; `422` | `lead.write.all`; no permanent delete |
+| LEAD-08 | `POST /admin/leads/{id}/archive` | Required reason, `If-Match` | `LeadDetail` | `200`; `403`; `409 LEAD_ARCHIVED`; `412`; `422`; `428` | `lead.write.all`; no permanent delete |
 | LEAD-09 | `POST /admin/leads/{id}/anonymize` | Approved privacy request ID, `If-Match` | `202` operation receipt | `202`; `403`; `409 LEGAL_HOLD`; `412`; `422` | Super Admin/data-privacy permission only |
 | LEAD-10 | `POST /admin/leads/{id}/noura-retry` | Optional operator note | `202` sync attempt receipt | `202`; `403`; `404`; `409 SYNC_NOT_RETRYABLE`; `429` | `lead.sync.retry`; idempotent and audited |
 | LEAD-11 | `GET /admin/leads/export` | Same filters; `format=csv` | UTF-8 CSV stream or `202` export job | `200/202`; `403`; `422`; `429` | `report.export`; export audit logged |
