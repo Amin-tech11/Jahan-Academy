@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 from collections.abc import AsyncIterator
+from uuid import uuid4
 
 import pytest
 from fastapi.testclient import TestClient
@@ -44,7 +45,7 @@ def test_complete_email_authentication_lifecycle() -> None:
             )
 
     app.dependency_overrides[auth_service] = service_override
-    email = "auth-flow@example.com"
+    email = f"auth-flow-{uuid4().hex}@example.com"
     original_password = "Secure-Password-2026"
     replacement_password = "Replacement-Password-2027"
 
