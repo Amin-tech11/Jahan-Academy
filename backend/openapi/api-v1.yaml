@@ -347,6 +347,11 @@ paths:
         - { name: status, in: query, schema: { $ref: '#/components/schemas/LeadStatus' } }
         - { name: syncStatus, in: query, schema: { $ref: '#/components/schemas/SyncStatus' } }
         - { name: assigneeId, in: query, schema: { $ref: '#/components/schemas/Uuid' } }
+        - { name: countryId, in: query, schema: { $ref: '#/components/schemas/Uuid' } }
+        - { name: from, in: query, schema: { type: string, format: date-time } }
+        - { name: to, in: query, schema: { type: string, format: date-time } }
+        - { name: archive, in: query, schema: { type: string, enum: [active, archived, all], default: active } }
+        - { name: sort, in: query, schema: { type: string, enum: [created_desc, created_asc, updated_desc], default: created_desc } }
         - $ref: '#/components/parameters/Page'
         - $ref: '#/components/parameters/Limit'
       responses:
@@ -386,6 +391,66 @@ paths:
         '401': { $ref: '#/components/responses/Unauthorized' }
         '403': { $ref: '#/components/responses/Forbidden' }
         '404': { $ref: '#/components/responses/NotFound' }
+    patch:
+      tags: [Lead Operations]
+      operationId: updateLead
+      x-phase: MVP
+      x-permissions: [lead.write.all]
+      security: [{ StaffSession: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - $ref: '#/components/parameters/IfMatch'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/LeadUpdate' }
+      responses:
+        '200':
+          description: Updated lead with a new ETag
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data: { $ref: '#/components/schemas/LeadDetail' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '412': { $ref: '#/components/responses/PreconditionFailed' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+        '428': { $ref: '#/components/responses/PreconditionRequired' }
+  /admin/leads/{id}/archive:
+    post:
+      tags: [Lead Operations]
+      operationId: archiveLead
+      x-phase: MVP
+      x-permissions: [lead.write.all]
+      security: [{ StaffSession: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - $ref: '#/components/parameters/IfMatch'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/LeadArchiveRequest' }
+      responses:
+        '200':
+          description: Archived lead with a new ETag
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data: { $ref: '#/components/schemas/LeadDetail' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '412': { $ref: '#/components/responses/PreconditionFailed' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+        '428': { $ref: '#/components/responses/PreconditionRequired' }
   /auth/register:
     post:
       tags: [User Authentication]
@@ -645,6 +710,9 @@ components:
       required: false
       schema: { type: string, minLength: 16, maxLength: 128 }
   responses:
+    PreconditionRequired:
+      description: If-Match is required for this mutation
+      content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
     PreconditionFailed:
       description: The supplied version is stale; reload the item before retrying
       content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
@@ -1005,32 +1073,95 @@ components:
             permissions: { type: array, items: { type: string } }
     LeadStatus:
       type: string
-      enum: [NEW, ASSIGNED, CONTACTED, QUALIFIED, NOT_QUALIFIED, CONVERTED, CLOSED]
+      enum: [new, assigned, contacted, qualified, not_qualified, converted, closed]
     SyncStatus:
       type: string
-      enum: [PENDING, SYNCED, FAILED]
+      enum: [pending, synced, failed]
     LeadSummary:
       type: object
-      required: [id, reference, firstName, lastName, mobile, status, syncStatus, createdAt]
+      required: [id, reference, firstName, lastName, mobile, status, syncStatus, archived, version, createdAt, updatedAt]
       properties:
         id: { $ref: '#/components/schemas/Uuid' }
         reference: { type: string }
         firstName: { type: string }
         lastName: { type: string }
         mobile: { type: string }
+        email: { type: [string, 'null'], format: email }
+        desiredCountryId: { oneOf: [{ $ref: '#/components/schemas/Uuid' }, { type: 'null' }] }
+        desiredCountryName: { type: [string, 'null'] }
+        desiredCountryText: { type: [string, 'null'] }
+        intakeTerm: { type: [string, 'null'], enum: [spring, summer, fall, winter, unknown, null] }
+        startYear: { type: [integer, 'null'] }
         status: { $ref: '#/components/schemas/LeadStatus' }
         syncStatus: { $ref: '#/components/schemas/SyncStatus' }
-        assigneeId: { oneOf: [{ $ref: '#/components/schemas/Uuid' }, { type: 'null' }] }
+        assignee: { type: [object, 'null'] }
+        archived: { type: boolean }
+        version: { type: integer, minimum: 1 }
         createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
     LeadDetail:
       allOf:
         - $ref: '#/components/schemas/LeadSummary'
         - type: object
+          required: [mobileRaw, locale, duplicateCount, syncAttemptCount]
           properties:
-            email: { type: [string, 'null'], format: email }
-            intakeTerm: { type: string }
-            startYear: { type: integer }
-            source: { type: object }
+            mobileRaw: { type: string }
+            age: { type: [integer, 'null'], minimum: 18, maximum: 100 }
+            gender: { type: [string, 'null'], enum: [female, male, non_binary, self_described, prefer_not_to_say, null] }
+            genderSelfDescription: { type: [string, 'null'], maxLength: 100 }
+            occupation: { type: [string, 'null'] }
+            maritalStatus: { type: [string, 'null'], enum: [single, married, divorced, widowed, prefer_not_to_say, null] }
+            investmentRangeCode: { type: [string, 'null'] }
+            investmentCurrency: { type: [string, 'null'], pattern: '^[A-Z]{3}$' }
+            message: { type: [string, 'null'] }
+            locale: { type: string, enum: [fa, en] }
+            sourceUrl: { type: [string, 'null'] }
+            sourceUniversityId: { oneOf: [{ $ref: '#/components/schemas/Uuid' }, { type: 'null' }] }
+            sourceProgramId: { oneOf: [{ $ref: '#/components/schemas/Uuid' }, { type: 'null' }] }
+            duplicateCount: { type: integer, minimum: 0 }
+            lastDuplicateAt: { type: [string, 'null'], format: date-time }
+            syncExternalId: { type: [string, 'null'] }
+            syncAttemptCount: { type: integer, minimum: 0 }
+            syncLastAttemptAt: { type: [string, 'null'], format: date-time }
+            syncSyncedAt: { type: [string, 'null'], format: date-time }
+            archiveReason: { type: [string, 'null'] }
+            archivedAt: { type: [string, 'null'], format: date-time }
+            archivedByUserId: { oneOf: [{ $ref: '#/components/schemas/Uuid' }, { type: 'null' }] }
+    LeadUpdate:
+      type: object
+      additionalProperties: false
+      minProperties: 1
+      properties:
+        firstName: { type: string, minLength: 1, maxLength: 100 }
+        lastName: { type: string, minLength: 1, maxLength: 100 }
+        mobile: { type: string, minLength: 7, maxLength: 32 }
+        email: { type: [string, 'null'], format: email }
+        desiredCountryId: { oneOf: [{ $ref: '#/components/schemas/Uuid' }, { type: 'null' }] }
+        desiredCountryText: { type: [string, 'null'], maxLength: 100 }
+        intakeTerm: { type: string, enum: [spring, summer, fall, winter, unknown] }
+        startYear: { type: integer }
+        age: { type: [integer, 'null'], minimum: 18, maximum: 100 }
+        gender: { type: [string, 'null'], enum: [female, male, non_binary, self_described, prefer_not_to_say, null] }
+        genderSelfDescription: { type: [string, 'null'], minLength: 1, maxLength: 100 }
+        occupation: { type: [string, 'null'], maxLength: 120 }
+        maritalStatus: { type: [string, 'null'], enum: [single, married, divorced, widowed, prefer_not_to_say, null] }
+        investmentBudget:
+          oneOf:
+            - type: 'null'
+            - type: object
+              additionalProperties: false
+              required: [rangeCode, currency]
+              properties:
+                rangeCode: { type: string, minLength: 1, maxLength: 60, pattern: '^[A-Za-z0-9_-]+$' }
+                currency: { type: string, pattern: '^[A-Za-z]{3}$' }
+        message: { type: [string, 'null'], maxLength: 2000 }
+        locale: { type: string, enum: [fa, en] }
+    LeadArchiveRequest:
+      type: object
+      additionalProperties: false
+      required: [reason]
+      properties:
+        reason: { type: string, minLength: 3, maxLength: 500 }
     UserRegister:
       type: object
       additionalProperties: false
