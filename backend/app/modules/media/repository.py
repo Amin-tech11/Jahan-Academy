@@ -204,13 +204,14 @@ class MediaRepository:
             raise StaleMediaError
 
     async def duplicate_ready_asset(self, checksum: str, asset_id: UUID) -> UUID | None:
-        return await self.session.scalar(
+        duplicate = await self.session.scalar(
             text(
                 "SELECT id FROM media_assets WHERE checksum_sha256 = :checksum "
                 "AND upload_status = 'ready' AND deleted_at IS NULL AND id <> :id LIMIT 1"
             ),
             {"checksum": checksum, "id": asset_id},
         )
+        return UUID(str(duplicate)) if duplicate is not None else None
 
     async def audit(
         self,

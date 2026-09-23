@@ -334,31 +334,35 @@ class MediaService:
 
     @staticmethod
     def _view(row: dict[str, object]) -> MediaAssetView:
-        return MediaAssetView(
-            id=row["id"],  # type: ignore[arg-type]
-            owner_user_id=row.get("owner_user_id"),  # type: ignore[arg-type]
-            original_filename=row.get("original_filename"),  # type: ignore[arg-type]
-            mime_type=str(row["mime_type"]),
-            size_bytes=int(str(row["size_bytes"])),
-            checksum_sha256=row.get("checksum_sha256"),  # type: ignore[arg-type]
-            purpose=row.get("purpose"),  # type: ignore[arg-type]
-            upload_status=row["upload_status"],  # type: ignore[arg-type]
-            scan_status=str(row["scan_status"]),
-            width=row.get("width"),  # type: ignore[arg-type]
-            height=row.get("height"),  # type: ignore[arg-type]
-            alt_fa=row.get("alt_fa"),  # type: ignore[arg-type]
-            alt_en=row.get("alt_en"),  # type: ignore[arg-type]
-            source_url=row.get("source_url"),  # type: ignore[arg-type]
-            attribution=row.get("attribution"),  # type: ignore[arg-type]
-            public_url=(
-                f"/api/v1/media/{row['id']}/content" if row["upload_status"] == "ready" else None
-            ),
-            validation_error_code=row.get("validation_error_code"),  # type: ignore[arg-type]
-            expires_at=row.get("upload_expires_at"),  # type: ignore[arg-type]
-            confirmed_at=row.get("confirmed_at"),  # type: ignore[arg-type]
-            created_at=row["created_at"],  # type: ignore[arg-type]
-            updated_at=row["updated_at"],  # type: ignore[arg-type]
-            version=int(str(row["row_version"])),
+        return MediaAssetView.model_validate(
+            {
+                "id": row["id"],
+                "owner_user_id": row.get("owner_user_id"),
+                "original_filename": row.get("original_filename"),
+                "mime_type": row["mime_type"],
+                "size_bytes": row["size_bytes"],
+                "checksum_sha256": row.get("checksum_sha256"),
+                "purpose": row.get("purpose"),
+                "upload_status": row["upload_status"],
+                "scan_status": row["scan_status"],
+                "width": row.get("width"),
+                "height": row.get("height"),
+                "alt_fa": row.get("alt_fa"),
+                "alt_en": row.get("alt_en"),
+                "source_url": row.get("source_url"),
+                "attribution": row.get("attribution"),
+                "validation_error_code": row.get("validation_error_code"),
+                "expires_at": row.get("upload_expires_at"),
+                "confirmed_at": row.get("confirmed_at"),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+                "version": row["row_version"],
+                "public_url": (
+                    f"/api/v1/media/{row['id']}/content"
+                    if row["upload_status"] == "ready"
+                    else None
+                ),
+            }
         )
 
     @staticmethod
