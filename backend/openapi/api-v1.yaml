@@ -293,6 +293,23 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/UniversityDetail' }
         '404': { $ref: '#/components/responses/NotFound' }
+  /universities/{slug}/related:
+    get:
+      tags: [Public Catalog]
+      operationId: listRelatedUniversities
+      x-phase: MVP
+      parameters:
+        - $ref: '#/components/parameters/Slug'
+        - $ref: '#/components/parameters/Locale'
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 12, default: 6 } }
+      responses:
+        '200':
+          description: Ranked related published universities
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/RelatedEnvelope' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '422': { $ref: '#/components/responses/ValidationError' }
   /programs:
     get:
       tags: [Public Catalog]
@@ -335,6 +352,40 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/ProgramDetail' }
         '404': { $ref: '#/components/responses/NotFound' }
+  /programs/{slug}/related:
+    get:
+      tags: [Public Catalog]
+      operationId: listRelatedPrograms
+      x-phase: MVP
+      parameters:
+        - $ref: '#/components/parameters/Slug'
+        - $ref: '#/components/parameters/Locale'
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 12, default: 6 } }
+      responses:
+        '200':
+          description: Ranked related published academic Programs
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/RelatedEnvelope' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /discovery/suggestions:
+    get:
+      tags: [Public Catalog]
+      operationId: suggestCatalogResults
+      x-phase: MVP
+      parameters:
+        - { name: q, in: query, required: true, schema: { type: string, minLength: 2, maxLength: 100 } }
+        - $ref: '#/components/parameters/Locale'
+        - { name: entityType, in: query, schema: { type: string, enum: [university, program] } }
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 10, default: 8 } }
+      responses:
+        '200':
+          description: Ranked localized catalog suggestions
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuggestionEnvelope' }
+        '422': { $ref: '#/components/responses/ValidationError' }
   /articles:
     get:
       tags: [Public Catalog]
@@ -1216,6 +1267,44 @@ components:
             officialUrl: { type: [string, 'null'], format: uri }
             admissionRequirements: { type: array, items: { type: string } }
             intakes: { type: array, items: { type: object } }
+    DiscoverySuggestion:
+      type: object
+      required: [entityType, id, slug, title, score]
+      properties:
+        entityType: { type: string, enum: [university, program] }
+        id: { $ref: '#/components/schemas/Uuid' }
+        slug: { type: string }
+        title: { type: string }
+        subtitle: { type: [string, 'null'] }
+        score: { type: number, minimum: 0 }
+    SuggestionEnvelope:
+      type: object
+      additionalProperties: false
+      required: [data, query, locale]
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/DiscoverySuggestion' }
+        query: { type: string }
+        locale: { type: string, enum: [fa, en] }
+    RelatedResult:
+      allOf:
+        - $ref: '#/components/schemas/DiscoverySuggestion'
+        - type: object
+          required: [reasons]
+          properties:
+            reasons:
+              type: array
+              items: { type: string }
+    RelatedEnvelope:
+      type: object
+      additionalProperties: false
+      required: [data, locale]
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/RelatedResult' }
+        locale: { type: string, enum: [fa, en] }
     ArticleSummary:
       type: object
       required: [id, slug, title, excerpt, publishedAt]

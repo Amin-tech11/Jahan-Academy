@@ -3,7 +3,7 @@
 **Status:** Implemented and tested
 **Database:** PostgreSQL 18
 **Migration engine:** Alembic on Python 3.12
-**Head revision:** `014_media_management`
+**Head revision:** `017_discovery_api`
 
 ## Migration Chain
 
@@ -23,6 +23,9 @@
 | `012_lead_workflow` | `012_create_lead_assignment_status_workflow` | Assignment/transfer evidence, workflow permissions, and assignment timeline index |
 | `013_noura_mock` | `013_create_noura_mock_integration` | Noura idempotency state, manual-retry evidence, reclaimable outbox index, and retry permission |
 | `014_media_management` | `014_create_media_management` | Media upload lifecycle, purpose/status validation, checksum deduplication, optimistic concurrency, and media permissions |
+| `015_university_management` | `015_create_university_management` | Bilingual university lifecycle, tuition/contact/ranking/media constraints, publication/archive state, and catalog permissions |
+| `016_program_management` | `016_create_program_management` | Academic Program lifecycle, tuition/application-fee constraints, intakes/deadlines, requirements, and discovery indexes |
+| `017_discovery_api` | `017_create_discovery_api` | Weighted generated search vectors and GIN indexes for bilingual University/Program discovery |
 
 Each Alembic revision executes a paired, reviewable `.up.sql` and `.down.sql` file. SQL is split into individual statements by the migration runner, while Alembic keeps one transaction per revision on PostgreSQL.
 
@@ -40,17 +43,15 @@ Each Alembic revision executes a paired, reviewable `.up.sql` and `.down.sql` fi
 
 The baseline was tested against the official `postgres:18-alpine` image:
 
-1. Applied all fourteen raw up migrations with `ON_ERROR_STOP=1`.
+1. Applied all seventeen migrations with transactional Alembic execution.
 2. Confirmed 111 application tables in the `public` schema.
 3. Ran required-table checks for identity, catalog/reference data, lead, application, document, LMS, commerce, support, notification, outbox, and audit domains.
 4. Verified representative `CHECK` and foreign-key violations are rejected.
-5. Applied every down migration in reverse order.
-6. Confirmed the `public` schema returned to zero application tables.
-7. Re-applied all migrations successfully.
+5. Applied and verified the latest discovery migration downgrade to `016_program_management`.
+6. Re-applied the discovery migration successfully.
 8. Compiled Alembic code under Python 3.12.
-9. Ran Alembic `upgrade head → current → downgrade base → upgrade head` against a separate PostgreSQL database.
-10. Confirmed final Alembic revision `014_media_management` and 111 public tables on PostgreSQL 18;
-    latest-revision rollback/re-upgrade remains a required CI gate.
+9. Ran the complete 10-test PostgreSQL/Redis integration suite in the Docker application network.
+10. Confirmed final Alembic revision `017_discovery_api` on PostgreSQL 18; latest-revision rollback/re-upgrade remains a required CI gate.
 
 ## Implementation Rules
 
