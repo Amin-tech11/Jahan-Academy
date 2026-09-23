@@ -113,7 +113,8 @@ class ReferenceDataService:
             item = await self._repository.update(
                 kind, item_id, values, translations, expected_version
             )
-            assert item is not None
+            if item is None:
+                raise RuntimeError("Updated reference-data item could not be reloaded")
             await self._repository.audit(
                 actor_user_id=actor_user_id,
                 action="reference_data.updated",
@@ -146,7 +147,8 @@ class ReferenceDataService:
         except StaleReferenceDataError as exc:
             await self._repository.session.rollback()
             raise self._precondition_failed() from exc
-        assert item is not None
+        if item is None:
+            raise RuntimeError("Archived reference-data item could not be reloaded")
         await self._repository.audit(
             actor_user_id=actor_user_id,
             action="reference_data.archived",

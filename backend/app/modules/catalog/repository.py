@@ -54,11 +54,13 @@ class ReferenceDataRepository:
             f"ON translation.{definition.translation_fk} = base.id AND translation.locale = :locale"
         )
         count = await self.session.scalar(
-            text(f"SELECT count(*) FROM {definition.table} base {join} WHERE {where}"), params
+            # Identifiers and predicates come only from the closed ReferenceKind mapping.
+            text(f"SELECT count(*) FROM {definition.table} base {join} WHERE {where}"),  # nosec B608
+            params,
         )
         rows = await self.session.execute(
             text(
-                f"SELECT base.*, translation.name, "
+                f"SELECT base.*, translation.name, "  # nosec B608
                 f"translation.{definition.translation_description_field} AS description "
                 f"FROM {definition.table} base {join} WHERE {where} "
                 "ORDER BY base.display_order, translation.name, base.id "
@@ -73,7 +75,9 @@ class ReferenceDataRepository:
         row = (
             (
                 await self.session.execute(
-                    text(f"SELECT * FROM {definition.table} WHERE id = :id"), {"id": item_id}
+                    # The table identifier comes only from the closed ReferenceKind mapping.
+                    text(f"SELECT * FROM {definition.table} WHERE id = :id"),  # nosec B608
+                    {"id": item_id},
                 )
             )
             .mappings()
@@ -100,7 +104,11 @@ class ReferenceDataRepository:
         }
         placeholders = ", ".join(f":{column}" for column in columns)
         await self.session.execute(
-            text(f"INSERT INTO {definition.table} ({', '.join(columns)}) VALUES ({placeholders})"),
+            # Table and column identifiers are sourced from immutable definitions, never input.
+            text(  # nosec B608
+                f"INSERT INTO {definition.table} ({', '.join(columns)}) "  # nosec B608
+                f"VALUES ({placeholders})"
+            ),
             params,
         )
         await self._replace_translations(kind, item_id, translations)
@@ -128,7 +136,7 @@ class ReferenceDataRepository:
         params["expected_version"] = expected_version
         updated_id = await self.session.scalar(
             text(
-                f"UPDATE {definition.table} SET {assignments} "
+                f"UPDATE {definition.table} SET {assignments} "  # nosec B608
                 "WHERE id = :id AND row_version = :expected_version RETURNING id"
             ),
             params,
@@ -148,7 +156,7 @@ class ReferenceDataRepository:
         assignment = "status = 'archived'" if kind is ReferenceKind.COUNTRIES else "active = false"
         updated_id = await self.session.scalar(
             text(
-                f"UPDATE {definition.table} SET {assignment}, updated_at = now(), "
+                f"UPDATE {definition.table} SET {assignment}, updated_at = now(), "  # nosec B608
                 "row_version = row_version + 1 "
                 "WHERE id = :id AND row_version = :expected_version RETURNING id"
             ),
@@ -162,7 +170,10 @@ class ReferenceDataRepository:
         definition = REFERENCE_DEFINITIONS[kind]
         return bool(
             await self.session.scalar(
-                text(f"SELECT EXISTS(SELECT 1 FROM {definition.table} WHERE id = :id)"),
+                text(  # nosec B608
+                    f"SELECT EXISTS(SELECT 1 FROM {definition.table} "  # nosec B608
+                    "WHERE id = :id)"
+                ),
                 {"id": item_id},
             )
         )
@@ -198,7 +209,7 @@ class ReferenceDataRepository:
         definition = REFERENCE_DEFINITIONS[kind]
         rows = await self.session.execute(
             text(
-                f"SELECT locale, name, "
+                f"SELECT locale, name, "  # nosec B608
                 f"{definition.translation_description_field} AS description "
                 f"FROM {definition.translation_table} "
                 f"WHERE {definition.translation_fk} = :id ORDER BY locale"
@@ -213,7 +224,7 @@ class ReferenceDataRepository:
         definition = REFERENCE_DEFINITIONS[kind]
         await self.session.execute(
             text(
-                f"DELETE FROM {definition.translation_table} "
+                f"DELETE FROM {definition.translation_table} "  # nosec B608
                 f"WHERE {definition.translation_fk} = :id"
             ),
             {"id": item_id},
@@ -221,7 +232,7 @@ class ReferenceDataRepository:
         for locale, translation in translations.items():
             await self.session.execute(
                 text(
-                    f"INSERT INTO {definition.translation_table} "
+                    f"INSERT INTO {definition.translation_table} "  # nosec B608
                     f"({definition.translation_fk}, locale, name, "
                     f"{definition.translation_description_field}) "
                     "VALUES (:id, :locale, :name, :description)"
