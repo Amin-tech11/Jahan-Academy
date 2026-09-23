@@ -21,12 +21,12 @@ async def readiness(response: Response) -> dict[str, object]:
             await session.execute(text("SELECT 1"))
         checks["database"] = True
     except Exception:
-        pass
+        checks["database"] = False
     try:
         redis: Redis = get_redis()
         checks["redis"] = bool(await redis.ping())
     except Exception:
-        pass
+        checks["redis"] = False
     ready = all(checks.values())
     if not ready:
         response.status_code = status.HTTP_503_SERVICE_UNAVAILABLE
