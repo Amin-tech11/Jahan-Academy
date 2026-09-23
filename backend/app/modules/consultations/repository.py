@@ -195,10 +195,10 @@ class ConsultationRepository:
         await self.session.execute(
             text(
                 "INSERT INTO integration_sync_records "
-                "(provider, entity_type, entity_id, status) "
-                "VALUES ('noura', 'lead', :lead_id, 'pending')"
+                "(provider, entity_type, entity_id, status, idempotency_key) "
+                "VALUES ('noura', 'lead', :lead_id, 'pending', :idempotency_key)"
             ),
-            {"lead_id": lead_id},
+            {"lead_id": lead_id, "idempotency_key": f"noura:lead:{lead_id}"},
         )
 
     async def get_idempotency(self, key: str) -> IdempotencyRecord | None:

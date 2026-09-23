@@ -9,6 +9,8 @@ x-backend-environment: &backend-environment
   JAHAN_SESSION_SECRET: ${JAHAN_SESSION_SECRET:-local-only-change-me-at-least-32-characters}
   JAHAN_COOKIE_SECURE: "false"
   JAHAN_FRONTEND_URL: http://localhost:${NGINX_PORT:-8080}
+  JAHAN_NOURA_BASE_URL: http://mock-noura:8090
+  JAHAN_NOURA_MOCK_OUTCOME: ${NOURA_MOCK_OUTCOME:-success}
 
 services:
   postgres:
@@ -95,6 +97,84 @@ services:
       timeout: 5s
       retries: 12
       start_period: 15s
+    restart: unless-stopped
+    networks:
+      - application
+
+  mock-noura:
+    image: jahan-academy-backend:local
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    command:
+      - /app/.venv/bin/uvicorn
+      - app.modules.integrations.mock_api:app
+      - --host
+      - 0.0.0.0
+      - --port
+      - "8090"
+    expose:
+      - "8090"
+    healthcheck:
+      test:
+        - CMD
+        - /app/.venv/bin/python
+        - -c
+        - >-
+          import urllib.request;
+          urllib.request.urlopen('http://127.0.0.1:8090/health', timeout=3)
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 5s
+    restart: unless-stopped
+    networks:
+      - application
+
+  worker-integration:
+    image: jahan-academy-backend:local
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    environment: *backend-environment
+    command:
+      - /app/.venv/bin/celery
+      - -A
+      - app.core.celery_app:celery_app
+      - worker
+      - --loglevel=INFO
+      - --concurrency=2
+      - --queues=celery
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+      mock-noura:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - application
+
+  beat:
+    image: jahan-academy-backend:local
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    environment: *backend-environment
+    command:
+      - /app/.venv/bin/celery
+      - -A
+      - app.core.celery_app:celery_app
+      - beat
+      - --loglevel=INFO
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+      mock-noura:
+        condition: service_healthy
     restart: unless-stopped
     networks:
       - application

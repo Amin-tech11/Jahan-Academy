@@ -535,6 +535,33 @@ paths:
                   data: { $ref: '#/components/schemas/LeadHistory' }
         '403': { $ref: '#/components/responses/Forbidden' }
         '404': { $ref: '#/components/responses/NotFound' }
+  /admin/leads/{id}/noura-retry:
+    post:
+      tags: [Lead Operations]
+      operationId: retryNouraLeadSync
+      x-phase: MVP
+      x-permissions: [lead.sync.retry]
+      security: [{ StaffSession: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/NouraRetryRequest' }
+      responses:
+        '202':
+          description: Failed Noura synchronization queued for a new retry cycle
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data: { $ref: '#/components/schemas/NouraRetryReceipt' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/ValidationError' }
   /auth/register:
     post:
       tags: [User Authentication]
@@ -1294,6 +1321,19 @@ components:
         statuses:
           type: array
           items: { $ref: '#/components/schemas/LeadStatusHistoryItem' }
+    NouraRetryRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        note: { type: [string, 'null'], minLength: 3, maxLength: 500 }
+    NouraRetryReceipt:
+      type: object
+      required: [status, attemptCount, manualRetryCount, nextAttemptAt]
+      properties:
+        status: { type: string, const: pending }
+        attemptCount: { type: integer, minimum: 0 }
+        manualRetryCount: { type: integer, minimum: 1 }
+        nextAttemptAt: { type: string, format: date-time }
     UserRegister:
       type: object
       additionalProperties: false

@@ -39,6 +39,13 @@ class Settings(BaseSettings):
     consultation_duplicate_window_hours: int = Field(default=24, ge=1, le=168)
     consultation_rate_limit: int = Field(default=5, ge=1, le=100)
     consultation_rate_window_seconds: int = Field(default=600, ge=60, le=86400)
+    noura_base_url: str = "http://mock-noura:8090"
+    noura_timeout_seconds: float = Field(default=5.0, gt=0, le=60)
+    noura_mock_outcome: str = Field(
+        default="success", pattern="^(success|retryable_failure|permanent_failure)$"
+    )
+    noura_dispatch_batch_size: int = Field(default=20, ge=1, le=100)
+    noura_lock_timeout_seconds: int = Field(default=600, ge=30, le=3600)
 
     @model_validator(mode="after")
     def validate_production_secrets(self) -> "Settings":
