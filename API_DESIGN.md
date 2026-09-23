@@ -204,9 +204,11 @@ translations.
 | PUB-07 | `GET /discovery/suggestions` | Guest | `q,locale,entityType,limit` | `SuggestionEnvelope` | `200`; `422` | Published University/Program only; `q` 2–100; limit 1–10 |
 | PUB-08 | `GET /universities/{slug}/related` | Guest | Slug, `locale`, `limit` | `RelatedEnvelope` | `200`, `404`, `422` | Explainable ranking; excludes source; limit 1–12 |
 | PUB-09 | `GET /programs/{slug}/related` | Guest | Slug, `locale`, `limit` | `RelatedEnvelope` | `200`, `404`, `422` | Published Program and parent University only; excludes source; limit 1–12 |
-| PUB-07 | `GET /articles` | Guest | `locale,q,category,tag,page,limit` | Page of `ArticleSummary` newest first | `200`; `422` | Published and `publishedAt <= now` |
-| PUB-08 | `GET /articles/{slug}` | Guest | Slug and `locale` | `ArticleDetail` | `200`, `404` | Sanitized published body only |
-| PUB-09 | `POST /consultation-requests` | Guest | `ConsultationCreate`; optional `Idempotency-Key` | `ConsultationReceipt` | `201`; duplicate `200`; `409 IDEMPOTENCY_KEY_REUSED`; `422`; `429`; `503` only if local persistence unavailable | Public; honeypot/rate limit; persist lead+outbox atomically; Noura failure never changes acceptance |
+| PUB-10 | `GET /articles` | Guest | `locale,q,type,categoryId,tagId,authorId,featured,sort,page,limit` | Page of `ArticleSummary` | `200`; `422` | Published and `publishedAt <= now`; full-text relevance available |
+| PUB-11 | `GET /articles/{slug}` | Guest | Slug and `locale` | `ArticleDetail` | `200`, `404` | Published localized body only |
+| PUB-12 | `GET /content/{categories|tags|authors}` | Guest | `locale,q,page,limit` | Localized reference page | `200`, `422` | Published records only |
+| PUB-13 | `GET /content/{categories|tags|authors}/{slug}` | Guest | Slug and `locale` | Localized reference | `200`, `404` | Published records only |
+| PUB-14 | `POST /consultation-requests` | Guest | `ConsultationCreate`; optional `Idempotency-Key` | `ConsultationReceipt` | `201`; duplicate `200`; `409 IDEMPOTENCY_KEY_REUSED`; `422`; `429`; `503` only if local persistence unavailable | Public; honeypot/rate limit; persist lead+outbox atomically; Noura failure never changes acceptance |
 
 ## 6. MVP Staff Authentication API
 
@@ -260,6 +262,13 @@ publication. Delete means hard delete only for dependency-free drafts; otherwise
 | ART-05 | `POST /admin/articles/{id}/publish` | Publish time optional, `If-Match` | `AdminArticle` | `200`; `409 PUBLICATION_INCOMPLETE`; `412` | `content.publish` |
 | ART-06 | `POST /admin/articles/{id}/archive` | Reason, `If-Match` | `AdminArticle` | `200`; `409`; `412` | `content.write` |
 | ART-07 | `DELETE /admin/articles/{id}` | Draft UUID, `If-Match` | Empty | `204`; `409`; `412` | `content.write` |
+| CNT-01 | `GET /admin/content/{categories|tags|authors}` | Locale/search/status/page | Content reference page | `200`, `422` | `content.read` |
+| CNT-02 | `POST /admin/content/{categories|tags|authors}` | Bilingual reference write model | Content reference + ETag | `201`, `409`, `422` | `content.write` |
+| CNT-03 | `GET /admin/content/{kind}/{id}` | UUID and locale | Content reference + ETag | `200`, `404` | `content.read` |
+| CNT-04 | `PUT /admin/content/{kind}/{id}` | Complete write model and `If-Match` | Updated reference + ETag | `200`, `409`, `412`, `422` | `content.write` |
+| CNT-05 | `POST /admin/content/{kind}/{id}/publish` | `If-Match` | Published reference + ETag | `200`, `412`, `422` | `content.publish` |
+| CNT-06 | `POST /admin/content/{kind}/{id}/archive` | Reason and `If-Match` | Archived reference + ETag | `200`, `412` | `content.publish` |
+| CNT-07 | `DELETE /admin/content/{kind}/{id}` | Draft UUID and `If-Match` | Empty | `204`, `409`, `412` | `content.write` |
 | FAQ-01 | `GET /admin/faqs` | Search/scope/status/page | Page of `AdminFaq` | `200`, `422` | `content.read` |
 | FAQ-02 | `POST /admin/faqs` | `FaqWrite` | `AdminFaq` | `201`, `422` | `content.write` |
 | FAQ-03 | `GET /admin/faqs/{id}` | UUID | `AdminFaq` | `200`, `404` | `content.read` |

@@ -394,8 +394,12 @@ paths:
       parameters:
         - $ref: '#/components/parameters/Locale'
         - $ref: '#/components/parameters/Search'
-        - { name: category, in: query, schema: { type: string } }
-        - { name: tag, in: query, schema: { type: string } }
+        - { name: type, in: query, schema: { type: string, enum: [article, news, guide] } }
+        - { name: categoryId, in: query, schema: { $ref: '#/components/schemas/Uuid' } }
+        - { name: tagId, in: query, schema: { $ref: '#/components/schemas/Uuid' } }
+        - { name: authorId, in: query, schema: { $ref: '#/components/schemas/Uuid' } }
+        - { name: featured, in: query, schema: { type: boolean } }
+        - { name: sort, in: query, schema: { type: string, enum: [relevance, newest, oldest, title_asc, title_desc] } }
         - $ref: '#/components/parameters/Page'
         - $ref: '#/components/parameters/Limit'
       responses:
@@ -419,6 +423,32 @@ paths:
                 required: [data]
                 properties:
                   data: { $ref: '#/components/schemas/ArticleDetail' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /content/{resource}:
+    get:
+      tags: [Public Catalog]
+      operationId: listContentReferences
+      x-phase: MVP
+      parameters:
+        - { name: resource, in: path, required: true, schema: { type: string, enum: [categories, tags, authors] } }
+        - $ref: '#/components/parameters/Locale'
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200': { description: Published localized content references }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /content/{resource}/{slug}:
+    get:
+      tags: [Public Catalog]
+      operationId: getContentReference
+      x-phase: MVP
+      parameters:
+        - { name: resource, in: path, required: true, schema: { type: string, enum: [categories, tags, authors] } }
+        - $ref: '#/components/parameters/Slug'
+        - $ref: '#/components/parameters/Locale'
+      responses:
+        '200': { description: Published localized content reference }
         '404': { $ref: '#/components/responses/NotFound' }
   /consultation-requests:
     post:
@@ -1315,6 +1345,11 @@ components:
         excerpt: { type: string }
         coverImageUrl: { type: [string, 'null'], format: uri }
         publishedAt: { type: string, format: date-time }
+        articleType: { type: string, enum: [article, news, guide] }
+        featured: { type: boolean }
+        author: { type: [object, 'null'] }
+        categories: { type: array, items: { type: object } }
+        tags: { type: array, items: { type: object } }
     ArticleDetail:
       allOf:
         - $ref: '#/components/schemas/ArticleSummary'
