@@ -24,7 +24,7 @@ class FakeDiscoveryRepository:
         ]
 
     async def published_slug_exists(self, **values: Any) -> bool:
-        return values["slug"] != "missing"
+        return str(values["slug"]) != "missing"
 
     async def related_universities(self, **_: Any) -> list[dict[str, Any]]:
         return [
