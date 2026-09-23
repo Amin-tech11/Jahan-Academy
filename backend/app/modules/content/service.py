@@ -6,13 +6,15 @@ from uuid import UUID
 
 from sqlalchemy.exc import IntegrityError
 
-from app.modules.content.domain import ContentResource, StaleContentError
+from app.modules.content.domain import ContentResource, FaqTargetType, StaleContentError
 from app.modules.content.repository import ContentRepository
 from app.modules.content.schemas import (
     ArticlePage,
     ArticleView,
     ContentReferencePage,
     ContentReferenceView,
+    FaqPage,
+    FaqView,
     PageMeta,
     ReferenceSummary,
 )
@@ -395,6 +397,219 @@ class ContentService:
             await self._repository.session.rollback()
             raise self._stale() from exc
 
+    async def list_faqs(self, **filters: Any) -> FaqPage:
+        rows, total = await self._repository.list_faqs(**filters)
+        return FaqPage(
+            data=[self._faq_view(row, admin=not filters["public_only"]) for row in rows],
+            meta=self._page_meta(filters["page"], filters["limit"], total),
+        )
+
+    async def get_faq_public(self, faq_id: UUID, locale: str) -> FaqView:
+        row = await self._repository.get_faq(locale=locale, faq_id=faq_id, public_only=True)
+        if row is None:
+            raise self._not_found("faq")
+        return self._faq_view(row, admin=False)
+
+    async def get_faq_admin(self, faq_id: UUID, locale: str) -> FaqView:
+        return self._faq_view(await self._require_faq(faq_id, locale), admin=True)
+
+    async def create_faq(self, payload: dict[str, Any], actor_id: UUID, locale: str) -> FaqView:
+        translations, assignments = await self._prepare_faq(payload)
+        try:
+            faq_id = await self._repository.create_faq()
+            await self._repository.replace_faq_children(faq_id, translations, assignments)
+            row = await self._require_faq(faq_id, locale)
+            await self._repository.audit(
+                actor_id=actor_id,
+                action="content.faq.created",
+                entity_type="faq",
+                entity_id=faq_id,
+                before=None,
+                after=row,
+            )
+            await self._repository.session.commit()
+        except IntegrityError as exc:
+            await self._repository.session.rollback()
+            raise self._conflict() from exc
+        return self._faq_view(row, admin=True)
+
+    async def update_faq(
+        self,
+        faq_id: UUID,
+        payload: dict[str, Any],
+        actor_id: UUID,
+        expected_version: int,
+        locale: str,
+    ) -> FaqView:
+        before = await self._require_faq(faq_id, locale)
+        translations, assignments = await self._prepare_faq(payload)
+        try:
+            await self._repository.update_faq(faq_id, expected_version)
+            await self._repository.replace_faq_children(faq_id, translations, assignments)
+            row = await self._require_faq(faq_id, locale)
+            await self._repository.audit(
+                actor_id=actor_id,
+                action="content.faq.updated",
+                entity_type="faq",
+                entity_id=faq_id,
+                before=before,
+                after=row,
+            )
+            await self._repository.session.commit()
+        except StaleContentError as exc:
+            await self._repository.session.rollback()
+            raise self._stale() from exc
+        except IntegrityError as exc:
+            await self._repository.session.rollback()
+            raise self._conflict() from exc
+        return self._faq_view(row, admin=True)
+
+    async def publish_faq(
+        self,
+        faq_id: UUID,
+        actor_id: UUID,
+        expected_version: int,
+        locale: str,
+    ) -> FaqView:
+        before = await self._require_faq(faq_id, locale)
+        await self._validate_faq_targets(before["assignments"])
+        if set(before["translations"]) != {"fa", "en"}:
+            raise ApplicationError(
+                "CONTENT_INCOMPLETE",
+                "Published FAQ requires Persian and English translations.",
+                422,
+            )
+        return await self._change_faq_status(
+            faq_id, "published", None, actor_id, expected_version, locale, before
+        )
+
+    async def archive_faq(
+        self,
+        faq_id: UUID,
+        reason: str,
+        actor_id: UUID,
+        expected_version: int,
+        locale: str,
+    ) -> FaqView:
+        before = await self._require_faq(faq_id, locale)
+        return await self._change_faq_status(
+            faq_id, "archived", reason, actor_id, expected_version, locale, before
+        )
+
+    async def _change_faq_status(
+        self,
+        faq_id: UUID,
+        status: str,
+        reason: str | None,
+        actor_id: UUID,
+        expected_version: int,
+        locale: str,
+        before: dict[str, Any],
+    ) -> FaqView:
+        try:
+            await self._repository.set_faq_status(
+                faq_id, status, expected_version, actor_id, reason
+            )
+            row = await self._require_faq(faq_id, locale)
+            await self._repository.audit(
+                actor_id=actor_id,
+                action=f"content.faq.{status}",
+                entity_type="faq",
+                entity_id=faq_id,
+                before=before,
+                after=row,
+            )
+            await self._repository.session.commit()
+        except StaleContentError as exc:
+            await self._repository.session.rollback()
+            raise self._stale() from exc
+        return self._faq_view(row, admin=True)
+
+    async def delete_faq(
+        self,
+        faq_id: UUID,
+        actor_id: UUID,
+        expected_version: int,
+        locale: str,
+    ) -> None:
+        before = await self._require_faq(faq_id, locale)
+        try:
+            result = await self._repository.delete_faq_draft(faq_id, expected_version)
+            if result == "not_draft":
+                raise ApplicationError(
+                    "CONTENT_DELETE_FORBIDDEN", "Only draft FAQs can be deleted.", 409
+                )
+            await self._repository.audit(
+                actor_id=actor_id,
+                action="content.faq.deleted",
+                entity_type="faq",
+                entity_id=faq_id,
+                before=before,
+                after=None,
+            )
+            await self._repository.session.commit()
+        except StaleContentError as exc:
+            await self._repository.session.rollback()
+            raise self._stale() from exc
+
+    async def reorder_faqs(
+        self,
+        payload: dict[str, Any],
+        actor_id: UUID,
+    ) -> None:
+        target_type = payload["target_type"]
+        target_id = payload.get("target_id")
+        await self._validate_faq_targets(
+            [{"target_type": target_type, "target_id": target_id, "display_order": 0}]
+        )
+        reordered = await self._repository.reorder_faqs(
+            target_type=target_type.value,
+            target_id=target_id,
+            items=payload["items"],
+        )
+        if not reordered:
+            await self._repository.session.rollback()
+            raise ApplicationError(
+                "FAQ_ASSIGNMENT_NOT_FOUND",
+                "One or more FAQs are not assigned to the requested target.",
+                422,
+            )
+        for item in payload["items"]:
+            await self._repository.audit(
+                actor_id=actor_id,
+                action="content.faq.reordered",
+                entity_type="faq",
+                entity_id=item["faq_id"],
+                before=None,
+                after={"display_order": item["display_order"]},
+            )
+        await self._repository.session.commit()
+
+    async def _prepare_faq(
+        self, payload: dict[str, Any]
+    ) -> tuple[dict[str, dict[str, Any]], list[dict[str, Any]]]:
+        translations = payload["translations"]
+        assignments = payload["assignments"]
+        await self._validate_faq_targets(assignments)
+        return translations, assignments
+
+    async def _validate_faq_targets(self, assignments: list[dict[str, Any]]) -> None:
+        required = {
+            (
+                item["target_type"].value
+                if isinstance(item["target_type"], FaqTargetType)
+                else item["target_type"],
+                item["target_id"],
+            )
+            for item in assignments
+            if item.get("target_id") is not None
+        }
+        found = await self._repository.faq_targets(assignments)
+        if found != required:
+            raise ApplicationError(
+                "INVALID_FAQ_TARGET", "One or more FAQ targets were not found.", 422
+            )
+
     async def _prepare_article(
         self, payload: dict[str, Any]
     ) -> tuple[dict[str, Any], dict[str, dict[str, Any]], list[UUID], UUID | None, list[UUID]]:
@@ -528,6 +743,12 @@ class ContentService:
             raise self._not_found("article")
         return row
 
+    async def _require_faq(self, faq_id: UUID, locale: str) -> dict[str, Any]:
+        row = await self._repository.get_faq(locale=locale, faq_id=faq_id)
+        if row is None:
+            raise self._not_found("faq")
+        return row
+
     @staticmethod
     def _reference_view(row: dict[str, Any], *, admin: bool) -> ContentReferenceView:
         return ContentReferenceView(
@@ -583,6 +804,23 @@ class ContentService:
             tags=tags,
             status=row["status"],
             featured=row["featured"],
+            translations=row.get("translations") if admin else None,
+            published_at=row.get("published_at"),
+            archived_at=row.get("archived_at"),
+            archive_reason=row.get("archive_reason"),
+            created_at=row["created_at"],
+            updated_at=row["updated_at"],
+            version=row["row_version"],
+        )
+
+    @staticmethod
+    def _faq_view(row: dict[str, Any], *, admin: bool) -> FaqView:
+        return FaqView(
+            id=row["id"],
+            question=row["question"],
+            answer=row["answer"],
+            assignments=row["assignments"],
+            status=row["status"],
             translations=row.get("translations") if admin else None,
             published_at=row.get("published_at"),
             archived_at=row.get("archived_at"),

@@ -273,11 +273,19 @@ publication. Delete means hard delete only for dependency-free drafts; otherwise
 | FAQ-02 | `POST /admin/faqs` | `FaqWrite` | `AdminFaq` | `201`, `422` | `content.write` |
 | FAQ-03 | `GET /admin/faqs/{id}` | UUID | `AdminFaq` | `200`, `404` | `content.read` |
 | FAQ-04 | `PUT /admin/faqs/{id}` | `FaqWrite`, `If-Match` | `AdminFaq` | `200`; `404`; `412`; `422` | `content.write` |
-| FAQ-05 | `DELETE /admin/faqs/{id}` | UUID, `If-Match` | Empty | `204`; `409`; `412` | `content.write` |
+| FAQ-05 | `POST /admin/faqs/{id}/publish` | `If-Match` | `AdminFaq` | `200`; `412`; `422` | `content.publish` |
+| FAQ-06 | `POST /admin/faqs/{id}/archive` | Reason, `If-Match` | `AdminFaq` | `200`; `412` | `content.publish` |
+| FAQ-07 | `PUT /admin/faqs/order` | Target and ordered FAQ IDs | Empty | `204`; `422` | `content.write` |
+| FAQ-08 | `DELETE /admin/faqs/{id}` | Draft UUID, `If-Match` | Empty | `204`; `409`; `412` | `content.write` |
 
-`CountryWrite`, `UniversityWrite`, `ProgramWrite`, `ArticleWrite`, and `FaqWrite` reject unknown
-fields, require stable shared slugs, validate all referenced IDs, and store separate complete `fa`/`en`
-translations. Publication additionally validates required SEO and domain fields.
+Public FAQ reads use `GET /faqs` and `GET /faqs/{id}`. The list accepts `locale`,
+`targetType=general|university|program|service`, the required `targetId` for scoped targets,
+and bounded pagination. Results include only published FAQs, hide translation-management fields,
+verify scoped targets are published, and sort by each assignment's configured `displayOrder`.
+
+All write models reject unknown fields, validate referenced IDs, and store separate complete `fa`/`en`
+translations. Catalog and editorial entities also require stable shared slugs; FAQs are identified by
+UUID and reusable target assignments. Publication additionally validates required domain fields.
 
 `kind` is one of `countries`, `cities`, `academic-levels`, `fields-of-study`, `intakes`, or
 `currencies`. Reference-data deletion is deliberately an archive operation: countries transition to

@@ -16,6 +16,7 @@ tags:
   - name: Applications
   - name: Courses
   - name: Commerce
+  - name: FAQs
 paths:
   /admin/media/upload-intents:
     post:
@@ -450,6 +451,166 @@ paths:
       responses:
         '200': { description: Published localized content reference }
         '404': { $ref: '#/components/responses/NotFound' }
+  /faqs:
+    get:
+      tags: [FAQs]
+      operationId: listFaqs
+      x-phase: MVP
+      parameters:
+        - $ref: '#/components/parameters/Locale'
+        - { name: targetType, in: query, schema: { type: string, enum: [general, university, program, service], default: general } }
+        - { name: targetId, in: query, schema: { $ref: '#/components/schemas/Uuid' } }
+        - $ref: '#/components/parameters/Page'
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 20, default: 20 } }
+      responses:
+        '200': { $ref: '#/components/responses/FaqPage' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /faqs/{id}:
+    get:
+      tags: [FAQs]
+      operationId: getFaq
+      x-phase: MVP
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - $ref: '#/components/parameters/Locale'
+      responses:
+        '200':
+          description: Published localized FAQ
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data: { $ref: '#/components/schemas/Faq' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /admin/faqs:
+    get:
+      tags: [FAQs]
+      operationId: listAdminFaqs
+      x-phase: MVP
+      x-permissions: [content.read]
+      security: [{ UserAccessToken: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Locale'
+        - $ref: '#/components/parameters/Search'
+        - { name: targetType, in: query, schema: { type: string, enum: [general, university, program, service] } }
+        - { name: targetId, in: query, schema: { $ref: '#/components/schemas/Uuid' } }
+        - { name: status, in: query, schema: { type: string, enum: [draft, published, archived] } }
+        - { name: sort, in: query, schema: { type: string, enum: [display_order, updated_desc, question_asc] } }
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200': { $ref: '#/components/responses/FaqPage' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+    post:
+      tags: [FAQs]
+      operationId: createFaq
+      x-phase: MVP
+      x-permissions: [content.write]
+      security: [{ UserAccessToken: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/FaqWrite' }
+      responses:
+        '201': { description: Draft FAQ with ETag }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /admin/faqs/order:
+    put:
+      tags: [FAQs]
+      operationId: reorderFaqs
+      x-phase: MVP
+      x-permissions: [content.write]
+      security: [{ UserAccessToken: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/FaqReorder' }
+      responses:
+        '204': { description: Target-specific order updated atomically }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /admin/faqs/{id}:
+    parameters: [{ $ref: '#/components/parameters/Id' }]
+    get:
+      tags: [FAQs]
+      operationId: getAdminFaq
+      x-phase: MVP
+      x-permissions: [content.read]
+      security: [{ UserAccessToken: [] }]
+      responses:
+        '200': { description: FAQ with all translations, assignments, and ETag }
+        '404': { $ref: '#/components/responses/NotFound' }
+    put:
+      tags: [FAQs]
+      operationId: replaceFaq
+      x-phase: MVP
+      x-permissions: [content.write]
+      security: [{ UserAccessToken: [] }]
+      parameters: [{ $ref: '#/components/parameters/IfMatch' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/FaqWrite' }
+      responses:
+        '200': { description: Updated FAQ and ETag }
+        '412': { $ref: '#/components/responses/PreconditionFailed' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+    delete:
+      tags: [FAQs]
+      operationId: deleteDraftFaq
+      x-phase: MVP
+      x-permissions: [content.write]
+      security: [{ UserAccessToken: [] }]
+      parameters: [{ $ref: '#/components/parameters/IfMatch' }]
+      responses:
+        '204': { description: Draft FAQ deleted }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '412': { $ref: '#/components/responses/PreconditionFailed' }
+  /admin/faqs/{id}/publish:
+    post:
+      tags: [FAQs]
+      operationId: publishFaq
+      x-phase: MVP
+      x-permissions: [content.publish]
+      security: [{ UserAccessToken: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - $ref: '#/components/parameters/IfMatch'
+      responses:
+        '200': { description: Published FAQ and ETag }
+        '412': { $ref: '#/components/responses/PreconditionFailed' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /admin/faqs/{id}/archive:
+    post:
+      tags: [FAQs]
+      operationId: archiveFaq
+      x-phase: MVP
+      x-permissions: [content.publish]
+      security: [{ UserAccessToken: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - $ref: '#/components/parameters/IfMatch'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [reason]
+              properties:
+                reason: { type: string, minLength: 3, maxLength: 500 }
+      responses:
+        '200': { description: Archived FAQ and ETag }
+        '412': { $ref: '#/components/responses/PreconditionFailed' }
+        '422': { $ref: '#/components/responses/ValidationError' }
   /consultation-requests:
     post:
       tags: [Consultations]
@@ -1062,6 +1223,18 @@ components:
                   data:
                     type: array
                     items: { $ref: '#/components/schemas/ArticleSummary' }
+    FaqPage:
+      description: Published localized FAQs in target display order
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/PageEnvelope'
+              - type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/Faq' }
     Unauthorized:
       description: Authentication required or invalid
       content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
@@ -1357,6 +1530,78 @@ components:
           required: [body]
           properties:
             body: { type: string }
+    Faq:
+      type: object
+      additionalProperties: false
+      required: [id, question, answer, assignments, status, createdAt, updatedAt, version]
+      properties:
+        id: { $ref: '#/components/schemas/Uuid' }
+        question: { type: string }
+        answer: { type: string }
+        assignments:
+          type: array
+          items:
+            type: object
+            required: [targetType, displayOrder]
+            properties:
+              targetType: { type: string, enum: [general, university, program, service] }
+              targetId: { oneOf: [{ $ref: '#/components/schemas/Uuid' }, { type: 'null' }] }
+              displayOrder: { type: integer, minimum: 0 }
+        status: { type: string, enum: [draft, published, archived] }
+        publishedAt: { type: [string, 'null'], format: date-time }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+        version: { type: integer, minimum: 1 }
+    FaqTranslation:
+      type: object
+      additionalProperties: false
+      required: [question, answer]
+      properties:
+        question: { type: string, minLength: 3, maxLength: 500 }
+        answer: { type: string, minLength: 3, maxLength: 50000 }
+    FaqAssignment:
+      type: object
+      additionalProperties: false
+      required: [targetType, displayOrder]
+      properties:
+        targetType: { type: string, enum: [general, university, program, service] }
+        targetId: { oneOf: [{ $ref: '#/components/schemas/Uuid' }, { type: 'null' }] }
+        displayOrder: { type: integer, minimum: 0, maximum: 100000 }
+    FaqWrite:
+      type: object
+      additionalProperties: false
+      required: [translations, assignments]
+      properties:
+        translations:
+          type: object
+          additionalProperties: false
+          required: [fa, en]
+          properties:
+            fa: { $ref: '#/components/schemas/FaqTranslation' }
+            en: { $ref: '#/components/schemas/FaqTranslation' }
+        assignments:
+          type: array
+          minItems: 1
+          maxItems: 50
+          items: { $ref: '#/components/schemas/FaqAssignment' }
+    FaqReorder:
+      type: object
+      additionalProperties: false
+      required: [targetType, items]
+      properties:
+        targetType: { type: string, enum: [general, university, program, service] }
+        targetId: { oneOf: [{ $ref: '#/components/schemas/Uuid' }, { type: 'null' }] }
+        items:
+          type: array
+          minItems: 1
+          maxItems: 500
+          items:
+            type: object
+            additionalProperties: false
+            required: [faqId, displayOrder]
+            properties:
+              faqId: { $ref: '#/components/schemas/Uuid' }
+              displayOrder: { type: integer, minimum: 0, maximum: 100000 }
     ConsultationCreate:
       type: object
       additionalProperties: false
