@@ -12,9 +12,15 @@
                       ▼             ▼
                Next.js Web      FastAPI API
                                       │
-                         ┌────────────┴────────────┐
-                         ▼                         ▼
-                   PostgreSQL 18               Redis 8
+                  ┌───────────┴───────────┐
+                  ▼                       ▼
+            PostgreSQL 18              Redis 8
+                  ▲                       │
+                  │                       ▼
+          Integration Worker ◄──── Celery Beat
+                  │
+                  ▼
+             Mock Noura API
 ```
 
 `migrate` is a one-shot container. It waits for PostgreSQL, applies all Alembic migrations, and
@@ -30,6 +36,9 @@ must succeed before the API starts. Nginx starts only after both Web and API hea
 | `migrate` | One-shot Alembic migration runner | None |
 | `postgres` | Durable PostgreSQL system of record | None |
 | `redis` | Cache, session coordination, and Celery broker | None |
+| `worker-integration` | Claims the durable outbox and synchronizes leads | None |
+| `beat` | Schedules outbox dispatch every 10 seconds | None |
+| `mock-noura` | Idempotent local replacement for the unavailable Noura API | None |
 
 PostgreSQL and Redis are attached only to the internal `application` network. Direct host access is
 intentionally disabled; use `docker compose exec` for diagnostics.
@@ -56,7 +65,7 @@ Inspect service health and logs:
 
 ```powershell
 docker compose ps
-docker compose logs --follow nginx frontend backend
+docker compose logs --follow nginx frontend backend worker-integration beat mock-noura
 ```
 
 ## Stop and Reset

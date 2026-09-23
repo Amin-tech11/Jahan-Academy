@@ -54,3 +54,9 @@ Lead workflow operations are available at `POST /api/v1/admin/leads/{id}/assignm
 Assignment validates an active Consultant role, preserves transfers, and advances a new lead to
 `assigned`. Status transitions follow the documented state matrix; Consultants can mutate only
 their current assignments, while Support and Super Admin can act across all leads.
+
+Noura synchronization uses a provider-neutral adapter and the PostgreSQL transactional outbox.
+Celery Beat dispatches due work to `worker-integration`; the local `mock-noura` service implements
+an idempotent create-lead API. Retryable failures use the 5-minute, 30-minute, 2-hour, 12-hour, and
+24-hour schedule. Exhausted or permanent failures become `failed` and can be requeued through
+`POST /api/v1/admin/leads/{id}/noura-retry` by callers with `lead.sync.retry`.

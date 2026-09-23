@@ -148,8 +148,8 @@ The following table remains deliberately unapproved until the Product Owner defi
 
 | Role | Permission | Scope | Resource condition | Phase | Status |
 |---|---|---|---|---|---|
-| Super Admin | `lead.read.all`, `lead.write.all`, `lead.assign` | Global | All consultation leads and assignments | MVP | Implemented |
-| Support | `lead.read.all`, `lead.write.all`, `lead.assign` | Global | All consultation leads and assignments | MVP | Implemented |
+| Super Admin | `lead.read.all`, `lead.write.all`, `lead.assign`, `lead.sync.retry` | Global | All consultation leads, assignments, and failed Noura retries | MVP | Implemented |
+| Support | `lead.read.all`, `lead.write.all`, `lead.assign`, `lead.sync.retry` | Global | All consultation leads, assignments, and failed Noura retries | MVP | Implemented |
 | Consultant | `lead.read.assigned`, `lead.write.assigned` | Global | SQL read scope and status mutations require `assigned_consultant_id = actor.user_id` | MVP | Implemented |
 | TBD | TBD | Global or scoped | Owner/assignee/state rule | MVP/Final | Pending |
 

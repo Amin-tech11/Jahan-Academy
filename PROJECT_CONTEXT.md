@@ -838,7 +838,7 @@ The logo asset and AI screens show different logo treatments. The standalone sup
 - [x] Complete system architecture documented, including routing, deployment units, backend modules, data ownership, queues, trust boundaries, critical flows, failure behavior, and scaling strategy.
 - [x] Backend runtime compatibility reviewed and Python 3.12 frozen across API, workers, scheduler, migrations, tests, and containers to prevent a mid-project feature-version migration.
 - [x] Complete-product database entities extracted and grouped by domain; duplicate identity concepts and aggregate ownership decisions documented before physical ERD work.
-- [x] PostgreSQL 18 baseline, authentication hardening, reference-data extension, consultation submission, and lead-workflow persistence implemented as twelve reversible Alembic/SQL migrations; 111 tables, constraints, optimistic-concurrency state, archive/assignment evidence, refresh-token family state, login lockout state, rollback/re-upgrade, and Python 3.12 Alembic execution verified.
+- [x] PostgreSQL 18 baseline, authentication hardening, reference-data extension, consultation submission, lead workflow, and Noura sync persistence implemented as thirteen reversible Alembic/SQL migrations; 111 tables, constraints, optimistic-concurrency state, archive/assignment evidence, durable provider idempotency/retry state, refresh-token family state, login lockout state, rollback/re-upgrade, and Python 3.12 Alembic execution verified.
 - [x] FastAPI backend scaffold implemented as a domain-oriented modular monolith with 13 domain modules, thin API composition, shared infrastructure, Celery queue entrypoints, architecture tests, locked Python dependencies, and a production container definition.
 - [x] API v1 designed contract-first: endpoint registry, authentication, permissions, request/response schemas, validation, stable errors, status codes, idempotency/concurrency rules, phase boundaries, OpenAPI 3.1 baseline, and automated contract validation documented.
 - [x] Public email/password authentication implemented: registration, email verification/resend, login lockout, Argon2id hashing, short-lived access JWTs, rotating opaque refresh tokens with reuse detection, logout/revocation, password reset, CSRF cookies, SMTP adapter, and PostgreSQL-backed end-to-end coverage.
@@ -853,7 +853,7 @@ The logo asset and AI screens show different logo treatments. The standalone sup
 - [x] Application repository/scaffold implemented.
 - [x] Database schema and migrations implemented.
 - [ ] Public UI and administration panel implemented.
-- [ ] Mock Noura connector implemented and tested.
+- [x] Mock Noura connector implemented and tested: provider-neutral adapter, idempotent mock API, PostgreSQL outbox claiming/recovery, Celery/Beat automatic dispatch, retry schedule, safe error taxonomy, external-ID persistence, independent Pending/Synced/Failed state, and audited manual retry via reversible migration `013_noura_mock`.
 - [ ] Real Noura connector implemented and accepted.
 - [ ] Staging and production infrastructure provisioned.
 
