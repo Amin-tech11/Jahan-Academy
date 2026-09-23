@@ -920,6 +920,7 @@ components:
     ConsultationCreate:
       type: object
       additionalProperties: false
+      description: Exactly one of desiredCountryId or desiredCountryText must be supplied.
       required:
         - firstName
         - lastName
@@ -937,13 +938,13 @@ components:
         email: { type: [string, 'null'], format: email, maxLength: 254 }
         desiredCountryId: { oneOf: [{ $ref: '#/components/schemas/Uuid' }, { type: 'null' }] }
         desiredCountryText: { type: [string, 'null'], maxLength: 100 }
-        intakeTerm: { type: string, enum: [SPRING, SUMMER, FALL, WINTER, UNKNOWN] }
+        intakeTerm: { type: string, enum: [spring, summer, fall, winter, unknown] }
         startYear: { type: integer, minimum: 2026, maximum: 2036 }
         age: { type: [integer, 'null'], minimum: 18, maximum: 100 }
-        gender: { type: [string, 'null'], maxLength: 50 }
+        gender: { type: [string, 'null'], enum: [female, male, non_binary, self_described, prefer_not_to_say, null] }
         genderSelfDescription: { type: [string, 'null'], maxLength: 100 }
         occupation: { type: [string, 'null'], maxLength: 120 }
-        maritalStatus: { type: [string, 'null'], maxLength: 50 }
+        maritalStatus: { type: [string, 'null'], enum: [single, married, divorced, widowed, prefer_not_to_say, null] }
         investmentBudget:
           oneOf:
             - type: 'null'
@@ -961,10 +962,15 @@ components:
           required: [pageUrl]
           properties:
             pageUrl: { type: string, maxLength: 2048, pattern: '^/' }
-            entityType: { type: [string, 'null'], enum: [UNIVERSITY, PROGRAM, null] }
+            entityType: { type: [string, 'null'], enum: [university, program, null] }
             entityId: { oneOf: [{ $ref: '#/components/schemas/Uuid' }, { type: 'null' }] }
         privacyConsent: { const: true }
         contactConsent: { const: true }
+        website:
+          type: [string, 'null']
+          maxLength: 200
+          writeOnly: true
+          description: Bot-trap field; legitimate clients must leave it empty or omit it.
     ConsultationReceiptEnvelope:
       type: object
       required: [data]
