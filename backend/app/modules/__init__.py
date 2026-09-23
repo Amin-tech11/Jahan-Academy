@@ -11,6 +11,7 @@ from app.modules.documents.router import router as documents_router
 from app.modules.identity.router import router as identity_router
 from app.modules.integrations.router import router as integrations_router
 from app.modules.learning.router import router as learning_router
+from app.modules.media.router import router as media_router
 from app.modules.notifications.router import router as notifications_router
 from app.modules.reporting.router import router as reporting_router
 
@@ -23,6 +24,7 @@ module_routers: tuple[APIRouter, ...] = (
     applications_router,
     documents_router,
     learning_router,
+    media_router,
     commerce_router,
     communication_router,
     notifications_router,

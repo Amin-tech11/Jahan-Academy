@@ -60,3 +60,11 @@ Celery Beat dispatches due work to `worker-integration`; the local `mock-noura` 
 an idempotent create-lead API. Retryable failures use the 5-minute, 30-minute, 2-hour, 12-hour, and
 24-hour schedule. Exhausted or permanent failures become `failed` and can be requeued through
 `POST /api/v1/admin/leads/{id}/noura-retry` by callers with `lead.sync.retry`.
+
+Media management is available under `/api/v1/admin/media`. Content Editor and Super Admin users
+with `media.write` create short-lived direct-upload intents for logos, university/article images,
+or public PDF files. New objects remain in the private quarantine bucket until confirmation checks
+the declared size, extension, real MIME/format, SHA-256 checksum, image dimensions, PDF active
+content, and ClamAV result. Valid objects are promoted to the public-media bucket; list, metadata
+updates, dependency-safe deletion, ETag concurrency, audit evidence, and short-lived public delivery
+are protected by `media.read`/`media.write`.

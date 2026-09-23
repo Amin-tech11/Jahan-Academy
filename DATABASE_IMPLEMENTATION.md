@@ -3,7 +3,7 @@
 **Status:** Implemented and tested
 **Database:** PostgreSQL 18
 **Migration engine:** Alembic on Python 3.12
-**Head revision:** `013_noura_mock`
+**Head revision:** `014_media_management`
 
 ## Migration Chain
 
@@ -22,6 +22,7 @@
 | `011_lead_management` | `011_create_lead_management` | Lead row versions, durable archive evidence, list index, and canonical lead-management permissions |
 | `012_lead_workflow` | `012_create_lead_assignment_status_workflow` | Assignment/transfer evidence, workflow permissions, and assignment timeline index |
 | `013_noura_mock` | `013_create_noura_mock_integration` | Noura idempotency state, manual-retry evidence, reclaimable outbox index, and retry permission |
+| `014_media_management` | `014_create_media_management` | Media upload lifecycle, purpose/status validation, checksum deduplication, optimistic concurrency, and media permissions |
 
 Each Alembic revision executes a paired, reviewable `.up.sql` and `.down.sql` file. SQL is split into individual statements by the migration runner, while Alembic keeps one transaction per revision on PostgreSQL.
 
@@ -39,7 +40,7 @@ Each Alembic revision executes a paired, reviewable `.up.sql` and `.down.sql` fi
 
 The baseline was tested against the official `postgres:18-alpine` image:
 
-1. Applied all thirteen raw up migrations with `ON_ERROR_STOP=1`.
+1. Applied all fourteen raw up migrations with `ON_ERROR_STOP=1`.
 2. Confirmed 111 application tables in the `public` schema.
 3. Ran required-table checks for identity, catalog/reference data, lead, application, document, LMS, commerce, support, notification, outbox, and audit domains.
 4. Verified representative `CHECK` and foreign-key violations are rejected.
@@ -48,7 +49,7 @@ The baseline was tested against the official `postgres:18-alpine` image:
 7. Re-applied all migrations successfully.
 8. Compiled Alembic code under Python 3.12.
 9. Ran Alembic `upgrade head → current → downgrade base → upgrade head` against a separate PostgreSQL database.
-10. Confirmed final Alembic revision `013_noura_mock` and 111 public tables on PostgreSQL 18;
+10. Confirmed final Alembic revision `014_media_management` and 111 public tables on PostgreSQL 18;
     latest-revision rollback/re-upgrade remains a required CI gate.
 
 ## Implementation Rules
