@@ -8,6 +8,8 @@ from uuid import UUID
 from sqlalchemy.exc import IntegrityError
 
 from app.modules.consultations.domain import (
+    LEAD_STATUS_TRANSITIONS,
+    STATUSES_REQUIRING_ASSIGNEE,
     GenderCode,
     LeadArchiveFilter,
     LeadSort,
@@ -18,9 +20,14 @@ from app.modules.consultations.domain import (
 from app.modules.consultations.lead_repository import LeadRepository, StaleLeadError
 from app.modules.consultations.lead_schemas import (
     LeadAssignee,
+    LeadAssignmentHistoryItem,
+    LeadAssignmentRequest,
     LeadDetail,
+    LeadHistory,
     LeadPage,
     LeadPageMeta,
+    LeadStatusHistoryItem,
+    LeadStatusTransitionRequest,
     LeadSummary,
     LeadUpdate,
 )
@@ -32,6 +39,8 @@ class LeadService:
     READ_ALL = frozenset({"lead.read.all"})
     READ_ASSIGNED = frozenset({"lead.read.assigned"})
     WRITE_ALL = frozenset({"lead.write.all"})
+    WRITE_ASSIGNED = frozenset({"lead.write.assigned"})
+    ASSIGN = frozenset({"lead.assign"})
 
     def __init__(self, repository: LeadRepository) -> None:
         self._repository = repository
@@ -181,6 +190,166 @@ class LeadService:
             raise RuntimeError("Archived lead could not be reloaded")
         return self._detail(archived)
 
+    async def assign(
+        self,
+        lead_id: UUID,
+        payload: LeadAssignmentRequest,
+        actor: AuthorizationContext,
+        *,
+        locale: str,
+        expected_version: int,
+    ) -> LeadDetail:
+        self._require_assign(actor)
+        current = await self._repository.get(lead_id, locale=locale)
+        if current is None:
+            raise self._not_found()
+        self._assert_version(current, expected_version)
+        if current["archived"]:
+            raise self._archived()
+        current_status = LeadStatus(current["status"])
+        if current_status is LeadStatus.CLOSED:
+            raise ApplicationError(
+                code="INVALID_STATE_TRANSITION",
+                message="A closed lead cannot be assigned or transferred.",
+                status_code=400,
+            )
+        if current["assignee_id"] == payload.consultant_id:
+            raise ApplicationError(
+                code="LEAD_ALREADY_ASSIGNED",
+                message="The lead is already assigned to this consultant.",
+                status_code=409,
+            )
+        if not await self._repository.consultant_is_available(payload.consultant_id):
+            raise ApplicationError(
+                code="CONSULTANT_UNAVAILABLE",
+                message="The selected consultant is not active or available for assignment.",
+                status_code=409,
+                field_errors={"consultantId": ["CONSULTANT_UNAVAILABLE"]},
+            )
+        previous_assignee = current["assignee_id"]
+        try:
+            await self._repository.assign(
+                lead_id,
+                consultant_id=payload.consultant_id,
+                actor_user_id=actor.user_id,
+                reason=payload.reason,
+                current_status=current_status,
+                expected_version=expected_version,
+            )
+            await self._repository.audit(
+                actor_user_id=actor.user_id,
+                action="lead.assigned" if previous_assignee is None else "lead.transferred",
+                lead_id=lead_id,
+                before_safe={
+                    "version": current["version"],
+                    "assigneeId": str(previous_assignee) if previous_assignee else None,
+                    "status": current_status.value,
+                },
+                after_safe={
+                    "version": current["version"] + 1,
+                    "assigneeId": str(payload.consultant_id),
+                    "status": (
+                        LeadStatus.ASSIGNED.value
+                        if current_status is LeadStatus.NEW
+                        else current_status.value
+                    ),
+                },
+            )
+            await self._repository.session.commit()
+        except StaleLeadError as exc:
+            await self._repository.session.rollback()
+            raise self._stale() from exc
+        except IntegrityError as exc:
+            await self._repository.session.rollback()
+            raise ApplicationError(
+                code="LEAD_ASSIGNMENT_CONFLICT",
+                message="The lead assignment conflicts with a concurrent operation.",
+                status_code=409,
+            ) from exc
+        updated = await self._repository.get(lead_id, locale=locale)
+        if updated is None:
+            raise RuntimeError("Assigned lead could not be reloaded")
+        return self._detail(updated)
+
+    async def transition_status(
+        self,
+        lead_id: UUID,
+        payload: LeadStatusTransitionRequest,
+        actor: AuthorizationContext,
+        *,
+        locale: str,
+        expected_version: int,
+    ) -> LeadDetail:
+        current = await self._repository.get(lead_id, locale=locale)
+        if current is None:
+            raise self._not_found()
+        self._assert_version(current, expected_version)
+        if current["archived"]:
+            raise self._archived()
+        self._require_status_write(actor, current["assignee_id"])
+        old_status = LeadStatus(current["status"])
+        new_status = LeadStatus(payload.to_status)
+        if new_status not in LEAD_STATUS_TRANSITIONS[old_status]:
+            raise ApplicationError(
+                code="INVALID_STATE_TRANSITION",
+                message=f"Lead status cannot change from {old_status.value} to {new_status.value}.",
+                status_code=400,
+                field_errors={"toStatus": ["INVALID_STATE_TRANSITION"]},
+            )
+        if new_status in STATUSES_REQUIRING_ASSIGNEE and current["assignee_id"] is None:
+            raise ApplicationError(
+                code="ASSIGNEE_REQUIRED",
+                message="Assign a consultant before moving the lead to this status.",
+                status_code=409,
+            )
+        try:
+            await self._repository.transition_status(
+                lead_id,
+                old_status=old_status,
+                new_status=new_status,
+                actor_user_id=actor.user_id,
+                reason=payload.reason,
+                expected_version=expected_version,
+            )
+            await self._repository.audit(
+                actor_user_id=actor.user_id,
+                action="lead.status_changed",
+                lead_id=lead_id,
+                before_safe={"version": current["version"], "status": old_status.value},
+                after_safe={
+                    "version": current["version"] + 1,
+                    "status": new_status.value,
+                },
+            )
+            await self._repository.session.commit()
+        except StaleLeadError as exc:
+            await self._repository.session.rollback()
+            raise self._stale() from exc
+        updated = await self._repository.get(lead_id, locale=locale)
+        if updated is None:
+            raise RuntimeError("Transitioned lead could not be reloaded")
+        return self._detail(updated)
+
+    async def history(
+        self,
+        lead_id: UUID,
+        actor: AuthorizationContext,
+        *,
+        locale: str,
+    ) -> LeadHistory:
+        current = await self._repository.get(
+            lead_id,
+            locale=locale,
+            assigned_scope_user_id=self._assigned_scope(actor),
+        )
+        if current is None:
+            raise self._not_found()
+        assignments, statuses = await self._repository.history(lead_id)
+        return LeadHistory(
+            assignments=[LeadAssignmentHistoryItem(**item) for item in assignments],
+            statuses=[LeadStatusHistoryItem(**item) for item in statuses],
+        )
+
     async def _prepare_update(
         self, payload: LeadUpdate, current: dict[str, Any]
     ) -> tuple[dict[str, Any], set[str]]:
@@ -284,6 +453,32 @@ class LeadService:
                 message="You do not have permission to edit consultation leads.",
                 status_code=403,
             )
+
+    def _require_assign(self, actor: AuthorizationContext) -> None:
+        if not actor.allows(self.ASSIGN):
+            raise ApplicationError(
+                code="PERMISSION_DENIED",
+                message="You do not have permission to assign consultation leads.",
+                status_code=403,
+            )
+
+    def _require_status_write(
+        self, actor: AuthorizationContext, assigned_consultant_id: UUID | None
+    ) -> None:
+        if actor.allows(self.WRITE_ALL):
+            return
+        if actor.allows(self.WRITE_ASSIGNED) and assigned_consultant_id == actor.user_id:
+            return
+        raise ApplicationError(
+            code="PERMISSION_DENIED",
+            message="You do not have permission to update this lead status.",
+            status_code=403,
+        )
+
+    @classmethod
+    def _assert_version(cls, current: dict[str, Any], expected_version: int) -> None:
+        if current["version"] != expected_version:
+            raise cls._stale()
 
     @classmethod
     def _summary(cls, row: dict[str, Any]) -> LeadSummary:
