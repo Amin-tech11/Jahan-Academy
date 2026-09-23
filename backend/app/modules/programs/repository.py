@@ -77,19 +77,25 @@ class ProgramRepository:
                 "AND pf_filter.field_of_study_id = :field_id)"
             )
             params["field_id"] = field_id
-        if intake_id or intake_year:
-            intake_conditions = ["pi_filter.program_id = p.id"]
-            if intake_id:
-                intake_conditions.append("pi_filter.intake_id = :intake_id")
-                params["intake_id"] = intake_id
-            if intake_year:
-                intake_conditions.append("pi_filter.intake_year = :intake_year")
-                params["intake_year"] = intake_year
+        if intake_id and intake_year:
             conditions.append(
-                "EXISTS (SELECT 1 FROM program_intakes pi_filter WHERE "
-                + " AND ".join(intake_conditions)
-                + ")"
+                "EXISTS (SELECT 1 FROM program_intakes pi_filter "
+                "WHERE pi_filter.program_id = p.id AND pi_filter.intake_id = :intake_id "
+                "AND pi_filter.intake_year = :intake_year)"
             )
+            params.update({"intake_id": intake_id, "intake_year": intake_year})
+        elif intake_id:
+            conditions.append(
+                "EXISTS (SELECT 1 FROM program_intakes pi_filter "
+                "WHERE pi_filter.program_id = p.id AND pi_filter.intake_id = :intake_id)"
+            )
+            params["intake_id"] = intake_id
+        elif intake_year:
+            conditions.append(
+                "EXISTS (SELECT 1 FROM program_intakes pi_filter "
+                "WHERE pi_filter.program_id = p.id AND pi_filter.intake_year = :intake_year)"
+            )
+            params["intake_year"] = intake_year
         if tuition_maximum_minor is not None:
             conditions.append(
                 "p.tuition_mode <> 'contact' AND p.tuition_min_minor <= :tuition_maximum_minor"
