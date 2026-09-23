@@ -11,11 +11,115 @@ tags:
   - name: Consultations
   - name: Staff Authentication
   - name: Lead Operations
+  - name: Media
   - name: User Authentication
   - name: Applications
   - name: Courses
   - name: Commerce
 paths:
+  /admin/media/upload-intents:
+    post:
+      tags: [Media]
+      operationId: createMediaUploadIntent
+      x-phase: MVP
+      x-permissions: [media.write]
+      security: [{ UserAccessToken: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/MediaUploadIntentRequest' }
+      responses:
+        '201': { description: Short-lived direct upload authorization }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '413': { description: File exceeds the purpose-specific limit }
+        '415': { description: Media type is not permitted }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /admin/media:
+    get:
+      tags: [Media]
+      operationId: listMediaAssets
+      x-phase: MVP
+      x-permissions: [media.read]
+      security: [{ UserAccessToken: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Search'
+        - { name: purpose, in: query, schema: { $ref: '#/components/schemas/MediaPurpose' } }
+        - { name: upload_status, in: query, schema: { $ref: '#/components/schemas/MediaUploadStatus' } }
+        - { name: mime_type, in: query, schema: { type: string } }
+      responses:
+        '200': { description: Paginated media assets }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /admin/media/{id}:
+    parameters: [{ $ref: '#/components/parameters/Id' }]
+    get:
+      tags: [Media]
+      operationId: getMediaAsset
+      x-phase: MVP
+      x-permissions: [media.read]
+      security: [{ UserAccessToken: [] }]
+      responses:
+        '200': { description: Media asset and current ETag }
+        '404': { $ref: '#/components/responses/NotFound' }
+    patch:
+      tags: [Media]
+      operationId: updateMediaMetadata
+      x-phase: MVP
+      x-permissions: [media.write]
+      security: [{ UserAccessToken: [] }]
+      parameters: [{ $ref: '#/components/parameters/IfMatch' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/MediaMetadataUpdate' }
+      responses:
+        '200': { description: Updated media asset }
+        '412': { description: Stale version }
+        '422': { $ref: '#/components/responses/ValidationError' }
+    delete:
+      tags: [Media]
+      operationId: deleteMediaAsset
+      x-phase: MVP
+      x-permissions: [media.write]
+      security: [{ UserAccessToken: [] }]
+      parameters: [{ $ref: '#/components/parameters/IfMatch' }]
+      responses:
+        '204': { description: Deleted }
+        '409': { description: Asset is attached to another resource }
+        '412': { description: Stale version }
+  /admin/media/{id}/confirm:
+    post:
+      tags: [Media]
+      operationId: confirmMediaUpload
+      x-phase: MVP
+      x-permissions: [media.write]
+      security: [{ UserAccessToken: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/MediaConfirmRequest' }
+      responses:
+        '202': { description: Validated, scanned, and ready public media asset }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '410': { description: Upload intent expired }
+        '422': { $ref: '#/components/responses/ValidationError' }
+        '503': { description: Storage or malware scanner unavailable }
+  /media/{id}/content:
+    get:
+      tags: [Media]
+      operationId: resolvePublicMedia
+      x-phase: MVP
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '307': { description: Redirect to a short-lived object URL }
+        '404': { $ref: '#/components/responses/NotFound' }
   /reference-data/{kind}:
     get:
       tags: [Reference Data]
@@ -967,6 +1071,39 @@ components:
     Uuid:
       type: string
       format: uuid
+    MediaPurpose:
+      type: string
+      enum: [logo, university_image, article_image, public_file]
+    MediaUploadStatus:
+      type: string
+      enum: [pending, processing, ready, rejected]
+    MediaUploadIntentRequest:
+      type: object
+      additionalProperties: false
+      required: [filename, mimeType, sizeBytes, purpose]
+      properties:
+        filename: { type: string, minLength: 1, maxLength: 255 }
+        mimeType: { type: string, enum: [image/jpeg, image/png, image/webp, application/pdf] }
+        sizeBytes: { type: integer, minimum: 1, maximum: 26214400 }
+        purpose: { $ref: '#/components/schemas/MediaPurpose' }
+        altFa: { type: [string, 'null'], maxLength: 300 }
+        altEn: { type: [string, 'null'], maxLength: 300 }
+        sourceUrl: { type: [string, 'null'], maxLength: 2000 }
+        attribution: { type: [string, 'null'], maxLength: 1000 }
+    MediaConfirmRequest:
+      type: object
+      additionalProperties: false
+      required: [checksumSha256]
+      properties:
+        checksumSha256: { type: string, pattern: '^[a-fA-F0-9]{64}$' }
+    MediaMetadataUpdate:
+      type: object
+      additionalProperties: false
+      properties:
+        altFa: { type: [string, 'null'], maxLength: 300 }
+        altEn: { type: [string, 'null'], maxLength: 300 }
+        sourceUrl: { type: [string, 'null'], maxLength: 2000 }
+        attribution: { type: [string, 'null'], maxLength: 1000 }
     Meta:
       type: object
       additionalProperties: false

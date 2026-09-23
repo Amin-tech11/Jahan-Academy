@@ -12,9 +12,9 @@
                       ▼             ▼
                Next.js Web      FastAPI API
                                       │
-                  ┌───────────┴───────────┐
-                  ▼                       ▼
-            PostgreSQL 18              Redis 8
+          ┌───────┼───────────┬───────────┐
+          ▼       ▼           ▼           ▼
+    PostgreSQL  Redis      MinIO       ClamAV
                   ▲                       │
                   │                       ▼
           Integration Worker ◄──── Celery Beat
@@ -39,9 +39,13 @@ must succeed before the API starts. Nginx starts only after both Web and API hea
 | `worker-integration` | Claims the durable outbox and synchronizes leads | None |
 | `beat` | Schedules outbox dispatch every 10 seconds | None |
 | `mock-noura` | Idempotent local replacement for the unavailable Noura API | None |
+| `minio` | S3-compatible quarantine and public-media object storage | `${MINIO_PORT:-9100}`; console `${MINIO_CONSOLE_PORT:-9101}` |
+| `minio-init` | One-shot creation of the quarantine and public-media buckets | None |
+| `clamav` | Malware inspection before an uploaded object becomes ready | None |
 
-PostgreSQL and Redis are attached only to the internal `application` network. Direct host access is
-intentionally disabled; use `docker compose exec` for diagnostics.
+PostgreSQL, Redis, and ClamAV are attached only to the internal `application` network. MinIO's API
+is exposed locally because browser uploads use signed URLs; production replaces it with private
+managed object storage/CDN endpoints.
 
 ## Start
 
@@ -60,12 +64,14 @@ Open:
 - API liveness: `http://localhost:8080/health/live`
 - API readiness: `http://localhost:8080/health/ready`
 - Nginx health: `http://localhost:8080/health/nginx`
+- MinIO API: `http://localhost:9100`
+- MinIO console: `http://localhost:9101`
 
 Inspect service health and logs:
 
 ```powershell
 docker compose ps
-docker compose logs --follow nginx frontend backend worker-integration beat mock-noura
+docker compose logs --follow nginx frontend backend worker-integration beat mock-noura minio clamav
 ```
 
 ## Stop and Reset

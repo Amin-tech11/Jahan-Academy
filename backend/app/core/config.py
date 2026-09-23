@@ -46,6 +46,23 @@ class Settings(BaseSettings):
     )
     noura_dispatch_batch_size: int = Field(default=20, ge=1, le=100)
     noura_lock_timeout_seconds: int = Field(default=600, ge=30, le=3600)
+    storage_endpoint_url: str = "http://minio:9000"
+    storage_public_endpoint_url: str = "http://localhost:9000"
+    storage_access_key: SecretStr = SecretStr("jahan_minio")
+    storage_secret_key: SecretStr = SecretStr("jahan_minio_change_me")
+    storage_region: str = "us-east-1"
+    media_quarantine_bucket: str = "jahan-quarantine"
+    media_public_bucket: str = "jahan-public"
+    media_upload_expiry_seconds: int = Field(default=900, ge=60, le=3600)
+    media_download_expiry_seconds: int = Field(default=300, ge=60, le=3600)
+    media_max_image_bytes: int = Field(default=15 * 1024 * 1024, ge=1024)
+    media_max_logo_bytes: int = Field(default=5 * 1024 * 1024, ge=1024)
+    media_max_public_file_bytes: int = Field(default=25 * 1024 * 1024, ge=1024)
+    media_max_image_pixels: int = Field(default=40_000_000, ge=1_000_000)
+    malware_scan_enabled: bool = True
+    clamav_host: str = "clamav"
+    clamav_port: int = Field(default=3310, ge=1, le=65535)
+    clamav_timeout_seconds: float = Field(default=15.0, gt=0, le=120)
 
     @model_validator(mode="after")
     def validate_production_secrets(self) -> "Settings":
