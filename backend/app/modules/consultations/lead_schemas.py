@@ -89,6 +89,41 @@ class LeadArchiveRequest(ApiModel):
         return stripped
 
 
+class LeadAssignmentRequest(ApiModel):
+    consultant_id: UUID
+    reason: str | None = Field(default=None, min_length=3, max_length=500)
+
+    @field_validator("reason")
+    @classmethod
+    def strip_reason(cls, value: str | None) -> str | None:
+        if value is None:
+            return None
+        stripped = value.strip()
+        if len(stripped) < 3:
+            raise ValueError("reason must contain at least three characters")
+        return stripped
+
+
+class LeadStatusTransitionRequest(ApiModel):
+    to_status: LeadStatus
+    reason: str | None = Field(default=None, min_length=3, max_length=500)
+
+    @field_validator("to_status", mode="before")
+    @classmethod
+    def normalize_status_case(cls, value: object) -> object:
+        return value.casefold() if isinstance(value, str) else value
+
+    @field_validator("reason")
+    @classmethod
+    def strip_transition_reason(cls, value: str | None) -> str | None:
+        if value is None:
+            return None
+        stripped = value.strip()
+        if len(stripped) < 3:
+            raise ValueError("reason must contain at least three characters")
+        return stripped
+
+
 class LeadAssignee(ApiModel):
     id: UUID
     first_name: str | None = None
@@ -144,6 +179,34 @@ class LeadDetail(LeadSummary):
 
 class LeadEnvelope(ApiModel):
     data: LeadDetail
+
+
+class LeadAssignmentHistoryItem(ApiModel):
+    id: UUID
+    consultant_id: UUID
+    assigned_by_user_id: UUID | None = None
+    assigned_at: datetime
+    unassigned_at: datetime | None = None
+    ended_by_user_id: UUID | None = None
+    reason: str | None = None
+
+
+class LeadStatusHistoryItem(ApiModel):
+    id: UUID
+    old_status: LeadStatus | None = None
+    new_status: LeadStatus
+    actor_user_id: UUID | None = None
+    reason: str | None = None
+    created_at: datetime
+
+
+class LeadHistory(ApiModel):
+    assignments: list[LeadAssignmentHistoryItem]
+    statuses: list[LeadStatusHistoryItem]
+
+
+class LeadHistoryEnvelope(ApiModel):
+    data: LeadHistory
 
 
 class LeadPageMeta(ApiModel):

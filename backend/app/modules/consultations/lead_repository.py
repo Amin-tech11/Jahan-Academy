@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from collections.abc import Sequence
 from datetime import datetime
 from typing import Any
 from uuid import UUID
@@ -165,6 +166,162 @@ class LeadRepository:
         )
         if updated is None:
             raise StaleLeadError
+
+    async def consultant_is_available(self, consultant_id: UUID) -> bool:
+        return bool(
+            await self.session.scalar(
+                text(
+                    "SELECT EXISTS("
+                    "SELECT 1 FROM users u "
+                    "JOIN user_roles ur ON ur.user_id = u.id AND ur.revoked_at IS NULL "
+                    "JOIN roles r ON r.id = ur.role_id "
+                    "WHERE u.id = :id AND u.status = 'active' AND u.deleted_at IS NULL "
+                    "AND r.code = 'consultant' AND ur.scope_type = 'global'"
+                    ")"
+                ),
+                {"id": consultant_id},
+            )
+        )
+
+    async def assign(
+        self,
+        lead_id: UUID,
+        *,
+        consultant_id: UUID,
+        actor_user_id: UUID,
+        reason: str | None,
+        current_status: LeadStatus,
+        expected_version: int,
+    ) -> None:
+        next_status = LeadStatus.ASSIGNED if current_status is LeadStatus.NEW else current_status
+        updated = await self.session.scalar(
+            text(
+                "UPDATE leads SET assigned_consultant_id = :consultant_id, "
+                "status = :next_status, updated_at = now(), row_version = row_version + 1 "
+                "WHERE id = :id AND row_version = :expected_version "
+                "AND archived_at IS NULL AND status <> 'closed' RETURNING id"
+            ),
+            {
+                "id": lead_id,
+                "consultant_id": consultant_id,
+                "next_status": next_status.value,
+                "expected_version": expected_version,
+            },
+        )
+        if updated is None:
+            raise StaleLeadError
+        await self.session.execute(
+            text(
+                "UPDATE lead_assignments SET unassigned_at = now(), "
+                "ended_by_user_id = :actor "
+                "WHERE lead_id = :lead_id AND unassigned_at IS NULL"
+            ),
+            {"lead_id": lead_id, "actor": actor_user_id},
+        )
+        await self.session.execute(
+            text(
+                "INSERT INTO lead_assignments "
+                "(lead_id, assignee_user_id, assigned_by_user_id, reason) "
+                "VALUES (:lead_id, :consultant_id, :actor, :reason)"
+            ),
+            {
+                "lead_id": lead_id,
+                "consultant_id": consultant_id,
+                "actor": actor_user_id,
+                "reason": reason,
+            },
+        )
+        if next_status is not current_status:
+            await self._insert_status_history(
+                lead_id=lead_id,
+                old_status=current_status,
+                new_status=next_status,
+                actor_user_id=actor_user_id,
+                reason=reason or "Assigned to a consultant",
+            )
+
+    async def transition_status(
+        self,
+        lead_id: UUID,
+        *,
+        old_status: LeadStatus,
+        new_status: LeadStatus,
+        actor_user_id: UUID,
+        reason: str | None,
+        expected_version: int,
+    ) -> None:
+        updated = await self.session.scalar(
+            text(
+                "UPDATE leads SET status = :new_status, updated_at = now(), "
+                "row_version = row_version + 1 "
+                "WHERE id = :id AND status = :old_status "
+                "AND row_version = :expected_version AND archived_at IS NULL RETURNING id"
+            ),
+            {
+                "id": lead_id,
+                "old_status": old_status.value,
+                "new_status": new_status.value,
+                "expected_version": expected_version,
+            },
+        )
+        if updated is None:
+            raise StaleLeadError
+        await self._insert_status_history(
+            lead_id=lead_id,
+            old_status=old_status,
+            new_status=new_status,
+            actor_user_id=actor_user_id,
+            reason=reason,
+        )
+
+    async def history(
+        self, lead_id: UUID
+    ) -> tuple[Sequence[dict[str, Any]], Sequence[dict[str, Any]]]:
+        assignments = await self.session.execute(
+            text(
+                "SELECT id, assignee_user_id AS consultant_id, assigned_by_user_id, "
+                "assigned_at, unassigned_at, ended_by_user_id, reason "
+                "FROM lead_assignments WHERE lead_id = :lead_id "
+                "ORDER BY assigned_at DESC, id DESC"
+            ),
+            {"lead_id": lead_id},
+        )
+        statuses = await self.session.execute(
+            text(
+                "SELECT id, old_status, new_status, actor_user_id, reason, created_at "
+                "FROM lead_status_history WHERE lead_id = :lead_id "
+                "ORDER BY created_at DESC, id DESC"
+            ),
+            {"lead_id": lead_id},
+        )
+        return (
+            [dict(row._mapping) for row in assignments],
+            [dict(row._mapping) for row in statuses],
+        )
+
+    async def _insert_status_history(
+        self,
+        *,
+        lead_id: UUID,
+        old_status: LeadStatus,
+        new_status: LeadStatus,
+        actor_user_id: UUID,
+        reason: str | None,
+    ) -> None:
+        await self.session.execute(
+            text(
+                "INSERT INTO lead_status_history "
+                "(lead_id, old_status, new_status, actor_user_id, reason) "
+                "VALUES (:lead_id, :old_status, :new_status, :actor, :reason)"
+            ),
+            {
+                "lead_id": lead_id,
+                "old_status": old_status.value,
+                "new_status": new_status.value,
+                "actor": actor_user_id,
+                "reason": reason,
+            },
+        )
 
     async def country_is_public(self, country_id: UUID) -> bool:
         return bool(

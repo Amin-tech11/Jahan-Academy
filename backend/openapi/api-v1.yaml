@@ -451,6 +451,90 @@ paths:
         '412': { $ref: '#/components/responses/PreconditionFailed' }
         '422': { $ref: '#/components/responses/ValidationError' }
         '428': { $ref: '#/components/responses/PreconditionRequired' }
+  /admin/leads/{id}/assignments:
+    post:
+      tags: [Lead Operations]
+      operationId: assignLead
+      x-phase: MVP
+      x-permissions: [lead.assign]
+      security: [{ StaffSession: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - $ref: '#/components/parameters/IfMatch'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/LeadAssignmentRequest' }
+      responses:
+        '200':
+          description: Assigned or transferred lead with a new ETag
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data: { $ref: '#/components/schemas/LeadDetail' }
+        '400': { $ref: '#/components/responses/InvalidRequest' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '412': { $ref: '#/components/responses/PreconditionFailed' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+        '428': { $ref: '#/components/responses/PreconditionRequired' }
+  /admin/leads/{id}/status-transitions:
+    post:
+      tags: [Lead Operations]
+      operationId: transitionLeadStatus
+      x-phase: MVP
+      x-permissions: [lead.write.all, lead.write.assigned]
+      security: [{ StaffSession: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - $ref: '#/components/parameters/IfMatch'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/LeadStatusTransitionRequest' }
+      responses:
+        '200':
+          description: Transitioned lead with a new ETag
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data: { $ref: '#/components/schemas/LeadDetail' }
+        '400': { $ref: '#/components/responses/InvalidRequest' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '412': { $ref: '#/components/responses/PreconditionFailed' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+        '428': { $ref: '#/components/responses/PreconditionRequired' }
+  /admin/leads/{id}/history:
+    get:
+      tags: [Lead Operations]
+      operationId: getLeadHistory
+      x-phase: MVP
+      x-permissions: [lead.read.all, lead.read.assigned]
+      security: [{ StaffSession: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200':
+          description: Assignment and status history
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data: { $ref: '#/components/schemas/LeadHistory' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
   /auth/register:
     post:
       tags: [User Authentication]
@@ -1162,6 +1246,54 @@ components:
       required: [reason]
       properties:
         reason: { type: string, minLength: 3, maxLength: 500 }
+    LeadAssignmentRequest:
+      type: object
+      additionalProperties: false
+      required: [consultantId]
+      properties:
+        consultantId: { $ref: '#/components/schemas/Uuid' }
+        reason: { type: [string, 'null'], minLength: 3, maxLength: 500 }
+    LeadStatusTransitionRequest:
+      type: object
+      additionalProperties: false
+      required: [toStatus]
+      properties:
+        toStatus: { $ref: '#/components/schemas/LeadStatus' }
+        reason: { type: [string, 'null'], minLength: 3, maxLength: 500 }
+    LeadAssignmentHistoryItem:
+      type: object
+      required: [id, consultantId, assignedAt]
+      properties:
+        id: { $ref: '#/components/schemas/Uuid' }
+        consultantId: { $ref: '#/components/schemas/Uuid' }
+        assignedByUserId: { oneOf: [{ $ref: '#/components/schemas/Uuid' }, { type: 'null' }] }
+        assignedAt: { type: string, format: date-time }
+        unassignedAt: { type: [string, 'null'], format: date-time }
+        endedByUserId: { oneOf: [{ $ref: '#/components/schemas/Uuid' }, { type: 'null' }] }
+        reason: { type: [string, 'null'] }
+    LeadStatusHistoryItem:
+      type: object
+      required: [id, newStatus, createdAt]
+      properties:
+        id: { $ref: '#/components/schemas/Uuid' }
+        oldStatus:
+          oneOf:
+            - $ref: '#/components/schemas/LeadStatus'
+            - type: 'null'
+        newStatus: { $ref: '#/components/schemas/LeadStatus' }
+        actorUserId: { oneOf: [{ $ref: '#/components/schemas/Uuid' }, { type: 'null' }] }
+        reason: { type: [string, 'null'] }
+        createdAt: { type: string, format: date-time }
+    LeadHistory:
+      type: object
+      required: [assignments, statuses]
+      properties:
+        assignments:
+          type: array
+          items: { $ref: '#/components/schemas/LeadAssignmentHistoryItem' }
+        statuses:
+          type: array
+          items: { $ref: '#/components/schemas/LeadStatusHistoryItem' }
     UserRegister:
       type: object
       additionalProperties: false
