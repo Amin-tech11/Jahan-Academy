@@ -69,6 +69,32 @@ class LeadSort(StrEnum):
     UPDATED_DESC = "updated_desc"
 
 
+LEAD_STATUS_TRANSITIONS: dict[LeadStatus, frozenset[LeadStatus]] = {
+    LeadStatus.NEW: frozenset({LeadStatus.ASSIGNED, LeadStatus.CLOSED}),
+    LeadStatus.ASSIGNED: frozenset({LeadStatus.CONTACTED, LeadStatus.CLOSED}),
+    LeadStatus.CONTACTED: frozenset(
+        {LeadStatus.QUALIFIED, LeadStatus.NOT_QUALIFIED, LeadStatus.CLOSED}
+    ),
+    LeadStatus.QUALIFIED: frozenset(
+        {LeadStatus.CONVERTED, LeadStatus.NOT_QUALIFIED, LeadStatus.CLOSED}
+    ),
+    LeadStatus.NOT_QUALIFIED: frozenset({LeadStatus.QUALIFIED, LeadStatus.CLOSED}),
+    LeadStatus.CONVERTED: frozenset({LeadStatus.CLOSED}),
+    LeadStatus.CLOSED: frozenset(),
+}
+
+
+STATUSES_REQUIRING_ASSIGNEE = frozenset(
+    {
+        LeadStatus.ASSIGNED,
+        LeadStatus.CONTACTED,
+        LeadStatus.QUALIFIED,
+        LeadStatus.NOT_QUALIFIED,
+        LeadStatus.CONVERTED,
+    }
+)
+
+
 @dataclass(frozen=True, slots=True)
 class ConsultationReceiptData:
     reference: str

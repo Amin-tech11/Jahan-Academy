@@ -48,3 +48,9 @@ search and filter every lead; callers with only `lead.read.assigned` are scoped 
 assignments inside the SQL query. Detail responses include an ETag. Partial edits and Archive
 require `lead.write.all` plus a matching `If-Match`; Archive requires a reason and never permanently
 deletes the lead. Mutations write PII-safe audit evidence.
+
+Lead workflow operations are available at `POST /api/v1/admin/leads/{id}/assignments`,
+`POST /api/v1/admin/leads/{id}/status-transitions`, and `GET /api/v1/admin/leads/{id}/history`.
+Assignment validates an active Consultant role, preserves transfers, and advances a new lead to
+`assigned`. Status transitions follow the documented state matrix; Consultants can mutate only
+their current assignments, while Support and Super Admin can act across all leads.

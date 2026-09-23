@@ -20,8 +20,11 @@ from app.modules.consultations.domain import (
 from app.modules.consultations.lead_repository import LeadRepository
 from app.modules.consultations.lead_schemas import (
     LeadArchiveRequest,
+    LeadAssignmentRequest,
     LeadEnvelope,
+    LeadHistoryEnvelope,
     LeadPage,
+    LeadStatusTransitionRequest,
     LeadUpdate,
 )
 from app.modules.consultations.lead_service import LeadService
@@ -237,6 +240,97 @@ async def archive_lead(
     response.headers["ETag"] = _etag(lead.version)
     response.headers["Cache-Control"] = "no-store"
     return LeadEnvelope(data=lead)
+
+
+@admin_router.post(
+    "/{lead_id}/assignments",
+    response_model=LeadEnvelope,
+    response_model_exclude_none=True,
+    summary="Assign or transfer a consultation lead",
+)
+async def assign_lead(
+    lead_id: UUID,
+    payload: LeadAssignmentRequest,
+    response: Response,
+    service: Annotated[LeadService, Depends(lead_service)],
+    actor: Annotated[
+        AuthorizationContext,
+        Depends(require_permissions("lead.assign")),
+    ],
+    if_match: Annotated[str | None, Header(alias="If-Match")] = None,
+    locale: Annotated[str, Query(pattern=r"^(fa|en)$")] = "fa",
+) -> LeadEnvelope:
+    lead = await service.assign(
+        lead_id,
+        payload,
+        actor,
+        locale=locale,
+        expected_version=_parse_if_match(if_match),
+    )
+    response.headers["ETag"] = _etag(lead.version)
+    response.headers["Cache-Control"] = "no-store"
+    return LeadEnvelope(data=lead)
+
+
+@admin_router.post(
+    "/{lead_id}/status-transitions",
+    response_model=LeadEnvelope,
+    response_model_exclude_none=True,
+    summary="Transition a consultation lead status",
+)
+async def transition_lead_status(
+    lead_id: UUID,
+    payload: LeadStatusTransitionRequest,
+    response: Response,
+    service: Annotated[LeadService, Depends(lead_service)],
+    actor: Annotated[
+        AuthorizationContext,
+        Depends(
+            require_permissions(
+                "lead.write.all",
+                "lead.write.assigned",
+                mode=PermissionMode.ANY,
+            )
+        ),
+    ],
+    if_match: Annotated[str | None, Header(alias="If-Match")] = None,
+    locale: Annotated[str, Query(pattern=r"^(fa|en)$")] = "fa",
+) -> LeadEnvelope:
+    lead = await service.transition_status(
+        lead_id,
+        payload,
+        actor,
+        locale=locale,
+        expected_version=_parse_if_match(if_match),
+    )
+    response.headers["ETag"] = _etag(lead.version)
+    response.headers["Cache-Control"] = "no-store"
+    return LeadEnvelope(data=lead)
+
+
+@admin_router.get(
+    "/{lead_id}/history",
+    response_model=LeadHistoryEnvelope,
+    response_model_exclude_none=True,
+    summary="View assignment and status history for a consultation lead",
+)
+async def get_lead_history(
+    lead_id: UUID,
+    service: Annotated[LeadService, Depends(lead_service)],
+    actor: Annotated[
+        AuthorizationContext,
+        Depends(
+            require_permissions(
+                "lead.read.all",
+                "lead.read.assigned",
+                mode=PermissionMode.ANY,
+            )
+        ),
+    ],
+    locale: Annotated[str, Query(pattern=r"^(fa|en)$")] = "fa",
+) -> LeadHistoryEnvelope:
+    history = await service.history(lead_id, actor, locale=locale)
+    return LeadHistoryEnvelope(data=history)
 
 
 def _etag(version: int) -> str:
