@@ -196,7 +196,7 @@ class ReferenceDataService:
     @staticmethod
     def _view(kind: ReferenceKind, item: dict[str, Any], *, admin: bool) -> ReferenceItemView:
         active = item.get("active", item.get("status") == "published")
-        code = item.get("code") or item.get("iso2") or item.get("slug")
+        code = str(item.get("code") or item.get("iso2") or item.get("slug") or "")
         translations = item.get("translations") if admin else None
         return ReferenceItemView(
             id=item["id"],

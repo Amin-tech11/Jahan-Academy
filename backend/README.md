@@ -35,3 +35,10 @@ reads and `/api/v1/admin/reference-data/{kind}` for permission-protected managem
 kinds are countries, cities, academic levels, fields of study, intakes, and currencies. Admin writes
 require complete Persian and English translations and the `reference_data.write` permission;
 deletion archives/deactivates records and produces an audit entry.
+
+Public consultation requests are accepted at `POST /api/v1/consultation-requests`. The endpoint
+normalizes Iranian and international mobile numbers, requires privacy and contact consent, returns
+a public `JA-...` tracking code, and reuses that code for equivalent requests received within 24
+hours. Lead persistence, initial status history, and the pending Noura outbox/sync records commit in
+one database transaction. Clients may send a 16–128 character `Idempotency-Key` when retrying the
+same request.

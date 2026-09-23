@@ -10,3 +10,4 @@ class ApplicationError(Exception):
     message: str
     status_code: int = 400
     field_errors: dict[str, Any] = field(default_factory=dict)
+    headers: dict[str, str] = field(default_factory=dict)

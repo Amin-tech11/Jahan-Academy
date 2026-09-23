@@ -34,6 +34,11 @@ class Settings(BaseSettings):
     smtp_password: SecretStr | None = None
     smtp_start_tls: bool = False
     email_from: str = "no-reply@jahanacademy.local"
+    privacy_policy_version: str = "1.0"
+    contact_consent_version: str = "1.0"
+    consultation_duplicate_window_hours: int = Field(default=24, ge=1, le=168)
+    consultation_rate_limit: int = Field(default=5, ge=1, le=100)
+    consultation_rate_window_seconds: int = Field(default=600, ge=60, le=86400)
 
     @model_validator(mode="after")
     def validate_production_secrets(self) -> "Settings":

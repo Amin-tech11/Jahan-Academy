@@ -17,7 +17,7 @@ BEGIN
         'users','roles','countries','universities','programs','leads','applications',
         'documents','courses','enrolments','orders','payments','tickets',
         'notifications','integration_outbox','audit_logs','currencies','currency_translations',
-        'intake_translations'
+        'intake_translations','lead_submission_events'
     ] LOOP
         IF to_regclass('public.' || required_table) IS NULL THEN
             RAISE EXCEPTION 'Required table % is missing', required_table;
