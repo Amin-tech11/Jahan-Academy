@@ -79,9 +79,13 @@ def _seed() -> dict[str, UUID]:
             ],
         )
         cursor.execute("SELECT id FROM academic_levels WHERE code = 'master'")
-        ids["level"] = cursor.fetchone()[0]
+        level_row = cursor.fetchone()
+        assert level_row is not None
+        ids["level"] = level_row[0]
         cursor.execute("SELECT id FROM intakes WHERE code = 'fall'")
-        ids["intake"] = cursor.fetchone()[0]
+        intake_row = cursor.fetchone()
+        assert intake_row is not None
+        ids["intake"] = intake_row[0]
     return ids
 
 
