@@ -466,7 +466,7 @@ The following stack is approved for the complete target product, not only MVP de
 | API contracts | FastAPI OpenAPI 3.1 and generated TypeScript client using `openapi-typescript`/`openapi-fetch` |
 | Testing | pytest, pytest-asyncio, HTTPX, Testcontainers, Vitest, Testing Library, Playwright, axe-core, Lighthouse CI, and load tests |
 | Observability | OpenTelemetry, Sentry, Prometheus/Grafana, structlog/Pino JSON logs, redaction, and correlation IDs |
-| Local environment | Docker Compose for PostgreSQL 18, Redis 8, Mailpit, MinIO, ClamAV, and Mock Noura |
+| Local environment | Docker Compose with Nginx ingress, Next.js Web, FastAPI API/migrations, PostgreSQL 18, and Redis 8; Mailpit, MinIO, ClamAV, and Mock Noura are added with their feature modules |
 | Delivery | GitHub Actions and separate immutable Web, API, Worker, and Scheduler images/processes |
 | Reverse proxy/TLS | Caddy for self-hosted deployment; omit it behind managed platform ingress; do not run Nginx alongside Caddy by default |
 
@@ -845,6 +845,7 @@ The logo asset and AI screens show different logo treatments. The standalone sup
 - [x] Authorization framework implemented with deny-by-default RBAC, global/scoped grants, ALL/ANY permission evaluation, domain resource-policy interface, FastAPI dependencies, and tests; final role-permission-scope matrix intentionally pending Product Owner approval.
 - [x] GitHub repository connected with `main`/`develop`/short-lived branch workflow, Conventional Commits, pull-request template, CODEOWNERS, and review policy.
 - [x] GitHub Actions CI/CD implemented as ordered Lint, Unit Tests, Integration Tests, Build, Security Checks, immutable GHCR publish, staging deploy, and production release-tag deploy gates; deployment remains disabled until environment infrastructure is provisioned.
+- [x] Full Docker integration environment implemented with a single Nginx ingress, Next.js standalone Web container, FastAPI API and one-shot migration containers, internal PostgreSQL 18/Redis 8 services, persistent volumes, isolated networks, dependency health checks, and no public data-service ports.
 - [x] Application repository/scaffold implemented.
 - [x] Database schema and migrations implemented.
 - [ ] Public UI and administration panel implemented.

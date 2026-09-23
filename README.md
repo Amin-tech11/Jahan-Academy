@@ -16,6 +16,7 @@ authorization framework.
 - [Database design](DATABASE_DESIGN.md)
 - [Git workflow](GIT_WORKFLOW.md)
 - [CI/CD pipeline](CI_CD.md)
+- [Docker environment](DOCKER.md)
 
 ## Backend Development
 
@@ -45,3 +46,15 @@ docker build -f backend/Dockerfile -t jahan-academy-backend:dev .
 ```
 
 Never commit `.env` files or production secrets. Copy `backend/.env.example` for local settings.
+
+## Full Container Environment
+
+Run the complete Nginx, Next.js, FastAPI, PostgreSQL, and Redis stack:
+
+```powershell
+Copy-Item .env.example .env
+docker compose up --build --wait
+```
+
+The application is available through the only public service at `http://localhost:8080`. See
+[`DOCKER.md`](DOCKER.md) for topology, routes, health checks, logs, and reset instructions.

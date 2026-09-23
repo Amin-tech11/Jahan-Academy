@@ -35,10 +35,10 @@ pull requests targeting `develop` or `main`. Publish and deployment never run fo
 
 | Gate | Coverage |
 |---|---|
-| Lint | Ruff formatting/linting and strict mypy |
+| Lint | Ruff formatting/linting, strict mypy, and strict frontend TypeScript |
 | Unit Tests | Unit, architecture, and OpenAPI contract tests |
 | Integration Tests | PostgreSQL 18, Redis 8, authentication flow, migrations, downgrade/re-upgrade |
-| Build | Production Docker build and liveness smoke test |
+| Build | Backend production image smoke test plus full Nginx/Web/API/PostgreSQL/Redis Compose build and route checks |
 | Security Checks | Dependency audit, Bandit SAST, Gitleaks history scan, Trivy image scan |
 
 Every gate depends on the preceding gate. A failure stops publishing and deployment.

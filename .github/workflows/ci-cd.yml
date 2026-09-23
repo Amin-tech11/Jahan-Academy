@@ -20,6 +20,8 @@ concurrency:
 env:
   UV_VERSION: "0.12.17"
   PYTHON_VERSION: "3.12"
+  NODE_VERSION: "24"
+  PNPM_VERSION: "12.5.1"
   BACKEND_IMAGE: jahan-academy-backend:${{ github.sha }}
 
 jobs:
@@ -54,6 +56,26 @@ jobs:
 
       - name: Type-check
         run: uv run mypy app tests
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6.1.0
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Install Node.js
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+          cache-dependency-path: frontend/pnpm-lock.yaml
+
+      - name: Install locked frontend dependencies
+        working-directory: frontend
+        run: pnpm install --frozen-lockfile
+
+      - name: Type-check frontend
+        working-directory: frontend
+        run: pnpm typecheck
 
   unit-tests:
     name: Unit Tests
@@ -158,10 +180,10 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v7
 
-      - name: Build production image
+      - name: Build backend production image
         run: docker build -f backend/Dockerfile -t "${BACKEND_IMAGE}" .
 
-      - name: Smoke-test production image
+      - name: Smoke-test backend production image
         run: |
           docker run --detach --name jahan-backend --publish 8000:8000 "${BACKEND_IMAGE}"
           for _ in {1..30}; do
@@ -176,6 +198,21 @@ jobs:
       - name: Stop smoke-test container
         if: always()
         run: docker rm --force jahan-backend 2>/dev/null || true
+
+      - name: Build full Docker Compose stack
+        run: docker compose --env-file .env.example build
+
+      - name: Start and verify full Docker Compose stack
+        run: |
+          docker compose --env-file .env.example up --detach --wait
+          curl --fail --silent http://127.0.0.1:8080/fa > /dev/null
+          curl --fail --silent http://127.0.0.1:8080/en > /dev/null
+          curl --fail --silent http://127.0.0.1:8080/health/ready > /dev/null
+          curl --fail --silent http://127.0.0.1:8080/openapi.json > /dev/null
+
+      - name: Stop full Docker Compose stack
+        if: always()
+        run: docker compose --env-file .env.example down --volumes --remove-orphans
 
   security:
     name: Security Checks
