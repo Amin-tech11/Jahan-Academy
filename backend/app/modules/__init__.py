@@ -14,6 +14,7 @@ from app.modules.learning.router import router as learning_router
 from app.modules.media.router import router as media_router
 from app.modules.notifications.router import router as notifications_router
 from app.modules.reporting.router import router as reporting_router
+from app.modules.universities.router import router as universities_router
 
 module_routers: tuple[APIRouter, ...] = (
     identity_router,
@@ -30,4 +31,5 @@ module_routers: tuple[APIRouter, ...] = (
     notifications_router,
     integrations_router,
     reporting_router,
+    universities_router,
 )
