@@ -10,6 +10,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.modules.content.domain import (
     ArticleSort,
     ContentResource,
+    FaqSort,
+    FaqTargetType,
     StaleContentError,
 )
 
@@ -41,6 +43,12 @@ ARTICLE_SORT_SQL = {
     ArticleSort.TITLE_ASC: "at.title ASC, a.id ASC",
     ArticleSort.TITLE_DESC: "at.title DESC, a.id DESC",
     ArticleSort.UPDATED_DESC: "a.updated_at DESC, a.id DESC",
+}
+
+FAQ_SORT_SQL = {
+    FaqSort.DISPLAY_ORDER: "display_order ASC, ft.question ASC, f.id ASC",
+    FaqSort.UPDATED_DESC: "f.updated_at DESC, f.id DESC",
+    FaqSort.QUESTION_ASC: "ft.question ASC, f.id ASC",
 }
 
 
@@ -626,6 +634,284 @@ class ContentRepository:
         if deleted is None:
             raise StaleContentError
         return "deleted"
+
+    async def list_faqs(self, **filters: Any) -> tuple[list[dict[str, Any]], int]:
+        conditions = ["f.deleted_at IS NULL"]
+        params: dict[str, Any] = {
+            "locale": filters["locale"],
+            "limit": filters["limit"],
+            "offset": (filters["page"] - 1) * filters["limit"],
+        }
+        if filters["public_only"]:
+            conditions.extend(["f.status = 'published'", "f.published_at <= now()"])
+        elif filters["status"]:
+            conditions.append("f.status = :status")
+            params["status"] = filters["status"]
+        if filters["query"]:
+            conditions.append("(ft.question ILIKE :query OR ft.answer ILIKE :query)")
+            params["query"] = f"%{filters['query']}%"
+        target_type = filters["target_type"]
+        target_id = filters["target_id"]
+        assignment_filter = ""
+        if target_type:
+            params["target_type"] = target_type.value
+            assignment_filter = "AND fa.target_type = :target_type "
+            if target_type is FaqTargetType.GENERAL:
+                assignment_filter += "AND fa.target_id IS NULL "
+            elif target_id:
+                params["target_id"] = target_id
+                assignment_filter += "AND fa.target_id = :target_id "
+            conditions.append(
+                "EXISTS (SELECT 1 FROM faq_assignments fa WHERE fa.faq_id = f.id "
+                f"{assignment_filter})"  # nosec B608
+            )
+            if filters["public_only"] and target_id:
+                target_table = {
+                    FaqTargetType.UNIVERSITY: "universities",
+                    FaqTargetType.PROGRAM: "programs",
+                    FaqTargetType.SERVICE: "services",
+                }[target_type]
+                conditions.append(
+                    f"EXISTS (SELECT 1 FROM {target_table} target "  # nosec B608
+                    "WHERE target.id = :target_id AND target.status = 'published' "
+                    "AND target.deleted_at IS NULL)"
+                )
+        where = " AND ".join(conditions)
+        total = int(
+            await self.session.scalar(
+                text(
+                    "SELECT count(*) FROM faqs f JOIN faq_translations ft "
+                    f"ON ft.faq_id = f.id AND ft.locale = :locale WHERE {where}"  # nosec B608
+                ),
+                params,
+            )
+            or 0
+        )
+        display_order_sql = (
+            "COALESCE((SELECT min(fao.display_order) FROM faq_assignments fao "
+            "WHERE fao.faq_id = f.id "
+            f"{assignment_filter.replace('fa.', 'fao.')}), 0)"  # nosec B608
+            if target_type
+            else "COALESCE((SELECT min(fao.display_order) FROM faq_assignments fao "
+            "WHERE fao.faq_id = f.id), 0)"
+        )
+        rows = await self.session.execute(
+            text(
+                "SELECT f.*, ft.question, ft.answer, "
+                f"{display_order_sql} AS display_order "  # nosec B608
+                "FROM faqs f JOIN faq_translations ft ON ft.faq_id = f.id "
+                f"AND ft.locale = :locale WHERE {where} "  # nosec B608
+                f"ORDER BY {FAQ_SORT_SQL[filters['sort']]} LIMIT :limit OFFSET :offset"  # nosec B608
+            ),
+            params,
+        )
+        result = [dict(row._mapping) for row in rows]
+        await self.hydrate_faqs(result, translations=False)
+        return result, total
+
+    async def get_faq(
+        self,
+        *,
+        locale: str,
+        faq_id: UUID,
+        public_only: bool = False,
+    ) -> dict[str, Any] | None:
+        conditions = ["f.id = :id", "f.deleted_at IS NULL"]
+        if public_only:
+            conditions.extend(["f.status = 'published'", "f.published_at <= now()"])
+        row = (
+            (
+                await self.session.execute(
+                    text(
+                        "SELECT f.*, ft.question, ft.answer FROM faqs f "
+                        "JOIN faq_translations ft ON ft.faq_id = f.id AND ft.locale = :locale "
+                        f"WHERE {' AND '.join(conditions)}"  # nosec B608
+                    ),
+                    {"id": faq_id, "locale": locale},
+                )
+            )
+            .mappings()
+            .one_or_none()
+        )
+        if row is None:
+            return None
+        result = dict(row)
+        await self.hydrate_faqs([result], translations=True)
+        return result
+
+    async def hydrate_faqs(
+        self, rows: list[dict[str, Any]], *, translations: bool
+    ) -> list[dict[str, Any]]:
+        for row in rows:
+            assignments = await self.session.execute(
+                text(
+                    "SELECT target_type, target_id, display_order FROM faq_assignments "
+                    "WHERE faq_id = :id ORDER BY target_type, display_order, target_id"
+                ),
+                {"id": row["id"]},
+            )
+            row["assignments"] = [dict(item._mapping) for item in assignments]
+            if translations:
+                translations_rows = await self.session.execute(
+                    text(
+                        "SELECT locale, question, answer FROM faq_translations WHERE faq_id = :id"
+                    ),
+                    {"id": row["id"]},
+                )
+                row["translations"] = {
+                    item.locale: {
+                        key: value for key, value in dict(item._mapping).items() if key != "locale"
+                    }
+                    for item in translations_rows
+                }
+        return rows
+
+    async def create_faq(self) -> UUID:
+        faq_id = uuid4()
+        await self.session.execute(text("INSERT INTO faqs (id) VALUES (:id)"), {"id": faq_id})
+        return faq_id
+
+    async def update_faq(self, faq_id: UUID, expected_version: int) -> None:
+        updated = await self.session.scalar(
+            text(
+                "UPDATE faqs SET updated_at = now(), row_version = row_version + 1 "
+                "WHERE id = :id AND row_version = :version AND deleted_at IS NULL RETURNING id"
+            ),
+            {"id": faq_id, "version": expected_version},
+        )
+        if updated is None:
+            raise StaleContentError
+
+    async def replace_faq_children(
+        self,
+        faq_id: UUID,
+        translations: dict[str, dict[str, Any]],
+        assignments: list[dict[str, Any]],
+    ) -> None:
+        await self.session.execute(
+            text("DELETE FROM faq_translations WHERE faq_id = :id"), {"id": faq_id}
+        )
+        await self.session.execute(
+            text("DELETE FROM faq_assignments WHERE faq_id = :id"), {"id": faq_id}
+        )
+        for locale, item in translations.items():
+            await self.session.execute(
+                text(
+                    "INSERT INTO faq_translations (faq_id, locale, question, answer) "
+                    "VALUES (:id, :locale, :question, :answer)"
+                ),
+                {"id": faq_id, "locale": locale, **item},
+            )
+        for item in assignments:
+            await self.session.execute(
+                text(
+                    "INSERT INTO faq_assignments "
+                    "(faq_id, target_type, target_id, display_order) "
+                    "VALUES (:id, :target_type, :target_id, :display_order)"
+                ),
+                {"id": faq_id, **item},
+            )
+
+    async def faq_targets(self, assignments: list[dict[str, Any]]) -> set[tuple[str, UUID]]:
+        found: set[tuple[str, UUID]] = set()
+        tables = {
+            FaqTargetType.UNIVERSITY.value: "universities",
+            FaqTargetType.PROGRAM.value: "programs",
+            FaqTargetType.SERVICE.value: "services",
+        }
+        for item in assignments:
+            target_id = item["target_id"]
+            if target_id is None:
+                continue
+            target_type = str(item["target_type"])
+            table = tables[target_type]
+            exists = await self.session.scalar(
+                text(
+                    f"SELECT id FROM {table} WHERE id = :id AND deleted_at IS NULL"  # nosec B608
+                ),
+                {"id": target_id},
+            )
+            if exists:
+                found.add((target_type, target_id))
+        return found
+
+    async def set_faq_status(
+        self,
+        faq_id: UUID,
+        status: str,
+        expected_version: int,
+        actor_id: UUID,
+        reason: str | None = None,
+    ) -> None:
+        if status == "published":
+            state = (
+                "status = 'published', published_at = COALESCE(published_at, now()), "
+                "archived_at = NULL, archived_by_user_id = NULL, archive_reason = NULL"
+            )
+        else:
+            state = (
+                "status = 'archived', archived_at = now(), archived_by_user_id = :actor_id, "
+                "archive_reason = :reason"
+            )
+        updated = await self.session.scalar(
+            text(
+                f"UPDATE faqs SET {state}, updated_at = now(), "  # nosec B608
+                "row_version = row_version + 1 WHERE id = :id AND row_version = :version "
+                "AND deleted_at IS NULL RETURNING id"
+            ),
+            {
+                "id": faq_id,
+                "version": expected_version,
+                "actor_id": actor_id,
+                "reason": reason,
+            },
+        )
+        if updated is None:
+            raise StaleContentError
+
+    async def delete_faq_draft(self, faq_id: UUID, expected_version: int) -> str:
+        status = await self.session.scalar(
+            text("SELECT status FROM faqs WHERE id = :id AND deleted_at IS NULL"),
+            {"id": faq_id},
+        )
+        if status is None:
+            return "missing"
+        if status != "draft":
+            return "not_draft"
+        deleted = await self.session.scalar(
+            text("DELETE FROM faqs WHERE id = :id AND row_version = :version RETURNING id"),
+            {"id": faq_id, "version": expected_version},
+        )
+        if deleted is None:
+            raise StaleContentError
+        return "deleted"
+
+    async def reorder_faqs(
+        self,
+        *,
+        target_type: str,
+        target_id: UUID | None,
+        items: list[dict[str, Any]],
+    ) -> bool:
+        for item in items:
+            updated = await self.session.scalar(
+                text(
+                    "UPDATE faq_assignments SET display_order = :display_order, "
+                    "updated_at = now() WHERE faq_id = :faq_id AND target_type = :target_type "
+                    "AND target_id IS NOT DISTINCT FROM :target_id RETURNING faq_id"
+                ),
+                {"target_type": target_type, "target_id": target_id, **item},
+            )
+            if updated is None:
+                return False
+            await self.session.execute(
+                text(
+                    "UPDATE faqs SET updated_at = now(), row_version = row_version + 1 "
+                    "WHERE id = :faq_id"
+                ),
+                item,
+            )
+        return True
 
     async def audit(
         self,

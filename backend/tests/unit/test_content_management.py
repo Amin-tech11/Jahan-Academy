@@ -4,7 +4,12 @@ from uuid import uuid4
 import pytest
 from pydantic import ValidationError
 
-from app.modules.content.schemas import ArticleWrite, ContentReferenceWrite
+from app.modules.content.schemas import (
+    ArticleWrite,
+    ContentReferenceWrite,
+    FaqReorderRequest,
+    FaqWrite,
+)
 
 
 def _translations() -> dict[str, dict[str, str]]:
@@ -93,3 +98,78 @@ def test_article_body_is_sanitized_with_a_rich_text_allowlist() -> None:
     assert "script" not in body
     assert "javascript:" not in body
     assert "<p>Safe</p>" in body
+
+
+def test_faq_requires_bilingual_content_and_valid_target_shape() -> None:
+    university_id = uuid4()
+    faq = FaqWrite.model_validate(
+        {
+            "translations": {
+                "fa": {"question": "شرایط اپلای چیست؟", "answer": "پاسخ فارسی"},
+                "en": {"question": "How do I apply?", "answer": "English answer"},
+            },
+            "assignments": [
+                {"targetType": "general", "displayOrder": 10},
+                {
+                    "targetType": "university",
+                    "targetId": str(university_id),
+                    "displayOrder": 20,
+                },
+            ],
+        }
+    )
+    assert faq.assignments[1].target_id == university_id
+
+    with pytest.raises(ValidationError):
+        FaqWrite.model_validate(
+            {
+                "translations": {
+                    "fa": {"question": "پرسش فارسی", "answer": "پاسخ فارسی"},
+                },
+                "assignments": [{"targetType": "program", "displayOrder": 1}],
+            }
+        )
+
+
+def test_faq_rejects_duplicate_targets_and_sanitizes_answer() -> None:
+    with pytest.raises(ValidationError):
+        FaqWrite.model_validate(
+            {
+                "translations": {
+                    "fa": {"question": "پرسش فارسی", "answer": "پاسخ فارسی"},
+                    "en": {"question": "English question", "answer": "English answer"},
+                },
+                "assignments": [
+                    {"targetType": "general", "displayOrder": 1},
+                    {"targetType": "general", "displayOrder": 2},
+                ],
+            }
+        )
+
+    faq = FaqWrite.model_validate(
+        {
+            "translations": {
+                "fa": {"question": "پرسش فارسی", "answer": "پاسخ فارسی"},
+                "en": {
+                    "question": "English question",
+                    "answer": '<p onclick="bad()">Safe</p><script>bad()</script>',
+                },
+            },
+            "assignments": [{"targetType": "general", "displayOrder": 1}],
+        }
+    )
+    assert "onclick" not in faq.translations["en"].answer
+    assert "script" not in faq.translations["en"].answer
+
+
+def test_faq_reorder_requires_unique_faqs_and_order_values() -> None:
+    with pytest.raises(ValidationError):
+        FaqReorderRequest.model_validate(
+            {
+                "targetType": "general",
+                "items": [
+                    {"faqId": str(uuid4()), "displayOrder": 10},
+                    {"faqId": str(uuid4()), "displayOrder": 10},
+                ],
+            }
+        )

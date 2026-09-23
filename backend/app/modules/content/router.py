@@ -7,7 +7,14 @@ from fastapi import APIRouter, Depends, Header, Query, Response, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.dependencies import database_session
-from app.modules.content.domain import ArticleSort, ArticleType, ContentResource, ContentStatus
+from app.modules.content.domain import (
+    ArticleSort,
+    ArticleType,
+    ContentResource,
+    ContentStatus,
+    FaqSort,
+    FaqTargetType,
+)
 from app.modules.content.repository import ContentRepository
 from app.modules.content.schemas import (
     ArchiveContentRequest,
@@ -17,6 +24,10 @@ from app.modules.content.schemas import (
     ContentEnvelope,
     ContentReferencePage,
     ContentReferenceWrite,
+    FaqEnvelope,
+    FaqPage,
+    FaqReorderRequest,
+    FaqWrite,
     PublishArticleRequest,
 )
 from app.modules.content.service import ContentService
@@ -29,6 +40,8 @@ public_reference_router = APIRouter(prefix="/content")
 public_article_router = APIRouter(prefix="/articles")
 admin_reference_router = APIRouter(prefix="/admin/content", tags=["content-administration"])
 admin_article_router = APIRouter(prefix="/admin/articles", tags=["content-administration"])
+public_faq_router = APIRouter(prefix="/faqs", tags=["faqs"])
+admin_faq_router = APIRouter(prefix="/admin/faqs", tags=["faq-administration"])
 ReferencePath = Literal["categories", "tags", "authors"]
 
 
@@ -116,6 +129,38 @@ async def get_public_article(
     locale: Annotated[str, Query(pattern=r"^(fa|en)$")] = "fa",
 ) -> ArticleEnvelope:
     return ArticleEnvelope(data=await service.get_article_public(slug, locale))
+
+
+@public_faq_router.get("", response_model=FaqPage, response_model_exclude_none=True)
+async def list_public_faqs(
+    service: Annotated[ContentService, Depends(content_service)],
+    locale: Annotated[str, Query(pattern=r"^(fa|en)$")] = "fa",
+    target_type: Annotated[FaqTargetType, Query(alias="targetType")] = FaqTargetType.GENERAL,
+    target_id: Annotated[UUID | None, Query(alias="targetId")] = None,
+    page: Annotated[int, Query(ge=1)] = 1,
+    limit: Annotated[int, Query(ge=1, le=20)] = 20,
+) -> FaqPage:
+    _validate_faq_target(target_type, target_id, scoped_required=True)
+    return await service.list_faqs(
+        locale=locale,
+        target_type=target_type,
+        target_id=target_id,
+        page=page,
+        limit=limit,
+        query=None,
+        status=None,
+        sort=FaqSort.DISPLAY_ORDER,
+        public_only=True,
+    )
+
+
+@public_faq_router.get("/{faq_id}", response_model=FaqEnvelope, response_model_exclude_none=True)
+async def get_public_faq(
+    faq_id: UUID,
+    service: Annotated[ContentService, Depends(content_service)],
+    locale: Annotated[str, Query(pattern=r"^(fa|en)$")] = "fa",
+) -> FaqEnvelope:
+    return FaqEnvelope(data=await service.get_faq_public(faq_id, locale))
 
 
 @admin_reference_router.get("/{resource}", response_model=ContentReferencePage)
@@ -377,6 +422,138 @@ async def delete_article(
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
+@admin_faq_router.get("", response_model=FaqPage)
+async def list_admin_faqs(
+    service: Annotated[ContentService, Depends(content_service)],
+    _: Annotated[AuthorizationContext, Depends(require_permissions("content.read"))],
+    locale: Annotated[str, Query(pattern=r"^(fa|en)$")] = "fa",
+    page: Annotated[int, Query(ge=1)] = 1,
+    limit: Annotated[int, Query(ge=1, le=100)] = 20,
+    q: Annotated[str | None, Query(min_length=2, max_length=100)] = None,
+    target_type: Annotated[FaqTargetType | None, Query(alias="targetType")] = None,
+    target_id: Annotated[UUID | None, Query(alias="targetId")] = None,
+    content_status: Annotated[ContentStatus | None, Query(alias="status")] = None,
+    sort: FaqSort = FaqSort.UPDATED_DESC,
+) -> FaqPage:
+    if target_type is not None:
+        _validate_faq_target(target_type, target_id, scoped_required=False)
+    elif target_id is not None:
+        raise ApplicationError(
+            "INVALID_FAQ_TARGET", "targetType is required when targetId is provided.", 422
+        )
+    return await service.list_faqs(
+        locale=locale,
+        target_type=target_type,
+        target_id=target_id,
+        page=page,
+        limit=limit,
+        query=q,
+        status=content_status.value if content_status else None,
+        sort=sort,
+        public_only=False,
+    )
+
+
+@admin_faq_router.post("", response_model=FaqEnvelope, status_code=status.HTTP_201_CREATED)
+async def create_faq(
+    payload: FaqWrite,
+    response: Response,
+    service: Annotated[ContentService, Depends(content_service)],
+    actor: Annotated[AuthorizationContext, Depends(require_permissions("content.write"))],
+    locale: Annotated[str, Query(pattern=r"^(fa|en)$")] = "fa",
+) -> FaqEnvelope:
+    item = await service.create_faq(payload.model_dump(mode="python"), actor.user_id, locale)
+    response.headers["ETag"] = _etag(item.version)
+    return FaqEnvelope(data=item)
+
+
+@admin_faq_router.put("/order", status_code=status.HTTP_204_NO_CONTENT)
+async def reorder_faqs(
+    payload: FaqReorderRequest,
+    service: Annotated[ContentService, Depends(content_service)],
+    actor: Annotated[AuthorizationContext, Depends(require_permissions("content.write"))],
+) -> Response:
+    await service.reorder_faqs(payload.model_dump(mode="python"), actor.user_id)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@admin_faq_router.get("/{faq_id}", response_model=FaqEnvelope)
+async def get_admin_faq(
+    faq_id: UUID,
+    response: Response,
+    service: Annotated[ContentService, Depends(content_service)],
+    _: Annotated[AuthorizationContext, Depends(require_permissions("content.read"))],
+    locale: Annotated[str, Query(pattern=r"^(fa|en)$")] = "fa",
+) -> FaqEnvelope:
+    item = await service.get_faq_admin(faq_id, locale)
+    response.headers["ETag"] = _etag(item.version)
+    return FaqEnvelope(data=item)
+
+
+@admin_faq_router.put("/{faq_id}", response_model=FaqEnvelope)
+async def update_faq(
+    faq_id: UUID,
+    payload: FaqWrite,
+    response: Response,
+    service: Annotated[ContentService, Depends(content_service)],
+    actor: Annotated[AuthorizationContext, Depends(require_permissions("content.write"))],
+    if_match: Annotated[str | None, Header(alias="If-Match")] = None,
+    locale: Annotated[str, Query(pattern=r"^(fa|en)$")] = "fa",
+) -> FaqEnvelope:
+    item = await service.update_faq(
+        faq_id,
+        payload.model_dump(mode="python"),
+        actor.user_id,
+        _parse_if_match(if_match),
+        locale,
+    )
+    response.headers["ETag"] = _etag(item.version)
+    return FaqEnvelope(data=item)
+
+
+@admin_faq_router.post("/{faq_id}/publish", response_model=FaqEnvelope)
+async def publish_faq(
+    faq_id: UUID,
+    response: Response,
+    service: Annotated[ContentService, Depends(content_service)],
+    actor: Annotated[AuthorizationContext, Depends(require_permissions("content.publish"))],
+    if_match: Annotated[str | None, Header(alias="If-Match")] = None,
+    locale: Annotated[str, Query(pattern=r"^(fa|en)$")] = "fa",
+) -> FaqEnvelope:
+    item = await service.publish_faq(faq_id, actor.user_id, _parse_if_match(if_match), locale)
+    response.headers["ETag"] = _etag(item.version)
+    return FaqEnvelope(data=item)
+
+
+@admin_faq_router.post("/{faq_id}/archive", response_model=FaqEnvelope)
+async def archive_faq(
+    faq_id: UUID,
+    payload: ArchiveContentRequest,
+    response: Response,
+    service: Annotated[ContentService, Depends(content_service)],
+    actor: Annotated[AuthorizationContext, Depends(require_permissions("content.publish"))],
+    if_match: Annotated[str | None, Header(alias="If-Match")] = None,
+    locale: Annotated[str, Query(pattern=r"^(fa|en)$")] = "fa",
+) -> FaqEnvelope:
+    item = await service.archive_faq(
+        faq_id, payload.reason, actor.user_id, _parse_if_match(if_match), locale
+    )
+    response.headers["ETag"] = _etag(item.version)
+    return FaqEnvelope(data=item)
+
+
+@admin_faq_router.delete("/{faq_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_faq(
+    faq_id: UUID,
+    service: Annotated[ContentService, Depends(content_service)],
+    actor: Annotated[AuthorizationContext, Depends(require_permissions("content.write"))],
+    if_match: Annotated[str | None, Header(alias="If-Match")] = None,
+    locale: Annotated[str, Query(pattern=r"^(fa|en)$")] = "fa",
+) -> Response:
+    await service.delete_faq(faq_id, actor.user_id, _parse_if_match(if_match), locale)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
 def _resource(value: ReferencePath) -> ContentResource:
     return {
         "categories": ContentResource.CATEGORY,
@@ -390,6 +567,20 @@ def _ensure_payload_resource(expected: ContentResource, actual: ContentResource)
         raise ApplicationError(
             "CONTENT_RESOURCE_MISMATCH", "Payload resource does not match the endpoint.", 422
         )
+
+
+def _validate_faq_target(
+    target_type: FaqTargetType,
+    target_id: UUID | None,
+    *,
+    scoped_required: bool,
+) -> None:
+    if target_type is FaqTargetType.GENERAL and target_id is not None:
+        raise ApplicationError(
+            "INVALID_FAQ_TARGET", "targetId must be omitted for general FAQs.", 422
+        )
+    if scoped_required and target_type is not FaqTargetType.GENERAL and target_id is None:
+        raise ApplicationError("INVALID_FAQ_TARGET", "targetId is required for scoped FAQs.", 422)
 
 
 def _etag(version: int) -> str:
@@ -411,3 +602,5 @@ router.include_router(public_reference_router)
 router.include_router(public_article_router)
 router.include_router(admin_reference_router)
 router.include_router(admin_article_router)
+router.include_router(public_faq_router)
+router.include_router(admin_faq_router)

@@ -6,7 +6,14 @@ from uuid import UUID
 import nh3
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
-from app.modules.content.domain import ArticleSort, ArticleType, ContentResource, ContentStatus
+from app.modules.content.domain import (
+    ArticleSort,
+    ArticleType,
+    ContentResource,
+    ContentStatus,
+    FaqSort,
+    FaqTargetType,
+)
 
 
 def _to_camel(value: str) -> str:
@@ -154,6 +161,98 @@ class ArticleWrite(ContentModel):
         return self
 
 
+class FaqTranslationWrite(ContentModel):
+    question: str = Field(min_length=3, max_length=500)
+    answer: str = Field(min_length=3, max_length=50_000)
+
+    @field_validator("question")
+    @classmethod
+    def strip_question(cls, value: str) -> str:
+        normalized = value.strip()
+        if len(normalized) < 3:
+            raise ValueError("question must contain at least three non-whitespace characters")
+        return normalized
+
+    @field_validator("answer")
+    @classmethod
+    def sanitize_answer(cls, value: str) -> str:
+        sanitized = nh3.clean(
+            value.strip(),
+            tags={
+                "p",
+                "br",
+                "strong",
+                "em",
+                "u",
+                "ul",
+                "ol",
+                "li",
+                "a",
+                "code",
+            },
+            attributes={"a": {"href", "title", "target"}},
+            url_schemes={"http", "https", "mailto"},
+            link_rel="noopener noreferrer nofollow",
+        )
+        if not sanitized.strip():
+            raise ValueError("answer must contain safe content")
+        return sanitized
+
+
+class FaqAssignmentWrite(ContentModel):
+    target_type: FaqTargetType
+    target_id: UUID | None = None
+    display_order: int = Field(default=0, ge=0, le=100_000)
+
+    @model_validator(mode="after")
+    def validate_target(self) -> FaqAssignmentWrite:
+        if self.target_type is FaqTargetType.GENERAL and self.target_id is not None:
+            raise ValueError("targetId must be omitted for general FAQs")
+        if self.target_type is not FaqTargetType.GENERAL and self.target_id is None:
+            raise ValueError("targetId is required for scoped FAQs")
+        return self
+
+
+class FaqWrite(ContentModel):
+    translations: dict[str, FaqTranslationWrite]
+    assignments: list[FaqAssignmentWrite] = Field(min_length=1, max_length=50)
+
+    @model_validator(mode="after")
+    def validate_faq(self) -> FaqWrite:
+        if set(self.translations) != {"fa", "en"}:
+            raise ValueError("translations must contain exactly fa and en")
+        targets = [(item.target_type, item.target_id) for item in self.assignments]
+        if len(targets) != len(set(targets)):
+            raise ValueError("assignments must target unique resources")
+        return self
+
+
+class FaqOrderItem(ContentModel):
+    faq_id: UUID
+    display_order: int = Field(ge=0, le=100_000)
+
+
+class FaqReorderRequest(ContentModel):
+    target_type: FaqTargetType
+    target_id: UUID | None = None
+    items: list[FaqOrderItem] = Field(min_length=1, max_length=500)
+
+    @model_validator(mode="after")
+    def validate_order(self) -> FaqReorderRequest:
+        FaqAssignmentWrite(
+            target_type=self.target_type,
+            target_id=self.target_id,
+            display_order=0,
+        )
+        faq_ids = [item.faq_id for item in self.items]
+        if len(faq_ids) != len(set(faq_ids)):
+            raise ValueError("items must contain unique faqIds")
+        orders = [item.display_order for item in self.items]
+        if len(orders) != len(set(orders)):
+            raise ValueError("items must contain unique displayOrder values")
+        return self
+
+
 class ArchiveContentRequest(ContentModel):
     reason: str = Field(min_length=3, max_length=500)
 
@@ -226,12 +325,37 @@ class ArticleView(ContentModel):
     version: int
 
 
+class FaqAssignmentView(ContentModel):
+    target_type: FaqTargetType
+    target_id: UUID | None = None
+    display_order: int
+
+
+class FaqView(ContentModel):
+    id: UUID
+    question: str
+    answer: str
+    assignments: list[FaqAssignmentView]
+    status: ContentStatus
+    translations: dict[str, FaqTranslationWrite] | None = None
+    published_at: datetime | None = None
+    archived_at: datetime | None = None
+    archive_reason: str | None = None
+    created_at: datetime
+    updated_at: datetime
+    version: int
+
+
 class ContentEnvelope(ContentModel):
     data: ContentReferenceView
 
 
 class ArticleEnvelope(ContentModel):
     data: ArticleView
+
+
+class FaqEnvelope(ContentModel):
+    data: FaqView
 
 
 class PageMeta(ContentModel):
@@ -249,6 +373,38 @@ class ContentReferencePage(ContentModel):
 class ArticlePage(ContentModel):
     data: list[ArticleView]
     meta: PageMeta
+
+
+class FaqPage(ContentModel):
+    data: list[FaqView]
+    meta: PageMeta
+
+
+class FaqListFilters(ContentModel):
+    locale: str = Field(pattern=r"^(fa|en)$")
+    page: int = Field(ge=1)
+    limit: int = Field(ge=1, le=100)
+    query: str | None = Field(default=None, min_length=2, max_length=100)
+    target_type: FaqTargetType | None = None
+    target_id: UUID | None = None
+    status: ContentStatus | None = None
+    sort: FaqSort
+    public_only: bool
+
+    @model_validator(mode="after")
+    def validate_target_filter(self) -> FaqListFilters:
+        if self.target_type is FaqTargetType.GENERAL and self.target_id is not None:
+            raise ValueError("targetId must be omitted for general FAQs")
+        if self.target_id is not None and self.target_type is None:
+            raise ValueError("targetType is required when targetId is provided")
+        if (
+            self.public_only
+            and self.target_type is not None
+            and self.target_type is not FaqTargetType.GENERAL
+            and self.target_id is None
+        ):
+            raise ValueError("targetId is required for scoped public FAQs")
+        return self
 
 
 class ArticleListFilters(ContentModel):
