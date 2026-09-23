@@ -545,7 +545,7 @@ Names below are logical; exact migration names may follow code conventions.
 | `countries` | id, ISO code, slug, status, featured, display_order |
 | `country_translations` | country_id, locale, name, summary, body, SEO fields |
 | `cities` | id, country_id, slug, normalized name, active, display_order, timestamps; bilingual translations |
-| `universities` | id, country_id, city_id/name, slug, type, founded_year, website_url, contact data, status, featured, timestamps, deleted_at |
+| `universities` | id, country_id, city_id, slug, type, founded_year, website/contact data, tuition mode/min/max/currency, status, featured, version, publication/archive evidence, timestamps, deleted_at |
 | `university_translations` | university_id, locale, name, short_description, body, SEO title/description, media alt fields |
 | `programs` | id, university_id, slug, level_id, field_id, tuition_mode, tuition_min/max, currency_id, duration data, application_fee data, official_url, status, featured, timestamps, deleted_at |
 | `program_translations` | program_id, locale, title, short_description, body, admission_requirements, teaching_language labels, SEO fields |
@@ -694,6 +694,7 @@ Successful creation returns HTTP `201`; a detected duplicate returns HTTP `200` 
 ### 12.4 Administrative Endpoints
 
 - CRUD/lifecycle endpoints for countries, universities, programs, taxonomies, news, FAQs, media, and settings.
+- University management uses `GET/POST /api/v1/admin/universities`, `GET/PUT/DELETE /api/v1/admin/universities/{id}`, and explicit `publish`/`archive` actions. Writes require complete Persian and English translations; update, publish, archive, and delete require `If-Match`.
 - Lead list/detail/edit/assign/status/note endpoints.
 - `POST /api/v1/admin/leads/{id}/noura-retry` for authorized manual retry.
 - Admin-user and role assignment endpoints restricted to Super Admin.
@@ -838,8 +839,8 @@ The logo asset and AI screens show different logo treatments. The standalone sup
 - [x] Complete system architecture documented, including routing, deployment units, backend modules, data ownership, queues, trust boundaries, critical flows, failure behavior, and scaling strategy.
 - [x] Backend runtime compatibility reviewed and Python 3.12 frozen across API, workers, scheduler, migrations, tests, and containers to prevent a mid-project feature-version migration.
 - [x] Complete-product database entities extracted and grouped by domain; duplicate identity concepts and aggregate ownership decisions documented before physical ERD work.
-- [x] PostgreSQL 18 baseline, authentication hardening, reference-data extension, consultation submission, lead workflow, Noura sync, and media lifecycle persistence implemented as fourteen reversible Alembic/SQL migrations; 111 tables, constraints, optimistic-concurrency state, archive/assignment evidence, durable provider idempotency/retry state, upload quarantine/validation state, refresh-token family state, login lockout state, rollback/re-upgrade, and Python 3.12 Alembic execution verified.
-- [x] FastAPI backend scaffold implemented as a domain-oriented modular monolith with 14 domain modules, thin API composition, shared infrastructure, Celery queue entrypoints, architecture tests, locked Python dependencies, and a production container definition.
+- [x] PostgreSQL 18 baseline, authentication hardening, reference-data extension, consultation submission, lead workflow, Noura sync, media lifecycle, and university catalog persistence implemented as fifteen reversible Alembic/SQL migrations; constraints, optimistic-concurrency state, archive/assignment evidence, durable provider idempotency/retry state, upload quarantine/validation state, refresh-token family state, login lockout state, rollback/re-upgrade, and Python 3.12 Alembic execution verified.
+- [x] FastAPI backend scaffold implemented as a domain-oriented modular monolith with 15 domain modules, thin API composition, shared infrastructure, Celery queue entrypoints, architecture tests, locked Python dependencies, and a production container definition.
 - [x] API v1 designed contract-first: endpoint registry, authentication, permissions, request/response schemas, validation, stable errors, status codes, idempotency/concurrency rules, phase boundaries, OpenAPI 3.1 baseline, and automated contract validation documented.
 - [x] Public email/password authentication implemented: registration, email verification/resend, login lockout, Argon2id hashing, short-lived access JWTs, rotating opaque refresh tokens with reuse detection, logout/revocation, password reset, CSRF cookies, SMTP adapter, and PostgreSQL-backed end-to-end coverage.
 - [x] Authorization framework implemented with deny-by-default RBAC, global/scoped grants, ALL/ANY permission evaluation, domain resource-policy interface, FastAPI dependencies, and tests; final role-permission-scope matrix intentionally pending Product Owner approval.
@@ -855,6 +856,7 @@ The logo asset and AI screens show different logo treatments. The standalone sup
 - [ ] Public UI and administration panel implemented.
 - [x] Mock Noura connector implemented and tested: provider-neutral adapter, idempotent mock API, PostgreSQL outbox claiming/recovery, Celery/Beat automatic dispatch, retry schedule, safe error taxonomy, external-ID persistence, independent Pending/Synced/Failed state, and audited manual retry via reversible migration `013_noura_mock`.
 - [x] Media Management implemented: S3-compatible direct upload intents, private quarantine, strict purpose/type/size/extension and real-content validation, SHA-256 verification/deduplication, Pillow dimension checks, active-PDF rejection, ClamAV scanning, public promotion/delivery, search, bilingual alt/attribution metadata, ETag concurrency, dependency-safe deletion, audit evidence, MinIO local runtime, and reversible migration `014_media_management`.
+- [x] University Management implemented: public localized discovery/detail and protected admin CRUD, mandatory Persian/English translations, country/city integrity, exact/range/contact tuition with active currency validation, rankings, ready-purpose-matched logo/hero/gallery media, contact fields, publication completeness gates, featured/search/filter/sort/pagination, ETag concurrency, PII-safe audit evidence, archive preservation, dependency-safe draft deletion, `catalog.read`/`catalog.write` permissions, reversible migration `015_university_management`, and PostgreSQL end-to-end coverage.
 - [ ] Real Noura connector implemented and accepted.
 - [ ] Staging and production infrastructure provisioned.
 
