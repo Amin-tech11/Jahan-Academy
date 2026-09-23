@@ -29,6 +29,7 @@ class UniversityMediaRole(StrEnum):
 
 
 class UniversitySort(StrEnum):
+    RELEVANCE = "relevance"
     FEATURED = "featured"
     NAME_ASC = "name_asc"
     NAME_DESC = "name_desc"

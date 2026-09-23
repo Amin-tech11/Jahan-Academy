@@ -10,6 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.modules.programs.domain import ProgramSort, StaleProgramError
 
 SORT_SQL = {
+    ProgramSort.RELEVANCE: "search_rank DESC, p.featured DESC, pt.title ASC",
     ProgramSort.FEATURED: "p.featured DESC, p.created_at DESC, p.id DESC",
     ProgramSort.TITLE_ASC: "pt.title ASC, p.id ASC",
     ProgramSort.TITLE_DESC: "pt.title DESC, p.id DESC",
@@ -49,6 +50,7 @@ class ProgramRepository:
             "locale": locale,
             "limit": limit,
             "offset": (page - 1) * limit,
+            "search_query": query or "",
         }
         if public_only:
             conditions.extend(
@@ -58,7 +60,10 @@ class ProgramRepository:
             conditions.append("p.status = :status")
             params["status"] = status
         if query:
-            conditions.append("(pt.title ILIKE :query OR p.slug ILIKE :query)")
+            conditions.append(
+                "(pt.search_vector @@ websearch_to_tsquery('simple', :search_query) "
+                "OR pt.title ILIKE :query OR p.slug ILIKE :query)"
+            )
             params["query"] = f"%{query}%"
         filters = {
             "university_id": university_id,
@@ -105,6 +110,7 @@ class ProgramRepository:
             conditions.append("p.tuition_currency = :tuition_currency")
             params["tuition_currency"] = tuition_currency
         where = " AND ".join(conditions)
+        effective_sort = ProgramSort.RELEVANCE if query and sort is ProgramSort.FEATURED else sort
         joins = (
             " JOIN program_translations pt ON pt.program_id = p.id AND pt.locale = :locale "
             " JOIN universities u ON u.id = p.university_id "
@@ -130,10 +136,13 @@ class ProgramRepository:
                 "u.slug AS university_slug, ut.name AS university_name, al.code AS level_code, "
                 "alt.name AS level_name, pf.code AS primary_field_code, "
                 "pft.name AS primary_field_name, "
+                "ts_rank_cd(pt.search_vector, "
+                "websearch_to_tsquery('simple', :search_query)) AS search_rank, "
                 "(SELECT min(application_deadline) FROM program_intakes pi "
                 "WHERE pi.program_id = p.id AND pi.status IN ('planned','open')) AS next_deadline "
                 f"FROM programs p {joins} WHERE {where} "  # nosec B608
-                f"ORDER BY {SORT_SQL[sort]} LIMIT :limit OFFSET :offset"  # nosec B608
+                f"ORDER BY {SORT_SQL[effective_sort]} "  # nosec B608
+                "LIMIT :limit OFFSET :offset"
             ),
             params,
         )

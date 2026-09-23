@@ -10,6 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.modules.universities.domain import StaleUniversityError, UniversitySort
 
 SORT_SQL = {
+    UniversitySort.RELEVANCE: "search_rank DESC, u.featured DESC, ut.name ASC",
     UniversitySort.FEATURED: "u.featured DESC, u.created_at DESC, u.id DESC",
     UniversitySort.NAME_ASC: "ut.name ASC, u.id ASC",
     UniversitySort.NAME_DESC: "ut.name DESC, u.id DESC",
@@ -43,6 +44,7 @@ class UniversityRepository:
             "locale": locale,
             "limit": limit,
             "offset": (page - 1) * limit,
+            "search_query": query or "",
         }
         if public_only:
             conditions.append("u.status = 'published'")
@@ -50,7 +52,10 @@ class UniversityRepository:
             conditions.append("u.status = :status")
             params["status"] = status
         if query:
-            conditions.append("(ut.name ILIKE :query OR u.slug ILIKE :query)")
+            conditions.append(
+                "(ut.search_vector @@ websearch_to_tsquery('simple', :search_query) "
+                "OR ut.name ILIKE :query OR u.slug ILIKE :query)"
+            )
             params["query"] = f"%{query}%"
         if country_id:
             conditions.append("u.country_id = :country_id")
@@ -68,6 +73,9 @@ class UniversityRepository:
             )
             params["maximum_rank"] = maximum_rank
         where = " AND ".join(conditions)
+        effective_sort = (
+            UniversitySort.RELEVANCE if query and sort is UniversitySort.FEATURED else sort
+        )
         joins = (
             " JOIN university_translations ut ON ut.university_id = u.id AND ut.locale = :locale "
             " JOIN countries c ON c.id = u.country_id "
@@ -86,10 +94,13 @@ class UniversityRepository:
             text(
                 "SELECT u.*, ut.name, ut.short_description, ut.body, ut.seo_title, "
                 "ut.seo_description, ct.name AS country_name, cit.name AS city_name, "
+                "ts_rank_cd(ut.search_vector, "
+                "websearch_to_tsquery('simple', :search_query)) AS search_rank, "
                 "(SELECT min(rank_value) FROM university_rankings ur "
                 " WHERE ur.university_id = u.id) AS primary_rank "
                 f"FROM universities u {joins} WHERE {where} "  # nosec B608
-                f"ORDER BY {SORT_SQL[sort]} LIMIT :limit OFFSET :offset"  # nosec B608
+                f"ORDER BY {SORT_SQL[effective_sort]} "  # nosec B608
+                "LIMIT :limit OFFSET :offset"
             ),
             params,
         )
