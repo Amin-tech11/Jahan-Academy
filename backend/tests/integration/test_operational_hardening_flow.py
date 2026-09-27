@@ -7,7 +7,7 @@ from uuid import uuid4
 import psycopg
 import pytest
 
-from app.core.database import session_factory
+from app.core.database import dispose_database, session_factory
 from app.modules.operational.retention import RetentionRepository
 
 pytestmark = pytest.mark.skipif(
@@ -20,12 +20,15 @@ def _database_url() -> str:
 
 
 async def _enforce_retention() -> tuple[int, int]:
-    async with session_factory() as session:
-        repository = RetentionRepository(session)
-        anonymized = await repository.anonymize_expired_leads(years=3, limit=10)
-        expired_keys = await repository.remove_expired_idempotency_keys()
-        await session.commit()
-        return anonymized, expired_keys
+    try:
+        async with session_factory() as session:
+            repository = RetentionRepository(session)
+            anonymized = await repository.anonymize_expired_leads(years=3, limit=10)
+            expired_keys = await repository.remove_expired_idempotency_keys()
+            await session.commit()
+            return anonymized, expired_keys
+    finally:
+        await dispose_database()
 
 
 def test_retention_anonymizes_expired_leads_and_removes_expired_idempotency() -> None:

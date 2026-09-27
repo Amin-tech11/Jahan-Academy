@@ -27,7 +27,8 @@ class RetentionRepository:
                     WHERE id IN (SELECT id FROM candidates) RETURNING id
                 )
                 INSERT INTO audit_logs (action, entity_type, entity_id, after_safe)
-                SELECT 'lead.retention_anonymized', 'lead', id, '{"retention":true}'::jsonb
+                SELECT 'lead.retention_anonymized', 'lead', id,
+                       jsonb_build_object('retention', true)
                 FROM anonymized RETURNING entity_id
                 """
             ),
