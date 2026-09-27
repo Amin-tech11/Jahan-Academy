@@ -170,8 +170,10 @@ class SeoService:
             )
         else:
             listing = self.url_for_listing(_PATHS[resource], locale)
-        listing_name = "Services" if resource == "page" and page_kind == "service" else _PATHS.get(
-            resource, "Jahan Academy"
+        listing_name = (
+            "Services"
+            if resource == "page" and page_kind == "service"
+            else _PATHS.get(resource, "Jahan Academy")
         )
         return {
             "@context": "https://schema.org",
