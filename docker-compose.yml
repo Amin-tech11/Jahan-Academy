@@ -11,7 +11,7 @@ x-backend-environment: &backend-environment
   JAHAN_FRONTEND_URL: http://localhost:${NGINX_PORT:-8080}
   JAHAN_NOURA_BASE_URL: http://mock-noura:8090
   JAHAN_NOURA_MOCK_OUTCOME: ${NOURA_MOCK_OUTCOME:-success}
-  JAHAN_STORAGE_ENDPOINT_URL: http://minio:9000
+  JAHAN_STORAGE_ENDPOINT_URL: http://minio:5000
   JAHAN_STORAGE_PUBLIC_ENDPOINT_URL: ${JAHAN_STORAGE_PUBLIC_ENDPOINT_URL:-http://localhost:9100}
   JAHAN_STORAGE_ACCESS_KEY: ${MINIO_ROOT_USER:-jahan_minio}
   JAHAN_STORAGE_SECRET_KEY: ${MINIO_ROOT_PASSWORD:-jahan_minio_change_me}
@@ -67,18 +67,15 @@ services:
       - application
 
   minio:
-    image: quay.io/minio/minio:RELEASE.2025-07-23T15-54-02Z
-    command: ["server", "/data", "--console-address", ":9001"]
+    # Moto emulates the S3 API for local development and CI. Production uses managed S3-compatible storage.
+    image: motoserver/moto:5.1.21
     environment:
-      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-jahan_minio}
-      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-jahan_minio_change_me}
+      MOTO_PORT: 5000
+      S3_IGNORE_SUBDOMAIN_BUCKETNAME: "true"
     ports:
-      - "${MINIO_PORT:-9100}:9000"
-      - "${MINIO_CONSOLE_PORT:-9101}:9001"
-    volumes:
-      - minio_data:/data
+      - "${MINIO_PORT:-9100}:5000"
     healthcheck:
-      test: ["CMD", "mc", "ready", "local"]
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:5000/', timeout=2)\""]
       interval: 5s
       timeout: 3s
       retries: 20

@@ -466,7 +466,7 @@ The following stack is approved for the complete target product, not only MVP de
 | API contracts | FastAPI OpenAPI 3.1 and generated TypeScript client using `openapi-typescript`/`openapi-fetch` |
 | Testing | pytest, pytest-asyncio, HTTPX, Testcontainers, Vitest, Testing Library, Playwright, axe-core, Lighthouse CI, and load tests |
 | Observability | OpenTelemetry, Sentry, Prometheus/Grafana, structlog/Pino JSON logs, redaction, and correlation IDs |
-| Local environment | Docker Compose with Nginx ingress, Next.js Web, FastAPI API/migrations, PostgreSQL 18, and Redis 8; Mailpit, MinIO, ClamAV, and Mock Noura are added with their feature modules |
+| Local environment | Docker Compose with Nginx ingress, Next.js Web, FastAPI API/migrations, PostgreSQL 18, and Redis 8; Mailpit, Moto (S3-compatible emulator), ClamAV, and Mock Noura are added with their feature modules |
 | Delivery | GitHub Actions and separate immutable Web, API, Worker, and Scheduler images/processes |
 | Reverse proxy/TLS | Caddy for self-hosted deployment; omit it behind managed platform ingress; do not run Nginx alongside Caddy by default |
 
@@ -526,7 +526,7 @@ flowchart LR
 
 ### 10.3 Environment Strategy
 
-- **Development:** Web/API on host or containers; Docker Compose PostgreSQL, Redis, MinIO, Mailpit, ClamAV, and Mock Noura.
+- **Development:** Web/API on host or containers; Docker Compose PostgreSQL, Redis, Moto (S3-compatible emulator), Mailpit, ClamAV, and Mock Noura.
 - **Staging:** Production-like Web/API/Worker/Scheduler deployment, isolated database/storage/cache, provider sandboxes, and non-production messaging/payment accounts.
 - **Production:** Final domain/hosting, managed PostgreSQL and Redis, private object storage/CDN, production providers, real Noura connector, monitoring, and tested backups.
 
@@ -863,7 +863,7 @@ The logo asset and AI screens show different logo treatments. The standalone sup
 - [x] Database schema and migrations implemented.
 - [ ] Public UI and administration panel implemented.
 - [x] Mock Noura connector implemented and tested: provider-neutral adapter, idempotent mock API, PostgreSQL outbox claiming/recovery, Celery/Beat automatic dispatch, retry schedule, safe error taxonomy, external-ID persistence, independent Pending/Synced/Failed state, and audited manual retry via reversible migration `013_noura_mock`.
-- [x] Media Management implemented: S3-compatible direct upload intents, private quarantine, strict purpose/type/size/extension and real-content validation, SHA-256 verification/deduplication, Pillow dimension checks, active-PDF rejection, ClamAV scanning, public promotion/delivery, search, bilingual alt/attribution metadata, ETag concurrency, dependency-safe deletion, audit evidence, MinIO local runtime, and reversible migration `014_media_management`.
+- [x] Media Management implemented: S3-compatible direct upload intents, private quarantine, strict purpose/type/size/extension and real-content validation, SHA-256 verification/deduplication, Pillow dimension checks, active-PDF rejection, ClamAV scanning, public promotion/delivery, search, bilingual alt/attribution metadata, ETag concurrency, dependency-safe deletion, audit evidence, Moto S3-compatible local runtime, and reversible migration `014_media_management`.
 - [x] University Management implemented: public localized discovery/detail and protected admin CRUD, mandatory Persian/English translations, country/city integrity, exact/range/contact tuition with active currency validation, rankings, ready-purpose-matched logo/hero/gallery media, contact fields, publication completeness gates, featured/search/filter/sort/pagination, ETag concurrency, PII-safe audit evidence, archive preservation, dependency-safe draft deletion, `catalog.read`/`catalog.write` permissions, reversible migration `015_university_management`, and PostgreSQL end-to-end coverage.
 - [x] Program Management implemented: localized public discovery/detail and protected admin CRUD, mandatory Persian/English translations, published-university/active-level/field integrity, primary and additional fields, exact/range/contact tuition, exact/free/contact application fees, duration and teaching language, official-source links, intake-year-specific deadlines/status/notes, structured and bilingual admission requirements, publication completeness gates, search/filter/sort/pagination, ETag concurrency, audit evidence, archive preservation, dependency-safe draft deletion, reversible migration `016_program_management`, and PostgreSQL end-to-end coverage.
 - [x] University & Program Discovery API implemented: weighted bilingual PostgreSQL full-text search with GIN indexes and safe partial-match fallback, relevance/default and explicit sorting, existing domain filters and bounded pagination, type-scoped autocomplete suggestions, explainable related-university and related-Program ranking, published-parent visibility enforcement, reversible migration `017_discovery_api`, and full PostgreSQL integration coverage.
