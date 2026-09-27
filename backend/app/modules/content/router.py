@@ -575,11 +575,15 @@ def _validate_faq_target(
     *,
     scoped_required: bool,
 ) -> None:
-    if target_type is FaqTargetType.GENERAL and target_id is not None:
+    if target_type in {FaqTargetType.GENERAL, FaqTargetType.HOMEPAGE} and target_id is not None:
         raise ApplicationError(
-            "INVALID_FAQ_TARGET", "targetId must be omitted for general FAQs.", 422
+            "INVALID_FAQ_TARGET", "targetId must be omitted for general or homepage FAQs.", 422
         )
-    if scoped_required and target_type is not FaqTargetType.GENERAL and target_id is None:
+    if (
+        scoped_required
+        and target_type not in {FaqTargetType.GENERAL, FaqTargetType.HOMEPAGE}
+        and target_id is None
+    ):
         raise ApplicationError("INVALID_FAQ_TARGET", "targetId is required for scoped FAQs.", 422)
 
 

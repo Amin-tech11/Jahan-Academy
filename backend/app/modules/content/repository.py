@@ -656,7 +656,7 @@ class ContentRepository:
         if target_type:
             params["target_type"] = target_type.value
             assignment_filter = "AND fa.target_type = :target_type "
-            if target_type is FaqTargetType.GENERAL:
+            if target_type in {FaqTargetType.GENERAL, FaqTargetType.HOMEPAGE}:
                 assignment_filter += "AND fa.target_id IS NULL "
             elif target_id:
                 params["target_id"] = target_id
@@ -670,6 +670,9 @@ class ContentRepository:
                     FaqTargetType.UNIVERSITY: "universities",
                     FaqTargetType.PROGRAM: "programs",
                     FaqTargetType.SERVICE: "services",
+                    FaqTargetType.COUNTRY: "country_guides",
+                    FaqTargetType.PAGE: "public_pages",
+                    FaqTargetType.ARTICLE: "articles",
                 }[target_type]
                 conditions.append(
                     f"EXISTS (SELECT 1 FROM {target_table} target "  # nosec B608
@@ -818,6 +821,9 @@ class ContentRepository:
             FaqTargetType.UNIVERSITY.value: "universities",
             FaqTargetType.PROGRAM.value: "programs",
             FaqTargetType.SERVICE.value: "services",
+            FaqTargetType.COUNTRY.value: "country_guides",
+            FaqTargetType.PAGE.value: "public_pages",
+            FaqTargetType.ARTICLE.value: "articles",
         }
         for item in assignments:
             target_id = item["target_id"]
