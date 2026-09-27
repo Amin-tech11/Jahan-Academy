@@ -24,9 +24,7 @@ class DiscoveryService:
         limit: int,
     ) -> SuggestionEnvelope:
         normalized = " ".join(query.split())
-        rows = await self._repository.suggestions(
-            query=normalized, locale=locale, limit=limit
-        )
+        rows = await self._repository.suggestions(query=normalized, locale=locale, limit=limit)
         return SuggestionEnvelope(
             data=[DiscoverySuggestion(**self._base(row)) for row in rows],
             query=normalized,

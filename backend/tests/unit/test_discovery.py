@@ -43,6 +43,7 @@ class FakeDiscoveryRepository:
             }
         ]
 
+
 @pytest.mark.asyncio
 async def test_suggestions_normalize_query_and_round_score() -> None:
     service = DiscoveryService(FakeDiscoveryRepository())  # type: ignore[arg-type]
