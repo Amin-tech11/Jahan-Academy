@@ -26,16 +26,6 @@ class SeoRepository:
                   ON ut.university_id = u.id AND ut.locale = :locale
                 WHERE u.slug = :slug AND u.status = 'published' AND u.deleted_at IS NULL
             """,
-            "program": """
-                SELECT pt.title AS name, pt.seo_title, pt.seo_description, p.updated_at,
-                       NULL::text AS article_type, ut.name AS university_name
-                FROM programs p JOIN program_translations pt
-                  ON pt.program_id = p.id AND pt.locale = :locale
-                  JOIN universities u ON u.id = p.university_id
-                  JOIN university_translations ut ON ut.university_id = u.id AND ut.locale = :locale
-                WHERE p.slug = :slug AND p.status = 'published' AND p.deleted_at IS NULL
-                  AND u.status = 'published' AND u.deleted_at IS NULL
-            """,
             "article": """
                 SELECT at.title AS name, at.seo_title, at.seo_description, a.updated_at,
                        a.article_type, NULL::text AS university_name
@@ -61,13 +51,6 @@ class SeoRepository:
                 SELECT 'university', u.slug, ut.locale, u.updated_at
                 FROM universities u JOIN university_translations ut ON ut.university_id = u.id
                 WHERE u.status = 'published' AND u.deleted_at IS NULL
-                UNION ALL
-                SELECT 'program', p.slug, pt.locale, p.updated_at
-                FROM programs p JOIN program_translations pt ON pt.program_id = p.id
-                  JOIN universities u ON u.id = p.university_id
-                WHERE p.status = 'published' AND p.deleted_at IS NULL
-                  AND u.status = 'published' AND u.deleted_at IS NULL
-                UNION ALL
                 SELECT 'article', a.slug, at.locale, a.updated_at
                 FROM articles a JOIN article_translations at ON at.article_id = a.id
                 WHERE a.status = 'published' AND a.deleted_at IS NULL

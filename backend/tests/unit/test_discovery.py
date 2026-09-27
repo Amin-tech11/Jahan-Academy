@@ -14,16 +14,16 @@ class FakeDiscoveryRepository:
     async def suggestions(self, **_: Any) -> list[dict[str, Any]]:
         return [
             {
-                "entity_type": "program",
+                "entity_type": "university",
                 "id": uuid4(),
-                "slug": "computer-science",
-                "title": "Computer Science",
-                "subtitle": "Jahan University",
+                "slug": "jahan-university",
+                "title": "Jahan University",
+                "subtitle": "Germany",
                 "score": 5.123456,
             }
         ]
 
-    async def published_slug_exists(self, **values: Any) -> bool:
+    async def published_university_slug_exists(self, **values: Any) -> bool:
         return str(values["slug"]) != "missing"
 
     async def related_universities(self, **_: Any) -> list[dict[str, Any]]:
@@ -43,20 +43,14 @@ class FakeDiscoveryRepository:
             }
         ]
 
-    async def related_programs(self, **_: Any) -> list[dict[str, Any]]:
-        return []
-
-
 @pytest.mark.asyncio
 async def test_suggestions_normalize_query_and_round_score() -> None:
     service = DiscoveryService(FakeDiscoveryRepository())  # type: ignore[arg-type]
 
-    result = await service.suggest(
-        query="  Computer   Science ", locale="en", entity_type=None, limit=8
-    )
+    result = await service.suggest(query="  Jahan   University ", locale="en", limit=8)
 
-    assert result.query == "Computer Science"
-    assert result.data[0].entity_type is DiscoveryEntityType.PROGRAM
+    assert result.query == "Jahan University"
+    assert result.data[0].entity_type is DiscoveryEntityType.UNIVERSITY
     assert result.data[0].score == 5.1235
 
 
@@ -64,12 +58,7 @@ async def test_suggestions_normalize_query_and_round_score() -> None:
 async def test_related_results_explain_their_score() -> None:
     service = DiscoveryService(FakeDiscoveryRepository())  # type: ignore[arg-type]
 
-    result = await service.related(
-        entity=DiscoveryEntityType.UNIVERSITY,
-        slug="source-university",
-        locale="en",
-        limit=6,
-    )
+    result = await service.related_universities(slug="source-university", locale="en", limit=6)
 
     assert result.data[0].reasons == [
         "same_country",
@@ -83,8 +72,6 @@ async def test_related_missing_source_is_not_found() -> None:
     service = DiscoveryService(FakeDiscoveryRepository())  # type: ignore[arg-type]
 
     with pytest.raises(ApplicationError) as error:
-        await service.related(
-            entity=DiscoveryEntityType.PROGRAM, slug="missing", locale="fa", limit=6
-        )
+        await service.related_universities(slug="missing", locale="fa", limit=6)
 
     assert error.value.code == "DISCOVERY_SOURCE_NOT_FOUND"

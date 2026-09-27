@@ -13,6 +13,8 @@ from app.modules.universities.domain import (
 )
 from app.modules.universities.repository import UniversityRepository
 from app.modules.universities.schemas import (
+    PublicUniversityPage,
+    PublicUniversityView,
     ReferenceSummary,
     TuitionView,
     UniversityMediaView,
@@ -36,23 +38,29 @@ class UniversityService:
         limit: int,
         query: str | None,
         country_id: UUID | None,
-        city_id: UUID | None,
-        institution_type: str | None,
-        maximum_rank: int | None,
-        sort: UniversitySort,
-    ) -> UniversityPage:
-        return await self._list(
+    ) -> PublicUniversityPage:
+        rows, total = await self._repository.list_items(
             locale=locale,
             page=page,
             limit=limit,
             public_only=True,
             query=query,
             country_id=country_id,
-            city_id=city_id,
-            institution_type=institution_type,
+            city_id=None,
+            institution_type=None,
             status=None,
-            maximum_rank=maximum_rank,
-            sort=sort,
+            maximum_rank=None,
+            sort=UniversitySort.FEATURED,
+        )
+        rows = await self._repository.hydrate_list(rows)
+        return PublicUniversityPage(
+            data=[self._public_view(row) for row in rows],
+            meta=UniversityPageMeta(
+                page=page,
+                limit=limit,
+                total=total,
+                total_pages=ceil(total / limit) if total else 0,
+            ),
         )
 
     async def list_admin(
@@ -96,11 +104,11 @@ class UniversityService:
             ),
         )
 
-    async def get_public(self, slug: str, locale: str) -> UniversityView:
+    async def get_public(self, slug: str, locale: str) -> PublicUniversityView:
         row = await self._repository.get(locale=locale, slug=slug, public_only=True)
         if row is None:
             raise self._not_found()
-        return self._view(row, admin=False)
+        return self._public_view(row)
 
     async def get_admin(self, university_id: UUID, locale: str) -> UniversityView:
         row = await self._repository.get(locale=locale, university_id=university_id)
@@ -398,6 +406,34 @@ class UniversityService:
             created_at=row["created_at"],
             updated_at=row["updated_at"],
             version=row["row_version"],
+        )
+
+    @staticmethod
+    def _public_view(row: dict[str, Any]) -> PublicUniversityView:
+        media = [
+            UniversityMediaView(
+                **item,
+                public_url=f"/api/v1/media/{item['media_asset_id']}/content",
+            )
+            for item in row.get("media", [])
+            if item["role"] in {UniversityMediaRole.LOGO, UniversityMediaRole.HERO}
+        ]
+        return PublicUniversityView(
+            id=row["id"],
+            slug=row["slug"],
+            name=row["name"],
+            short_description=row.get("short_description"),
+            country=ReferenceSummary(id=row["country_id"], name=row["country_name"]),
+            city=(
+                ReferenceSummary(id=row["city_id"], name=row["city_name"])
+                if row.get("city_id") and row.get("city_name")
+                else None
+            ),
+            institution_type=row.get("institution_type"),
+            founded_year=row.get("founded_year"),
+            website_url=row.get("website_url"),
+            featured=row["featured"],
+            media=media,
         )
 
     @staticmethod

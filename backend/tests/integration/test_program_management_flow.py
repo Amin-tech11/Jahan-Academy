@@ -206,27 +206,9 @@ def test_program_crud_publish_discovery_and_archive() -> None:
             assert published.status_code == 200, published.text
             assert published.json()["data"]["status"] == "published"
 
-            public = client.get(f"/api/v1/programs/{slug}", params={"locale": "en"})
-            assert public.status_code == 200, public.text
-            assert public.json()["data"]["academicLevel"]["code"] == "master"
-            assert public.json()["data"]["requirements"][0]["value"]["minimumOverall"] == 6.5
-            assert "translations" not in public.json()["data"]
-
-            listing = client.get(
-                "/api/v1/programs",
-                params={
-                    "locale": "en",
-                    "universityId": str(ids["university"]),
-                    "academicLevelId": str(ids["level"]),
-                    "fieldId": str(ids["field"]),
-                    "intakeId": str(ids["intake"]),
-                    "intakeYear": 2027,
-                    "tuitionMaximumMinor": 100000,
-                    "currency": "EUR",
-                },
-            )
-            assert listing.status_code == 200, listing.text
-            assert listing.json()["meta"]["total"] == 1
+            public_detail = client.get(f"/api/v1/programs/{slug}", params={"locale": "en"})
+            assert public_detail.status_code == 404
+            assert client.get("/api/v1/programs", params={"locale": "en"}).status_code == 404
 
             archived = client.post(
                 f"/api/v1/admin/programs/{program_id}/archive",

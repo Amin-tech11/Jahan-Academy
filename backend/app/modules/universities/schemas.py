@@ -233,8 +233,32 @@ class UniversityView(UniversityModel):
     version: int
 
 
+class PublicUniversityView(UniversityModel):
+    """The intentionally small public university-showcase contract.
+
+    Internal catalog attributes such as rankings, tuition, contacts, all Program relations,
+    lifecycle evidence, and versioning are deliberately absent from this model.
+    """
+
+    id: UUID
+    slug: str
+    name: str
+    short_description: str | None = None
+    country: ReferenceSummary
+    city: ReferenceSummary | None = None
+    institution_type: InstitutionType | None = None
+    founded_year: int | None = None
+    website_url: str | None = None
+    featured: bool
+    media: list[UniversityMediaView]
+
+
 class UniversityEnvelope(UniversityModel):
     data: UniversityView
+
+
+class PublicUniversityEnvelope(UniversityModel):
+    data: PublicUniversityView
 
 
 class UniversityPageMeta(UniversityModel):
@@ -246,4 +270,9 @@ class UniversityPageMeta(UniversityModel):
 
 class UniversityPage(UniversityModel):
     data: list[UniversityView]
+    meta: UniversityPageMeta
+
+
+class PublicUniversityPage(UniversityModel):
+    data: list[PublicUniversityView]
     meta: UniversityPageMeta

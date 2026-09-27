@@ -21,7 +21,6 @@ from app.modules.programs.service import ProgramService
 from app.shared.exceptions import ApplicationError
 
 router = APIRouter(tags=["programs"])
-public_router = APIRouter(prefix="/programs")
 admin_router = APIRouter(prefix="/admin/programs", tags=["program-administration"])
 
 
@@ -29,67 +28,6 @@ def program_service(
     session: Annotated[AsyncSession, Depends(database_session)],
 ) -> ProgramService:
     return ProgramService(ProgramRepository(session))
-
-
-@public_router.get(
-    "",
-    response_model=ProgramPage,
-    response_model_exclude_none=True,
-    summary="Discover published academic programs",
-)
-async def list_public_programs(
-    service: Annotated[ProgramService, Depends(program_service)],
-    locale: Annotated[str, Query(pattern=r"^(fa|en)$")] = "fa",
-    page: Annotated[int, Query(ge=1)] = 1,
-    limit: Annotated[int, Query(ge=1, le=20)] = 20,
-    q: Annotated[str | None, Query(min_length=2, max_length=100)] = None,
-    university_id: Annotated[UUID | None, Query(alias="universityId")] = None,
-    country_id: Annotated[UUID | None, Query(alias="countryId")] = None,
-    academic_level_id: Annotated[UUID | None, Query(alias="academicLevelId")] = None,
-    field_id: Annotated[UUID | None, Query(alias="fieldId")] = None,
-    intake_id: Annotated[UUID | None, Query(alias="intakeId")] = None,
-    intake_year: Annotated[int | None, Query(alias="intakeYear", ge=2020, le=2200)] = None,
-    teaching_language_code: Annotated[
-        str | None, Query(alias="teachingLanguage", min_length=2, max_length=20)
-    ] = None,
-    tuition_maximum_minor: Annotated[int | None, Query(alias="tuitionMaximumMinor", ge=0)] = None,
-    tuition_currency: Annotated[
-        str | None, Query(alias="currency", pattern=r"^[A-Za-z]{3}$")
-    ] = None,
-    sort: ProgramSort = ProgramSort.FEATURED,
-) -> ProgramPage:
-    return await service.list_public(
-        locale=locale,
-        page=page,
-        limit=limit,
-        query=q,
-        university_id=university_id,
-        country_id=country_id,
-        academic_level_id=academic_level_id,
-        field_id=field_id,
-        intake_id=intake_id,
-        intake_year=intake_year,
-        teaching_language_code=(
-            teaching_language_code.casefold() if teaching_language_code else None
-        ),
-        tuition_maximum_minor=tuition_maximum_minor,
-        tuition_currency=tuition_currency.upper() if tuition_currency else None,
-        sort=sort,
-    )
-
-
-@public_router.get(
-    "/{slug}",
-    response_model=ProgramEnvelope,
-    response_model_exclude_none=True,
-    summary="View a published academic program",
-)
-async def get_public_program(
-    slug: str,
-    service: Annotated[ProgramService, Depends(program_service)],
-    locale: Annotated[str, Query(pattern=r"^(fa|en)$")] = "fa",
-) -> ProgramEnvelope:
-    return ProgramEnvelope(data=await service.get_public(slug, locale))
 
 
 @admin_router.get("", response_model=ProgramPage, summary="Search all academic programs")
@@ -257,5 +195,4 @@ def _parse_if_match(value: str | None) -> int:
     return int(normalized)
 
 
-router.include_router(public_router)
 router.include_router(admin_router)
