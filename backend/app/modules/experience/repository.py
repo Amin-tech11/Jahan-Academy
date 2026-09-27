@@ -31,9 +31,10 @@ class ExperienceRepository:
                         "SELECT p.*, pt.title, pt.summary, pt.body, pt.seo_title, pt.seo_description, pt.blocks "
                         "FROM public_pages p JOIN public_page_translations pt ON pt.page_id = p.id "
                         "AND pt.locale = :locale WHERE p.deleted_at IS NULL "
-                        "AND (:page_id IS NULL OR p.id = :page_id) "
-                        "AND (:slug IS NULL OR p.slug = :slug) "
-                        "AND (:public_only = false OR (p.status = 'published' AND p.published_at <= now()))"
+                        "AND p.id = COALESCE(CAST(:page_id AS uuid), p.id) "
+                        "AND p.slug = COALESCE(CAST(:slug AS varchar), p.slug) "
+                        "AND (CAST(:public_only AS boolean) = false OR "
+                        "(p.status = 'published' AND p.published_at <= now()))"
                     ),
                     {
                         "locale": locale,
@@ -62,7 +63,8 @@ class ExperienceRepository:
                 "SELECT p.*, pt.title, pt.summary, pt.body, pt.seo_title, pt.seo_description, pt.blocks "
                 "FROM public_pages p JOIN public_page_translations pt ON pt.page_id = p.id "
                 "AND pt.locale = :locale WHERE p.deleted_at IS NULL "
-                "AND (:public_only = false OR (p.status = 'published' AND p.published_at <= now())) "
+                "AND (CAST(:public_only AS boolean) = false OR "
+                "(p.status = 'published' AND p.published_at <= now())) "
                 "ORDER BY p.display_order, pt.title, p.id"
             ),
             {"locale": locale, "public_only": public_only},
@@ -148,7 +150,8 @@ class ExperienceRepository:
                 "JOIN country_translations ct ON ct.country_id = c.id AND ct.locale = :locale "
                 "JOIN country_guide_translations gt ON gt.country_guide_id = g.id AND gt.locale = :locale "
                 "WHERE g.deleted_at IS NULL AND c.deleted_at IS NULL "
-                "AND (:public_only = false OR (g.status = 'published' AND g.published_at <= now() "
+                "AND (CAST(:public_only AS boolean) = false OR "
+                "(g.status = 'published' AND g.published_at <= now() "
                 "AND c.status = 'published')) ORDER BY gt.title, g.id"
             ),
             {"locale": locale, "public_only": public_only},
@@ -173,9 +176,10 @@ class ExperienceRepository:
                         "JOIN country_translations ct ON ct.country_id = c.id AND ct.locale = :locale "
                         "JOIN country_guide_translations gt ON gt.country_guide_id = g.id AND gt.locale = :locale "
                         "WHERE g.deleted_at IS NULL AND c.deleted_at IS NULL "
-                        "AND (:guide_id IS NULL OR g.id = :guide_id) "
-                        "AND (:country_slug IS NULL OR c.slug = :country_slug) "
-                        "AND (:public_only = false OR (g.status = 'published' AND g.published_at <= now() "
+                        "AND g.id = COALESCE(CAST(:guide_id AS uuid), g.id) "
+                        "AND c.slug = COALESCE(CAST(:country_slug AS varchar), c.slug) "
+                        "AND (CAST(:public_only AS boolean) = false OR "
+                        "(g.status = 'published' AND g.published_at <= now() "
                         "AND c.status = 'published'))"
                     ),
                     {
