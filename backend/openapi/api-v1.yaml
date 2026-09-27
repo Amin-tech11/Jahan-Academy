@@ -13,6 +13,7 @@ tags:
   - name: Lead Operations
   - name: Media
   - name: User Authentication
+  - name: Staff Administration
   - name: Applications
   - name: Courses
   - name: Commerce
@@ -908,6 +909,116 @@ paths:
         '404': { $ref: '#/components/responses/NotFound' }
         '409': { $ref: '#/components/responses/Conflict' }
         '422': { $ref: '#/components/responses/ValidationError' }
+  /admin/staff:
+    get:
+      tags: [Staff Administration]
+      operationId: listAdministrativeStaff
+      x-phase: MVP
+      x-permissions: [identity.manage]
+      security: [{ UserAccessToken: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+        - { name: q, in: query, schema: { type: string, minLength: 1, maxLength: 200 } }
+        - { name: status, in: query, schema: { type: string, enum: [active, disabled, locked] } }
+        - { name: role, in: query, schema: { $ref: '#/components/schemas/StaffRoleCode' } }
+      responses:
+        '200':
+          description: Paginated internal staff accounts
+          content: { application/json: { schema: { $ref: '#/components/schemas/StaffPage' } } }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+    post:
+      tags: [Staff Administration]
+      operationId: createAdministrativeStaff
+      x-phase: MVP
+      x-permissions: [identity.manage]
+      security: [{ UserAccessToken: [] }]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/StaffCreate' } } }
+      responses:
+        '201':
+          description: Staff account created; setup link sent after successful commit
+          content: { application/json: { schema: { $ref: '#/components/schemas/StaffEnvelope' } } }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /admin/staff/{id}:
+    parameters: [{ $ref: '#/components/parameters/Id' }]
+    get:
+      tags: [Staff Administration]
+      operationId: getAdministrativeStaff
+      x-phase: MVP
+      x-permissions: [identity.manage]
+      security: [{ UserAccessToken: [] }]
+      responses:
+        '200':
+          description: Staff account and ETag
+          content: { application/json: { schema: { $ref: '#/components/schemas/StaffEnvelope' } } }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    patch:
+      tags: [Staff Administration]
+      operationId: updateAdministrativeStaff
+      x-phase: MVP
+      x-permissions: [identity.manage]
+      security: [{ UserAccessToken: [] }]
+      parameters: [{ $ref: '#/components/parameters/IfMatch' }]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/StaffUpdate' } } }
+      responses:
+        '200':
+          description: Updated staff account and ETag
+          content: { application/json: { schema: { $ref: '#/components/schemas/StaffEnvelope' } } }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '412': { $ref: '#/components/responses/PreconditionFailed' }
+        '428': { $ref: '#/components/responses/PreconditionRequired' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /admin/staff/{id}/roles:
+    put:
+      tags: [Staff Administration]
+      operationId: replaceAdministrativeStaffRoles
+      x-phase: MVP
+      x-permissions: [role.manage]
+      security: [{ UserAccessToken: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }, { $ref: '#/components/parameters/IfMatch' }]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/StaffRolesUpdate' } } }
+      responses:
+        '200':
+          description: Complete global staff role set replaced; sessions revoked
+          content: { application/json: { schema: { $ref: '#/components/schemas/StaffEnvelope' } } }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '412': { $ref: '#/components/responses/PreconditionFailed' }
+        '428': { $ref: '#/components/responses/PreconditionRequired' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /admin/staff/{id}/access-recovery:
+    post:
+      tags: [Staff Administration]
+      operationId: recoverAdministrativeStaffAccess
+      x-phase: MVP
+      x-permissions: [identity.manage]
+      security: [{ UserAccessToken: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }, { $ref: '#/components/parameters/IfMatch' }]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/StaffAccessRecovery' } } }
+      responses:
+        '202':
+          description: Sessions revoked and one-time password-reset link issued
+          content: { application/json: { schema: { $ref: '#/components/schemas/StaffEnvelope' } } }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '412': { $ref: '#/components/responses/PreconditionFailed' }
+        '428': { $ref: '#/components/responses/PreconditionRequired' }
   /auth/register:
     post:
       tags: [User Authentication]
@@ -1262,6 +1373,90 @@ components:
       description: Authoritative local persistence is unavailable
       content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   schemas:
+    StaffRoleCode:
+      type: string
+      enum: [super_admin, support, consultant, content_editor]
+    StaffRole:
+      type: object
+      required: [code]
+      properties:
+        code: { $ref: '#/components/schemas/StaffRoleCode' }
+    StaffCreate:
+      type: object
+      additionalProperties: false
+      required: [email, firstName, lastName, roleCodes]
+      properties:
+        email: { type: string, format: email, maxLength: 320 }
+        firstName: { type: string, minLength: 1, maxLength: 100 }
+        lastName: { type: string, minLength: 1, maxLength: 100 }
+        preferredLocale: { type: string, enum: [fa, en], default: fa }
+        roleCodes:
+          type: array
+          minItems: 1
+          maxItems: 4
+          uniqueItems: true
+          items: { $ref: '#/components/schemas/StaffRoleCode' }
+    StaffUpdate:
+      type: object
+      additionalProperties: false
+      minProperties: 1
+      properties:
+        firstName: { type: string, minLength: 1, maxLength: 100 }
+        lastName: { type: string, minLength: 1, maxLength: 100 }
+        preferredLocale: { type: string, enum: [fa, en] }
+        active: { type: boolean }
+    StaffRolesUpdate:
+      type: object
+      additionalProperties: false
+      required: [roleCodes]
+      properties:
+        roleCodes:
+          type: array
+          minItems: 1
+          maxItems: 4
+          uniqueItems: true
+          items: { $ref: '#/components/schemas/StaffRoleCode' }
+    StaffAccessRecovery:
+      type: object
+      additionalProperties: false
+      properties:
+        reactivate: { type: boolean, default: false }
+    StaffView:
+      type: object
+      required:
+        [id, email, firstName, lastName, preferredLocale, status, active, emailVerified, roles, createdAt, updatedAt, version]
+      properties:
+        id: { $ref: '#/components/schemas/Uuid' }
+        email: { type: string, format: email }
+        firstName: { type: string }
+        lastName: { type: string }
+        preferredLocale: { type: string, enum: [fa, en] }
+        status: { type: string, enum: [active, disabled, locked] }
+        active: { type: boolean }
+        emailVerified: { type: boolean }
+        roles: { type: array, items: { $ref: '#/components/schemas/StaffRole' } }
+        lockedUntil: { type: [string, 'null'], format: date-time }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+        version: { type: integer, minimum: 1 }
+    StaffEnvelope:
+      type: object
+      required: [data]
+      properties:
+        data: { $ref: '#/components/schemas/StaffView' }
+    StaffPage:
+      type: object
+      required: [data, meta]
+      properties:
+        data: { type: array, items: { $ref: '#/components/schemas/StaffView' } }
+        meta:
+          type: object
+          required: [page, limit, total, totalPages]
+          properties:
+            page: { type: integer, minimum: 1 }
+            limit: { type: integer, minimum: 1, maximum: 100 }
+            total: { type: integer, minimum: 0 }
+            totalPages: { type: integer, minimum: 0 }
     ReferenceTranslation:
       type: object
       additionalProperties: false

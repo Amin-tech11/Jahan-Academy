@@ -334,12 +334,13 @@ Allowed status transitions are defined by policy, not arbitrary PATCH: `NEW -> A
 | ID | Method and endpoint | Request | Response | Status / errors | Permission |
 |---|---|---|---|---|---|
 | IAM-01 | `GET /admin/staff` | Search/status/role/page | Page of `StaffView` | `200`, `403`, `422` | `identity.manage` |
-| IAM-02 | `POST /admin/staff` | Email, name, role IDs | `StaffView`; invitation/reset flow triggered | `201`; `409 IDENTITY_ALREADY_EXISTS`; `422` | Super Admin / `identity.manage` |
+| IAM-02 | `POST /admin/staff` | Email, name, and one or more role codes (`super_admin`, `support`, `consultant`, `content_editor`) | `StaffView`; one-time password-reset invitation is sent after commit | `201`; `403`; `409 STAFF_EMAIL_EXISTS`; `422` | Super Admin / `identity.manage` |
 | IAM-03 | `GET /admin/staff/{id}` | UUID | `StaffView` | `200`, `403`, `404` | `identity.manage` |
-| IAM-04 | `PATCH /admin/staff/{id}` | Name/active state, `If-Match` | `StaffView` | `200`; `403`; `404`; `409 LAST_SUPER_ADMIN`; `412`; `422` | `identity.manage` |
-| IAM-05 | `PUT /admin/staff/{id}/roles` | Complete role ID set, `If-Match` | `StaffView` | `200`; `403`; `404`; `409 LAST_SUPER_ADMIN`; `412`; `422` | `role.manage` |
-| IAM-06 | `GET /admin/roles` | Page/limit | Page of roles and permissions | `200`, `403` | `role.manage` |
-| IAM-07 | `GET /admin/audit-logs` | Actor/action/resource/date/page filters | Page of immutable audit events | `200`; `403`; `422` | `audit.read`; no mutation endpoint exists |
+| IAM-04 | `PATCH /admin/staff/{id}` | Name/locale/active state, required `If-Match` | `StaffView` | `200`; `403`; `404`; `409 LAST_SUPER_ADMIN_PROTECTED`/`SELF_DEACTIVATION_FORBIDDEN`; `412`; `422` | Super Admin / `identity.manage` |
+| IAM-05 | `PUT /admin/staff/{id}/roles` | Complete non-empty role-code set, required `If-Match` | `StaffView` | `200`; `403`; `404`; `409 LAST_SUPER_ADMIN_PROTECTED`; `412`; `422` | Super Admin / `role.manage` |
+| IAM-06 | `POST /admin/staff/{id}/access-recovery` | `reactivate` boolean and required `If-Match` | `StaffView`; revokes sessions and sends a one-time reset link | `202`; `403`; `404`; `409 STAFF_REACTIVATION_REQUIRED`; `412` | Super Admin / `identity.manage` |
+| IAM-07 | `GET /admin/roles` | Page/limit | Page of roles and permissions | `200`, `403` | `role.manage` |
+| IAM-08 | `GET /admin/audit-logs` | Actor/action/resource/date/page filters | Page of immutable audit events | `200`; `403`; `422` | `audit.read`; no mutation endpoint exists |
 
 ## 11. Final Public User Authentication API
 
