@@ -223,6 +223,18 @@ class AuthRepository:
         if password_hash is not None:
             account.identity.password_hash = password_hash
 
+    async def audit_login(
+        self, *, user_id: UUID, ip_hash: str | None, user_agent: str | None
+    ) -> None:
+        await self.session.execute(
+            text(
+                "INSERT INTO audit_logs "
+                "(actor_user_id, action, entity_type, entity_id, ip_hash, user_agent) "
+                "VALUES (:user_id, 'auth.login.succeeded', 'user', :user_id, :ip_hash, :user_agent)"
+            ),
+            {"user_id": user_id, "ip_hash": ip_hash, "user_agent": user_agent},
+        )
+
     async def create_session(
         self,
         *,

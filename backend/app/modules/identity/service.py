@@ -138,6 +138,11 @@ class AuthService:
             replacement_hash = self._security.hash_password(request.password)
         await self._repository.register_successful_login(account, replacement_hash)
         issued = await self._issue_session(account, ip_address, user_agent)
+        await self._repository.audit_login(
+            user_id=account.user.id,
+            ip_hash=self._security.fingerprint_hash(ip_address),
+            user_agent=(user_agent or "")[:500] or None,
+        )
         await self._repository.session.commit()
         return issued
 
