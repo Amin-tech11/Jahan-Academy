@@ -32,6 +32,14 @@ Endpoints are marked:
 | Idempotency | `Idempotency-Key` is required for order/application creation and recommended for other retried POSTs |
 | Concurrency | Admin updates send `If-Match` with the current ETag; stale updates return `412` |
 
+### 2.1 Operational Hardening
+
+- The API applies Redis-backed, per-client/method limits to `/api/*` (default: 120 requests/minute); a limiter outage is logged and fails open so a Redis incident does not become an availability incident.
+- Consultation submission retains its stricter subject-based limiter and durable idempotency record. Expired idempotency records are removed daily.
+- Every response includes an opaque `X-Request-ID`, correlation-safe JSON logging, `nosniff`, clickjacking protection, referrer and permissions policies, and API CSP. Production also emits HSTS.
+- `GET /internal/metrics` is intentionally outside the public API contract and returns Prometheus text only after a constant-time `X-Monitoring-Token` comparison; production refuses to start without that secret.
+- A daily retention task anonymizes Lead PII after three years of inactivity, records an immutable audit event, and never permanently deletes operational Lead history.
+
 ### 2.1 SEO Public Support
 
 | ID | Method and endpoint | Auth | Response | Status / errors | Policy |

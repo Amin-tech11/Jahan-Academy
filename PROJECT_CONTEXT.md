@@ -881,6 +881,7 @@ required CI gate for the current feature is green.
 - [x] Audit Log implemented: immutable append-only UI model, successful-login evidence with hashed IP, centralized Super-Admin-only filtered/paginated read API, and indexed actions/entities; existing content, access, Lead/assignment, and Noura-sync audit writers are surfaced by migration `022_audit_log`.
 - [x] SEO Backend Support implemented: public localized metadata contracts, canonical and reciprocal `fa`/`en`/`x-default` hreflang links, schema.org JSON-LD limited to eligible types, root `sitemap.xml` generated from published non-archived entities only, root `robots.txt`, and `noindex,follow` metadata for every filtered listing.
 - [x] Temporary Admin Dashboard & Reporting implemented: role-protected, read-only local operational metrics for Leads, workflow statuses, consultants, conversion, published content, and sanitized Noura sync errors. The response identifies itself as `local_temporary`; Noura ERP remains the final reporting authority.
+- [x] Operational Hardening implemented: Redis-backed API rate limiting plus existing consultation idempotency, correlation-safe structured request logging, security headers, token-protected internal metrics, and scheduled three-year Lead anonymization with idempotency cleanup and audit evidence.
 - [ ] Real Noura connector implemented and accepted.
 - [ ] Staging and production infrastructure provisioned.
 

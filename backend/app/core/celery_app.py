@@ -16,7 +16,11 @@ celery_app.conf.update(
         "dispatch-noura-outbox": {
             "task": "jahan.integrations.dispatch_noura_outbox",
             "schedule": 10.0,
-        }
+        },
+        "enforce-data-retention": {
+            "task": "jahan.operational.enforce_retention",
+            "schedule": 86400.0,
+        },
     },
-    imports=("app.modules.integrations.tasks",),
+    imports=("app.modules.integrations.tasks", "app.modules.operational.tasks"),
 )
