@@ -17,6 +17,7 @@ from app.modules.media.router import router as media_router
 from app.modules.notifications.router import router as notifications_router
 from app.modules.programs.router import router as programs_router
 from app.modules.reporting.router import router as reporting_router
+from app.modules.seo.router import router as seo_router
 from app.modules.universities.router import router as universities_router
 
 module_routers: tuple[APIRouter, ...] = (
@@ -37,5 +38,6 @@ module_routers: tuple[APIRouter, ...] = (
     programs_router,
     integrations_router,
     reporting_router,
+    seo_router,
     universities_router,
 )
