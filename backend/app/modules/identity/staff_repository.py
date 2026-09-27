@@ -184,7 +184,7 @@ class StaffRepository:
                   AND (CAST(:query AS text) IS NULL OR i.normalized_value ILIKE :query
                        OR p.first_name ILIKE :query OR p.last_name ILIKE :query)
                   AND (CAST(:status AS text) IS NULL OR u.status::text = :status)
-                  AND (:role_code IS NULL OR EXISTS (
+                  AND (CAST(:role_code AS text) IS NULL OR EXISTS (
                       SELECT 1 FROM user_roles urf JOIN roles rf ON rf.id = urf.role_id
                       WHERE urf.user_id = u.id AND urf.scope_type = 'global'
                         AND urf.revoked_at IS NULL AND rf.code = :role_code
@@ -210,7 +210,7 @@ class StaffRepository:
                   AND (CAST(:query AS text) IS NULL OR i.normalized_value ILIKE :query
                        OR p.first_name ILIKE :query OR p.last_name ILIKE :query)
                   AND (CAST(:status AS text) IS NULL OR u.status::text = :status)
-                  AND (:role_code IS NULL OR EXISTS (
+                  AND (CAST(:role_code AS text) IS NULL OR EXISTS (
                       SELECT 1 FROM user_roles urf JOIN roles rf ON rf.id = urf.role_id
                       WHERE urf.user_id = u.id AND urf.scope_type = 'global'
                         AND urf.revoked_at IS NULL AND rf.code = :role_code
