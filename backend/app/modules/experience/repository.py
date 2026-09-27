@@ -24,19 +24,23 @@ class ExperienceRepository:
         slug: str | None = None,
         public_only: bool = False,
     ) -> dict[str, Any] | None:
-        selector = "p.id = :selector" if page_id else "p.slug = :selector"
-        conditions = [selector, "p.deleted_at IS NULL"]
-        if public_only:
-            conditions.extend(["p.status = 'published'", "p.published_at <= now()"])
         row = (
             (
                 await self.session.execute(
                     text(
                         "SELECT p.*, pt.title, pt.summary, pt.body, pt.seo_title, pt.seo_description, pt.blocks "
                         "FROM public_pages p JOIN public_page_translations pt ON pt.page_id = p.id "
-                        "AND pt.locale = :locale WHERE " + " AND ".join(conditions)
+                        "AND pt.locale = :locale WHERE p.deleted_at IS NULL "
+                        "AND (:page_id IS NULL OR p.id = :page_id) "
+                        "AND (:slug IS NULL OR p.slug = :slug) "
+                        "AND (:public_only = false OR (p.status = 'published' AND p.published_at <= now()))"
                     ),
-                    {"locale": locale, "selector": page_id or slug},
+                    {
+                        "locale": locale,
+                        "page_id": page_id,
+                        "slug": slug,
+                        "public_only": public_only,
+                    },
                 )
             )
             .mappings()
@@ -53,18 +57,15 @@ class ExperienceRepository:
         return await self.get_page(locale=locale, slug="home", public_only=True)
 
     async def list_pages(self, *, locale: str, public_only: bool) -> list[dict[str, Any]]:
-        conditions = ["p.deleted_at IS NULL"]
-        if public_only:
-            conditions.extend(["p.status = 'published'", "p.published_at <= now()"])
         rows = await self.session.execute(
             text(
                 "SELECT p.*, pt.title, pt.summary, pt.body, pt.seo_title, pt.seo_description, pt.blocks "
                 "FROM public_pages p JOIN public_page_translations pt ON pt.page_id = p.id "
-                "AND pt.locale = :locale WHERE "
-                + " AND ".join(conditions)
-                + " ORDER BY p.display_order, pt.title, p.id"
+                "AND pt.locale = :locale WHERE p.deleted_at IS NULL "
+                "AND (:public_only = false OR (p.status = 'published' AND p.published_at <= now())) "
+                "ORDER BY p.display_order, pt.title, p.id"
             ),
-            {"locale": locale},
+            {"locale": locale, "public_only": public_only},
         )
         result: list[dict[str, Any]] = []
         for row in rows:
@@ -139,11 +140,6 @@ class ExperienceRepository:
             raise StaleExperienceError
 
     async def list_guides(self, *, locale: str, public_only: bool) -> list[dict[str, Any]]:
-        conditions = ["g.deleted_at IS NULL", "c.deleted_at IS NULL"]
-        if public_only:
-            conditions.extend(
-                ["g.status = 'published'", "g.published_at <= now()", "c.status = 'published'"]
-            )
         rows = await self.session.execute(
             text(
                 "SELECT g.*, c.id AS country_id, c.slug AS country_slug, ct.name AS country_name, "
@@ -151,9 +147,11 @@ class ExperienceRepository:
                 "FROM country_guides g JOIN countries c ON c.id = g.country_id "
                 "JOIN country_translations ct ON ct.country_id = c.id AND ct.locale = :locale "
                 "JOIN country_guide_translations gt ON gt.country_guide_id = g.id AND gt.locale = :locale "
-                "WHERE " + " AND ".join(conditions) + " ORDER BY gt.title, g.id"
+                "WHERE g.deleted_at IS NULL AND c.deleted_at IS NULL "
+                "AND (:public_only = false OR (g.status = 'published' AND g.published_at <= now() "
+                "AND c.status = 'published')) ORDER BY gt.title, g.id"
             ),
-            {"locale": locale},
+            {"locale": locale, "public_only": public_only},
         )
         return [await self._guide_row(dict(row._mapping)) for row in rows]
 
@@ -165,12 +163,6 @@ class ExperienceRepository:
         country_slug: str | None = None,
         public_only: bool = False,
     ) -> dict[str, Any] | None:
-        selector = "g.id = :selector" if guide_id else "c.slug = :selector"
-        conditions = [selector, "g.deleted_at IS NULL", "c.deleted_at IS NULL"]
-        if public_only:
-            conditions.extend(
-                ["g.status = 'published'", "g.published_at <= now()", "c.status = 'published'"]
-            )
         row = (
             (
                 await self.session.execute(
@@ -180,9 +172,18 @@ class ExperienceRepository:
                         "FROM country_guides g JOIN countries c ON c.id = g.country_id "
                         "JOIN country_translations ct ON ct.country_id = c.id AND ct.locale = :locale "
                         "JOIN country_guide_translations gt ON gt.country_guide_id = g.id AND gt.locale = :locale "
-                        "WHERE " + " AND ".join(conditions)
+                        "WHERE g.deleted_at IS NULL AND c.deleted_at IS NULL "
+                        "AND (:guide_id IS NULL OR g.id = :guide_id) "
+                        "AND (:country_slug IS NULL OR c.slug = :country_slug) "
+                        "AND (:public_only = false OR (g.status = 'published' AND g.published_at <= now() "
+                        "AND c.status = 'published'))"
                     ),
-                    {"locale": locale, "selector": guide_id or country_slug},
+                    {
+                        "locale": locale,
+                        "guide_id": guide_id,
+                        "country_slug": country_slug,
+                        "public_only": public_only,
+                    },
                 )
             )
             .mappings()
