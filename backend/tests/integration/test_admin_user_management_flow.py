@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+from collections.abc import AsyncIterator
 from uuid import UUID, uuid4
 
 import psycopg
@@ -110,7 +111,7 @@ def test_staff_administration_lifecycle_roles_and_access_recovery() -> None:
     async def actor_override() -> AuthorizationContext:
         return actor
 
-    async def staff_service_override():
+    async def staff_service_override() -> AsyncIterator[StaffManagementService]:
         async with session_factory() as session:
             yield StaffManagementService(
                 repository=StaffRepository(session),
