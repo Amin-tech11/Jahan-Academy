@@ -1,8 +1,8 @@
 from fastapi import APIRouter
 
-from app.modules.audit.router import router as audit_router
 from app.modules.applicants.router import router as applicants_router
 from app.modules.applications.router import router as applications_router
+from app.modules.audit.router import router as audit_router
 from app.modules.catalog.router import router as catalog_router
 from app.modules.commerce.router import router as commerce_router
 from app.modules.communication.router import router as communication_router
