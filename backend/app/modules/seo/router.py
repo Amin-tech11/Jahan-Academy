@@ -52,7 +52,9 @@ async def sitemap(session: Annotated[AsyncSession, Depends(database_session)]) -
     rows = await SeoRepository(session).sitemap_entries()
     entries = [
         {
-            "loc": service.url_for(row["resource"], row["slug"], row["locale"]),
+            "loc": service.url_for(
+                row["resource"], row["slug"], row["locale"], page_kind=row["page_kind"]
+            ),
             "last_modified": row["updated_at"],
         }
         for row in rows

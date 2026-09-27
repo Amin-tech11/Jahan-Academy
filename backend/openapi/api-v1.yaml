@@ -114,7 +114,7 @@ paths:
       operationId: getEntitySeoMetadata
       x-phase: MVP
       parameters:
-        - { name: resource, in: path, required: true, schema: { type: string, enum: [country, university, article] } }
+        - { name: resource, in: path, required: true, schema: { type: string, enum: [country, university, article, page] } }
         - { name: slug, in: path, required: true, schema: { type: string, pattern: '^[a-z0-9]+(?:-[a-z0-9]+)*$' } }
         - { name: locale, in: query, schema: { type: string, enum: [fa, en], default: fa } }
       responses:
@@ -127,7 +127,7 @@ paths:
       operationId: getListingSeoMetadata
       x-phase: MVP
       parameters:
-        - { name: resource, in: path, required: true, schema: { type: string, enum: [universities, articles] } }
+        - { name: resource, in: path, required: true, schema: { type: string, enum: [countries, universities, articles, services] } }
         - { name: locale, in: query, schema: { type: string, enum: [fa, en], default: fa } }
       responses:
         '200': { description: Listing metadata; any query filter returns noindex,follow and an unfiltered canonical }

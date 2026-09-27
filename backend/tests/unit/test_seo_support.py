@@ -42,6 +42,24 @@ def test_filtered_listing_is_noindex_and_canonical_has_no_query_string() -> None
     assert "?" not in metadata.canonical
 
 
+def test_cms_service_page_metadata_uses_service_url_and_hreflang() -> None:
+    metadata = SeoService("https://jahanacademy.example").entity_metadata(
+        resource="page",
+        slug="study-abroad-consulting",
+        locale="en",
+        name="Study abroad consulting",
+        seo_title=None,
+        seo_description=None,
+        updated_at=None,
+        page_kind="service",
+    )
+
+    assert metadata.canonical == "https://jahanacademy.example/en/services/study-abroad-consulting"
+    assert metadata.alternate_links[0].href == (
+        "https://jahanacademy.example/fa/services/study-abroad-consulting"
+    )
+
+
 def test_sitemap_escapes_untrusted_database_values_and_robots_blocks_nonpublic_paths() -> None:
     service = SeoService("https://jahanacademy.example")
     sitemap = service.sitemap_xml([{"loc": "https://jahanacademy.example/en/articles/a&b"}])

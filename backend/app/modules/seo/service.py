@@ -31,13 +31,19 @@ class SeoService:
         seo_description: str | None,
         updated_at: datetime | None,
         article_type: str | None = None,
-        university_name: str | None = None,
+        page_kind: str | None = None,
     ) -> SeoMetadata:
-        canonical = self.url_for(resource, slug, locale)
+        canonical = self.url_for(resource, slug, locale, page_kind=page_kind)
         title = seo_title or name
         description = seo_description
         structured_data = [
-            self._breadcrumb(resource=resource, name=name, canonical=canonical, locale=locale)
+            self._breadcrumb(
+                resource=resource,
+                name=name,
+                canonical=canonical,
+                locale=locale,
+                page_kind=page_kind,
+            )
         ]
         if resource == "university":
             structured_data.append(
@@ -62,7 +68,7 @@ class SeoService:
             description=description,
             canonical=canonical,
             robots="index,follow",
-            alternate_links=self.alternates(resource, slug),
+            alternate_links=self.alternates(resource, slug, page_kind=page_kind),
             open_graph={
                 "title": title,
                 "type": "article" if resource == "article" else "website",
@@ -74,7 +80,12 @@ class SeoService:
 
     def listing_metadata(self, *, resource: str, locale: str, filtered: bool) -> SeoMetadata:
         canonical = self.url_for_listing(resource, locale)
-        titles = {"universities": "Universities", "articles": "Articles"}
+        titles = {
+            "countries": "Study destinations",
+            "universities": "Universities",
+            "articles": "Articles",
+            "services": "Services",
+        }
         title = titles[resource]
         return SeoMetadata(
             title=title,
@@ -93,17 +104,29 @@ class SeoService:
             ],
         )
 
-    def url_for(self, resource: str, slug: str, locale: str) -> str:
+    def url_for(
+        self, resource: str, slug: str, locale: str, *, page_kind: str | None = None
+    ) -> str:
+        if resource == "page":
+            if slug == "home":
+                return f"{self.base_url}/{locale}"
+            prefix = "services" if page_kind == "service" else ""
+            suffix = f"/{prefix}" if prefix else ""
+            return f"{self.base_url}/{locale}{suffix}/{quote(slug, safe='-')}"
         return f"{self.base_url}/{locale}/{_PATHS[resource]}/{quote(slug, safe='-')}"
 
     def url_for_listing(self, resource: str, locale: str) -> str:
         return f"{self.base_url}/{locale}/{resource}"
 
-    def alternates(self, resource: str, slug: str) -> list[HreflangLink]:
+    def alternates(
+        self, resource: str, slug: str, *, page_kind: str | None = None
+    ) -> list[HreflangLink]:
         return [
-            HreflangLink(locale="fa", href=self.url_for(resource, slug, "fa")),
-            HreflangLink(locale="en", href=self.url_for(resource, slug, "en")),
-            HreflangLink(locale="x-default", href=self.url_for(resource, slug, "en")),
+            HreflangLink(locale="fa", href=self.url_for(resource, slug, "fa", page_kind=page_kind)),
+            HreflangLink(locale="en", href=self.url_for(resource, slug, "en", page_kind=page_kind)),
+            HreflangLink(
+                locale="x-default", href=self.url_for(resource, slug, "en", page_kind=page_kind)
+            ),
         ]
 
     def listing_alternates(self, resource: str) -> list[HreflangLink]:
@@ -137,9 +160,19 @@ class SeoService:
         )
 
     def _breadcrumb(
-        self, *, resource: str, name: str, canonical: str, locale: str
+        self, *, resource: str, name: str, canonical: str, locale: str, page_kind: str | None
     ) -> dict[str, Any]:
-        listing = self.url_for_listing(_PATHS[resource], locale)
+        if resource == "page":
+            listing = (
+                self.url_for_listing("services", locale)
+                if page_kind == "service"
+                else f"{self.base_url}/{locale}"
+            )
+        else:
+            listing = self.url_for_listing(_PATHS[resource], locale)
+        listing_name = "Services" if resource == "page" and page_kind == "service" else _PATHS.get(
+            resource, "Jahan Academy"
+        )
         return {
             "@context": "https://schema.org",
             "@type": "BreadcrumbList",
@@ -150,7 +183,7 @@ class SeoService:
                     "name": "Jahan Academy",
                     "item": f"{self.base_url}/{locale}",
                 },
-                {"@type": "ListItem", "position": 2, "name": _PATHS[resource], "item": listing},
+                {"@type": "ListItem", "position": 2, "name": listing_name, "item": listing},
                 {"@type": "ListItem", "position": 3, "name": name, "item": canonical},
             ],
         }

@@ -6,8 +6,8 @@ from typing import Any, Literal
 from pydantic import BaseModel, Field
 
 Locale = Literal["fa", "en"]
-SeoResource = Literal["country", "university", "article"]
-SeoListing = Literal["universities", "articles"]
+SeoResource = Literal["country", "university", "article", "page"]
+SeoListing = Literal["countries", "universities", "articles", "services"]
 
 
 class HreflangLink(BaseModel):
