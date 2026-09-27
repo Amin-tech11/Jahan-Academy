@@ -11,6 +11,24 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.modules.identity.domain import STAFF_ROLE_CODES
 
+STAFF_BY_ID_FOR_UPDATE_SUFFIX = " FOR UPDATE OF u"
+
+STAFF_BY_ID_SQL = (
+    "SELECT u.id, u.status, u.preferred_locale, u.failed_login_count, u.locked_until, "
+    "u.row_version, u.created_at, u.updated_at, p.first_name, p.last_name, "
+    "i.id AS identity_id, i.normalized_value AS email, i.verified_at, "
+    "ARRAY(SELECT r2.code FROM user_roles ur2 JOIN roles r2 ON r2.id = ur2.role_id "
+    "WHERE ur2.user_id = u.id AND ur2.scope_type = 'global' "
+    "AND ur2.revoked_at IS NULL AND r2.code = ANY(:staff_roles) ORDER BY r2.code) AS role_codes "
+    "FROM users u JOIN user_profiles p ON p.user_id = u.id "
+    "JOIN user_identities i ON i.user_id = u.id AND i.provider = 'email' "
+    "WHERE u.id = :staff_id AND u.deleted_at IS NULL "
+    "AND EXISTS (SELECT 1 FROM user_roles ur JOIN roles r ON r.id = ur.role_id "
+    "WHERE ur.user_id = u.id AND ur.scope_type = 'global' "
+    "AND ur.revoked_at IS NULL AND r.code = ANY(:staff_roles))"
+)
+STAFF_BY_ID_FOR_UPDATE_SQL = STAFF_BY_ID_SQL + STAFF_BY_ID_FOR_UPDATE_SUFFIX
+
 
 class StaffRepository:
     """Persistence boundary for globally scoped administrative staff accounts."""
@@ -123,41 +141,8 @@ class StaffRepository:
         return user_id
 
     async def get_staff(self, staff_id: UUID, *, for_update: bool = False) -> Any | None:
-        lock = " FOR UPDATE OF u" if for_update else ""
         result = await self.session.execute(
-            text(
-                f"""
-                SELECT
-                    u.id, u.status, u.preferred_locale, u.failed_login_count, u.locked_until,
-                    u.row_version, u.created_at, u.updated_at,
-                    p.first_name, p.last_name,
-                    i.id AS identity_id, i.normalized_value AS email, i.verified_at,
-                    ARRAY(
-                        SELECT r2.code
-                        FROM user_roles ur2
-                        JOIN roles r2 ON r2.id = ur2.role_id
-                        WHERE ur2.user_id = u.id
-                          AND ur2.scope_type = 'global'
-                          AND ur2.revoked_at IS NULL
-                          AND r2.code = ANY(:staff_roles)
-                        ORDER BY r2.code
-                    ) AS role_codes
-                FROM users u
-                JOIN user_profiles p ON p.user_id = u.id
-                JOIN user_identities i ON i.user_id = u.id AND i.provider = 'email'
-                WHERE u.id = :staff_id
-                  AND u.deleted_at IS NULL
-                  AND EXISTS (
-                    SELECT 1 FROM user_roles ur
-                    JOIN roles r ON r.id = ur.role_id
-                    WHERE ur.user_id = u.id
-                      AND ur.scope_type = 'global'
-                      AND ur.revoked_at IS NULL
-                      AND r.code = ANY(:staff_roles)
-                  )
-                {lock}
-                """
-            ),
+            text(STAFF_BY_ID_FOR_UPDATE_SQL if for_update else STAFF_BY_ID_SQL),
             {"staff_id": staff_id, "staff_roles": self._roles()},
         )
         return result.mappings().one_or_none()
@@ -171,38 +156,17 @@ class StaffRepository:
         status: str | None,
         role_code: str | None,
     ) -> tuple[list[Any], int]:
-        filters = ["u.deleted_at IS NULL"]
-        params: dict[str, Any] = {"staff_roles": self._roles()}
-        if query:
-            filters.append(
-                "(i.normalized_value ILIKE :query OR p.first_name ILIKE :query "
-                "OR p.last_name ILIKE :query)"
-            )
-            params["query"] = f"%{query.strip()}%"
-        if status:
-            filters.append("u.status = :status")
-            params["status"] = status
-        if role_code:
-            filters.append(
-                "EXISTS (SELECT 1 FROM user_roles urf JOIN roles rf ON rf.id = urf.role_id "
-                "WHERE urf.user_id = u.id AND urf.scope_type = 'global' "
-                "AND urf.revoked_at IS NULL AND rf.code = :role_code)"
-            )
-            params["role_code"] = role_code
-        where_clause = " AND ".join(filters)
-        staff_clause = """
-            EXISTS (
-                SELECT 1 FROM user_roles ur
-                JOIN roles r ON r.id = ur.role_id
-                WHERE ur.user_id = u.id AND ur.scope_type = 'global'
-                  AND ur.revoked_at IS NULL AND r.code = ANY(:staff_roles)
-            )
-        """
+        params: dict[str, Any] = {
+            "staff_roles": self._roles(),
+            "query": f"%{query.strip()}%" if query else None,
+            "status": status,
+            "role_code": role_code,
+        }
         offset = (page - 1) * page_size
         params.update({"limit": page_size, "offset": offset})
         result = await self.session.execute(
             text(
-                f"""
+                """
                 SELECT
                     u.id, u.status, u.preferred_locale, u.failed_login_count, u.locked_until,
                     u.row_version, u.created_at, u.updated_at,
@@ -216,7 +180,20 @@ class StaffRepository:
                 FROM users u
                 JOIN user_profiles p ON p.user_id = u.id
                 JOIN user_identities i ON i.user_id = u.id AND i.provider = 'email'
-                WHERE {where_clause} AND {staff_clause}
+                WHERE u.deleted_at IS NULL
+                  AND (:query IS NULL OR i.normalized_value ILIKE :query
+                       OR p.first_name ILIKE :query OR p.last_name ILIKE :query)
+                  AND (:status IS NULL OR u.status = :status)
+                  AND (:role_code IS NULL OR EXISTS (
+                      SELECT 1 FROM user_roles urf JOIN roles rf ON rf.id = urf.role_id
+                      WHERE urf.user_id = u.id AND urf.scope_type = 'global'
+                        AND urf.revoked_at IS NULL AND rf.code = :role_code
+                  ))
+                  AND EXISTS (
+                      SELECT 1 FROM user_roles ur JOIN roles r ON r.id = ur.role_id
+                      WHERE ur.user_id = u.id AND ur.scope_type = 'global'
+                        AND ur.revoked_at IS NULL AND r.code = ANY(:staff_roles)
+                  )
                 ORDER BY u.created_at DESC, u.id DESC
                 LIMIT :limit OFFSET :offset
                 """
@@ -225,11 +202,24 @@ class StaffRepository:
         )
         total = await self.session.scalar(
             text(
-                f"""
+                """
                 SELECT COUNT(*) FROM users u
                 JOIN user_profiles p ON p.user_id = u.id
                 JOIN user_identities i ON i.user_id = u.id AND i.provider = 'email'
-                WHERE {where_clause} AND {staff_clause}
+                WHERE u.deleted_at IS NULL
+                  AND (:query IS NULL OR i.normalized_value ILIKE :query
+                       OR p.first_name ILIKE :query OR p.last_name ILIKE :query)
+                  AND (:status IS NULL OR u.status = :status)
+                  AND (:role_code IS NULL OR EXISTS (
+                      SELECT 1 FROM user_roles urf JOIN roles rf ON rf.id = urf.role_id
+                      WHERE urf.user_id = u.id AND urf.scope_type = 'global'
+                        AND urf.revoked_at IS NULL AND rf.code = :role_code
+                  ))
+                  AND EXISTS (
+                      SELECT 1 FROM user_roles ur JOIN roles r ON r.id = ur.role_id
+                      WHERE ur.user_id = u.id AND ur.scope_type = 'global'
+                        AND ur.revoked_at IS NULL AND r.code = ANY(:staff_roles)
+                  )
                 """
             ),
             {key: value for key, value in params.items() if key not in {"limit", "offset"}},

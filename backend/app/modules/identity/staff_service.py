@@ -106,7 +106,8 @@ class StaffManagementService:
             actor_user_id=actor.user_id,
         )
         row = await self._repository.get_staff(staff_id, for_update=True)
-        assert row is not None
+        if row is None:
+            raise self._not_found()
         reset_token = self._security.new_opaque_token()
         await self._repository.issue_password_reset(
             identity_id=row["identity_id"],
@@ -194,7 +195,8 @@ class StaffManagementService:
         if payload.active is not None:
             await self._repository.revoke_sessions(staff_id)
         refreshed = await self._repository.get_staff(staff_id)
-        assert refreshed is not None
+        if refreshed is None:
+            raise self._not_found()
         after = self._view(refreshed)
         await self._repository.audit(
             actor_user_id=actor.user_id,
@@ -242,7 +244,8 @@ class StaffManagementService:
             raise self._stale()
         await self._repository.revoke_sessions(staff_id)
         refreshed = await self._repository.get_staff(staff_id)
-        assert refreshed is not None
+        if refreshed is None:
+            raise self._not_found()
         after = self._view(refreshed)
         await self._repository.audit(
             actor_user_id=actor.user_id,
@@ -288,7 +291,8 @@ class StaffManagementService:
             expires_at=self._password_reset_expiry(),
         )
         refreshed = await self._repository.get_staff(staff_id)
-        assert refreshed is not None
+        if refreshed is None:
+            raise self._not_found()
         after = self._view(refreshed)
         await self._repository.audit(
             actor_user_id=actor.user_id,
