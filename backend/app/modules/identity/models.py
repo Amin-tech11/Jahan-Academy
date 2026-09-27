@@ -18,6 +18,7 @@ class UserModel(Base):
     preferred_locale: Mapped[str] = mapped_column(String(5), default="fa")
     failed_login_count: Mapped[int] = mapped_column(SmallInteger, default=0)
     locked_until: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    row_version: Mapped[int] = mapped_column(SmallInteger, default=1)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
