@@ -32,6 +32,15 @@ Endpoints are marked:
 | Idempotency | `Idempotency-Key` is required for order/application creation and recommended for other retried POSTs |
 | Concurrency | Admin updates send `If-Match` with the current ETag; stale updates return `412` |
 
+### 2.1 SEO Public Support
+
+| ID | Method and endpoint | Auth | Response | Status / errors | Policy |
+|---|---|---|---|---|---|
+| SEO-01 | `GET /seo/entities/{country\|university\|program\|article}/{slug}/metadata` | Guest | Localized title, description, canonical, Open Graph, reciprocal `fa`/`en`/`x-default` links, and eligible JSON-LD | `200`, `404`, `422` | Only published, non-archived entities; shared English slug validation |
+| SEO-02 | `GET /seo/listings/{universities\|programs\|articles}/metadata` | Guest | Listing metadata and JSON-LD | `200`, `422` | Any query parameter other than locale returns `noindex,follow`; canonical always omits filter/query values |
+| SEO-03 | `GET /sitemap.xml` | Guest | XML sitemap | `200` | Root-level, includes only localized published canonical URLs; archives are excluded |
+| SEO-04 | `GET /robots.txt` | Guest | Plain text crawl policy | `200` | Blocks `/admin/` and `/api/`; it is never an authorization control |
+
 ### 2.1 Successful Responses
 
 Single resource:
