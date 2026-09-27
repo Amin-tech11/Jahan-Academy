@@ -2,14 +2,13 @@
 
 ## 1. Decision Status
 
-The authorization mechanism is implemented, but the final **Role → Permission → Resource scope**
-matrix is intentionally not frozen yet. Product approval is required before operational permissions
-are assigned to roles.
+The MVP **Role → Permission → Resource scope** matrix is approved for Super Admin, Content
+Producer (technical role code `content_editor`), Support, and Consultant. Migration
+`021_role_permission_matrix` makes the database mapping deterministic; the executable contract is
+`backend/app/modules/identity/permission_matrix.py`.
 
-The previously approved MVP behaviors for Super Admin, Content Editor, Support, and Consultant
-remain minimum product constraints. Their exact permission codes, field-level access, transition
-rules, and future interaction with Instructor, Sales, Admin, Student, and Customer are still pending
-the final matrix.
+Future labels such as Instructor, Sales, Admin, Student, and Customer remain unapproved and receive
+no grants until their own matrix is explicitly approved.
 
 Examples such as Student viewing purchased courses, Consultant viewing assigned Applications, Admin
 managing users, or Super Admin managing the system describe intended policy discussions; they are
@@ -142,18 +141,14 @@ async def list_example() -> object:
 Resource checks such as “Consultant can view only assigned Applications” belong in the Applications
 module policy and repository query. They must not be inferred from the `consultant` role name.
 
-## 8. Draft Matrix Template
+## 8. Approved MVP Matrix
 
-The following table remains deliberately unapproved until the Product Owner defines it.
-
-| Role | Permission | Scope | Resource condition | Phase | Status |
-|---|---|---|---|---|---|
-| Super Admin | `lead.read.all`, `lead.write.all`, `lead.assign`, `lead.sync.retry` | Global | All consultation leads, assignments, and failed Noura retries | MVP | Implemented |
-| Support | `lead.read.all`, `lead.write.all`, `lead.assign`, `lead.sync.retry` | Global | All consultation leads, assignments, and failed Noura retries | MVP | Implemented |
-| Consultant | `lead.read.assigned`, `lead.write.assigned` | Global | SQL read scope and status mutations require `assigned_consultant_id = actor.user_id` | MVP | Implemented |
-| Content Editor | `media.read`, `media.write` | Global | Manage validated public media and its metadata | MVP | Implemented |
-| Super Admin | `media.read`, `media.write` | Global | Manage all public media and confirm another uploader's intent | MVP | Implemented |
-| TBD | TBD | Global or scoped | Owner/assignee/state rule | MVP/Final | Pending |
+| Role | Permissions | Scope and enforced condition |
+|---|---|---|
+| Super Admin | `identity.manage`, `role.manage`, `users.manage_staff`, `audit.read`; all reference-data, catalog, media, and content permissions; `lead.read.all`, `lead.write.all`, `lead.assign`, `lead.sync.retry` | Global; full MVP administrative operation. |
+| Content Producer (`content_editor`) | `reference_data.read/write`, `catalog.read/write`, `media.read/write`, `content.read/write/publish` | Global editorial resources; may publish directly. No lead, identity, role, or audit access. |
+| Support | `lead.read.all`, `lead.write.all`, `lead.assign`, `lead.sync.retry` | Global consultation operations, including contact, notes, assignment/transfer, status change, archive, and failed-sync retry. No editorial, identity, or audit access. |
+| Consultant | `lead.read.assigned`, `lead.write.assigned` | Assigned-only; SQL and domain policy require `assigned_consultant_id = actor.user_id`. No reassignment, retry, archive, or unrelated lead visibility. |
 
 Each approved row must answer:
 
