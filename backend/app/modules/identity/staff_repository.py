@@ -181,7 +181,7 @@ class StaffRepository:
                 JOIN user_profiles p ON p.user_id = u.id
                 JOIN user_identities i ON i.user_id = u.id AND i.provider = 'email'
                 WHERE u.deleted_at IS NULL
-                  AND (:query IS NULL OR i.normalized_value ILIKE :query
+                  AND (CAST(:query AS text) IS NULL OR i.normalized_value ILIKE :query
                        OR p.first_name ILIKE :query OR p.last_name ILIKE :query)
                   AND (:status IS NULL OR u.status = :status)
                   AND (:role_code IS NULL OR EXISTS (
@@ -207,7 +207,7 @@ class StaffRepository:
                 JOIN user_profiles p ON p.user_id = u.id
                 JOIN user_identities i ON i.user_id = u.id AND i.provider = 'email'
                 WHERE u.deleted_at IS NULL
-                  AND (:query IS NULL OR i.normalized_value ILIKE :query
+                  AND (CAST(:query AS text) IS NULL OR i.normalized_value ILIKE :query
                        OR p.first_name ILIKE :query OR p.last_name ILIKE :query)
                   AND (:status IS NULL OR u.status = :status)
                   AND (:role_code IS NULL OR EXISTS (
