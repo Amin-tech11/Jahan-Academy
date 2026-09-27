@@ -18,12 +18,13 @@ class ReportingRepository:
                 SELECT count(*)::integer AS total,
                   count(*) FILTER (WHERE status = 'converted')::integer AS converted
                 FROM leads WHERE archived_at IS NULL AND created_at >= :start
-                  AND created_at < (:end + INTERVAL '1 day')
+                  AND created_at < (CAST(:end AS date) + INTERVAL '1 day')
             """,
             "statuses": """
                 SELECT status, count(*)::integer AS count FROM leads
                 WHERE archived_at IS NULL AND created_at >= :start
-                  AND created_at < (:end + INTERVAL '1 day') GROUP BY status ORDER BY status
+                  AND created_at < (CAST(:end AS date) + INTERVAL '1 day')
+                GROUP BY status ORDER BY status
             """,
             "consultants": """
                 SELECT l.assigned_consultant_id AS consultant_id,
@@ -32,7 +33,8 @@ class ReportingRepository:
                   count(*) FILTER (WHERE l.status = 'converted')::integer AS converted_leads
                 FROM leads l JOIN user_profiles p ON p.user_id = l.assigned_consultant_id
                 WHERE l.archived_at IS NULL AND l.assigned_consultant_id IS NOT NULL
-                  AND l.created_at >= :start AND l.created_at < (:end + INTERVAL '1 day')
+                  AND l.created_at >= :start
+                  AND l.created_at < (CAST(:end AS date) + INTERVAL '1 day')
                 GROUP BY l.assigned_consultant_id, p.first_name, p.last_name
                 ORDER BY assigned_leads DESC, name ASC
             """,
