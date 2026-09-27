@@ -206,9 +206,15 @@ class FaqAssignmentWrite(ContentModel):
 
     @model_validator(mode="after")
     def validate_target(self) -> FaqAssignmentWrite:
-        if self.target_type is FaqTargetType.GENERAL and self.target_id is not None:
-            raise ValueError("targetId must be omitted for general FAQs")
-        if self.target_type is not FaqTargetType.GENERAL and self.target_id is None:
+        if (
+            self.target_type in {FaqTargetType.GENERAL, FaqTargetType.HOMEPAGE}
+            and self.target_id is not None
+        ):
+            raise ValueError("targetId must be omitted for general or homepage FAQs")
+        if (
+            self.target_type not in {FaqTargetType.GENERAL, FaqTargetType.HOMEPAGE}
+            and self.target_id is None
+        ):
             raise ValueError("targetId is required for scoped FAQs")
         return self
 
@@ -393,14 +399,17 @@ class FaqListFilters(ContentModel):
 
     @model_validator(mode="after")
     def validate_target_filter(self) -> FaqListFilters:
-        if self.target_type is FaqTargetType.GENERAL and self.target_id is not None:
-            raise ValueError("targetId must be omitted for general FAQs")
+        if (
+            self.target_type in {FaqTargetType.GENERAL, FaqTargetType.HOMEPAGE}
+            and self.target_id is not None
+        ):
+            raise ValueError("targetId must be omitted for general or homepage FAQs")
         if self.target_id is not None and self.target_type is None:
             raise ValueError("targetType is required when targetId is provided")
         if (
             self.public_only
             and self.target_type is not None
-            and self.target_type is not FaqTargetType.GENERAL
+            and self.target_type not in {FaqTargetType.GENERAL, FaqTargetType.HOMEPAGE}
             and self.target_id is None
         ):
             raise ValueError("targetId is required for scoped public FAQs")

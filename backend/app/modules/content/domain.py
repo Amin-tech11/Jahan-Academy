@@ -21,9 +21,13 @@ class ContentResource(StrEnum):
 
 class FaqTargetType(StrEnum):
     GENERAL = "general"
+    HOMEPAGE = "homepage"
+    PAGE = "page"
+    COUNTRY = "country"
     UNIVERSITY = "university"
     PROGRAM = "program"
     SERVICE = "service"
+    ARTICLE = "article"
 
 
 class FaqSort(StrEnum):

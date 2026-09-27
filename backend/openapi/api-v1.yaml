@@ -20,7 +20,80 @@ tags:
   - name: FAQs
   - name: SEO
   - name: Reporting
+  - name: Public Experience
+  - name: Public Experience Administration
 paths:
+  /public/home:
+    get:
+      tags: [Public Experience]
+      operationId: getPublicHomeExperience
+      x-phase: MVP
+      parameters:
+        - { name: locale, in: query, schema: { type: string, enum: [fa, en], default: fa } }
+      responses:
+        '200': { description: Published bilingual Home composition with only lead-generation blocks }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /public/pages/{slug}:
+    get:
+      tags: [Public Experience]
+      operationId: getPublicPageExperience
+      x-phase: MVP
+      parameters:
+        - { name: slug, in: path, required: true, schema: { type: string, pattern: '^[a-z0-9]+(?:-[a-z0-9]+)*$' } }
+        - { name: locale, in: query, schema: { type: string, enum: [fa, en], default: fa } }
+      responses:
+        '200': { description: Published static or service page with localized SEO fields }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /public/country-guides:
+    get:
+      tags: [Public Experience]
+      operationId: listPublicCountryGuides
+      x-phase: MVP
+      parameters:
+        - { name: locale, in: query, schema: { type: string, enum: [fa, en], default: fa } }
+      responses:
+        '200': { description: Published country-guide cards only }
+  /public/country-guides/{countrySlug}:
+    get:
+      tags: [Public Experience]
+      operationId: getPublicCountryGuide
+      x-phase: MVP
+      parameters:
+        - { name: countrySlug, in: path, required: true, schema: { type: string } }
+        - { name: locale, in: query, schema: { type: string, enum: [fa, en], default: fa } }
+      responses:
+        '200': { description: Published structured country guide with facts, sections, sources, and CTA-ready content }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /admin/public-pages:
+    get:
+      tags: [Public Experience Administration]
+      operationId: listPublicPages
+      x-phase: MVP
+      x-permissions: [content.read]
+      security: [{ StaffSession: [] }]
+      responses: { '200': { description: All public-page drafts, published pages, and archives } }
+    post:
+      tags: [Public Experience Administration]
+      operationId: createPublicPage
+      x-phase: MVP
+      x-permissions: [content.write]
+      security: [{ StaffSession: [] }]
+      responses: { '201': { description: Bilingual page draft created } }
+  /admin/country-guides:
+    get:
+      tags: [Public Experience Administration]
+      operationId: listCountryGuides
+      x-phase: MVP
+      x-permissions: [content.read]
+      security: [{ StaffSession: [] }]
+      responses: { '200': { description: All country-guide lifecycle records } }
+    post:
+      tags: [Public Experience Administration]
+      operationId: createCountryGuide
+      x-phase: MVP
+      x-permissions: [content.write]
+      security: [{ StaffSession: [] }]
+      responses: { '201': { description: Bilingual country-guide draft created } }
   /reporting/dashboard:
     get:
       tags: [Reporting]

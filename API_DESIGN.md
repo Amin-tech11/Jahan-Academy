@@ -44,8 +44,8 @@ Endpoints are marked:
 
 | ID | Method and endpoint | Auth | Response | Status / errors | Policy |
 |---|---|---|---|---|---|
-| SEO-01 | `GET /seo/entities/{country\|university\|program\|article}/{slug}/metadata` | Guest | Localized title, description, canonical, Open Graph, reciprocal `fa`/`en`/`x-default` links, and eligible JSON-LD | `200`, `404`, `422` | Only published, non-archived entities; shared English slug validation |
-| SEO-02 | `GET /seo/listings/{universities\|programs\|articles}/metadata` | Guest | Listing metadata and JSON-LD | `200`, `422` | Any query parameter other than locale returns `noindex,follow`; canonical always omits filter/query values |
+| SEO-01 | `GET /seo/entities/{country\|university\|article}/{slug}/metadata` | Guest | Localized title, description, canonical, Open Graph, reciprocal `fa`/`en`/`x-default` links, and eligible JSON-LD | `200`, `404`, `422` | Only published, non-archived entities; Program metadata is prohibited |
+| SEO-02 | `GET /seo/listings/{universities\|articles}/metadata` | Guest | Listing metadata and JSON-LD | `200`, `422` | Any query parameter other than locale returns `noindex,follow`; canonical always omits filter/query values; Program listings are prohibited |
 | SEO-03 | `GET /sitemap.xml` | Guest | XML sitemap | `200` | Root-level, includes only localized published canonical URLs; archives are excluded |
 | SEO-04 | `GET /robots.txt` | Guest | Plain text crawl policy | `200` | Blocks `/admin/` and `/api/`; it is never an authorization control |
 
@@ -142,15 +142,15 @@ field visibility, and final-product roles are not seeded until the authorization
 | Schema | Required fields and validation |
 |---|---|
 | `CountrySummary` | `id`, shared lowercase English `slug`, localized `name`, ISO alpha-2 `code`, optional `image`, `featured` |
-| `UniversitySummary` | `id`, `slug`, localized `name/summary`, country, city, institution type, optional ranking and image |
-| `UniversityDetail` | Summary plus localized body, founded year, website, gallery, costs, rankings, FAQs, related programs/articles |
-| `ProgramSummary` | `id`, `slug`, university, localized `name/summary`, level, field, duration, language, tuition discriminator |
-| `ProgramDetail` | Summary plus admission requirements, official URL, application fee, intakes/deadlines, FAQs and related programs |
+| `UniversitySummary` | `id`, `slug`, localized `name/summary`, approved country/city, institution type, founding year when verified, and approved media |
+| `UniversityDetail` | Summary plus approved localized body, founding year, official website, approved media, FAQs, and related articles; never rankings, costs, or Program-derived facts |
+| `PublicPage` | Shared slug, page kind (`home`, `static`, or `service`), localized title/summary/body, approved blocks, and CMS SEO fields |
+| `CountryGuide` | Published Country relation, localized title/summary, verified facts/sections/sources, and CMS SEO fields; no Program availability or operational admissions data |
 | `ArticleSummary` | `id`, `slug`, localized title/excerpt, cover image, published time, categories |
 | `ArticleDetail` | Summary plus sanitized localized body, author display data, SEO and related content |
 
-Tuition is a tagged union: `EXACT(amount,currency)`, `RANGE(minimum,maximum,currency)`, or
-`CONTACT`; amounts are non-negative decimal strings and `minimum <= maximum`.
+Tuition remains an internal University/Program reference-data concern. It is never part of a guest
+response, guest search/filter/sort option, public schema, sitemap, or metadata endpoint.
 
 ### 4.2 Consultation
 
@@ -174,8 +174,8 @@ Tuition is a tagged union: `EXACT(amount,currency)`, `RANGE(minimum,maximum,curr
 | `message` | No | Maximum 2,000 characters; plain text |
 | `locale` | Yes | `fa` or `en` |
 | `source.pageUrl` | Yes | Same-site relative URL, maximum 2,048 |
-| `source.entityType` | No | `UNIVERSITY` or `PROGRAM` |
-| `source.entityId` | Conditional | Existing public entity matching `entityType` |
+| `source.entityType` | No | Public `UNIVERSITY`, `COUNTRY`, `SERVICE`, `ARTICLE`, or `PAGE` context only; `PROGRAM` is forbidden |
+| `source.entityId` | Conditional | Existing published public entity matching `entityType` |
 | `privacyConsent`, `contactConsent` | Yes | Must both be `true`; consent version/time/IP captured server-side |
 
 `ConsultationReceipt` contains `reference`, `duplicate`, `receivedAt`, and localized `message`.
@@ -219,19 +219,20 @@ translations.
 | ID | Method and endpoint | Auth | Request | Response | Status / errors | Permission and validation |
 |---|---|---|---|---|---|---|
 | PUB-01 | `GET /countries` | Guest | Query: `locale`, `featured?`, `page`, `limit` | Page of `CountrySummary` | `200`; `422 INVALID_FILTER` | Public; allowlisted filters |
-| PUB-02 | `GET /countries/{slug}` | Guest | Path slug; query `locale` | `CountryDetail` | `200`, `404 RESOURCE_NOT_FOUND` | Published only; slug regex `^[a-z0-9]+(?:-[a-z0-9]+)*$` |
-| PUB-03 | `GET /universities` | Guest | `locale,q,country,city,type,ranking,sort,page,limit` | Page of `UniversitySummary` | `200`; `422 INVALID_FILTER` | Public; `q` 2–100; allowlisted sort/filter values |
-| PUB-04 | `GET /universities/{slug}` | Guest | Slug and `locale` | `UniversityDetail` | `200`, `404` | Published only; related items are also public |
-| PUB-05 | `GET /programs` | Guest | `locale,q,country,university,level,field,language,intake,tuitionMin,tuitionMax,currency,sort,page,limit` | Page of `ProgramSummary` | `200`; `422 INVALID_FILTER` | Ranges non-negative/min≤max; allowlisted sort |
-| PUB-06 | `GET /programs/{slug}` | Guest | Slug and `locale` | `ProgramDetail` | `200`, `404` | Published only; full structured facts in MVP |
-| PUB-07 | `GET /discovery/suggestions` | Guest | `q,locale,entityType,limit` | `SuggestionEnvelope` | `200`; `422` | Published University/Program only; `q` 2–100; limit 1–10 |
-| PUB-08 | `GET /universities/{slug}/related` | Guest | Slug, `locale`, `limit` | `RelatedEnvelope` | `200`, `404`, `422` | Explainable ranking; excludes source; limit 1–12 |
-| PUB-09 | `GET /programs/{slug}/related` | Guest | Slug, `locale`, `limit` | `RelatedEnvelope` | `200`, `404`, `422` | Published Program and parent University only; excludes source; limit 1–12 |
-| PUB-10 | `GET /articles` | Guest | `locale,q,type,categoryId,tagId,authorId,featured,sort,page,limit` | Page of `ArticleSummary` | `200`; `422` | Published and `publishedAt <= now`; full-text relevance available |
-| PUB-11 | `GET /articles/{slug}` | Guest | Slug and `locale` | `ArticleDetail` | `200`, `404` | Published localized body only |
-| PUB-12 | `GET /content/{categories|tags|authors}` | Guest | `locale,q,page,limit` | Localized reference page | `200`, `422` | Published records only |
-| PUB-13 | `GET /content/{categories|tags|authors}/{slug}` | Guest | Slug and `locale` | Localized reference | `200`, `404` | Published records only |
-| PUB-14 | `POST /consultation-requests` | Guest | `ConsultationCreate`; optional `Idempotency-Key` | `ConsultationReceipt` | `201`; duplicate `200`; `409 IDEMPOTENCY_KEY_REUSED`; `422`; `429`; `503` only if local persistence unavailable | Public; honeypot/rate limit; persist lead+outbox atomically; Noura failure never changes acceptance |
+| PUB-02 | `GET /public/country-guides` | Guest | `locale` | List of `CountryGuide` | `200` | Published guide and Country only |
+| PUB-03 | `GET /public/country-guides/{countrySlug}` | Guest | Path slug; query `locale` | `CountryGuide` | `200`, `404 RESOURCE_NOT_FOUND` | Published only; slug regex `^[a-z0-9]+(?:-[a-z0-9]+)*$` |
+| PUB-04 | `GET /public/home` | Guest | `locale` | `PublicPage` | `200`, `404` | Published Home only; drafts/archives are hidden |
+| PUB-05 | `GET /public/pages/{slug}` | Guest | Slug and `locale` | `PublicPage` | `200`, `404` | Published static/service pages only |
+| PUB-06 | `GET /universities` | Guest | `locale,q,country,page,limit` | Page of `UniversitySummary` | `200`; `422 INVALID_FILTER` | Public allowlist only; no ranking, cost, or Program-derived filters |
+| PUB-07 | `GET /universities/{slug}` | Guest | Slug and `locale` | `UniversityDetail` | `200`, `404` | Published showcase only; no Program, tuition, deadline, admissions, or internal contact fields |
+| PUB-08 | `GET /programs*` | Guest | Any | None | `404` | This route family, public Program suggestions, related-results, schemas, SEO, and sitemap URLs are prohibited |
+| PUB-09 | `GET /discovery/suggestions` | Guest | `q,locale,entityType,limit` | `SuggestionEnvelope` | `200`; `422` | Public University only; `entityType=program` is rejected/ignored; `q` 2–100; limit 1–10 |
+| PUB-10 | `GET /universities/{slug}/related` | Guest | Slug, `locale`, `limit` | `RelatedEnvelope` | `200`, `404`, `422` | Explainable University-only ranking; excludes source; limit 1–12 |
+| PUB-11 | `GET /articles` | Guest | `locale,q,type,categoryId,tagId,authorId,featured,sort,page,limit` | Page of `ArticleSummary` | `200`; `422` | Published and `publishedAt <= now`; full-text relevance available |
+| PUB-12 | `GET /articles/{slug}` | Guest | Slug and `locale` | `ArticleDetail` | `200`, `404` | Published localized body only |
+| PUB-13 | `GET /content/{categories|tags|authors}` | Guest | `locale,q,page,limit` | Localized reference page | `200`, `422` | Published records only |
+| PUB-14 | `GET /content/{categories|tags|authors}/{slug}` | Guest | Slug and `locale` | Localized reference | `200`, `404` | Published records only |
+| PUB-15 | `POST /consultation-requests` | Guest | `ConsultationCreate`; optional `Idempotency-Key` | `ConsultationReceipt` | `201`; duplicate `200`; `409 IDEMPOTENCY_KEY_REUSED`; `422`; `429`; `503` only if local persistence unavailable | Public; honeypot/rate limit; persist lead+outbox atomically; Noura failure never changes acceptance |
 
 ## 6. MVP Staff Authentication API
 
@@ -257,6 +258,14 @@ publication. Delete means hard delete only for dependency-free drafts; otherwise
 | REF-04 | `GET /admin/reference-data/{kind}/{id}` | UUID | Item with both translations | `200`; `404` | `reference_data.read` |
 | REF-05 | `PUT /admin/reference-data/{kind}/{id}` | Complete kind-specific write model + `If-Match` | Updated item + new ETag | `200`; `404`; `409`; `412`; `422`; `428` | `reference_data.write` |
 | REF-06 | `DELETE /admin/reference-data/{kind}/{id}` | UUID + `If-Match` | Archived item + new ETag | `200`; `404`; `412`; `428` | `reference_data.write` |
+| EXP-01 | `GET /admin/public-pages` | `locale` | Bilingual-management `PublicPage` list | `200`; `401`; `403` | `content.read` |
+| EXP-02 | `POST /admin/public-pages` | `PublicPageWrite` with complete `fa`/`en` translations | Draft `PublicPage` + ETag | `201`; `409 EXPERIENCE_CONFLICT`; `422` | `content.write` |
+| EXP-03 | `GET/PUT /admin/public-pages/{id}` | UUID; `PublicPageWrite` + `If-Match` on `PUT` | Management `PublicPage` + ETag | `200`; `404`; `412`; `422`; `428` | `content.read` / `content.write` |
+| EXP-04 | `POST /admin/public-pages/{id}/{publish\|archive}` | `If-Match`; archive reason for archive | Lifecycle-updated `PublicPage` + ETag | `200`; `404`; `412`; `422`; `428` | `content.publish` |
+| EXP-05 | `GET /admin/country-guides` | `locale` | Bilingual-management `CountryGuide` list | `200`; `401`; `403` | `content.read` |
+| EXP-06 | `POST /admin/country-guides` | `CountryGuideWrite` with published/known Country and complete `fa`/`en` translations | Draft `CountryGuide` + ETag | `201`; `409 EXPERIENCE_CONFLICT`; `422` | `content.write` |
+| EXP-07 | `GET/PUT /admin/country-guides/{id}` | UUID; `CountryGuideWrite` + `If-Match` on `PUT` | Management `CountryGuide` + ETag | `200`; `404`; `412`; `422`; `428` | `content.read` / `content.write` |
+| EXP-08 | `POST /admin/country-guides/{id}/{publish\|archive}` | `If-Match`; archive reason for archive | Lifecycle-updated `CountryGuide` + ETag | `200`; `404`; `412`; `422`; `428` | `content.publish` |
 | CAT-01 | `GET /admin/countries` | Filters, lifecycle, page/limit | Page of `AdminCountry` | `200`, `422` | `catalog.read` |
 | CAT-02 | `POST /admin/countries` | `CountryWrite` | `AdminCountry` | `201`; `409 SLUG_TAKEN`; `422` | `catalog.write` |
 | CAT-03 | `GET /admin/countries/{id}` | UUID | `AdminCountry` | `200`, `404` | `catalog.read` |
@@ -302,9 +311,11 @@ publication. Delete means hard delete only for dependency-free drafts; otherwise
 | FAQ-08 | `DELETE /admin/faqs/{id}` | Draft UUID, `If-Match` | Empty | `204`; `409`; `412` | `content.write` |
 
 Public FAQ reads use `GET /faqs` and `GET /faqs/{id}`. The list accepts `locale`,
-`targetType=general|university|program|service`, the required `targetId` for scoped targets,
-and bounded pagination. Results include only published FAQs, hide translation-management fields,
-verify scoped targets are published, and sort by each assignment's configured `displayOrder`.
+`targetType=general|homepage|page|country|university|service|article`; `homepage` requires no
+target ID, while every other scoped target requires the relevant published public target. Internal
+Program FAQ associations may exist for staff reference but are never queryable from a guest route.
+Results include only published FAQs, hide translation-management fields, verify scoped targets are
+published, and sort by each assignment's configured `displayOrder`.
 
 All write models reject unknown fields, validate referenced IDs, and store separate complete `fa`/`en`
 translations. Catalog and editorial entities also require stable shared slugs; FAQs are identified by

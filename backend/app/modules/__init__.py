@@ -10,6 +10,7 @@ from app.modules.consultations.router import router as consultations_router
 from app.modules.content.router import router as content_router
 from app.modules.discovery.router import router as discovery_router
 from app.modules.documents.router import router as documents_router
+from app.modules.experience.router import router as experience_router
 from app.modules.identity.router import router as identity_router
 from app.modules.integrations.router import router as integrations_router
 from app.modules.learning.router import router as learning_router
@@ -30,6 +31,7 @@ module_routers: tuple[APIRouter, ...] = (
     applications_router,
     documents_router,
     discovery_router,
+    experience_router,
     learning_router,
     media_router,
     commerce_router,
