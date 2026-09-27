@@ -183,7 +183,7 @@ class StaffRepository:
                 WHERE u.deleted_at IS NULL
                   AND (CAST(:query AS text) IS NULL OR i.normalized_value ILIKE :query
                        OR p.first_name ILIKE :query OR p.last_name ILIKE :query)
-                  AND (:status IS NULL OR u.status = :status)
+                  AND (CAST(:status AS text) IS NULL OR u.status::text = :status)
                   AND (:role_code IS NULL OR EXISTS (
                       SELECT 1 FROM user_roles urf JOIN roles rf ON rf.id = urf.role_id
                       WHERE urf.user_id = u.id AND urf.scope_type = 'global'
@@ -209,7 +209,7 @@ class StaffRepository:
                 WHERE u.deleted_at IS NULL
                   AND (CAST(:query AS text) IS NULL OR i.normalized_value ILIKE :query
                        OR p.first_name ILIKE :query OR p.last_name ILIKE :query)
-                  AND (:status IS NULL OR u.status = :status)
+                  AND (CAST(:status AS text) IS NULL OR u.status::text = :status)
                   AND (:role_code IS NULL OR EXISTS (
                       SELECT 1 FROM user_roles urf JOIN roles rf ON rf.id = urf.role_id
                       WHERE urf.user_id = u.id AND urf.scope_type = 'global'
