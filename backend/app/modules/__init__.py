@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 
+from app.modules.audit.router import router as audit_router
 from app.modules.applicants.router import router as applicants_router
 from app.modules.applications.router import router as applications_router
 from app.modules.catalog.router import router as catalog_router
@@ -20,6 +21,7 @@ from app.modules.universities.router import router as universities_router
 
 module_routers: tuple[APIRouter, ...] = (
     identity_router,
+    audit_router,
     catalog_router,
     content_router,
     consultations_router,
