@@ -32,6 +32,29 @@ Endpoints are marked:
 | Idempotency | `Idempotency-Key` is required for order/application creation and recommended for other retried POSTs |
 | Concurrency | Admin updates send `If-Match` with the current ETag; stale updates return `412` |
 
+### 2.1 Operational Hardening
+
+- The API applies Redis-backed, per-client/method limits to `/api/*` (default: 120 requests/minute); a limiter outage is logged and fails open so a Redis incident does not become an availability incident.
+- Consultation submission retains its stricter subject-based limiter and durable idempotency record. Expired idempotency records are removed daily.
+- Every response includes an opaque `X-Request-ID`, correlation-safe JSON logging, `nosniff`, clickjacking protection, referrer and permissions policies, and API CSP. Production also emits HSTS.
+- `GET /internal/metrics` is intentionally outside the public API contract and returns Prometheus text only after a constant-time `X-Monitoring-Token` comparison; production refuses to start without that secret.
+- A daily retention task anonymizes Lead PII after three years of inactivity, records an immutable audit event, and never permanently deletes operational Lead history.
+
+### 2.1 SEO Public Support
+
+| ID | Method and endpoint | Auth | Response | Status / errors | Policy |
+|---|---|---|---|---|---|
+| SEO-01 | `GET /seo/entities/{country\|university\|program\|article}/{slug}/metadata` | Guest | Localized title, description, canonical, Open Graph, reciprocal `fa`/`en`/`x-default` links, and eligible JSON-LD | `200`, `404`, `422` | Only published, non-archived entities; shared English slug validation |
+| SEO-02 | `GET /seo/listings/{universities\|programs\|articles}/metadata` | Guest | Listing metadata and JSON-LD | `200`, `422` | Any query parameter other than locale returns `noindex,follow`; canonical always omits filter/query values |
+| SEO-03 | `GET /sitemap.xml` | Guest | XML sitemap | `200` | Root-level, includes only localized published canonical URLs; archives are excluded |
+| SEO-04 | `GET /robots.txt` | Guest | Plain text crawl policy | `200` | Blocks `/admin/` and `/api/`; it is never an authorization control |
+
+### 2.2 Temporary Admin Dashboard and Reporting
+
+| ID | Method and endpoint | Auth | Response | Status / errors | Policy |
+|---|---|---|---|---|---|
+| RPT-01 | `GET /reporting/dashboard` | Staff | Read-only lead totals/statuses, consultant workload/conversion, published-content counts, Noura sync status and sanitized error aggregates | `200`, `403`, `422` | Requires `report.read`; optional `from`/`to` date range, max 365 days; response declares `source: local_temporary` and must be replaced by the Noura ERP reporting source when available |
+
 ### 2.1 Successful Responses
 
 Single resource:

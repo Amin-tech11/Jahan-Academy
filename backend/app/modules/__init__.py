@@ -2,6 +2,7 @@ from fastapi import APIRouter
 
 from app.modules.applicants.router import router as applicants_router
 from app.modules.applications.router import router as applications_router
+from app.modules.audit.router import router as audit_router
 from app.modules.catalog.router import router as catalog_router
 from app.modules.commerce.router import router as commerce_router
 from app.modules.communication.router import router as communication_router
@@ -16,10 +17,12 @@ from app.modules.media.router import router as media_router
 from app.modules.notifications.router import router as notifications_router
 from app.modules.programs.router import router as programs_router
 from app.modules.reporting.router import router as reporting_router
+from app.modules.seo.router import router as seo_router
 from app.modules.universities.router import router as universities_router
 
 module_routers: tuple[APIRouter, ...] = (
     identity_router,
+    audit_router,
     catalog_router,
     content_router,
     consultations_router,
@@ -35,5 +38,6 @@ module_routers: tuple[APIRouter, ...] = (
     programs_router,
     integrations_router,
     reporting_router,
+    seo_router,
     universities_router,
 )

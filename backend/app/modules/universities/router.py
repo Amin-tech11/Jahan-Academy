@@ -13,6 +13,8 @@ from app.modules.universities.domain import InstitutionType, UniversitySort, Uni
 from app.modules.universities.repository import UniversityRepository
 from app.modules.universities.schemas import (
     ArchiveUniversityRequest,
+    PublicUniversityEnvelope,
+    PublicUniversityPage,
     UniversityEnvelope,
     UniversityPage,
     UniversityWrite,
@@ -33,9 +35,9 @@ def university_service(
 
 @public_router.get(
     "",
-    response_model=UniversityPage,
+    response_model=PublicUniversityPage,
     response_model_exclude_none=True,
-    summary="Discover published universities",
+    summary="Discover public university showcases",
 )
 async def list_public_universities(
     service: Annotated[UniversityService, Depends(university_service)],
@@ -44,36 +46,28 @@ async def list_public_universities(
     limit: Annotated[int, Query(ge=1, le=20)] = 20,
     q: Annotated[str | None, Query(min_length=2, max_length=100)] = None,
     country_id: Annotated[UUID | None, Query(alias="countryId")] = None,
-    city_id: Annotated[UUID | None, Query(alias="cityId")] = None,
-    institution_type: Annotated[InstitutionType | None, Query(alias="type")] = None,
-    maximum_rank: Annotated[int | None, Query(alias="maximumRank", gt=0)] = None,
-    sort: UniversitySort = UniversitySort.FEATURED,
-) -> UniversityPage:
+) -> PublicUniversityPage:
     return await service.list_public(
         locale=locale,
         page=page,
         limit=limit,
         query=q,
         country_id=country_id,
-        city_id=city_id,
-        institution_type=institution_type.value if institution_type else None,
-        maximum_rank=maximum_rank,
-        sort=sort,
     )
 
 
 @public_router.get(
     "/{slug}",
-    response_model=UniversityEnvelope,
+    response_model=PublicUniversityEnvelope,
     response_model_exclude_none=True,
-    summary="View a published university",
+    summary="View a public university showcase",
 )
 async def get_public_university(
     slug: str,
     service: Annotated[UniversityService, Depends(university_service)],
     locale: Annotated[str, Query(pattern=r"^(fa|en)$")] = "fa",
-) -> UniversityEnvelope:
-    return UniversityEnvelope(data=await service.get_public(slug, locale))
+) -> PublicUniversityEnvelope:
+    return PublicUniversityEnvelope(data=await service.get_public(slug, locale))
 
 
 @admin_router.get("", response_model=UniversityPage, summary="Search all universities")

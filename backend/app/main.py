@@ -10,6 +10,7 @@ from app.api.router import api_router
 from app.core.config import get_settings
 from app.core.database import dispose_database
 from app.core.logging import configure_logging
+from app.core.operational import OperationalMiddleware
 from app.core.redis import close_redis
 
 
@@ -33,6 +34,7 @@ def create_app() -> FastAPI:
         lifespan=lifespan,
     )
     install_exception_handlers(application)
+    application.add_middleware(OperationalMiddleware, settings=settings)
     application.include_router(api_router)
     return application
 

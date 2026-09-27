@@ -18,7 +18,47 @@ tags:
   - name: Courses
   - name: Commerce
   - name: FAQs
+  - name: SEO
+  - name: Reporting
 paths:
+  /reporting/dashboard:
+    get:
+      tags: [Reporting]
+      operationId: getTemporaryAdminDashboard
+      x-phase: MVP
+      x-permissions: [report.read]
+      security: [{ StaffSession: [] }]
+      parameters:
+        - { name: from, in: query, schema: { type: string, format: date } }
+        - { name: to, in: query, schema: { type: string, format: date } }
+      responses:
+        '200': { description: Read-only local-temporary operational dashboard; Noura ERP will become the reporting authority }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /seo/entities/{resource}/{slug}/metadata:
+    get:
+      tags: [SEO]
+      operationId: getEntitySeoMetadata
+      x-phase: MVP
+      parameters:
+        - { name: resource, in: path, required: true, schema: { type: string, enum: [country, university, article] } }
+        - { name: slug, in: path, required: true, schema: { type: string, pattern: '^[a-z0-9]+(?:-[a-z0-9]+)*$' } }
+        - { name: locale, in: query, schema: { type: string, enum: [fa, en], default: fa } }
+      responses:
+        '200': { description: Localized canonical metadata, hreflang links, and visible-content JSON-LD }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /seo/listings/{resource}/metadata:
+    get:
+      tags: [SEO]
+      operationId: getListingSeoMetadata
+      x-phase: MVP
+      parameters:
+        - { name: resource, in: path, required: true, schema: { type: string, enum: [universities, articles] } }
+        - { name: locale, in: query, schema: { type: string, enum: [fa, en], default: fa } }
+      responses:
+        '200': { description: Listing metadata; any query filter returns noindex,follow and an unfiltered canonical }
+        '422': { $ref: '#/components/responses/ValidationError' }
   /admin/media/upload-intents:
     post:
       tags: [Media]
@@ -312,65 +352,6 @@ paths:
               schema: { $ref: '#/components/schemas/RelatedEnvelope' }
         '404': { $ref: '#/components/responses/NotFound' }
         '422': { $ref: '#/components/responses/ValidationError' }
-  /programs:
-    get:
-      tags: [Public Catalog]
-      operationId: listPrograms
-      x-phase: MVP
-      parameters:
-        - $ref: '#/components/parameters/Locale'
-        - $ref: '#/components/parameters/Search'
-        - { name: country, in: query, schema: { type: string } }
-        - { name: university, in: query, schema: { type: string } }
-        - { name: level, in: query, schema: { type: string } }
-        - { name: field, in: query, schema: { type: string } }
-        - { name: language, in: query, schema: { type: string } }
-        - { name: intake, in: query, schema: { type: string, enum: [SPRING, SUMMER, FALL, WINTER, UNKNOWN] } }
-        - { name: tuitionMin, in: query, schema: { type: string, pattern: '^\d+(\.\d{1,2})?$' } }
-        - { name: tuitionMax, in: query, schema: { type: string, pattern: '^\d+(\.\d{1,2})?$' } }
-        - { name: currency, in: query, schema: { type: string, pattern: '^[A-Z]{3}$' } }
-        - { name: sort, in: query, schema: { type: string, enum: [name, -name, tuition, -tuition, deadline, -deadline] } }
-        - $ref: '#/components/parameters/Page'
-        - $ref: '#/components/parameters/Limit'
-      responses:
-        '200': { $ref: '#/components/responses/ProgramPage' }
-        '422': { $ref: '#/components/responses/ValidationError' }
-  /programs/{slug}:
-    get:
-      tags: [Public Catalog]
-      operationId: getProgram
-      x-phase: MVP
-      parameters:
-        - $ref: '#/components/parameters/Slug'
-        - $ref: '#/components/parameters/Locale'
-      responses:
-        '200':
-          description: Published program details
-          content:
-            application/json:
-              schema:
-                type: object
-                required: [data]
-                properties:
-                  data: { $ref: '#/components/schemas/ProgramDetail' }
-        '404': { $ref: '#/components/responses/NotFound' }
-  /programs/{slug}/related:
-    get:
-      tags: [Public Catalog]
-      operationId: listRelatedPrograms
-      x-phase: MVP
-      parameters:
-        - $ref: '#/components/parameters/Slug'
-        - $ref: '#/components/parameters/Locale'
-        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 12, default: 6 } }
-      responses:
-        '200':
-          description: Ranked related published academic Programs
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/RelatedEnvelope' }
-        '404': { $ref: '#/components/responses/NotFound' }
-        '422': { $ref: '#/components/responses/ValidationError' }
   /discovery/suggestions:
     get:
       tags: [Public Catalog]
@@ -379,7 +360,6 @@ paths:
       parameters:
         - { name: q, in: query, required: true, schema: { type: string, minLength: 2, maxLength: 100 } }
         - $ref: '#/components/parameters/Locale'
-        - { name: entityType, in: query, schema: { type: string, enum: [university, program] } }
         - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 10, default: 8 } }
       responses:
         '200':

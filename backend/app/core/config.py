@@ -39,6 +39,11 @@ class Settings(BaseSettings):
     consultation_duplicate_window_hours: int = Field(default=24, ge=1, le=168)
     consultation_rate_limit: int = Field(default=5, ge=1, le=100)
     consultation_rate_window_seconds: int = Field(default=600, ge=60, le=86400)
+    api_rate_limit: int = Field(default=120, ge=10, le=10_000)
+    api_rate_window_seconds: int = Field(default=60, ge=10, le=3600)
+    monitoring_token: SecretStr | None = None
+    lead_retention_years: int = Field(default=3, ge=1, le=10)
+    retention_batch_size: int = Field(default=200, ge=1, le=1000)
     noura_base_url: str = "http://mock-noura:8090"
     noura_timeout_seconds: float = Field(default=5.0, gt=0, le=60)
     noura_mock_outcome: str = Field(
@@ -71,6 +76,8 @@ class Settings(BaseSettings):
                 raise ValueError("JAHAN_SESSION_SECRET must contain at least 32 characters")
             if not self.cookie_secure:
                 raise ValueError("JAHAN_COOKIE_SECURE must be true in production")
+            if self.monitoring_token is None or len(self.monitoring_token.get_secret_value()) < 32:
+                raise ValueError("JAHAN_MONITORING_TOKEN must contain at least 32 characters")
         return self
 
 
