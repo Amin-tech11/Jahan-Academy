@@ -19,7 +19,22 @@ tags:
   - name: Commerce
   - name: FAQs
   - name: SEO
+  - name: Reporting
 paths:
+  /reporting/dashboard:
+    get:
+      tags: [Reporting]
+      operationId: getTemporaryAdminDashboard
+      x-phase: MVP
+      x-permissions: [report.read]
+      security: [{ StaffSession: [] }]
+      parameters:
+        - { name: from, in: query, schema: { type: string, format: date } }
+        - { name: to, in: query, schema: { type: string, format: date } }
+      responses:
+        '200': { description: Read-only local-temporary operational dashboard; Noura ERP will become the reporting authority }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '422': { $ref: '#/components/responses/ValidationError' }
   /seo/entities/{resource}/{slug}/metadata:
     get:
       tags: [SEO]

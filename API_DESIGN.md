@@ -41,6 +41,12 @@ Endpoints are marked:
 | SEO-03 | `GET /sitemap.xml` | Guest | XML sitemap | `200` | Root-level, includes only localized published canonical URLs; archives are excluded |
 | SEO-04 | `GET /robots.txt` | Guest | Plain text crawl policy | `200` | Blocks `/admin/` and `/api/`; it is never an authorization control |
 
+### 2.2 Temporary Admin Dashboard and Reporting
+
+| ID | Method and endpoint | Auth | Response | Status / errors | Policy |
+|---|---|---|---|---|---|
+| RPT-01 | `GET /reporting/dashboard` | Staff | Read-only lead totals/statuses, consultant workload/conversion, published-content counts, Noura sync status and sanitized error aggregates | `200`, `403`, `422` | Requires `report.read`; optional `from`/`to` date range, max 365 days; response declares `source: local_temporary` and must be replaced by the Noura ERP reporting source when available |
+
 ### 2.1 Successful Responses
 
 Single resource:
