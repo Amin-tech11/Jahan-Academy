@@ -879,6 +879,7 @@ required CI gate for the current feature is green.
 - [x] FAQ Management implemented: bilingual FAQ CRUD, reusable assignments to general pages, universities, Programs, and services, per-target display ordering with atomic bulk reorder, Draft/Publish/Archive lifecycle, published-target visibility checks, safe rich-text answers, search/filter/pagination, ETag concurrency, audit evidence, draft-only deletion, reusable content permissions, reversible migration `019_faq_management`, and PostgreSQL end-to-end coverage.
 - [x] Admin User Management implemented under `/api/v1/admin/staff`: Super Admin-only creation of admin, support, consultant, and content-editor accounts; email-based one-time access setup and recovery; active/disabled lifecycle; session revocation and lock clearing for recovery; full-role replacement; ETag concurrency; PII-safe audit events; last-active-Super-Admin and self-deactivation protections; `identity.manage`/`role.manage` permission grants; reversible migration `020_admin_user_management`; and PostgreSQL end-to-end coverage.
 - [x] Audit Log implemented: immutable append-only UI model, successful-login evidence with hashed IP, centralized Super-Admin-only filtered/paginated read API, and indexed actions/entities; existing content, access, Lead/assignment, and Noura-sync audit writers are surfaced by migration `022_audit_log`.
+- [x] SEO Backend Support implemented: public localized metadata contracts, canonical and reciprocal `fa`/`en`/`x-default` hreflang links, schema.org JSON-LD limited to eligible types, root `sitemap.xml` generated from published non-archived entities only, root `robots.txt`, and `noindex,follow` metadata for every filtered listing.
 - [ ] Real Noura connector implemented and accepted.
 - [ ] Staging and production infrastructure provisioned.
 
@@ -913,7 +914,6 @@ required CI gate for the current feature is green.
 
 - Build bilingual public shell, content modules, university/program discovery, news, and consultation flow.
 - Build lead operations, audit logs, Noura outbox/worker, mock API, retries, and manual retry.
-- Implement SEO metadata, structured data, hreflang, sitemap, robots, and filter noindex rules.
 - Add frontend unit, E2E, accessibility, performance, and baseline load tests as those application layers are implemented.
 - Produce admin, backup/restore, and production operations documentation.
 - Provision GitHub `staging` and `production` Environments, required reviewers, deployment variables/secrets, a restricted server account, and GHCR pull credentials before enabling deployment.
