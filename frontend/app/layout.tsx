@@ -5,12 +5,12 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Jahan Academy",
-  description: "Study, grow, belong.",
+  description: "Trusted guidance for educational migration.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <html lang="fa" dir="rtl">
+    <html lang="fa" dir="rtl" suppressHydrationWarning>
       <body>{children}</body>
     </html>
   );
