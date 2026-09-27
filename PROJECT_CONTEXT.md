@@ -132,10 +132,10 @@ In Post-MVP, Student, Applicant, and General User are **not** separate authoriza
 ### 4.4 Authorization Matrix Status
 
 The server-side authorization framework uses RBAC, scoped role grants, and domain-owned resource
-policies with deny-by-default behavior. The detailed Role → Permission → Scope matrix for the final
-product will be approved later. Existing MVP role behaviors remain minimum requirements, but
-Student, Customer, Applicant, Instructor, Sales, Admin, and other future labels shall not receive
-technical grants merely from their names. `AUTHORIZATION_DESIGN.md` is the matrix workspace.
+policies with deny-by-default behavior. The MVP Role → Permission → Scope matrix for Super Admin,
+Content Producer (`content_editor`), Support, and Consultant is approved in `AUTHORIZATION_DESIGN.md`
+and enforced by migration `021_role_permission_matrix`. Student, Customer, Applicant, Instructor,
+Sales, Admin, and other future labels receive no technical grant merely from their names.
 
 ## 5. Features
 
@@ -833,6 +833,13 @@ The logo asset and AI screens show different logo treatments. The standalone sup
 - Pull requests or review checkpoints must reference requirement IDs.
 - Maintain `.env.example`, setup instructions, migration/seed instructions, backup/restore guide, panel user guide, and Noura integration guide.
 
+### 15.5 Mandatory Feature Delivery Lifecycle
+
+Each feature uses a dedicated `feature/<name>` branch and follows this fixed order: Requirement →
+Data/API/Permission Design → Implementation → Unit Tests → Integration Tests → Security & Code
+Review → Commit → Push & Pull Request → CI Verification. Do not begin the next feature until every
+required CI gate for the current feature is green.
+
 ## 16. Current Progress
 
 - [x] Source-of-truth structure created.
@@ -851,7 +858,8 @@ The logo asset and AI screens show different logo treatments. The standalone sup
 - [x] FastAPI backend scaffold implemented as a domain-oriented modular monolith with 17 domain modules, thin API composition, shared infrastructure, Celery queue entrypoints, architecture tests, locked Python dependencies, and a production container definition.
 - [x] API v1 designed contract-first: endpoint registry, authentication, permissions, request/response schemas, validation, stable errors, status codes, idempotency/concurrency rules, phase boundaries, OpenAPI 3.1 baseline, and automated contract validation documented.
 - [x] Public email/password authentication implemented: registration, email verification/resend, login lockout, Argon2id hashing, short-lived access JWTs, rotating opaque refresh tokens with reuse detection, logout/revocation, password reset, CSRF cookies, SMTP adapter, and PostgreSQL-backed end-to-end coverage.
-- [x] Authorization framework implemented with deny-by-default RBAC, global/scoped grants, ALL/ANY permission evaluation, domain resource-policy interface, FastAPI dependencies, and tests; final role-permission-scope matrix intentionally pending Product Owner approval.
+- [x] Authorization framework implemented with deny-by-default RBAC, global/scoped grants, ALL/ANY permission evaluation, domain resource-policy interface, FastAPI dependencies, and tests; MVP staff Role & Permission Matrix finalized for Super Admin, Content Producer, Support, and Consultant by migration `021_role_permission_matrix`.
+- [x] Mandatory per-feature delivery lifecycle recorded: requirement, data/API/permission design, implementation, unit and integration tests, security review, commit, pull request, and CI verification; no feature advances before green CI.
 - [x] GitHub repository connected with `main`/`develop`/short-lived branch workflow, Conventional Commits, pull-request template, CODEOWNERS, and review policy.
 - [x] GitHub Actions CI/CD implemented as ordered Lint, Unit Tests, Integration Tests, Build, Security Checks, immutable GHCR publish, staging deploy, and production release-tag deploy gates; deployment remains disabled until environment infrastructure is provisioned.
 - [x] Full Docker integration environment implemented with a single Nginx ingress, Next.js standalone Web container, FastAPI API and one-shot migration containers, internal PostgreSQL 18/Redis 8 services, persistent volumes, isolated networks, dependency health checks, and no public data-service ports.
