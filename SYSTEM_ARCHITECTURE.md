@@ -664,12 +664,12 @@ flowchart LR
 - [ ] Only ingress is publicly reachable; data services are private.
 - [ ] `/api/v1` contract and generated TypeScript client agree in CI.
 - [ ] Every mutation has server authorization and authoritative validation.
-- [ ] Critical mutation plus outbox event commits in one PostgreSQL transaction.
+- [x] Critical consultation mutation plus Noura outbox event commits in one PostgreSQL transaction.
 - [ ] Jobs and webhooks are idempotent and replay-tested.
 - [ ] Private uploads remain quarantined until scan/validation succeeds.
 - [ ] Payment browser return cannot mark a payment successful.
 - [ ] Redis loss does not lose authoritative business records.
-- [ ] Noura outage does not reject a valid stored consultation request.
+- [x] Noura outage does not reject a valid stored consultation request; durable retry and manual recovery are implemented against the mock contract.
 - [ ] Migrations run once through a controlled deployment job.
 - [ ] Logs, traces, errors, and audit records redact secrets and unnecessary PII.
 - [ ] Backup restoration and outbox/job recovery are tested.

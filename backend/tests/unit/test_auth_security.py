@@ -3,6 +3,7 @@ from uuid import uuid4
 
 import jwt
 import pytest
+from pydantic import SecretStr
 
 from app.core.config import Settings
 from app.modules.identity.security import AuthSecurity, validate_password_strength
@@ -14,7 +15,7 @@ def security() -> AuthSecurity:
     return AuthSecurity(
         Settings(
             environment="test",
-            session_secret="test-secret-that-is-longer-than-32-characters",
+            session_secret=SecretStr("test-secret-that-is-longer-than-32-characters"),
         )
     )
 
@@ -42,7 +43,7 @@ def test_access_token_contains_required_claims(security: AuthSecurity) -> None:
 def test_expired_access_token_is_rejected(security: AuthSecurity) -> None:
     settings = Settings(
         environment="test",
-        session_secret="test-secret-that-is-longer-than-32-characters",
+        session_secret=SecretStr("test-secret-that-is-longer-than-32-characters"),
     )
     now = datetime.now(UTC)
     token = jwt.encode(

@@ -466,7 +466,7 @@ The following stack is approved for the complete target product, not only MVP de
 | API contracts | FastAPI OpenAPI 3.1 and generated TypeScript client using `openapi-typescript`/`openapi-fetch` |
 | Testing | pytest, pytest-asyncio, HTTPX, Testcontainers, Vitest, Testing Library, Playwright, axe-core, Lighthouse CI, and load tests |
 | Observability | OpenTelemetry, Sentry, Prometheus/Grafana, structlog/Pino JSON logs, redaction, and correlation IDs |
-| Local environment | Docker Compose for PostgreSQL 18, Redis 8, Mailpit, MinIO, ClamAV, and Mock Noura |
+| Local environment | Docker Compose with Nginx ingress, Next.js Web, FastAPI API/migrations, PostgreSQL 18, and Redis 8; Mailpit, Moto (S3-compatible emulator), ClamAV, and Mock Noura are added with their feature modules |
 | Delivery | GitHub Actions and separate immutable Web, API, Worker, and Scheduler images/processes |
 | Reverse proxy/TLS | Caddy for self-hosted deployment; omit it behind managed platform ingress; do not run Nginx alongside Caddy by default |
 
@@ -526,7 +526,7 @@ flowchart LR
 
 ### 10.3 Environment Strategy
 
-- **Development:** Web/API on host or containers; Docker Compose PostgreSQL, Redis, MinIO, Mailpit, ClamAV, and Mock Noura.
+- **Development:** Web/API on host or containers; Docker Compose PostgreSQL, Redis, Moto (S3-compatible emulator), Mailpit, ClamAV, and Mock Noura.
 - **Staging:** Production-like Web/API/Worker/Scheduler deployment, isolated database/storage/cache, provider sandboxes, and non-production messaging/payment accounts.
 - **Production:** Final domain/hosting, managed PostgreSQL and Redis, private object storage/CDN, production providers, real Noura connector, monitoring, and tested backups.
 
@@ -544,16 +544,16 @@ Names below are logical; exact migration names may follow code conventions.
 | `password_reset_tokens` | hashed token, admin_user_id, expires_at, used_at |
 | `countries` | id, ISO code, slug, status, featured, display_order |
 | `country_translations` | country_id, locale, name, summary, body, SEO fields |
-| `cities` | id, country_id, normalized name; bilingual display fields when managed explicitly |
-| `universities` | id, country_id, city_id/name, slug, type, founded_year, website_url, contact data, status, featured, timestamps, deleted_at |
+| `cities` | id, country_id, slug, normalized name, active, display_order, timestamps; bilingual translations |
+| `universities` | id, country_id, city_id, slug, type, founded_year, website/contact data, tuition mode/min/max/currency, status, featured, version, publication/archive evidence, timestamps, deleted_at |
 | `university_translations` | university_id, locale, name, short_description, body, SEO title/description, media alt fields |
-| `programs` | id, university_id, slug, level_id, field_id, tuition_mode, tuition_min/max, currency_id, duration data, application_fee data, official_url, status, featured, timestamps, deleted_at |
+| `programs` | id, university_id, slug, level/primary field, duration, tuition mode/min/max/currency, application-fee mode/amount/currency, teaching language, official URL, status, featured, version, publication/archive evidence, timestamps, deleted_at |
 | `program_translations` | program_id, locale, title, short_description, body, admission_requirements, teaching_language labels, SEO fields |
-| `academic_levels` | id, code, display order and bilingual label |
-| `fields_of_study` | id, slug/code and bilingual label |
-| `intakes` | id, code (`spring`, `summer`, `fall`, `winter`, `unknown`) and bilingual label |
+| `academic_levels` | id, code, active, display order, timestamps and bilingual label/description |
+| `fields_of_study` | id, optional parent_id, slug/code, active, display order, timestamps and bilingual label/description |
+| `intakes` | id, code (`spring`, `summer`, `fall`, `winter`, `unknown`), active, display order and bilingual label/description |
 | `program_intakes` | program_id, intake_id, year, deadline, optional notes |
-| `currencies` | ISO code, symbol, decimals, active |
+| `currencies` / `currency_translations` | ISO alpha/numeric code, symbol, decimals, active, display order and bilingual name/description |
 | `news_articles` | id, slug, author_admin_id, featured_media_id, status, published_at, timestamps, deleted_at |
 | `news_translations` | article_id, locale, title, summary, body, SEO fields |
 | `faqs` / `faq_translations` | reusable item, locale question/answer, status |
@@ -561,7 +561,7 @@ Names below are logical; exact migration names may follow code conventions.
 | `media_assets` | id, storage_key, mime type, dimensions, size, attribution/source when needed, timestamps |
 | `leads` | id, public_reference, names, phone_raw, phone_normalized, email, desired_country_id/text, intake_term, start_year, age, gender_code, gender_self_description, occupation, marital_status_code, investment_range_code, investment_currency, message, locale, source URL/entity, consent timestamps, status, assigned_consultant_id, archived_at, anonymized_at, timestamps |
 | `lead_status_history` | lead_id, old/new status, actor, timestamp, optional reason |
-| `lead_assignments` | lead_id, consultant_id, assigned_by, assigned_at, unassigned_at |
+| `lead_assignments` | lead_id, consultant_id, assigned_by, assigned_at, unassigned_at, ended_by, reason |
 | `lead_notes` | lead_id, author_admin_id, body, timestamps |
 | `integration_outbox` | id, aggregate type/id, provider, event type, payload/version, status, attempts, next_attempt_at, locked_at, timestamps |
 | `noura_sync_records` | lead_id, sync status, external_id, idempotency_key, attempt_count, last_attempt_at, synced_at, sanitized_error |
@@ -650,8 +650,15 @@ Error:
 | `GET /api/v1/countries/{slug}` | Localized country detail and related entities |
 | `GET /api/v1/universities` | `locale`, `q`, `page`, `limit`; published results only |
 | `GET /api/v1/universities/{slug}` | Localized university detail and related programs |
+| `GET /api/v1/universities/{slug}/related` | Ranked related universities with stable reason codes; maximum 12 results |
 | `GET /api/v1/programs` | `locale`, `q`, `level`, `field`, `intake`, `sort`, `page`, `limit` |
 | `GET /api/v1/programs/{slug}` | Localized program detail with university and intake data |
+| `GET /api/v1/programs/{slug}/related` | Ranked related Programs with stable reason codes; maximum 12 results |
+| `GET /api/v1/discovery/suggestions` | Fast localized University/Program suggestions by `q`, optional `entityType`, maximum 10 results |
+| `GET /api/v1/articles` | Published News/Article/Guide search with type, category, Tag, author, featured, sort, and pagination filters |
+| `GET /api/v1/articles/{slug}` | Localized published content detail with author, categories, and Tags |
+| `GET /api/v1/content/{categories\|tags\|authors}` | Published localized editorial reference lists |
+| `GET /api/v1/content/{categories\|tags\|authors}/{slug}` | Published localized editorial reference detail |
 | `GET /api/v1/news` | `locale`, `page`, `limit`; ordered by publication date descending |
 | `GET /api/v1/news/{slug}` | Localized published news detail |
 | `POST /api/v1/consultation-requests` | Validate, deduplicate, persist lead/outbox atomically, return public reference and duplicate flag |
@@ -694,6 +701,8 @@ Successful creation returns HTTP `201`; a detected duplicate returns HTTP `200` 
 ### 12.4 Administrative Endpoints
 
 - CRUD/lifecycle endpoints for countries, universities, programs, taxonomies, news, FAQs, media, and settings.
+- University management uses `GET/POST /api/v1/admin/universities`, `GET/PUT/DELETE /api/v1/admin/universities/{id}`, and explicit `publish`/`archive` actions. Writes require complete Persian and English translations; update, publish, archive, and delete require `If-Match`.
+- Program management uses `GET/POST /api/v1/admin/programs`, `GET/PUT/DELETE /api/v1/admin/programs/{id}`, and explicit `publish`/`archive` actions. It manages levels, primary/additional fields, tuition, application fees, duration, teaching language, official links, intake-specific deadlines, and structured/bilingual admission requirements.
 - Lead list/detail/edit/assign/status/note endpoints.
 - `POST /api/v1/admin/leads/{id}/noura-retry` for authorized manual retry.
 - Admin-user and role assignment endpoints restricted to Super Admin.
@@ -838,15 +847,29 @@ The logo asset and AI screens show different logo treatments. The standalone sup
 - [x] Complete system architecture documented, including routing, deployment units, backend modules, data ownership, queues, trust boundaries, critical flows, failure behavior, and scaling strategy.
 - [x] Backend runtime compatibility reviewed and Python 3.12 frozen across API, workers, scheduler, migrations, tests, and containers to prevent a mid-project feature-version migration.
 - [x] Complete-product database entities extracted and grouped by domain; duplicate identity concepts and aggregate ownership decisions documented before physical ERD work.
-- [x] PostgreSQL 18 baseline plus authentication hardening implemented as eight reversible Alembic/SQL migrations; 106 tables, constraints, refresh-token family state, login lockout state, rollback/re-upgrade, and Python 3.12 Alembic execution verified.
-- [x] FastAPI backend scaffold implemented as a domain-oriented modular monolith with 13 domain modules, thin API composition, shared infrastructure, Celery queue entrypoints, architecture tests, locked Python dependencies, and a production container definition.
+- [x] PostgreSQL 18 baseline, authentication hardening, reference-data extension, consultation submission, lead workflow, Noura sync, media lifecycle, university/program catalogs, indexed discovery, editorial content, FAQ lifecycle, and administrative-staff lifecycle persistence implemented as twenty reversible Alembic/SQL migrations; constraints, optimistic-concurrency state, archive/assignment evidence, durable provider idempotency/retry state, upload quarantine/validation state, refresh-token family state, login lockout state, rollback/re-upgrade, and Python 3.12 Alembic execution verified.
+- [x] FastAPI backend scaffold implemented as a domain-oriented modular monolith with 17 domain modules, thin API composition, shared infrastructure, Celery queue entrypoints, architecture tests, locked Python dependencies, and a production container definition.
 - [x] API v1 designed contract-first: endpoint registry, authentication, permissions, request/response schemas, validation, stable errors, status codes, idempotency/concurrency rules, phase boundaries, OpenAPI 3.1 baseline, and automated contract validation documented.
 - [x] Public email/password authentication implemented: registration, email verification/resend, login lockout, Argon2id hashing, short-lived access JWTs, rotating opaque refresh tokens with reuse detection, logout/revocation, password reset, CSRF cookies, SMTP adapter, and PostgreSQL-backed end-to-end coverage.
 - [x] Authorization framework implemented with deny-by-default RBAC, global/scoped grants, ALL/ANY permission evaluation, domain resource-policy interface, FastAPI dependencies, and tests; final role-permission-scope matrix intentionally pending Product Owner approval.
+- [x] GitHub repository connected with `main`/`develop`/short-lived branch workflow, Conventional Commits, pull-request template, CODEOWNERS, and review policy.
+- [x] GitHub Actions CI/CD implemented as ordered Lint, Unit Tests, Integration Tests, Build, Security Checks, immutable GHCR publish, staging deploy, and production release-tag deploy gates; deployment remains disabled until environment infrastructure is provisioned.
+- [x] Full Docker integration environment implemented with a single Nginx ingress, Next.js standalone Web container, FastAPI API and one-shot migration containers, internal PostgreSQL 18/Redis 8 services, persistent volumes, isolated networks, dependency health checks, and no public data-service ports.
+- [x] Reference Data Management implemented for countries, cities, academic levels, fields of study, intakes, and currencies: bilingual validation, public localized reads, protected admin CRUD/archive, relation validation, search/filter/pagination, seed data, RBAC permissions, audit logging, ETag/If-Match concurrency control, reversible migration `009_reference_data`, and automated coverage.
+- [x] Public Consultation Request Submission implemented at `POST /api/v1/consultation-requests`: Iranian/international mobile normalization, mandatory versioned privacy/contact consent evidence, 24-hour atomic duplicate prevention, non-sequential tracking codes, optional idempotency replay, Redis rate limiting with safe fail-open behavior, source/reference validation, transactional lead/status/outbox/sync creation, reversible migration `010_consultation_submission`, and end-to-end PostgreSQL/Redis coverage.
+- [x] Lead Management implemented under `/api/v1/admin/leads`: permission-scoped list/search/filter/pagination, assigned-only Consultant visibility enforced in SQL, detail views, validated partial edits, ETag/If-Match concurrency control, reasoned Archive without permanent deletion, localized country and Noura sync state, PII-safe audit evidence, role-permission grants, reversible migration `011_lead_management`, and end-to-end coverage.
+- [x] Lead Assignment & Status Workflow implemented: consultant availability validation, initial assignment and transfer with retained timelines, `New` through terminal `Closed` transition matrix, assigned-only Consultant updates, combined assignment/status history API, optimistic concurrency, PII-safe audit events, canonical permissions, reversible migration `012_lead_workflow`, and end-to-end coverage.
 - [x] Application repository/scaffold implemented.
 - [x] Database schema and migrations implemented.
 - [ ] Public UI and administration panel implemented.
-- [ ] Mock Noura connector implemented and tested.
+- [x] Mock Noura connector implemented and tested: provider-neutral adapter, idempotent mock API, PostgreSQL outbox claiming/recovery, Celery/Beat automatic dispatch, retry schedule, safe error taxonomy, external-ID persistence, independent Pending/Synced/Failed state, and audited manual retry via reversible migration `013_noura_mock`.
+- [x] Media Management implemented: S3-compatible direct upload intents, private quarantine, strict purpose/type/size/extension and real-content validation, SHA-256 verification/deduplication, Pillow dimension checks, active-PDF rejection, ClamAV scanning, public promotion/delivery, search, bilingual alt/attribution metadata, ETag concurrency, dependency-safe deletion, audit evidence, Moto S3-compatible local runtime, and reversible migration `014_media_management`.
+- [x] University Management implemented: public localized discovery/detail and protected admin CRUD, mandatory Persian/English translations, country/city integrity, exact/range/contact tuition with active currency validation, rankings, ready-purpose-matched logo/hero/gallery media, contact fields, publication completeness gates, featured/search/filter/sort/pagination, ETag concurrency, PII-safe audit evidence, archive preservation, dependency-safe draft deletion, `catalog.read`/`catalog.write` permissions, reversible migration `015_university_management`, and PostgreSQL end-to-end coverage.
+- [x] Program Management implemented: localized public discovery/detail and protected admin CRUD, mandatory Persian/English translations, published-university/active-level/field integrity, primary and additional fields, exact/range/contact tuition, exact/free/contact application fees, duration and teaching language, official-source links, intake-year-specific deadlines/status/notes, structured and bilingual admission requirements, publication completeness gates, search/filter/sort/pagination, ETag concurrency, audit evidence, archive preservation, dependency-safe draft deletion, reversible migration `016_program_management`, and PostgreSQL end-to-end coverage.
+- [x] University & Program Discovery API implemented: weighted bilingual PostgreSQL full-text search with GIN indexes and safe partial-match fallback, relevance/default and explicit sorting, existing domain filters and bounded pagination, type-scoped autocomplete suggestions, explainable related-university and related-Program ranking, published-parent visibility enforcement, reversible migration `017_discovery_api`, and full PostgreSQL integration coverage.
+- [x] Content Management implemented: bilingual News/Article/Guide CRUD, Category/Tag/Author lifecycle management, Draft/Publish/Scheduled Publish/Archive states, published-only public reads, full-text search, type/category/Tag/author/featured filters, relevance and date/title sorting, ready article-image validation, publication completeness gates, ETag concurrency, audit evidence, dependency-safe draft deletion, `content.read`/`content.write`/`content.publish` permissions, reversible migration `018_content_management`, and PostgreSQL end-to-end coverage.
+- [x] FAQ Management implemented: bilingual FAQ CRUD, reusable assignments to general pages, universities, Programs, and services, per-target display ordering with atomic bulk reorder, Draft/Publish/Archive lifecycle, published-target visibility checks, safe rich-text answers, search/filter/pagination, ETag concurrency, audit evidence, draft-only deletion, reusable content permissions, reversible migration `019_faq_management`, and PostgreSQL end-to-end coverage.
+- [x] Admin User Management implemented under `/api/v1/admin/staff`: Super Admin-only creation of admin, support, consultant, and content-editor accounts; email-based one-time access setup and recovery; active/disabled lifecycle; session revocation and lock clearing for recovery; full-role replacement; ETag concurrency; PII-safe audit events; last-active-Super-Admin and self-deactivation protections; `identity.manage`/`role.manage` permission grants; reversible migration `020_admin_user_management`; and PostgreSQL end-to-end coverage.
 - [ ] Real Noura connector implemented and accepted.
 - [ ] Staging and production infrastructure provisioned.
 
@@ -879,13 +902,12 @@ The logo asset and AI screens show different logo treatments. The standalone sup
 
 ### 18.2 Engineering
 
-- Scaffold the selected stack and local Docker environment.
-- Implement schema, migrations, seed data, RBAC, and admin authentication.
 - Build bilingual public shell, content modules, university/program discovery, news, and consultation flow.
 - Build lead operations, audit logs, Noura outbox/worker, mock API, retries, and manual retry.
 - Implement SEO metadata, structured data, hreflang, sitemap, robots, and filter noindex rules.
-- Add unit, integration, E2E, accessibility, performance, and baseline load tests.
-- Produce setup, admin, backup/restore, and deployment documentation.
+- Add frontend unit, E2E, accessibility, performance, and baseline load tests as those application layers are implemented.
+- Produce admin, backup/restore, and production operations documentation.
+- Provision GitHub `staging` and `production` Environments, required reviewers, deployment variables/secrets, a restricted server account, and GHCR pull credentials before enabling deployment.
 
 ### 18.3 External Dependencies Before Production
 

@@ -3,7 +3,7 @@
 **Status:** Implemented and tested
 **Database:** PostgreSQL 18
 **Migration engine:** Alembic on Python 3.12
-**Head revision:** `008_harden_auth`
+**Head revision:** `019_faq_management`
 
 ## Migration Chain
 
@@ -17,6 +17,17 @@
 | `006_commerce` | `006_create_commerce` | Products, prices, orders, items, payments, events, refunds, invoices |
 | `007_comms_integrations` | `007_create_communications_integrations` | Conversations, tickets, notifications, outbox, sync, webhooks, audit |
 | `008_harden_auth` | `008_harden_authentication` | Login lockout state and rotating refresh-token session families |
+| `009_reference_data` | `009_create_reference_data_management` | Bilingual reference-data lifecycle, currencies, seed data, permissions, and indexes |
+| `010_consultation_submission` | `010_create_consultation_submission` | Consultation deduplication state, optional gender description, and immutable submission-event history |
+| `011_lead_management` | `011_create_lead_management` | Lead row versions, durable archive evidence, list index, and canonical lead-management permissions |
+| `012_lead_workflow` | `012_create_lead_assignment_status_workflow` | Assignment/transfer evidence, workflow permissions, and assignment timeline index |
+| `013_noura_mock` | `013_create_noura_mock_integration` | Noura idempotency state, manual-retry evidence, reclaimable outbox index, and retry permission |
+| `014_media_management` | `014_create_media_management` | Media upload lifecycle, purpose/status validation, checksum deduplication, optimistic concurrency, and media permissions |
+| `015_university_management` | `015_create_university_management` | Bilingual university lifecycle, tuition/contact/ranking/media constraints, publication/archive state, and catalog permissions |
+| `016_program_management` | `016_create_program_management` | Academic Program lifecycle, tuition/application-fee constraints, intakes/deadlines, requirements, and discovery indexes |
+| `017_discovery_api` | `017_create_discovery_api` | Weighted generated search vectors and GIN indexes for bilingual University/Program discovery |
+| `018_content_management` | `018_create_content_management` | Editorial categories, Tags, authors, Article relations, publication/archive evidence, permissions, and full-text index |
+| `019_faq_management` | `019_create_faq_management` | Bilingual FAQ lifecycle, polymorphic public scopes, deterministic per-target ordering, archive evidence, and optimistic concurrency |
 
 Each Alembic revision executes a paired, reviewable `.up.sql` and `.down.sql` file. SQL is split into individual statements by the migration runner, while Alembic keeps one transaction per revision on PostgreSQL.
 
@@ -34,17 +45,15 @@ Each Alembic revision executes a paired, reviewable `.up.sql` and `.down.sql` fi
 
 The baseline was tested against the official `postgres:18-alpine` image:
 
-1. Applied all eight raw up migrations with `ON_ERROR_STOP=1`.
-2. Confirmed 106 application tables in the `public` schema.
-3. Ran required-table checks for identity, catalog, lead, application, document, LMS, commerce, support, notification, outbox, and audit domains.
+1. Applied all nineteen migrations with transactional Alembic execution.
+2. Confirmed 119 application tables in the `public` schema.
+3. Ran required-table checks for identity, catalog/reference data, lead, application, document, LMS, commerce, support, notification, outbox, and audit domains.
 4. Verified representative `CHECK` and foreign-key violations are rejected.
-5. Applied every down migration in reverse order.
-6. Confirmed the `public` schema returned to zero application tables.
-7. Re-applied all migrations successfully.
-8. Compiled Alembic code under Python 3.12.
-9. Ran Alembic `upgrade head → current → downgrade base → upgrade head` against a separate PostgreSQL database.
-10. Confirmed final Alembic revision `008_harden_auth`, tested downgrade to
-    `007_comms_integrations`, and re-upgraded to head on PostgreSQL 18.
+5. Applied and verified the latest FAQ migration downgrade to `018_content_management`.
+6. Re-applied the FAQ migration successfully.
+7. Compiled Alembic code under Python 3.12.
+8. Ran the complete 12-test PostgreSQL/Redis integration suite in the Docker application network.
+9. Confirmed final Alembic revision `019_faq_management` on PostgreSQL 18; latest-revision rollback/re-upgrade remains a required CI gate.
 
 ## Implementation Rules
 

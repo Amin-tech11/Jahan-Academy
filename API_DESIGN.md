@@ -201,9 +201,14 @@ translations.
 | PUB-04 | `GET /universities/{slug}` | Guest | Slug and `locale` | `UniversityDetail` | `200`, `404` | Published only; related items are also public |
 | PUB-05 | `GET /programs` | Guest | `locale,q,country,university,level,field,language,intake,tuitionMin,tuitionMax,currency,sort,page,limit` | Page of `ProgramSummary` | `200`; `422 INVALID_FILTER` | Ranges non-negative/min≤max; allowlisted sort |
 | PUB-06 | `GET /programs/{slug}` | Guest | Slug and `locale` | `ProgramDetail` | `200`, `404` | Published only; full structured facts in MVP |
-| PUB-07 | `GET /articles` | Guest | `locale,q,category,tag,page,limit` | Page of `ArticleSummary` newest first | `200`; `422` | Published and `publishedAt <= now` |
-| PUB-08 | `GET /articles/{slug}` | Guest | Slug and `locale` | `ArticleDetail` | `200`, `404` | Sanitized published body only |
-| PUB-09 | `POST /consultation-requests` | Guest | `ConsultationCreate`; optional `Idempotency-Key` | `ConsultationReceipt` | `201`; duplicate `200`; `409 DUPLICATE_OPERATION`; `422`; `429`; `503` only if local persistence unavailable | Public; honeypot/rate limit; persist lead+outbox atomically; Noura failure never changes acceptance |
+| PUB-07 | `GET /discovery/suggestions` | Guest | `q,locale,entityType,limit` | `SuggestionEnvelope` | `200`; `422` | Published University/Program only; `q` 2–100; limit 1–10 |
+| PUB-08 | `GET /universities/{slug}/related` | Guest | Slug, `locale`, `limit` | `RelatedEnvelope` | `200`, `404`, `422` | Explainable ranking; excludes source; limit 1–12 |
+| PUB-09 | `GET /programs/{slug}/related` | Guest | Slug, `locale`, `limit` | `RelatedEnvelope` | `200`, `404`, `422` | Published Program and parent University only; excludes source; limit 1–12 |
+| PUB-10 | `GET /articles` | Guest | `locale,q,type,categoryId,tagId,authorId,featured,sort,page,limit` | Page of `ArticleSummary` | `200`; `422` | Published and `publishedAt <= now`; full-text relevance available |
+| PUB-11 | `GET /articles/{slug}` | Guest | Slug and `locale` | `ArticleDetail` | `200`, `404` | Published localized body only |
+| PUB-12 | `GET /content/{categories|tags|authors}` | Guest | `locale,q,page,limit` | Localized reference page | `200`, `422` | Published records only |
+| PUB-13 | `GET /content/{categories|tags|authors}/{slug}` | Guest | Slug and `locale` | Localized reference | `200`, `404` | Published records only |
+| PUB-14 | `POST /consultation-requests` | Guest | `ConsultationCreate`; optional `Idempotency-Key` | `ConsultationReceipt` | `201`; duplicate `200`; `409 IDEMPOTENCY_KEY_REUSED`; `422`; `429`; `503` only if local persistence unavailable | Public; honeypot/rate limit; persist lead+outbox atomically; Noura failure never changes acceptance |
 
 ## 6. MVP Staff Authentication API
 
@@ -223,6 +228,12 @@ publication. Delete means hard delete only for dependency-free drafts; otherwise
 
 | ID | Method and endpoint | Request | Response | Status / errors | Permission |
 |---|---|---|---|---|---|
+| REF-01 | `GET /reference-data/{kind}` | `kind`, `locale`, `q`, relation filters, page/limit | Localized active `ReferencePage` | `200`, `422` | Guest |
+| REF-02 | `GET /admin/reference-data/{kind}` | Locale/search/relation filters/page | All active and archived items | `200`; `401`; `403`; `422` | `reference_data.read` |
+| REF-03 | `POST /admin/reference-data/{kind}` | Kind-specific write model with complete `fa`/`en` translations | `ReferenceItem` | `201`; `409 REFERENCE_DATA_ALREADY_EXISTS`; `422` | `reference_data.write` |
+| REF-04 | `GET /admin/reference-data/{kind}/{id}` | UUID | Item with both translations | `200`; `404` | `reference_data.read` |
+| REF-05 | `PUT /admin/reference-data/{kind}/{id}` | Complete kind-specific write model + `If-Match` | Updated item + new ETag | `200`; `404`; `409`; `412`; `422`; `428` | `reference_data.write` |
+| REF-06 | `DELETE /admin/reference-data/{kind}/{id}` | UUID + `If-Match` | Archived item + new ETag | `200`; `404`; `412`; `428` | `reference_data.write` |
 | CAT-01 | `GET /admin/countries` | Filters, lifecycle, page/limit | Page of `AdminCountry` | `200`, `422` | `catalog.read` |
 | CAT-02 | `POST /admin/countries` | `CountryWrite` | `AdminCountry` | `201`; `409 SLUG_TAKEN`; `422` | `catalog.write` |
 | CAT-03 | `GET /admin/countries/{id}` | UUID | `AdminCountry` | `200`, `404` | `catalog.read` |
@@ -251,15 +262,39 @@ publication. Delete means hard delete only for dependency-free drafts; otherwise
 | ART-05 | `POST /admin/articles/{id}/publish` | Publish time optional, `If-Match` | `AdminArticle` | `200`; `409 PUBLICATION_INCOMPLETE`; `412` | `content.publish` |
 | ART-06 | `POST /admin/articles/{id}/archive` | Reason, `If-Match` | `AdminArticle` | `200`; `409`; `412` | `content.write` |
 | ART-07 | `DELETE /admin/articles/{id}` | Draft UUID, `If-Match` | Empty | `204`; `409`; `412` | `content.write` |
+| CNT-01 | `GET /admin/content/{categories|tags|authors}` | Locale/search/status/page | Content reference page | `200`, `422` | `content.read` |
+| CNT-02 | `POST /admin/content/{categories|tags|authors}` | Bilingual reference write model | Content reference + ETag | `201`, `409`, `422` | `content.write` |
+| CNT-03 | `GET /admin/content/{kind}/{id}` | UUID and locale | Content reference + ETag | `200`, `404` | `content.read` |
+| CNT-04 | `PUT /admin/content/{kind}/{id}` | Complete write model and `If-Match` | Updated reference + ETag | `200`, `409`, `412`, `422` | `content.write` |
+| CNT-05 | `POST /admin/content/{kind}/{id}/publish` | `If-Match` | Published reference + ETag | `200`, `412`, `422` | `content.publish` |
+| CNT-06 | `POST /admin/content/{kind}/{id}/archive` | Reason and `If-Match` | Archived reference + ETag | `200`, `412` | `content.publish` |
+| CNT-07 | `DELETE /admin/content/{kind}/{id}` | Draft UUID and `If-Match` | Empty | `204`, `409`, `412` | `content.write` |
 | FAQ-01 | `GET /admin/faqs` | Search/scope/status/page | Page of `AdminFaq` | `200`, `422` | `content.read` |
 | FAQ-02 | `POST /admin/faqs` | `FaqWrite` | `AdminFaq` | `201`, `422` | `content.write` |
 | FAQ-03 | `GET /admin/faqs/{id}` | UUID | `AdminFaq` | `200`, `404` | `content.read` |
 | FAQ-04 | `PUT /admin/faqs/{id}` | `FaqWrite`, `If-Match` | `AdminFaq` | `200`; `404`; `412`; `422` | `content.write` |
-| FAQ-05 | `DELETE /admin/faqs/{id}` | UUID, `If-Match` | Empty | `204`; `409`; `412` | `content.write` |
+| FAQ-05 | `POST /admin/faqs/{id}/publish` | `If-Match` | `AdminFaq` | `200`; `412`; `422` | `content.publish` |
+| FAQ-06 | `POST /admin/faqs/{id}/archive` | Reason, `If-Match` | `AdminFaq` | `200`; `412` | `content.publish` |
+| FAQ-07 | `PUT /admin/faqs/order` | Target and ordered FAQ IDs | Empty | `204`; `422` | `content.write` |
+| FAQ-08 | `DELETE /admin/faqs/{id}` | Draft UUID, `If-Match` | Empty | `204`; `409`; `412` | `content.write` |
 
-`CountryWrite`, `UniversityWrite`, `ProgramWrite`, `ArticleWrite`, and `FaqWrite` reject unknown
-fields, require stable shared slugs, validate all referenced IDs, and store separate complete `fa`/`en`
-translations. Publication additionally validates required SEO and domain fields.
+Public FAQ reads use `GET /faqs` and `GET /faqs/{id}`. The list accepts `locale`,
+`targetType=general|university|program|service`, the required `targetId` for scoped targets,
+and bounded pagination. Results include only published FAQs, hide translation-management fields,
+verify scoped targets are published, and sort by each assignment's configured `displayOrder`.
+
+All write models reject unknown fields, validate referenced IDs, and store separate complete `fa`/`en`
+translations. Catalog and editorial entities also require stable shared slugs; FAQs are identified by
+UUID and reusable target assignments. Publication additionally validates required domain fields.
+
+`kind` is one of `countries`, `cities`, `academic-levels`, `fields-of-study`, `intakes`, or
+`currencies`. Reference-data deletion is deliberately an archive operation: countries transition to
+`archived`, while the other reference entities become inactive. Public reads expose only published
+countries and active items. Every write records a safe before/after audit entry. Country catalog
+endpoints below remain the richer country-content contract; the reference-data endpoints provide
+the implemented shared lookup-management boundary.
+Admin create/detail responses include an ETag derived from the row version. Update and archive
+require that ETag in `If-Match`; stale writes fail atomically with `412 STALE_WRITE`.
 
 ## 8. MVP Media API
 
@@ -283,27 +318,29 @@ Uploaded files are not usable until checksum, type, size and malware checks pass
 | LEAD-04 | `POST /admin/leads/{id}/assignments` | `consultantId`, optional reason, `If-Match` | `LeadDetail` | `200`; `404`; `409 CONSULTANT_UNAVAILABLE`; `412`; `422` | `lead.assign`; retains assignment history |
 | LEAD-05 | `POST /admin/leads/{id}/status-transitions` | `toStatus`, optional reason, `If-Match` | `LeadDetail` | `200`; `400 INVALID_STATE_TRANSITION`; `403`; `412`; `422` | All-lead writer or assigned consultant; transition matrix enforced |
 | LEAD-06 | `POST /admin/leads/{id}/notes` | Plain text 1–5,000, visibility `INTERNAL` | `LeadNote` | `201`; `403`; `404`; `422` | Support/Super Admin or assigned Consultant |
-| LEAD-07 | `GET /admin/leads/{id}/history` | Page/limit | Page of immutable `LeadEvent` | `200`; `403`; `404` | Same scope as lead detail |
-| LEAD-08 | `POST /admin/leads/{id}/archive` | Reason, `If-Match` | `LeadDetail` | `200`; `403`; `412`; `422` | `lead.write.all`; no permanent delete |
+| LEAD-07 | `GET /admin/leads/{id}/history` | UUID | Immutable assignment and status timelines | `200`; `403`; `404` | Same scope as lead detail |
+| LEAD-08 | `POST /admin/leads/{id}/archive` | Required reason, `If-Match` | `LeadDetail` | `200`; `403`; `409 LEAD_ARCHIVED`; `412`; `422`; `428` | `lead.write.all`; no permanent delete |
 | LEAD-09 | `POST /admin/leads/{id}/anonymize` | Approved privacy request ID, `If-Match` | `202` operation receipt | `202`; `403`; `409 LEGAL_HOLD`; `412`; `422` | Super Admin/data-privacy permission only |
 | LEAD-10 | `POST /admin/leads/{id}/noura-retry` | Optional operator note | `202` sync attempt receipt | `202`; `403`; `404`; `409 SYNC_NOT_RETRYABLE`; `429` | `lead.sync.retry`; idempotent and audited |
 | LEAD-11 | `GET /admin/leads/export` | Same filters; `format=csv` | UTF-8 CSV stream or `202` export job | `200/202`; `403`; `422`; `429` | `report.export`; export audit logged |
 
 Allowed status transitions are defined by policy, not arbitrary PATCH: `NEW -> ASSIGNED/CLOSED`,
 `ASSIGNED -> CONTACTED/CLOSED`, `CONTACTED -> QUALIFIED/NOT_QUALIFIED/CLOSED`,
-`QUALIFIED -> CONVERTED/NOT_QUALIFIED/CLOSED`, with controlled reopening by Support/Super Admin.
+`QUALIFIED -> CONVERTED/NOT_QUALIFIED/CLOSED`, `NOT_QUALIFIED -> QUALIFIED/CLOSED`, and
+`CONVERTED -> CLOSED`. `CLOSED` is terminal; reopening requires a future explicit workflow.
 
 ## 10. MVP Staff, Roles and Audit API
 
 | ID | Method and endpoint | Request | Response | Status / errors | Permission |
 |---|---|---|---|---|---|
 | IAM-01 | `GET /admin/staff` | Search/status/role/page | Page of `StaffView` | `200`, `403`, `422` | `identity.manage` |
-| IAM-02 | `POST /admin/staff` | Email, name, role IDs | `StaffView`; invitation/reset flow triggered | `201`; `409 IDENTITY_ALREADY_EXISTS`; `422` | Super Admin / `identity.manage` |
+| IAM-02 | `POST /admin/staff` | Email, name, and one or more role codes (`super_admin`, `support`, `consultant`, `content_editor`) | `StaffView`; one-time password-reset invitation is sent after commit | `201`; `403`; `409 STAFF_EMAIL_EXISTS`; `422` | Super Admin / `identity.manage` |
 | IAM-03 | `GET /admin/staff/{id}` | UUID | `StaffView` | `200`, `403`, `404` | `identity.manage` |
-| IAM-04 | `PATCH /admin/staff/{id}` | Name/active state, `If-Match` | `StaffView` | `200`; `403`; `404`; `409 LAST_SUPER_ADMIN`; `412`; `422` | `identity.manage` |
-| IAM-05 | `PUT /admin/staff/{id}/roles` | Complete role ID set, `If-Match` | `StaffView` | `200`; `403`; `404`; `409 LAST_SUPER_ADMIN`; `412`; `422` | `role.manage` |
-| IAM-06 | `GET /admin/roles` | Page/limit | Page of roles and permissions | `200`, `403` | `role.manage` |
-| IAM-07 | `GET /admin/audit-logs` | Actor/action/resource/date/page filters | Page of immutable audit events | `200`; `403`; `422` | `audit.read`; no mutation endpoint exists |
+| IAM-04 | `PATCH /admin/staff/{id}` | Name/locale/active state, required `If-Match` | `StaffView` | `200`; `403`; `404`; `409 LAST_SUPER_ADMIN_PROTECTED`/`SELF_DEACTIVATION_FORBIDDEN`; `412`; `422` | Super Admin / `identity.manage` |
+| IAM-05 | `PUT /admin/staff/{id}/roles` | Complete non-empty role-code set, required `If-Match` | `StaffView` | `200`; `403`; `404`; `409 LAST_SUPER_ADMIN_PROTECTED`; `412`; `422` | Super Admin / `role.manage` |
+| IAM-06 | `POST /admin/staff/{id}/access-recovery` | `reactivate` boolean and required `If-Match` | `StaffView`; revokes sessions and sends a one-time reset link | `202`; `403`; `404`; `409 STAFF_REACTIVATION_REQUIRED`; `412` | Super Admin / `identity.manage` |
+| IAM-07 | `GET /admin/roles` | Page/limit | Page of roles and permissions | `200`, `403` | `role.manage` |
+| IAM-08 | `GET /admin/audit-logs` | Actor/action/resource/date/page filters | Page of immutable audit events | `200`; `403`; `422` | `audit.read`; no mutation endpoint exists |
 
 ## 11. Final Public User Authentication API
 

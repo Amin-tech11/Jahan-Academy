@@ -31,7 +31,9 @@ def install_exception_handlers(app: FastAPI) -> None:
     async def handle_application_error(request: Request, exc: ApplicationError) -> JSONResponse:
         request_id = request.headers.get("x-request-id", str(uuid4()))
         content = _error_body(exc.code, exc.message, request_id, exc.field_errors)
-        headers = {"WWW-Authenticate": "Bearer"} if exc.status_code == 401 else None
+        headers = dict(exc.headers)
+        if exc.status_code == 401:
+            headers["WWW-Authenticate"] = "Bearer"
         return JSONResponse(status_code=exc.status_code, content=content, headers=headers)
 
     @app.exception_handler(RequestValidationError)

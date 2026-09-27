@@ -6,15 +6,216 @@ info:
 servers:
   - url: /api/v1
 tags:
+  - name: Reference Data
   - name: Public Catalog
   - name: Consultations
   - name: Staff Authentication
   - name: Lead Operations
+  - name: Media
   - name: User Authentication
+  - name: Staff Administration
   - name: Applications
   - name: Courses
   - name: Commerce
+  - name: FAQs
 paths:
+  /admin/media/upload-intents:
+    post:
+      tags: [Media]
+      operationId: createMediaUploadIntent
+      x-phase: MVP
+      x-permissions: [media.write]
+      security: [{ UserAccessToken: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/MediaUploadIntentRequest' }
+      responses:
+        '201': { description: Short-lived direct upload authorization }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '413': { description: File exceeds the purpose-specific limit }
+        '415': { description: Media type is not permitted }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /admin/media:
+    get:
+      tags: [Media]
+      operationId: listMediaAssets
+      x-phase: MVP
+      x-permissions: [media.read]
+      security: [{ UserAccessToken: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Search'
+        - { name: purpose, in: query, schema: { $ref: '#/components/schemas/MediaPurpose' } }
+        - { name: upload_status, in: query, schema: { $ref: '#/components/schemas/MediaUploadStatus' } }
+        - { name: mime_type, in: query, schema: { type: string } }
+      responses:
+        '200': { description: Paginated media assets }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /admin/media/{id}:
+    parameters: [{ $ref: '#/components/parameters/Id' }]
+    get:
+      tags: [Media]
+      operationId: getMediaAsset
+      x-phase: MVP
+      x-permissions: [media.read]
+      security: [{ UserAccessToken: [] }]
+      responses:
+        '200': { description: Media asset and current ETag }
+        '404': { $ref: '#/components/responses/NotFound' }
+    patch:
+      tags: [Media]
+      operationId: updateMediaMetadata
+      x-phase: MVP
+      x-permissions: [media.write]
+      security: [{ UserAccessToken: [] }]
+      parameters: [{ $ref: '#/components/parameters/IfMatch' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/MediaMetadataUpdate' }
+      responses:
+        '200': { description: Updated media asset }
+        '412': { description: Stale version }
+        '422': { $ref: '#/components/responses/ValidationError' }
+    delete:
+      tags: [Media]
+      operationId: deleteMediaAsset
+      x-phase: MVP
+      x-permissions: [media.write]
+      security: [{ UserAccessToken: [] }]
+      parameters: [{ $ref: '#/components/parameters/IfMatch' }]
+      responses:
+        '204': { description: Deleted }
+        '409': { description: Asset is attached to another resource }
+        '412': { description: Stale version }
+  /admin/media/{id}/confirm:
+    post:
+      tags: [Media]
+      operationId: confirmMediaUpload
+      x-phase: MVP
+      x-permissions: [media.write]
+      security: [{ UserAccessToken: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/MediaConfirmRequest' }
+      responses:
+        '202': { description: Validated, scanned, and ready public media asset }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '410': { description: Upload intent expired }
+        '422': { $ref: '#/components/responses/ValidationError' }
+        '503': { description: Storage or malware scanner unavailable }
+  /media/{id}/content:
+    get:
+      tags: [Media]
+      operationId: resolvePublicMedia
+      x-phase: MVP
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '307': { description: Redirect to a short-lived object URL }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /reference-data/{kind}:
+    get:
+      tags: [Reference Data]
+      operationId: listReferenceData
+      x-phase: MVP
+      parameters:
+        - $ref: '#/components/parameters/ReferenceKind'
+        - $ref: '#/components/parameters/Locale'
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+        - { name: countryId, in: query, schema: { $ref: '#/components/schemas/Uuid' } }
+        - { name: parentId, in: query, schema: { $ref: '#/components/schemas/Uuid' } }
+      responses:
+        '200': { $ref: '#/components/responses/ReferenceDataPage' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /admin/reference-data/{kind}:
+    get:
+      tags: [Reference Data]
+      operationId: listAdminReferenceData
+      x-phase: MVP
+      x-permissions: [reference_data.read]
+      security: [{ UserAccessToken: [] }]
+      parameters:
+        - $ref: '#/components/parameters/ReferenceKind'
+        - $ref: '#/components/parameters/Locale'
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200': { $ref: '#/components/responses/ReferenceDataPage' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+    post:
+      tags: [Reference Data]
+      operationId: createReferenceData
+      x-phase: MVP
+      x-permissions: [reference_data.write]
+      security: [{ UserAccessToken: [] }]
+      parameters: [{ $ref: '#/components/parameters/ReferenceKind' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ReferenceDataWrite' }
+      responses:
+        '201': { $ref: '#/components/responses/ReferenceDataItem' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /admin/reference-data/{kind}/{id}:
+    parameters:
+      - $ref: '#/components/parameters/ReferenceKind'
+      - $ref: '#/components/parameters/Id'
+    get:
+      tags: [Reference Data]
+      operationId: getAdminReferenceData
+      x-phase: MVP
+      x-permissions: [reference_data.read]
+      security: [{ UserAccessToken: [] }]
+      responses:
+        '200': { $ref: '#/components/responses/ReferenceDataItem' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    put:
+      tags: [Reference Data]
+      operationId: replaceReferenceData
+      x-phase: MVP
+      x-permissions: [reference_data.write]
+      security: [{ UserAccessToken: [] }]
+      parameters: [{ $ref: '#/components/parameters/IfMatch' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ReferenceDataWrite' }
+      responses:
+        '200': { $ref: '#/components/responses/ReferenceDataItem' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '412': { $ref: '#/components/responses/PreconditionFailed' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+    delete:
+      tags: [Reference Data]
+      operationId: archiveReferenceData
+      x-phase: MVP
+      x-permissions: [reference_data.write]
+      security: [{ UserAccessToken: [] }]
+      parameters: [{ $ref: '#/components/parameters/IfMatch' }]
+      responses:
+        '200': { $ref: '#/components/responses/ReferenceDataItem' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '412': { $ref: '#/components/responses/PreconditionFailed' }
   /countries:
     get:
       tags: [Public Catalog]
@@ -94,6 +295,23 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/UniversityDetail' }
         '404': { $ref: '#/components/responses/NotFound' }
+  /universities/{slug}/related:
+    get:
+      tags: [Public Catalog]
+      operationId: listRelatedUniversities
+      x-phase: MVP
+      parameters:
+        - $ref: '#/components/parameters/Slug'
+        - $ref: '#/components/parameters/Locale'
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 12, default: 6 } }
+      responses:
+        '200':
+          description: Ranked related published universities
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/RelatedEnvelope' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '422': { $ref: '#/components/responses/ValidationError' }
   /programs:
     get:
       tags: [Public Catalog]
@@ -136,6 +354,40 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/ProgramDetail' }
         '404': { $ref: '#/components/responses/NotFound' }
+  /programs/{slug}/related:
+    get:
+      tags: [Public Catalog]
+      operationId: listRelatedPrograms
+      x-phase: MVP
+      parameters:
+        - $ref: '#/components/parameters/Slug'
+        - $ref: '#/components/parameters/Locale'
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 12, default: 6 } }
+      responses:
+        '200':
+          description: Ranked related published academic Programs
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/RelatedEnvelope' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /discovery/suggestions:
+    get:
+      tags: [Public Catalog]
+      operationId: suggestCatalogResults
+      x-phase: MVP
+      parameters:
+        - { name: q, in: query, required: true, schema: { type: string, minLength: 2, maxLength: 100 } }
+        - $ref: '#/components/parameters/Locale'
+        - { name: entityType, in: query, schema: { type: string, enum: [university, program] } }
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 10, default: 8 } }
+      responses:
+        '200':
+          description: Ranked localized catalog suggestions
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuggestionEnvelope' }
+        '422': { $ref: '#/components/responses/ValidationError' }
   /articles:
     get:
       tags: [Public Catalog]
@@ -144,8 +396,12 @@ paths:
       parameters:
         - $ref: '#/components/parameters/Locale'
         - $ref: '#/components/parameters/Search'
-        - { name: category, in: query, schema: { type: string } }
-        - { name: tag, in: query, schema: { type: string } }
+        - { name: type, in: query, schema: { type: string, enum: [article, news, guide] } }
+        - { name: categoryId, in: query, schema: { $ref: '#/components/schemas/Uuid' } }
+        - { name: tagId, in: query, schema: { $ref: '#/components/schemas/Uuid' } }
+        - { name: authorId, in: query, schema: { $ref: '#/components/schemas/Uuid' } }
+        - { name: featured, in: query, schema: { type: boolean } }
+        - { name: sort, in: query, schema: { type: string, enum: [relevance, newest, oldest, title_asc, title_desc] } }
         - $ref: '#/components/parameters/Page'
         - $ref: '#/components/parameters/Limit'
       responses:
@@ -170,6 +426,192 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/ArticleDetail' }
         '404': { $ref: '#/components/responses/NotFound' }
+  /content/{resource}:
+    get:
+      tags: [Public Catalog]
+      operationId: listContentReferences
+      x-phase: MVP
+      parameters:
+        - { name: resource, in: path, required: true, schema: { type: string, enum: [categories, tags, authors] } }
+        - $ref: '#/components/parameters/Locale'
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200': { description: Published localized content references }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /content/{resource}/{slug}:
+    get:
+      tags: [Public Catalog]
+      operationId: getContentReference
+      x-phase: MVP
+      parameters:
+        - { name: resource, in: path, required: true, schema: { type: string, enum: [categories, tags, authors] } }
+        - $ref: '#/components/parameters/Slug'
+        - $ref: '#/components/parameters/Locale'
+      responses:
+        '200': { description: Published localized content reference }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /faqs:
+    get:
+      tags: [FAQs]
+      operationId: listFaqs
+      x-phase: MVP
+      parameters:
+        - $ref: '#/components/parameters/Locale'
+        - { name: targetType, in: query, schema: { type: string, enum: [general, university, program, service], default: general } }
+        - { name: targetId, in: query, schema: { $ref: '#/components/schemas/Uuid' } }
+        - $ref: '#/components/parameters/Page'
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 20, default: 20 } }
+      responses:
+        '200': { $ref: '#/components/responses/FaqPage' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /faqs/{id}:
+    get:
+      tags: [FAQs]
+      operationId: getFaq
+      x-phase: MVP
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - $ref: '#/components/parameters/Locale'
+      responses:
+        '200':
+          description: Published localized FAQ
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data: { $ref: '#/components/schemas/Faq' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /admin/faqs:
+    get:
+      tags: [FAQs]
+      operationId: listAdminFaqs
+      x-phase: MVP
+      x-permissions: [content.read]
+      security: [{ UserAccessToken: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Locale'
+        - $ref: '#/components/parameters/Search'
+        - { name: targetType, in: query, schema: { type: string, enum: [general, university, program, service] } }
+        - { name: targetId, in: query, schema: { $ref: '#/components/schemas/Uuid' } }
+        - { name: status, in: query, schema: { type: string, enum: [draft, published, archived] } }
+        - { name: sort, in: query, schema: { type: string, enum: [display_order, updated_desc, question_asc] } }
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200': { $ref: '#/components/responses/FaqPage' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+    post:
+      tags: [FAQs]
+      operationId: createFaq
+      x-phase: MVP
+      x-permissions: [content.write]
+      security: [{ UserAccessToken: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/FaqWrite' }
+      responses:
+        '201': { description: Draft FAQ with ETag }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /admin/faqs/order:
+    put:
+      tags: [FAQs]
+      operationId: reorderFaqs
+      x-phase: MVP
+      x-permissions: [content.write]
+      security: [{ UserAccessToken: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/FaqReorder' }
+      responses:
+        '204': { description: Target-specific order updated atomically }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /admin/faqs/{id}:
+    parameters: [{ $ref: '#/components/parameters/Id' }]
+    get:
+      tags: [FAQs]
+      operationId: getAdminFaq
+      x-phase: MVP
+      x-permissions: [content.read]
+      security: [{ UserAccessToken: [] }]
+      responses:
+        '200': { description: FAQ with all translations, assignments, and ETag }
+        '404': { $ref: '#/components/responses/NotFound' }
+    put:
+      tags: [FAQs]
+      operationId: replaceFaq
+      x-phase: MVP
+      x-permissions: [content.write]
+      security: [{ UserAccessToken: [] }]
+      parameters: [{ $ref: '#/components/parameters/IfMatch' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/FaqWrite' }
+      responses:
+        '200': { description: Updated FAQ and ETag }
+        '412': { $ref: '#/components/responses/PreconditionFailed' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+    delete:
+      tags: [FAQs]
+      operationId: deleteDraftFaq
+      x-phase: MVP
+      x-permissions: [content.write]
+      security: [{ UserAccessToken: [] }]
+      parameters: [{ $ref: '#/components/parameters/IfMatch' }]
+      responses:
+        '204': { description: Draft FAQ deleted }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '412': { $ref: '#/components/responses/PreconditionFailed' }
+  /admin/faqs/{id}/publish:
+    post:
+      tags: [FAQs]
+      operationId: publishFaq
+      x-phase: MVP
+      x-permissions: [content.publish]
+      security: [{ UserAccessToken: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - $ref: '#/components/parameters/IfMatch'
+      responses:
+        '200': { description: Published FAQ and ETag }
+        '412': { $ref: '#/components/responses/PreconditionFailed' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /admin/faqs/{id}/archive:
+    post:
+      tags: [FAQs]
+      operationId: archiveFaq
+      x-phase: MVP
+      x-permissions: [content.publish]
+      security: [{ UserAccessToken: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - $ref: '#/components/parameters/IfMatch'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [reason]
+              properties:
+                reason: { type: string, minLength: 3, maxLength: 500 }
+      responses:
+        '200': { description: Archived FAQ and ETag }
+        '412': { $ref: '#/components/responses/PreconditionFailed' }
+        '422': { $ref: '#/components/responses/ValidationError' }
   /consultation-requests:
     post:
       tags: [Consultations]
@@ -252,6 +694,11 @@ paths:
         - { name: status, in: query, schema: { $ref: '#/components/schemas/LeadStatus' } }
         - { name: syncStatus, in: query, schema: { $ref: '#/components/schemas/SyncStatus' } }
         - { name: assigneeId, in: query, schema: { $ref: '#/components/schemas/Uuid' } }
+        - { name: countryId, in: query, schema: { $ref: '#/components/schemas/Uuid' } }
+        - { name: from, in: query, schema: { type: string, format: date-time } }
+        - { name: to, in: query, schema: { type: string, format: date-time } }
+        - { name: archive, in: query, schema: { type: string, enum: [active, archived, all], default: active } }
+        - { name: sort, in: query, schema: { type: string, enum: [created_desc, created_asc, updated_desc], default: created_desc } }
         - $ref: '#/components/parameters/Page'
         - $ref: '#/components/parameters/Limit'
       responses:
@@ -291,6 +738,287 @@ paths:
         '401': { $ref: '#/components/responses/Unauthorized' }
         '403': { $ref: '#/components/responses/Forbidden' }
         '404': { $ref: '#/components/responses/NotFound' }
+    patch:
+      tags: [Lead Operations]
+      operationId: updateLead
+      x-phase: MVP
+      x-permissions: [lead.write.all]
+      security: [{ StaffSession: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - $ref: '#/components/parameters/IfMatch'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/LeadUpdate' }
+      responses:
+        '200':
+          description: Updated lead with a new ETag
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data: { $ref: '#/components/schemas/LeadDetail' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '412': { $ref: '#/components/responses/PreconditionFailed' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+        '428': { $ref: '#/components/responses/PreconditionRequired' }
+  /admin/leads/{id}/archive:
+    post:
+      tags: [Lead Operations]
+      operationId: archiveLead
+      x-phase: MVP
+      x-permissions: [lead.write.all]
+      security: [{ StaffSession: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - $ref: '#/components/parameters/IfMatch'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/LeadArchiveRequest' }
+      responses:
+        '200':
+          description: Archived lead with a new ETag
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data: { $ref: '#/components/schemas/LeadDetail' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '412': { $ref: '#/components/responses/PreconditionFailed' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+        '428': { $ref: '#/components/responses/PreconditionRequired' }
+  /admin/leads/{id}/assignments:
+    post:
+      tags: [Lead Operations]
+      operationId: assignLead
+      x-phase: MVP
+      x-permissions: [lead.assign]
+      security: [{ StaffSession: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - $ref: '#/components/parameters/IfMatch'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/LeadAssignmentRequest' }
+      responses:
+        '200':
+          description: Assigned or transferred lead with a new ETag
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data: { $ref: '#/components/schemas/LeadDetail' }
+        '400': { $ref: '#/components/responses/InvalidRequest' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '412': { $ref: '#/components/responses/PreconditionFailed' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+        '428': { $ref: '#/components/responses/PreconditionRequired' }
+  /admin/leads/{id}/status-transitions:
+    post:
+      tags: [Lead Operations]
+      operationId: transitionLeadStatus
+      x-phase: MVP
+      x-permissions: [lead.write.all, lead.write.assigned]
+      security: [{ StaffSession: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - $ref: '#/components/parameters/IfMatch'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/LeadStatusTransitionRequest' }
+      responses:
+        '200':
+          description: Transitioned lead with a new ETag
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data: { $ref: '#/components/schemas/LeadDetail' }
+        '400': { $ref: '#/components/responses/InvalidRequest' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '412': { $ref: '#/components/responses/PreconditionFailed' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+        '428': { $ref: '#/components/responses/PreconditionRequired' }
+  /admin/leads/{id}/history:
+    get:
+      tags: [Lead Operations]
+      operationId: getLeadHistory
+      x-phase: MVP
+      x-permissions: [lead.read.all, lead.read.assigned]
+      security: [{ StaffSession: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200':
+          description: Assignment and status history
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data: { $ref: '#/components/schemas/LeadHistory' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /admin/leads/{id}/noura-retry:
+    post:
+      tags: [Lead Operations]
+      operationId: retryNouraLeadSync
+      x-phase: MVP
+      x-permissions: [lead.sync.retry]
+      security: [{ StaffSession: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/NouraRetryRequest' }
+      responses:
+        '202':
+          description: Failed Noura synchronization queued for a new retry cycle
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data: { $ref: '#/components/schemas/NouraRetryReceipt' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /admin/staff:
+    get:
+      tags: [Staff Administration]
+      operationId: listAdministrativeStaff
+      x-phase: MVP
+      x-permissions: [identity.manage]
+      security: [{ UserAccessToken: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+        - { name: q, in: query, schema: { type: string, minLength: 1, maxLength: 200 } }
+        - { name: status, in: query, schema: { type: string, enum: [active, disabled, locked] } }
+        - { name: role, in: query, schema: { $ref: '#/components/schemas/StaffRoleCode' } }
+      responses:
+        '200':
+          description: Paginated internal staff accounts
+          content: { application/json: { schema: { $ref: '#/components/schemas/StaffPage' } } }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+    post:
+      tags: [Staff Administration]
+      operationId: createAdministrativeStaff
+      x-phase: MVP
+      x-permissions: [identity.manage]
+      security: [{ UserAccessToken: [] }]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/StaffCreate' } } }
+      responses:
+        '201':
+          description: Staff account created; setup link sent after successful commit
+          content: { application/json: { schema: { $ref: '#/components/schemas/StaffEnvelope' } } }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /admin/staff/{id}:
+    parameters: [{ $ref: '#/components/parameters/Id' }]
+    get:
+      tags: [Staff Administration]
+      operationId: getAdministrativeStaff
+      x-phase: MVP
+      x-permissions: [identity.manage]
+      security: [{ UserAccessToken: [] }]
+      responses:
+        '200':
+          description: Staff account and ETag
+          content: { application/json: { schema: { $ref: '#/components/schemas/StaffEnvelope' } } }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    patch:
+      tags: [Staff Administration]
+      operationId: updateAdministrativeStaff
+      x-phase: MVP
+      x-permissions: [identity.manage]
+      security: [{ UserAccessToken: [] }]
+      parameters: [{ $ref: '#/components/parameters/IfMatch' }]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/StaffUpdate' } } }
+      responses:
+        '200':
+          description: Updated staff account and ETag
+          content: { application/json: { schema: { $ref: '#/components/schemas/StaffEnvelope' } } }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '412': { $ref: '#/components/responses/PreconditionFailed' }
+        '428': { $ref: '#/components/responses/PreconditionRequired' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /admin/staff/{id}/roles:
+    put:
+      tags: [Staff Administration]
+      operationId: replaceAdministrativeStaffRoles
+      x-phase: MVP
+      x-permissions: [role.manage]
+      security: [{ UserAccessToken: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }, { $ref: '#/components/parameters/IfMatch' }]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/StaffRolesUpdate' } } }
+      responses:
+        '200':
+          description: Complete global staff role set replaced; sessions revoked
+          content: { application/json: { schema: { $ref: '#/components/schemas/StaffEnvelope' } } }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '412': { $ref: '#/components/responses/PreconditionFailed' }
+        '428': { $ref: '#/components/responses/PreconditionRequired' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /admin/staff/{id}/access-recovery:
+    post:
+      tags: [Staff Administration]
+      operationId: recoverAdministrativeStaffAccess
+      x-phase: MVP
+      x-permissions: [identity.manage]
+      security: [{ UserAccessToken: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }, { $ref: '#/components/parameters/IfMatch' }]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/StaffAccessRecovery' } } }
+      responses:
+        '202':
+          description: Sessions revoked and one-time password-reset link issued
+          content: { application/json: { schema: { $ref: '#/components/schemas/StaffEnvelope' } } }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '412': { $ref: '#/components/responses/PreconditionFailed' }
+        '428': { $ref: '#/components/responses/PreconditionRequired' }
   /auth/register:
     post:
       tags: [User Authentication]
@@ -501,6 +1229,18 @@ components:
       in: header
       name: X-CSRF-Token
   parameters:
+    IfMatch:
+      name: If-Match
+      in: header
+      required: true
+      schema: { type: string, pattern: '^(W/)?"[1-9][0-9]*"$' }
+    ReferenceKind:
+      name: kind
+      in: path
+      required: true
+      schema:
+        type: string
+        enum: [countries, cities, academic-levels, fields-of-study, intakes, currencies]
     Id:
       name: id
       in: path
@@ -538,6 +1278,26 @@ components:
       required: false
       schema: { type: string, minLength: 16, maxLength: 128 }
   responses:
+    PreconditionRequired:
+      description: If-Match is required for this mutation
+      content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+    PreconditionFailed:
+      description: The supplied version is stale; reload the item before retrying
+      content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+    ReferenceDataPage:
+      description: Localized reference-data page
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ReferenceDataPage' }
+    ReferenceDataItem:
+      description: Reference-data item including both translations for staff callers
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [data]
+            properties:
+              data: { $ref: '#/components/schemas/ReferenceDataItem' }
     UniversityPage:
       description: Published universities
       content:
@@ -574,6 +1334,18 @@ components:
                   data:
                     type: array
                     items: { $ref: '#/components/schemas/ArticleSummary' }
+    FaqPage:
+      description: Published localized FAQs in target display order
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/PageEnvelope'
+              - type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/Faq' }
     Unauthorized:
       description: Authentication required or invalid
       content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
@@ -601,9 +1373,186 @@ components:
       description: Authoritative local persistence is unavailable
       content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   schemas:
+    StaffRoleCode:
+      type: string
+      enum: [super_admin, support, consultant, content_editor]
+    StaffRole:
+      type: object
+      required: [code]
+      properties:
+        code: { $ref: '#/components/schemas/StaffRoleCode' }
+    StaffCreate:
+      type: object
+      additionalProperties: false
+      required: [email, firstName, lastName, roleCodes]
+      properties:
+        email: { type: string, format: email, maxLength: 320 }
+        firstName: { type: string, minLength: 1, maxLength: 100 }
+        lastName: { type: string, minLength: 1, maxLength: 100 }
+        preferredLocale: { type: string, enum: [fa, en], default: fa }
+        roleCodes:
+          type: array
+          minItems: 1
+          maxItems: 4
+          uniqueItems: true
+          items: { $ref: '#/components/schemas/StaffRoleCode' }
+    StaffUpdate:
+      type: object
+      additionalProperties: false
+      minProperties: 1
+      properties:
+        firstName: { type: string, minLength: 1, maxLength: 100 }
+        lastName: { type: string, minLength: 1, maxLength: 100 }
+        preferredLocale: { type: string, enum: [fa, en] }
+        active: { type: boolean }
+    StaffRolesUpdate:
+      type: object
+      additionalProperties: false
+      required: [roleCodes]
+      properties:
+        roleCodes:
+          type: array
+          minItems: 1
+          maxItems: 4
+          uniqueItems: true
+          items: { $ref: '#/components/schemas/StaffRoleCode' }
+    StaffAccessRecovery:
+      type: object
+      additionalProperties: false
+      properties:
+        reactivate: { type: boolean, default: false }
+    StaffView:
+      type: object
+      required:
+        [id, email, firstName, lastName, preferredLocale, status, active, emailVerified, roles, createdAt, updatedAt, version]
+      properties:
+        id: { $ref: '#/components/schemas/Uuid' }
+        email: { type: string, format: email }
+        firstName: { type: string }
+        lastName: { type: string }
+        preferredLocale: { type: string, enum: [fa, en] }
+        status: { type: string, enum: [active, disabled, locked] }
+        active: { type: boolean }
+        emailVerified: { type: boolean }
+        roles: { type: array, items: { $ref: '#/components/schemas/StaffRole' } }
+        lockedUntil: { type: [string, 'null'], format: date-time }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+        version: { type: integer, minimum: 1 }
+    StaffEnvelope:
+      type: object
+      required: [data]
+      properties:
+        data: { $ref: '#/components/schemas/StaffView' }
+    StaffPage:
+      type: object
+      required: [data, meta]
+      properties:
+        data: { type: array, items: { $ref: '#/components/schemas/StaffView' } }
+        meta:
+          type: object
+          required: [page, limit, total, totalPages]
+          properties:
+            page: { type: integer, minimum: 1 }
+            limit: { type: integer, minimum: 1, maximum: 100 }
+            total: { type: integer, minimum: 0 }
+            totalPages: { type: integer, minimum: 0 }
+    ReferenceTranslation:
+      type: object
+      additionalProperties: false
+      required: [name]
+      properties:
+        name: { type: string, minLength: 1, maxLength: 180 }
+        description: { type: [string, 'null'], maxLength: 5000 }
+    ReferenceTranslations:
+      type: object
+      additionalProperties: false
+      required: [fa, en]
+      properties:
+        fa: { $ref: '#/components/schemas/ReferenceTranslation' }
+        en: { $ref: '#/components/schemas/ReferenceTranslation' }
+    ReferenceDataWrite:
+      type: object
+      description: Kind-specific write payload; unknown fields are rejected and fa/en are mandatory.
+      required: [translations]
+      properties:
+        translations: { $ref: '#/components/schemas/ReferenceTranslations' }
+        code: { type: string }
+        iso2: { type: string, pattern: '^[A-Za-z]{2}$' }
+        iso3: { type: [string, 'null'], pattern: '^[A-Za-z]{3}$' }
+        slug: { type: string, pattern: '^[a-z0-9]+(?:-[a-z0-9]+)*$' }
+        countryId: { $ref: '#/components/schemas/Uuid' }
+        parentId: { oneOf: [{ $ref: '#/components/schemas/Uuid' }, { type: 'null' }] }
+        status: { type: string, enum: [draft, published, archived] }
+        active: { type: boolean }
+        featured: { type: boolean }
+        displayOrder: { type: integer, minimum: 0, maximum: 1000000 }
+        numericCode: { type: [string, 'null'], pattern: '^\d{3}$' }
+        symbol: { type: string, minLength: 1, maxLength: 12 }
+        decimalPlaces: { type: integer, minimum: 0, maximum: 4 }
+    ReferenceDataItem:
+      type: object
+      required: [id, type, code, name, active, displayOrder, version]
+      properties:
+        id: { $ref: '#/components/schemas/Uuid' }
+        type: { type: string }
+        code: { type: string }
+        name: { type: string }
+        description: { type: [string, 'null'] }
+        active: { type: boolean }
+        displayOrder: { type: integer }
+        version: { type: integer, minimum: 1 }
+        slug: { type: [string, 'null'] }
+        countryId: { oneOf: [{ $ref: '#/components/schemas/Uuid' }, { type: 'null' }] }
+        parentId: { oneOf: [{ $ref: '#/components/schemas/Uuid' }, { type: 'null' }] }
+        status: { type: [string, 'null'] }
+        translations: { $ref: '#/components/schemas/ReferenceTranslations' }
+    ReferenceDataPage:
+      type: object
+      required: [data, page, limit, total]
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/ReferenceDataItem' }
+        page: { type: integer, minimum: 1 }
+        limit: { type: integer, minimum: 1, maximum: 100 }
+        total: { type: integer, minimum: 0 }
     Uuid:
       type: string
       format: uuid
+    MediaPurpose:
+      type: string
+      enum: [logo, university_image, article_image, public_file]
+    MediaUploadStatus:
+      type: string
+      enum: [pending, processing, ready, rejected]
+    MediaUploadIntentRequest:
+      type: object
+      additionalProperties: false
+      required: [filename, mimeType, sizeBytes, purpose]
+      properties:
+        filename: { type: string, minLength: 1, maxLength: 255 }
+        mimeType: { type: string, enum: [image/jpeg, image/png, image/webp, application/pdf] }
+        sizeBytes: { type: integer, minimum: 1, maximum: 26214400 }
+        purpose: { $ref: '#/components/schemas/MediaPurpose' }
+        altFa: { type: [string, 'null'], maxLength: 300 }
+        altEn: { type: [string, 'null'], maxLength: 300 }
+        sourceUrl: { type: [string, 'null'], maxLength: 2000 }
+        attribution: { type: [string, 'null'], maxLength: 1000 }
+    MediaConfirmRequest:
+      type: object
+      additionalProperties: false
+      required: [checksumSha256]
+      properties:
+        checksumSha256: { type: string, pattern: '^[a-fA-F0-9]{64}$' }
+    MediaMetadataUpdate:
+      type: object
+      additionalProperties: false
+      properties:
+        altFa: { type: [string, 'null'], maxLength: 300 }
+        altEn: { type: [string, 'null'], maxLength: 300 }
+        sourceUrl: { type: [string, 'null'], maxLength: 2000 }
+        attribution: { type: [string, 'null'], maxLength: 1000 }
     Meta:
       type: object
       additionalProperties: false
@@ -716,6 +1665,44 @@ components:
             officialUrl: { type: [string, 'null'], format: uri }
             admissionRequirements: { type: array, items: { type: string } }
             intakes: { type: array, items: { type: object } }
+    DiscoverySuggestion:
+      type: object
+      required: [entityType, id, slug, title, score]
+      properties:
+        entityType: { type: string, enum: [university, program] }
+        id: { $ref: '#/components/schemas/Uuid' }
+        slug: { type: string }
+        title: { type: string }
+        subtitle: { type: [string, 'null'] }
+        score: { type: number, minimum: 0 }
+    SuggestionEnvelope:
+      type: object
+      additionalProperties: false
+      required: [data, query, locale]
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/DiscoverySuggestion' }
+        query: { type: string }
+        locale: { type: string, enum: [fa, en] }
+    RelatedResult:
+      allOf:
+        - $ref: '#/components/schemas/DiscoverySuggestion'
+        - type: object
+          required: [reasons]
+          properties:
+            reasons:
+              type: array
+              items: { type: string }
+    RelatedEnvelope:
+      type: object
+      additionalProperties: false
+      required: [data, locale]
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/RelatedResult' }
+        locale: { type: string, enum: [fa, en] }
     ArticleSummary:
       type: object
       required: [id, slug, title, excerpt, publishedAt]
@@ -726,6 +1713,11 @@ components:
         excerpt: { type: string }
         coverImageUrl: { type: [string, 'null'], format: uri }
         publishedAt: { type: string, format: date-time }
+        articleType: { type: string, enum: [article, news, guide] }
+        featured: { type: boolean }
+        author: { type: [object, 'null'] }
+        categories: { type: array, items: { type: object } }
+        tags: { type: array, items: { type: object } }
     ArticleDetail:
       allOf:
         - $ref: '#/components/schemas/ArticleSummary'
@@ -733,9 +1725,82 @@ components:
           required: [body]
           properties:
             body: { type: string }
+    Faq:
+      type: object
+      additionalProperties: false
+      required: [id, question, answer, assignments, status, createdAt, updatedAt, version]
+      properties:
+        id: { $ref: '#/components/schemas/Uuid' }
+        question: { type: string }
+        answer: { type: string }
+        assignments:
+          type: array
+          items:
+            type: object
+            required: [targetType, displayOrder]
+            properties:
+              targetType: { type: string, enum: [general, university, program, service] }
+              targetId: { oneOf: [{ $ref: '#/components/schemas/Uuid' }, { type: 'null' }] }
+              displayOrder: { type: integer, minimum: 0 }
+        status: { type: string, enum: [draft, published, archived] }
+        publishedAt: { type: [string, 'null'], format: date-time }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+        version: { type: integer, minimum: 1 }
+    FaqTranslation:
+      type: object
+      additionalProperties: false
+      required: [question, answer]
+      properties:
+        question: { type: string, minLength: 3, maxLength: 500 }
+        answer: { type: string, minLength: 3, maxLength: 50000 }
+    FaqAssignment:
+      type: object
+      additionalProperties: false
+      required: [targetType, displayOrder]
+      properties:
+        targetType: { type: string, enum: [general, university, program, service] }
+        targetId: { oneOf: [{ $ref: '#/components/schemas/Uuid' }, { type: 'null' }] }
+        displayOrder: { type: integer, minimum: 0, maximum: 100000 }
+    FaqWrite:
+      type: object
+      additionalProperties: false
+      required: [translations, assignments]
+      properties:
+        translations:
+          type: object
+          additionalProperties: false
+          required: [fa, en]
+          properties:
+            fa: { $ref: '#/components/schemas/FaqTranslation' }
+            en: { $ref: '#/components/schemas/FaqTranslation' }
+        assignments:
+          type: array
+          minItems: 1
+          maxItems: 50
+          items: { $ref: '#/components/schemas/FaqAssignment' }
+    FaqReorder:
+      type: object
+      additionalProperties: false
+      required: [targetType, items]
+      properties:
+        targetType: { type: string, enum: [general, university, program, service] }
+        targetId: { oneOf: [{ $ref: '#/components/schemas/Uuid' }, { type: 'null' }] }
+        items:
+          type: array
+          minItems: 1
+          maxItems: 500
+          items:
+            type: object
+            additionalProperties: false
+            required: [faqId, displayOrder]
+            properties:
+              faqId: { $ref: '#/components/schemas/Uuid' }
+              displayOrder: { type: integer, minimum: 0, maximum: 100000 }
     ConsultationCreate:
       type: object
       additionalProperties: false
+      description: Exactly one of desiredCountryId or desiredCountryText must be supplied.
       required:
         - firstName
         - lastName
@@ -753,13 +1818,13 @@ components:
         email: { type: [string, 'null'], format: email, maxLength: 254 }
         desiredCountryId: { oneOf: [{ $ref: '#/components/schemas/Uuid' }, { type: 'null' }] }
         desiredCountryText: { type: [string, 'null'], maxLength: 100 }
-        intakeTerm: { type: string, enum: [SPRING, SUMMER, FALL, WINTER, UNKNOWN] }
+        intakeTerm: { type: string, enum: [spring, summer, fall, winter, unknown] }
         startYear: { type: integer, minimum: 2026, maximum: 2036 }
         age: { type: [integer, 'null'], minimum: 18, maximum: 100 }
-        gender: { type: [string, 'null'], maxLength: 50 }
+        gender: { type: [string, 'null'], enum: [female, male, non_binary, self_described, prefer_not_to_say, null] }
         genderSelfDescription: { type: [string, 'null'], maxLength: 100 }
         occupation: { type: [string, 'null'], maxLength: 120 }
-        maritalStatus: { type: [string, 'null'], maxLength: 50 }
+        maritalStatus: { type: [string, 'null'], enum: [single, married, divorced, widowed, prefer_not_to_say, null] }
         investmentBudget:
           oneOf:
             - type: 'null'
@@ -777,10 +1842,15 @@ components:
           required: [pageUrl]
           properties:
             pageUrl: { type: string, maxLength: 2048, pattern: '^/' }
-            entityType: { type: [string, 'null'], enum: [UNIVERSITY, PROGRAM, null] }
+            entityType: { type: [string, 'null'], enum: [university, program, null] }
             entityId: { oneOf: [{ $ref: '#/components/schemas/Uuid' }, { type: 'null' }] }
         privacyConsent: { const: true }
         contactConsent: { const: true }
+        website:
+          type: [string, 'null']
+          maxLength: 200
+          writeOnly: true
+          description: Bot-trap field; legitimate clients must leave it empty or omit it.
     ConsultationReceiptEnvelope:
       type: object
       required: [data]
@@ -815,32 +1885,156 @@ components:
             permissions: { type: array, items: { type: string } }
     LeadStatus:
       type: string
-      enum: [NEW, ASSIGNED, CONTACTED, QUALIFIED, NOT_QUALIFIED, CONVERTED, CLOSED]
+      enum: [new, assigned, contacted, qualified, not_qualified, converted, closed]
     SyncStatus:
       type: string
-      enum: [PENDING, SYNCED, FAILED]
+      enum: [pending, synced, failed]
     LeadSummary:
       type: object
-      required: [id, reference, firstName, lastName, mobile, status, syncStatus, createdAt]
+      required: [id, reference, firstName, lastName, mobile, status, syncStatus, archived, version, createdAt, updatedAt]
       properties:
         id: { $ref: '#/components/schemas/Uuid' }
         reference: { type: string }
         firstName: { type: string }
         lastName: { type: string }
         mobile: { type: string }
+        email: { type: [string, 'null'], format: email }
+        desiredCountryId: { oneOf: [{ $ref: '#/components/schemas/Uuid' }, { type: 'null' }] }
+        desiredCountryName: { type: [string, 'null'] }
+        desiredCountryText: { type: [string, 'null'] }
+        intakeTerm: { type: [string, 'null'], enum: [spring, summer, fall, winter, unknown, null] }
+        startYear: { type: [integer, 'null'] }
         status: { $ref: '#/components/schemas/LeadStatus' }
         syncStatus: { $ref: '#/components/schemas/SyncStatus' }
-        assigneeId: { oneOf: [{ $ref: '#/components/schemas/Uuid' }, { type: 'null' }] }
+        assignee: { type: [object, 'null'] }
+        archived: { type: boolean }
+        version: { type: integer, minimum: 1 }
         createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
     LeadDetail:
       allOf:
         - $ref: '#/components/schemas/LeadSummary'
         - type: object
+          required: [mobileRaw, locale, duplicateCount, syncAttemptCount]
           properties:
-            email: { type: [string, 'null'], format: email }
-            intakeTerm: { type: string }
-            startYear: { type: integer }
-            source: { type: object }
+            mobileRaw: { type: string }
+            age: { type: [integer, 'null'], minimum: 18, maximum: 100 }
+            gender: { type: [string, 'null'], enum: [female, male, non_binary, self_described, prefer_not_to_say, null] }
+            genderSelfDescription: { type: [string, 'null'], maxLength: 100 }
+            occupation: { type: [string, 'null'] }
+            maritalStatus: { type: [string, 'null'], enum: [single, married, divorced, widowed, prefer_not_to_say, null] }
+            investmentRangeCode: { type: [string, 'null'] }
+            investmentCurrency: { type: [string, 'null'], pattern: '^[A-Z]{3}$' }
+            message: { type: [string, 'null'] }
+            locale: { type: string, enum: [fa, en] }
+            sourceUrl: { type: [string, 'null'] }
+            sourceUniversityId: { oneOf: [{ $ref: '#/components/schemas/Uuid' }, { type: 'null' }] }
+            sourceProgramId: { oneOf: [{ $ref: '#/components/schemas/Uuid' }, { type: 'null' }] }
+            duplicateCount: { type: integer, minimum: 0 }
+            lastDuplicateAt: { type: [string, 'null'], format: date-time }
+            syncExternalId: { type: [string, 'null'] }
+            syncAttemptCount: { type: integer, minimum: 0 }
+            syncLastAttemptAt: { type: [string, 'null'], format: date-time }
+            syncSyncedAt: { type: [string, 'null'], format: date-time }
+            archiveReason: { type: [string, 'null'] }
+            archivedAt: { type: [string, 'null'], format: date-time }
+            archivedByUserId: { oneOf: [{ $ref: '#/components/schemas/Uuid' }, { type: 'null' }] }
+    LeadUpdate:
+      type: object
+      additionalProperties: false
+      minProperties: 1
+      properties:
+        firstName: { type: string, minLength: 1, maxLength: 100 }
+        lastName: { type: string, minLength: 1, maxLength: 100 }
+        mobile: { type: string, minLength: 7, maxLength: 32 }
+        email: { type: [string, 'null'], format: email }
+        desiredCountryId: { oneOf: [{ $ref: '#/components/schemas/Uuid' }, { type: 'null' }] }
+        desiredCountryText: { type: [string, 'null'], maxLength: 100 }
+        intakeTerm: { type: string, enum: [spring, summer, fall, winter, unknown] }
+        startYear: { type: integer }
+        age: { type: [integer, 'null'], minimum: 18, maximum: 100 }
+        gender: { type: [string, 'null'], enum: [female, male, non_binary, self_described, prefer_not_to_say, null] }
+        genderSelfDescription: { type: [string, 'null'], minLength: 1, maxLength: 100 }
+        occupation: { type: [string, 'null'], maxLength: 120 }
+        maritalStatus: { type: [string, 'null'], enum: [single, married, divorced, widowed, prefer_not_to_say, null] }
+        investmentBudget:
+          oneOf:
+            - type: 'null'
+            - type: object
+              additionalProperties: false
+              required: [rangeCode, currency]
+              properties:
+                rangeCode: { type: string, minLength: 1, maxLength: 60, pattern: '^[A-Za-z0-9_-]+$' }
+                currency: { type: string, pattern: '^[A-Za-z]{3}$' }
+        message: { type: [string, 'null'], maxLength: 2000 }
+        locale: { type: string, enum: [fa, en] }
+    LeadArchiveRequest:
+      type: object
+      additionalProperties: false
+      required: [reason]
+      properties:
+        reason: { type: string, minLength: 3, maxLength: 500 }
+    LeadAssignmentRequest:
+      type: object
+      additionalProperties: false
+      required: [consultantId]
+      properties:
+        consultantId: { $ref: '#/components/schemas/Uuid' }
+        reason: { type: [string, 'null'], minLength: 3, maxLength: 500 }
+    LeadStatusTransitionRequest:
+      type: object
+      additionalProperties: false
+      required: [toStatus]
+      properties:
+        toStatus: { $ref: '#/components/schemas/LeadStatus' }
+        reason: { type: [string, 'null'], minLength: 3, maxLength: 500 }
+    LeadAssignmentHistoryItem:
+      type: object
+      required: [id, consultantId, assignedAt]
+      properties:
+        id: { $ref: '#/components/schemas/Uuid' }
+        consultantId: { $ref: '#/components/schemas/Uuid' }
+        assignedByUserId: { oneOf: [{ $ref: '#/components/schemas/Uuid' }, { type: 'null' }] }
+        assignedAt: { type: string, format: date-time }
+        unassignedAt: { type: [string, 'null'], format: date-time }
+        endedByUserId: { oneOf: [{ $ref: '#/components/schemas/Uuid' }, { type: 'null' }] }
+        reason: { type: [string, 'null'] }
+    LeadStatusHistoryItem:
+      type: object
+      required: [id, newStatus, createdAt]
+      properties:
+        id: { $ref: '#/components/schemas/Uuid' }
+        oldStatus:
+          oneOf:
+            - $ref: '#/components/schemas/LeadStatus'
+            - type: 'null'
+        newStatus: { $ref: '#/components/schemas/LeadStatus' }
+        actorUserId: { oneOf: [{ $ref: '#/components/schemas/Uuid' }, { type: 'null' }] }
+        reason: { type: [string, 'null'] }
+        createdAt: { type: string, format: date-time }
+    LeadHistory:
+      type: object
+      required: [assignments, statuses]
+      properties:
+        assignments:
+          type: array
+          items: { $ref: '#/components/schemas/LeadAssignmentHistoryItem' }
+        statuses:
+          type: array
+          items: { $ref: '#/components/schemas/LeadStatusHistoryItem' }
+    NouraRetryRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        note: { type: [string, 'null'], minLength: 3, maxLength: 500 }
+    NouraRetryReceipt:
+      type: object
+      required: [status, attemptCount, manualRetryCount, nextAttemptAt]
+      properties:
+        status: { type: string, const: pending }
+        attemptCount: { type: integer, minimum: 0 }
+        manualRetryCount: { type: integer, minimum: 1 }
+        nextAttemptAt: { type: string, format: date-time }
     UserRegister:
       type: object
       additionalProperties: false

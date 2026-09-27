@@ -23,6 +23,8 @@ from app.modules.identity.repository import AuthRepository
 from app.modules.identity.schemas import UserView
 from app.modules.identity.security import AccessClaims, AuthSecurity
 from app.modules.identity.service import AuthService
+from app.modules.identity.staff_repository import StaffRepository
+from app.modules.identity.staff_service import StaffManagementService
 from app.shared.exceptions import ApplicationError
 
 bearer = HTTPBearer(auto_error=False)
@@ -45,6 +47,18 @@ def auth_service(
 ) -> AuthService:
     return AuthService(
         repository=AuthRepository(session),
+        security=auth_security(),
+        mailer=SmtpAuthMailer(settings),
+        settings=settings,
+    )
+
+
+def staff_management_service(
+    session: Annotated[AsyncSession, Depends(database_session)],
+    settings: Annotated[Settings, Depends(get_settings)],
+) -> StaffManagementService:
+    return StaffManagementService(
+        repository=StaffRepository(session),
         security=auth_security(),
         mailer=SmtpAuthMailer(settings),
         settings=settings,

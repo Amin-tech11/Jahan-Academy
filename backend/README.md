@@ -29,3 +29,42 @@ Implemented public authentication routes are under `/api/v1/auth`: register, ema
 login, refresh, logout, password-reset request and password reset. The local SMTP defaults target a
 mail-capture service at `localhost:1025`; production must provide real SMTP settings and a strong
 `JAHAN_SESSION_SECRET`.
+
+Reference-data APIs are implemented under `/api/v1/reference-data/{kind}` for localized public
+reads and `/api/v1/admin/reference-data/{kind}` for permission-protected management. Supported
+kinds are countries, cities, academic levels, fields of study, intakes, and currencies. Admin writes
+require complete Persian and English translations and the `reference_data.write` permission;
+deletion archives/deactivates records and produces an audit entry.
+
+Public consultation requests are accepted at `POST /api/v1/consultation-requests`. The endpoint
+normalizes Iranian and international mobile numbers, requires privacy and contact consent, returns
+a public `JA-...` tracking code, and reuses that code for equivalent requests received within 24
+hours. Lead persistence, initial status history, and the pending Noura outbox/sync records commit in
+one database transaction. Clients may send a 16–128 character `Idempotency-Key` when retrying the
+same request.
+
+Lead-management APIs are available under `/api/v1/admin/leads`. Staff with `lead.read.all` can
+search and filter every lead; callers with only `lead.read.assigned` are scoped to their own current
+assignments inside the SQL query. Detail responses include an ETag. Partial edits and Archive
+require `lead.write.all` plus a matching `If-Match`; Archive requires a reason and never permanently
+deletes the lead. Mutations write PII-safe audit evidence.
+
+Lead workflow operations are available at `POST /api/v1/admin/leads/{id}/assignments`,
+`POST /api/v1/admin/leads/{id}/status-transitions`, and `GET /api/v1/admin/leads/{id}/history`.
+Assignment validates an active Consultant role, preserves transfers, and advances a new lead to
+`assigned`. Status transitions follow the documented state matrix; Consultants can mutate only
+their current assignments, while Support and Super Admin can act across all leads.
+
+Noura synchronization uses a provider-neutral adapter and the PostgreSQL transactional outbox.
+Celery Beat dispatches due work to `worker-integration`; the local `mock-noura` service implements
+an idempotent create-lead API. Retryable failures use the 5-minute, 30-minute, 2-hour, 12-hour, and
+24-hour schedule. Exhausted or permanent failures become `failed` and can be requeued through
+`POST /api/v1/admin/leads/{id}/noura-retry` by callers with `lead.sync.retry`.
+
+Media management is available under `/api/v1/admin/media`. Content Editor and Super Admin users
+with `media.write` create short-lived direct-upload intents for logos, university/article images,
+or public PDF files. New objects remain in the private quarantine bucket until confirmation checks
+the declared size, extension, real MIME/format, SHA-256 checksum, image dimensions, PDF active
+content, and ClamAV result. Valid objects are promoted to the public-media bucket; list, metadata
+updates, dependency-safe deletion, ETag concurrency, audit evidence, and short-lived public delivery
+are protected by `media.read`/`media.write`.
