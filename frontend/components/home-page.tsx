@@ -53,18 +53,16 @@ export async function HomePage({ locale }: { locale: Locale }) {
 
   return <SiteShell locale={locale}><main className="home-page">
     <section className="home-hero" aria-labelledby="home-title">
-      <div className="shell home-hero__grid">
-        <div className="home-hero__copy">
-          <p className="home-eyebrow"><span className="home-eyebrow__line" />{content.heroLabel}</p>
+      <Image src="/home-hero-wide.png" alt="" fill sizes="100vw" preload className="home-hero__image" />
+      <div className="home-hero__shade" aria-hidden="true" />
+      <div className="shell home-hero__content">
+        <div className="home-hero__copy" dir={locale === "fa" ? "rtl" : "ltr"}>
+          <p className="home-hero__eyebrow">{content.heroLabel}</p>
           <h1 id="home-title">{copy.heroTitle}</h1>
           <p className="home-hero__description">{copy.heroText}</p>
-          <div className="home-hero__actions"><ConsultationButton locale={locale} source="home-hero" /><ButtonLink variant="ghost" href={localPath(locale, "/countries")}>{copy.explore}</ButtonLink></div>
-          <p className="home-hero__note"><span aria-hidden="true">✓</span>{content.heroNote}</p>
+          <div className="home-hero__actions"><ConsultationButton locale={locale} source="home-hero" /><ButtonLink variant="ghost" href={localPath(locale, "/services")}>{content.heroServiceLink} <Arrow locale={locale} /></ButtonLink></div>
         </div>
-        <figure className="home-hero__visual">
-          <Image src="/home-hero-campus.png" alt={locale === "fa" ? "دانشجویی در محوطه‌ای دانشگاهی؛ تصویر نمایشی" : "Student in a university courtyard; illustrative image"} width={1664} height={936} sizes="(max-width: 800px) 100vw, 48vw" preload className="home-hero__image" />
-          <figcaption>{locale === "fa" ? "آینده از همین گفت‌وگو شروع می‌شود" : "The next chapter begins with a conversation"}</figcaption>
-        </figure>
+        <div className="home-hero__quote" dir={locale === "fa" ? "rtl" : "ltr"}><p>{content.heroQuote.map((line) => <span key={line}>{line}</span>)}</p><small>{content.heroQuoteTag}</small></div>
       </div>
     </section>
 
