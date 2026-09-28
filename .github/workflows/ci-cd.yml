@@ -77,6 +77,14 @@ jobs:
         working-directory: frontend
         run: pnpm typecheck
 
+      - name: Test frontend foundation
+        working-directory: frontend
+        run: pnpm test
+
+      - name: Build frontend
+        working-directory: frontend
+        run: pnpm build
+
   unit-tests:
     name: Unit Tests
     needs: lint

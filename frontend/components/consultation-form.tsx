@@ -1,10 +1,10 @@
 "use client";
 
 import { type FormEvent, type ReactNode, useId, useState } from "react";
+import { ApiError, apiRequest, type ApiEnvelope } from "@/lib/api-client";
 import { type Locale, siteCopy } from "@/lib/site-content";
 
 type FormStatus = "idle" | "submitting" | "success" | "error";
-const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL ?? "/api/v1";
 
 function Field({ id, label, children }: { id: string; label: string; children: ReactNode }) {
   return <label className="field" htmlFor={id}><span>{label}</span>{children}</label>;
@@ -16,11 +16,11 @@ export function ConsultationForm({ locale, source }: { locale: Locale; source: s
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); const form = new FormData(event.currentTarget); setStatus("submitting"); setMessage("");
     const payload = { firstName: form.get("firstName"), lastName: form.get("lastName"), mobile: form.get("mobile"), email: form.get("email") || null, desiredCountryText: form.get("country"), intakeTerm: form.get("intake"), startYear: Number(form.get("startYear")), age: form.get("age") ? Number(form.get("age")) : null, gender: form.get("gender") || null, occupation: form.get("occupation") || null, maritalStatus: form.get("maritalStatus") || null, message: form.get("message") || null, locale, source: { pageUrl: source }, privacyConsent: form.get("privacyConsent") === "on", contactConsent: form.get("contactConsent") === "on", website: "" };
-    try { const response = await fetch(`${apiBaseUrl}/consultation-requests`, { method: "POST", headers: { "Content-Type": "application/json", "Idempotency-Key": crypto.randomUUID() }, body: JSON.stringify(payload) }); const body = await response.json() as { data?: { reference: string; duplicate: boolean }; message?: string }; if (!response.ok || !body.data) throw new Error(body.message ?? "Submission failed"); setReceipt(body.data); setStatus("success"); } catch (error) { setMessage(error instanceof Error ? error.message : copy.formError); setStatus("error"); }
+    try { const body = await apiRequest<ApiEnvelope<{ reference: string; duplicate: boolean }>>("/consultation-requests", { method: "POST", headers: { "Idempotency-Key": crypto.randomUUID() }, body: payload }); setReceipt(body.data); setStatus("success"); } catch (error) { setMessage(error instanceof ApiError ? error.message : copy.formError); setStatus("error"); }
   }
   if (status === "success" && receipt) return <section className="form-success" role="status"><span aria-hidden="true">✓</span><h2>{copy.thankYou}</h2><p>{receipt.duplicate ? copy.duplicate : copy.consultationText}</p><strong>{copy.trackingCode}: {receipt.reference}</strong></section>;
   const year = new Date().getUTCFullYear(); const label = (fa: string, en: string) => locale === "fa" ? fa : en;
-  return <form className="consultation-form" onSubmit={submit} noValidate><div className="form-grid">
+  return <form className="consultation-form" onSubmit={submit}><div className="form-grid">
     <Field id={`${id}-first`} label={label("نام", "First name")}><input id={`${id}-first`} name="firstName" required autoComplete="given-name" /></Field>
     <Field id={`${id}-last`} label={label("نام خانوادگی", "Last name")}><input id={`${id}-last`} name="lastName" required autoComplete="family-name" /></Field>
     <Field id={`${id}-mobile`} label={label("شماره موبایل", "Mobile number")}><input id={`${id}-mobile`} name="mobile" required inputMode="tel" autoComplete="tel" placeholder="+98 912 000 0000" /></Field>
