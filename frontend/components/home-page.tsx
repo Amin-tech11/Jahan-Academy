@@ -53,7 +53,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
 
   return <SiteShell locale={locale}><main className="home-page">
     <section className={`home-hero home-hero--${locale}`} aria-labelledby="home-title">
-      <Image src="/home-hero-documentary.png" alt="" fill sizes="100vw" preload className="home-hero__image" />
+      <Image src="/home-hero-contained.png" alt="" fill sizes="(max-width: 600px) calc(100vw - 32px), (max-width: 1208px) calc(100vw - 48px), 1160px" preload className="home-hero__image" />
       <div className="home-hero__shade" aria-hidden="true" />
       <div className="shell home-hero__content">
         <div className="home-hero__copy" dir={locale === "fa" ? "rtl" : "ltr"}>
@@ -61,7 +61,6 @@ export async function HomePage({ locale }: { locale: Locale }) {
           <p className="home-hero__description">{copy.heroText}</p>
           <div className="home-hero__actions"><ConsultationButton locale={locale} source="home-hero" /><ButtonLink variant="ghost" href={localPath(locale, "/services")}>{content.heroServiceLink} <Arrow locale={locale} /></ButtonLink></div>
         </div>
-        <div className="home-hero__quote" dir={locale === "fa" ? "rtl" : "ltr"}><p>{content.heroQuote.map((line) => <span key={line}>{line}</span>)}</p></div>
       </div>
     </section>
 

@@ -2,7 +2,6 @@ import type { Locale, Localized } from "./site-content";
 
 export type HomeCopy = {
   heroServiceLink: string;
-  heroQuote: string[];
   startTitle: string;
   startText: string;
   steps: Array<{ number: string; title: string; text: string }>;
@@ -34,7 +33,6 @@ export type HomeCopy = {
 export const homeContent: Localized<HomeCopy> = {
   fa: {
     heroServiceLink: "آشنایی با خدمات",
-    heroQuote: ["فراتر از مرزها", "به سوی آینده‌ای روشن"],
     startTitle: "مسیر شما از یک گفت‌وگوی خوب شروع می‌شود",
     startText: "هدف و شرایط خود را با ما در میان بگذارید؛ تیم جهان آکادمی قدم بعدی را با شما بررسی می‌کند.",
     steps: [
@@ -72,7 +70,6 @@ export const homeContent: Localized<HomeCopy> = {
   },
   en: {
     heroServiceLink: "Explore our services",
-    heroQuote: ["Beyond borders", "Toward a brighter future"],
     startTitle: "Your journey starts with a useful conversation",
     startText: "Tell us about your goals and circumstances. Our team will help you consider the next step.",
     steps: [
