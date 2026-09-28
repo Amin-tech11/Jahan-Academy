@@ -46,3 +46,10 @@ test("Persian hero mirrors only the artwork and layout, not the text", () => {
   assert.match(css, /\.home-hero--fa \.home-hero__content \{ direction: rtl; \}/);
   assert.doesNotMatch(component, /content\.heroLabel|content\.heroQuoteTag/);
 });
+
+test("hero keeps a compact reference-like frame and a calligraphic Persian slogan", () => {
+  const css = readFileSync(new URL("../app/home.css", import.meta.url), "utf8");
+  assert.match(css, /\.home-hero \{[^}]*min-height: clamp\(25rem, 34vw, 34rem\)/);
+  assert.match(css, /font-family: "Noto Nastaliq Urdu"/);
+  assert.match(css, /\.home-hero--fa \.home-hero__quote p \{[^}]*line-height: 1\.7/);
+});
