@@ -1,7 +1,9 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { test } from "node:test";
 
 import { getHomeContent } from "../lib/home-content.ts";
+import { siteCopy } from "../lib/site-content.ts";
 
 test("Home copy is complete and parallel in Persian and English", () => {
   const fa = getHomeContent("fa");
@@ -22,4 +24,34 @@ test("Home copy avoids unverified conversion claims and public Program offers", 
   const text = JSON.stringify([getHomeContent("fa"), getHomeContent("en")]);
   assert.doesNotMatch(text, /95%|5,000/);
   assert.doesNotMatch(text, /\/programs\b|tuition|application fee|deadline/i);
+});
+
+test("hero uses lead-first consultation copy in both locales", () => {
+  assert.equal(siteCopy.fa.heroTitle, "تحصیل در خارج، با همراهی جهان آکادمی");
+  assert.equal(siteCopy.fa.heroText, "از اولین پرسش تا انتخاب مقصد و آماده‌سازی مسیر اپلای، با مشاوره تخصصی و راهنمایی متناسب با شرایطتان در کنار شما هستیم.");
+  assert.equal(siteCopy.en.heroTitle, "Study abroad with Jahan Academy by your side");
+  assert.doesNotMatch(siteCopy.fa.heroText, /شعبه|تضمین|بهترین هزینه|استقرار/);
+  assert.deepEqual(getHomeContent("fa").heroQuote, ["فراتر از مرزها", "به سوی آینده‌ای روشن"]);
+  assert.equal(getHomeContent("fa").heroServiceLink, "آشنایی با خدمات");
+  assert.equal(getHomeContent("en").heroQuote.length, 2);
+  for (const locale of ["fa", "en"]) {
+    assert.equal("heroLabel" in getHomeContent(locale), false);
+    assert.equal("heroQuoteTag" in getHomeContent(locale), false);
+  }
+});
+
+test("Persian hero mirrors only the artwork and layout, not the text", () => {
+  const component = readFileSync(new URL("../components/home-page.tsx", import.meta.url), "utf8");
+  const css = readFileSync(new URL("../app/home.css", import.meta.url), "utf8");
+  assert.match(component, /home-hero--\$\{locale\}/);
+  assert.match(css, /\.home-hero--fa \.home-hero__image, \.home-hero--fa \.home-hero__shade \{ transform: scaleX\(-1\); \}/);
+  assert.match(css, /\.home-hero--fa \.home-hero__content \{ direction: rtl; \}/);
+  assert.doesNotMatch(component, /content\.heroLabel|content\.heroQuoteTag/);
+});
+
+test("hero keeps a compact reference-like frame and a calligraphic Persian slogan", () => {
+  const css = readFileSync(new URL("../app/home.css", import.meta.url), "utf8");
+  assert.match(css, /\.home-hero \{[^}]*min-height: clamp\(25rem, 34vw, 34rem\)/);
+  assert.match(css, /font-family: "Noto Nastaliq Urdu"/);
+  assert.match(css, /\.home-hero--fa \.home-hero__quote p \{[^}]*line-height: 1\.7/);
 });
