@@ -9,7 +9,6 @@ from app.modules.seo.schemas import HreflangLink, SeoMetadata
 _PATHS = {
     "country": "countries",
     "university": "universities",
-    "program": "programs",
     "article": "articles",
 }
 
@@ -49,16 +48,6 @@ class SeoService:
                     "url": canonical,
                 }
             )
-        elif resource == "program":
-            item: dict[str, str] = {
-                "@context": "https://schema.org",
-                "@type": "EducationalOccupationalProgram",
-                "name": name,
-                "url": canonical,
-            }
-            if university_name:
-                item["provider"] = university_name
-            structured_data.append(item)
         elif resource == "article":
             structured_data.append(
                 {
@@ -85,7 +74,7 @@ class SeoService:
 
     def listing_metadata(self, *, resource: str, locale: str, filtered: bool) -> SeoMetadata:
         canonical = self.url_for_listing(resource, locale)
-        titles = {"universities": "Universities", "programs": "Programs", "articles": "Articles"}
+        titles = {"universities": "Universities", "articles": "Articles"}
         title = titles[resource]
         return SeoMetadata(
             title=title,

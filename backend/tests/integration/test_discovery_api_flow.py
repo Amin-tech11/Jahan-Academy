@@ -197,7 +197,6 @@ def test_discovery_search_filter_pagination_suggestions_and_related() -> None:
     programs = ids["programs"]
     assert isinstance(universities, list)
     assert isinstance(programs, list)
-    marker = str(programs[0])
     try:
         with TestClient(app) as client:
             university_search = client.get(
@@ -208,27 +207,14 @@ def test_discovery_search_filter_pagination_suggestions_and_related() -> None:
             assert university_search.json()["meta"]["total"] == 2
             assert university_search.json()["meta"]["totalPages"] == 2
 
-            program_search = client.get(
-                "/api/v1/programs",
-                params={
-                    "locale": "en",
-                    "q": "data",
-                    "fieldId": str(ids["field"]),
-                    "academicLevelId": str(ids["level"]),
-                    "sort": "relevance",
-                },
-            )
-            assert program_search.status_code == 200, program_search.text
-            assert program_search.json()["meta"]["total"] == 2
-            assert program_search.json()["data"][0]["id"] == str(programs[0])
-
+            program_listing = client.get("/api/v1/programs", params={"locale": "en", "q": "data"})
+            assert program_listing.status_code == 404
             suggestions = client.get(
-                "/api/v1/discovery/suggestions",
-                params={"locale": "en", "q": "Advanced Data", "entityType": "program"},
+                "/api/v1/discovery/suggestions", params={"locale": "en", "q": "Vienna"}
             )
             assert suggestions.status_code == 200, suggestions.text
-            assert suggestions.json()["query"] == "Advanced Data"
-            assert [item["id"] for item in suggestions.json()["data"]] == [str(programs[0])]
+            assert suggestions.json()["query"] == "Vienna"
+            assert all(item["entityType"] == "university" for item in suggestions.json()["data"])
 
             university_slug = f"vienna-tech-{str(universities[0]).replace('-', '')[:8]}"
             # Slugs use the seed marker, so resolve the source from its public result.
@@ -244,19 +230,6 @@ def test_discovery_search_filter_pagination_suggestions_and_related() -> None:
             ]
             assert "same_country" in related_university.json()["data"][0]["reasons"]
 
-            source_program = next(
-                item for item in program_search.json()["data"] if item["id"] == str(programs[0])
-            )
-            related_program = client.get(
-                f"/api/v1/programs/{source_program['slug']}/related", params={"locale": "en"}
-            )
-            assert related_program.status_code == 200, related_program.text
-            assert [item["id"] for item in related_program.json()["data"]] == [str(programs[1])]
-            assert "same_level" in related_program.json()["data"][0]["reasons"]
-            assert marker not in related_program.text
-
-            missing = client.get("/api/v1/programs/not-a-real-program/related")
-            assert missing.status_code == 404
-            assert missing.json()["error"]["code"] == "DISCOVERY_SOURCE_NOT_FOUND"
+            assert client.get("/api/v1/programs/not-a-real-program/related").status_code == 404
     finally:
         _cleanup(ids)

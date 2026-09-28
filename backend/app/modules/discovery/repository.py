@@ -5,8 +5,6 @@ from typing import Any
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.modules.discovery.domain import DiscoveryEntityType
-
 
 class DiscoveryRepository:
     def __init__(self, session: AsyncSession) -> None:
@@ -17,7 +15,6 @@ class DiscoveryRepository:
         *,
         query: str,
         locale: str,
-        entity_type: DiscoveryEntityType | None,
         limit: int,
     ) -> list[dict[str, Any]]:
         rows = await self.session.execute(
@@ -35,23 +32,9 @@ class DiscoveryRepository:
                 "JOIN country_translations ct ON ct.country_id = u.country_id "
                 "AND ct.locale = :locale CROSS JOIN search "
                 "WHERE u.status = 'published' AND u.deleted_at IS NULL "
-                "AND :include_universities "
                 "AND (ut.search_vector @@ search.term OR ut.name ILIKE :contains "
                 "OR u.slug ILIKE :contains) "
-                "UNION ALL "
-                "SELECT 'program' AS entity_type, p.id, p.slug, pt.title, ut.name AS subtitle, "
-                "(ts_rank_cd(pt.search_vector, search.term) * 10 + "
-                "CASE WHEN pt.title ILIKE :prefix THEN 4 ELSE 0 END + "
-                "CASE WHEN p.featured THEN 1 ELSE 0 END)::float AS score "
-                "FROM programs p "
-                "JOIN program_translations pt ON pt.program_id = p.id AND pt.locale = :locale "
-                "JOIN universities u ON u.id = p.university_id "
-                "JOIN university_translations ut ON ut.university_id = u.id "
-                "AND ut.locale = :locale CROSS JOIN search "
-                "WHERE p.status = 'published' AND p.deleted_at IS NULL "
-                "AND u.status = 'published' AND u.deleted_at IS NULL AND :include_programs "
-                "AND (pt.search_vector @@ search.term OR pt.title ILIKE :contains "
-                "OR p.slug ILIKE :contains)) "
+                ") "
                 "SELECT * FROM suggestions ORDER BY score DESC, title ASC LIMIT :limit"
             ),
             {
@@ -59,8 +42,6 @@ class DiscoveryRepository:
                 "prefix": f"{query}%",
                 "contains": f"%{query}%",
                 "locale": locale,
-                "include_universities": entity_type in (None, DiscoveryEntityType.UNIVERSITY),
-                "include_programs": entity_type in (None, DiscoveryEntityType.PROGRAM),
                 "limit": limit,
             },
         )
@@ -103,58 +84,11 @@ class DiscoveryRepository:
         )
         return [dict(row._mapping) for row in rows]
 
-    async def related_programs(self, *, slug: str, locale: str, limit: int) -> list[dict[str, Any]]:
-        rows = await self.session.execute(
-            text(
-                "WITH target AS ("
-                "SELECT id, university_id, academic_level_id, primary_field_id, "
-                "teaching_language_code, tuition_currency FROM programs "
-                "WHERE slug = :slug AND status = 'published' AND deleted_at IS NULL), "
-                "candidates AS ("
-                "SELECT 'program' AS entity_type, p.id, p.slug, pt.title, "
-                "ut.name AS subtitle, "
-                "p.university_id = t.university_id AS same_university, "
-                "p.academic_level_id = t.academic_level_id AS same_level, "
-                "p.teaching_language_code IS NOT NULL "
-                "AND p.teaching_language_code = t.teaching_language_code AS same_language, "
-                "p.tuition_currency IS NOT NULL "
-                "AND p.tuition_currency = t.tuition_currency AS same_currency, "
-                "(SELECT count(*) FROM program_fields pf1 JOIN program_fields pf2 "
-                "ON pf2.field_of_study_id = pf1.field_of_study_id "
-                "WHERE pf1.program_id = t.id AND pf2.program_id = p.id) AS shared_fields, "
-                "p.featured FROM programs p CROSS JOIN target t "
-                "JOIN program_translations pt ON pt.program_id = p.id AND pt.locale = :locale "
-                "JOIN universities u ON u.id = p.university_id "
-                "JOIN university_translations ut ON ut.university_id = u.id "
-                "AND ut.locale = :locale "
-                "WHERE p.id <> t.id AND p.status = 'published' AND p.deleted_at IS NULL "
-                "AND u.status = 'published' AND u.deleted_at IS NULL) "
-                "SELECT *, (CASE WHEN same_university THEN 5 ELSE 0 END + "
-                "CASE WHEN same_level THEN 3 ELSE 0 END + shared_fields * 2 + "
-                "CASE WHEN same_language THEN 1 ELSE 0 END + "
-                "CASE WHEN same_currency THEN 0.5 ELSE 0 END + "
-                "CASE WHEN featured THEN 0.5 ELSE 0 END)::float AS score "
-                "FROM candidates WHERE same_university OR same_level OR shared_fields > 0 "
-                "OR same_language ORDER BY score DESC, title ASC LIMIT :limit"
-            ),
-            {"slug": slug, "locale": locale, "limit": limit},
+    async def published_university_slug_exists(self, *, slug: str) -> bool:
+        query = text(
+            "SELECT EXISTS (SELECT 1 FROM universities WHERE slug = :slug "
+            "AND status = 'published' AND deleted_at IS NULL)"
         )
-        return [dict(row._mapping) for row in rows]
-
-    async def published_slug_exists(self, *, entity: DiscoveryEntityType, slug: str) -> bool:
-        if entity is DiscoveryEntityType.UNIVERSITY:
-            query = text(
-                "SELECT EXISTS (SELECT 1 FROM universities WHERE slug = :slug "
-                "AND status = 'published' AND deleted_at IS NULL)"
-            )
-        else:
-            query = text(
-                "SELECT EXISTS (SELECT 1 FROM programs p "
-                "JOIN universities u ON u.id = p.university_id "
-                "WHERE p.slug = :slug AND p.status = 'published' "
-                "AND p.deleted_at IS NULL AND u.status = 'published' "
-                "AND u.deleted_at IS NULL)"
-            )
         return bool(
             await self.session.scalar(
                 query,

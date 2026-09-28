@@ -34,11 +34,11 @@ def test_entity_metadata_has_reciprocal_language_links_and_valid_schema() -> Non
 
 def test_filtered_listing_is_noindex_and_canonical_has_no_query_string() -> None:
     metadata = SeoService("https://jahanacademy.example").listing_metadata(
-        resource="programs", locale="en", filtered=True
+        resource="universities", locale="en", filtered=True
     )
 
     assert metadata.robots == "noindex,follow"
-    assert metadata.canonical == "https://jahanacademy.example/en/programs"
+    assert metadata.canonical == "https://jahanacademy.example/en/universities"
     assert "?" not in metadata.canonical
 
 

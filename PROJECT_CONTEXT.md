@@ -29,7 +29,9 @@
 
 Jahan Academy is a bilingual educational-migration platform for people between 18 and 40 years old who intend to study abroad, apply to universities, immigrate through education, or develop their educational and career paths.
 
-The MVP is a public discovery and lead-generation website. Users explore universities and academic programs, read bilingual news and guidance, and submit a free-consultation request. The operational team qualifies and manages those requests in the website administration panel and synchronizes them with the Noura CRM/ERP.
+The MVP is a public **trust-building and lead-generation** website. Visitors learn about educational migration, destinations, approved academic services, and high-level university showcases; they read bilingual news and guidance, then submit a free-consultation request. The operational team qualifies and manages those requests in the website administration panel and synchronizes them with the Noura CRM/ERP.
+
+Detailed Program records and operational university data are internal working data. They are available only to authorized staff through the administration panel and must not be exposed, searchable, suggestible, indexed, or linked on public routes. Public university information exists to establish confidence and give a visitor enough context to request consultation—not to enable self-service program selection or comparison.
 
 The MVP is **not** an ApplyBoard-style transactional application platform. Public user accounts, document upload, application tracking, payments, LMS capabilities, and calendar-based consultation booking are Post-MVP.
 
@@ -51,7 +53,7 @@ Research completed on September 22, 2026 covers GO2TR, Visa Mondial, Apply For F
 - Keep one dominant consultation CTA across the public site.
 - Use short, low-friction lead capture instead of a long initial assessment.
 - Keep the conversion journey inside the platform rather than making a messenger the primary funnel.
-- Show clear university and program information with strong search, filter, empty, loading, and error states.
+- Use destination guides and concise university showcases to establish confidence, then direct the visitor to consultation; do not make the public site a self-service university/program database.
 - Treat pricing, online booking, payments, student accounts, and application tracking as later capabilities.
 
 ## 2. Business Goals
@@ -59,7 +61,7 @@ Research completed on September 22, 2026 covers GO2TR, Visa Mondial, Apply For F
 ### 2.1 MVP Goals
 
 1. Generate qualified free-consultation leads.
-2. Help users discover relevant universities and academic programs.
+2. Help users understand educational-migration options and develop confidence to request consultation.
 3. Build trust through accurate bilingual content, transparent information, and a professional experience.
 4. Give the internal team a reliable panel for lead assignment, follow-up, and Noura synchronization.
 5. Establish a technically sound SEO foundation for organic acquisition.
@@ -81,8 +83,8 @@ Research completed on September 22, 2026 covers GO2TR, Visa Mondial, Apply For F
 - Lead-to-qualified and lead-to-converted rates.
 - Median time from lead creation to first contact.
 - Noura synchronization success rate and retry recovery rate.
-- Organic entrances to university, program, and news pages.
-- Search zero-result rate.
+- Organic entrances to country-study-guide, university-showcase, service, and news pages.
+- Consultation CTA click-through, form start, and form-completion rate by source page.
 
 Targets are not yet approved. The system must collect the operational data required to establish baselines after launch.
 
@@ -106,8 +108,8 @@ The primary public-user age range is 18 to 40 years old.
 
 Public personas do not have separate system accounts in the MVP.
 
-- **Visitor:** Browses bilingual pages, universities, programs, and news; searches and filters; submits a consultation request.
-- **Prospective Student/Applicant:** A visitor whose main intent is university/program discovery and consultation.
+- **Visitor:** Browses bilingual destination, service, university-showcase, and news pages; submits a consultation request.
+- **Prospective Student/Applicant:** A visitor whose main intent is understanding options, building trust, and receiving expert guidance.
 - **Graduate/Educational Immigrant:** A visitor seeking postgraduate study, migration, or career-development guidance.
 
 In Post-MVP, Student, Applicant, and General User are **not** separate authorization roles. They all use one system role, `User`; their intent and experience are determined from profile attributes, onboarding answers, saved preferences, and application state.
@@ -117,9 +119,9 @@ In Post-MVP, Student, Applicant, and General User are **not** separate authoriza
 | Role | Core access |
 |---|---|
 | **Super Admin** | Full system configuration, admin users, roles, all content, all leads, assignments, Noura retries, SEO, audit logs, and archival/deletion controls |
-| **Content Editor** | Create, edit, publish, archive, and manage bilingual universities, programs, countries, news, FAQs, media, and SEO metadata |
-| **Support** | View and edit all consultation requests, perform initial contact, assign/reassign a consultant, update status, add notes, and manually retry failed Noura syncs |
-| **Consultant** | View only leads assigned to them, record consultation/contact results, add internal notes, and update allowed lead statuses |
+| **Content Editor** | Create, edit, publish, archive, and manage bilingual public university showcases, country guides, news, FAQs, media, SEO metadata, and internal university/Program records |
+| **Support** | View and edit all consultation requests, perform initial contact, assign/reassign a consultant, update status, add notes, manually retry failed Noura syncs, and access internal university/Program reference data needed for lead qualification |
+| **Consultant** | View only leads assigned to them, record consultation/contact results, add internal notes, update allowed lead statuses, and access internal university/Program reference data needed for assigned leads |
 
 ### 4.3 Access Principles
 
@@ -142,14 +144,14 @@ Sales, Admin, and other future labels receive no technical grant merely from the
 ### 5.1 P0 MVP Features
 
 1. Bilingual responsive public website with Persian RTL and English LTR.
-2. Homepage with hero, primary CTA, university/program discovery, benefits, featured content, latest news, FAQ, and consultation block.
+2. Homepage with hero, primary CTA, destination/service entry points, selected university showcases, benefits, verified trust evidence, latest news, FAQ, and consultation block.
 3. Basic country/destination directory used by universities, homepage destination cards, and navigation.
-4. University listing and detail pages.
-5. Academic program listing and detail pages.
-6. University/program search, filtering, sorting, pagination, and URL-persisted query state.
+4. Public university showcase listing and detail pages with only approved general information.
+5. Internal university and academic Program reference-data management for authorized staff.
+6. Public university showcase search and basic filtering; internal university/Program search, filtering, sorting, and pagination for authorized staff.
 7. News listing and detail pages.
 8. Static informational pages: Services, About, Contact, Privacy, Terms, and localized 404.
-9. Free-consultation form embedded or linked from the homepage, university pages, program pages, and global CTA.
+9. Free-consultation form embedded or linked from the homepage, country-study-guide pages, university showcase pages, service/content pages, and global CTA.
 10. Lead database, assignment, status tracking, notes, source context, and non-sequential tracking code.
 11. Noura integration adapter, mock connector, durable synchronization state, automatic retry, and manual retry.
 12. Custom administration panel for content, taxonomies, leads, users, roles, SEO, sync state, and audit logs.
@@ -159,8 +161,8 @@ Sales, Admin, and other future labels receive no technical grant merely from the
 
 ### 5.2 P1 Within MVP Window
 
-- Homepage featured universities/programs configurable from the panel.
-- Reusable FAQs assignable to the homepage, universities, and programs.
+- Homepage featured university showcases configurable from the panel.
+- Reusable FAQs assignable to the homepage, university showcases, country guides, services, and articles.
 - Contact page form if it reuses the lead infrastructure without creating a second operational workflow.
 - Basic CSV export for consultation requests only; university/program Excel import is excluded.
 
@@ -198,8 +200,8 @@ Sales, Admin, and other future labels receive no technical grant merely from the
 | ID | Priority | Requirement |
 |---|---|---|
 | FR-HOME-001 | P0 | The homepage shall communicate Jahan Academy's purpose and show the consultation CTA above the fold. |
-| FR-HOME-002 | P0 | The homepage shall provide quick access to university and program discovery. |
-| FR-HOME-003 | P0 | The panel shall control featured destinations, universities, programs, benefits, latest news, FAQ items, and CTA copy. |
+| FR-HOME-002 | P0 | The homepage shall provide clear entry points to approved destinations, academic services, university showcases, guides/articles, and the consultation form. It shall not present a Program finder, public Program search, or detailed university/Program comparison. |
+| FR-HOME-003 | P0 | The panel shall control featured destinations, public university showcases, benefits, verified trust blocks, latest news, FAQ items, and CTA copy. |
 | FR-HOME-004 | P0 | Services, About, Contact, Privacy, and Terms pages shall have bilingual editable content and SEO metadata. |
 | FR-HOME-005 | P0 | The system shall provide localized 404 and general error pages with recovery navigation. |
 
@@ -209,36 +211,36 @@ Sales, Admin, and other future labels receive no technical grant merely from the
 |---|---|---|
 | FR-UNI-001 | P0 | Admin users shall manually create and manage countries and universities. Initial countries and record counts are content decisions still pending. |
 | FR-UNI-002 | P0 | A university shall belong to one country and city; country and city labels shall be bilingual. |
-| FR-UNI-003 | P0 | University fields shall include shared slug, bilingual name and description, logo, hero/gallery media, city, country, institution type, founding year when known, official website, contact information when provided, and SEO fields. |
+| FR-UNI-003 | P0 | Internal university records shall include shared slug, bilingual name and description, logo, hero/gallery media, city, country, institution type, founding year when known, official website, contact information when provided, rankings, tuition, Program relations, and SEO fields. |
 | FR-UNI-004 | P0 | Universities shall support `Draft`, `Published`, and `Archived` lifecycle states. |
-| FR-UNI-005 | P0 | The public university list shall support name search, pagination, loading, empty, and recoverable error states. |
-| FR-UNI-006 | P0 | University details shall show the institution information, related published programs, relevant FAQs, related news when available, and contextual consultation CTA. |
+| FR-UNI-005 | P0 | The public university-showcase list shall support name and country search, pagination, loading, empty, and recoverable error states. Advanced filters, rankings, tuition, and Program-derived filters are internal-only. |
+| FR-UNI-006 | P0 | A public university showcase shall expose only approved general information: bilingual name, short editorial introduction, approved logo/hero media, country, city when approved, institution type/founding year when verified, optional official website, selected verified trust facts, relevant FAQs/news, and contextual consultation CTA. It shall never reveal related Programs, Program counts, deadlines, intake, tuition, application fees, admission requirements, internal contacts, or internal operational metadata. |
 | FR-UNI-007 | P0 | The consultation CTA opened from a university shall capture the university ID and name as source context without requiring the visitor to re-enter it. |
-| FR-UNI-008 | P1 | Content Editors may mark universities as featured and control their homepage display order. |
+| FR-UNI-008 | P1 | Content Editors may mark public university showcases as featured and control their homepage display order. |
 
 ### 6.4 Academic Programs
 
 | ID | Priority | Requirement |
 |---|---|---|
-| FR-PRG-001 | P0 | In the MVP, `Program` means an academic program offered by a university, such as Bachelor's, Master's, or PhD. Language courses are excluded. |
+| FR-PRG-001 | P0 | In the MVP, `Program` means an internal academic reference record offered by a university, such as Bachelor's, Master's, or PhD. Language courses are excluded. |
 | FR-PRG-002 | P0 | Every program shall belong to exactly one university. |
 | FR-PRG-003 | P0 | Program fields shall include shared slug, bilingual title and description, university, academic level, field of study, intake options, tuition representation, duration, deadlines, application fee, teaching language, admission requirements, official source URL, and SEO fields. |
 | FR-PRG-004 | P0 | Tuition shall support three modes: exact amount, range, or `Contact us`; currency is required for exact/range modes. |
 | FR-PRG-005 | P0 | Program intakes shall support term, year, and optional application deadline. |
-| FR-PRG-006 | P0 | Programs shall support `Draft`, `Published`, and `Archived` lifecycle states. |
-| FR-PRG-007 | P0 | The public list shall support search by program title and filtering by academic level, field of study, and intake. |
-| FR-PRG-008 | P0 | Users shall be able to combine filters, see active filters, reset filters, and share/bookmark the resulting URL. |
-| FR-PRG-009 | P0 | Sort options shall include title A–Z, tuition low-to-high, and tuition high-to-low. Programs with `Contact us` tuition shall appear after priced programs for tuition sorts. |
-| FR-PRG-010 | P0 | Public lists shall use server-driven pagination with 20 results per page. Public requests cannot exceed 20; internal panel requests cannot exceed 100. |
-| FR-PRG-011 | P0 | Program details shall show all available structured fields, the university relationship, contextual FAQs, and a consultation CTA. |
-| FR-PRG-012 | P0 | A consultation request opened from a program shall capture both program and university context. |
+| FR-PRG-006 | P0 | Programs shall support `Draft`, `Published`, and `Archived` lifecycle states. `Published` means internally active/reference-ready; it does not grant public visibility. |
+| FR-PRG-007 | P0 | Authorized staff shall be able to search Program title and filter by university, academic level, field of study, intake, status, and source currency in the administration panel. |
+| FR-PRG-008 | P0 | Internal panel users with catalog permission shall be able to combine filters, see active filters, reset filters, and retain query state during their session. |
+| FR-PRG-009 | P0 | Internal sort options shall include title A–Z, tuition low-to-high, and tuition high-to-low. Programs with `Contact us` tuition shall appear after priced programs for tuition sorts. |
+| FR-PRG-010 | P0 | Internal Program lists shall use server-driven pagination with a maximum of 100 results per request. There are no public Program list or detail routes. |
+| FR-PRG-011 | P0 | Program details shall show all available structured fields and university relationship only in the authorized administration panel; no public Program page, Program structured data, or Program sitemap URL may exist. |
+| FR-PRG-012 | P0 | A public consultation request may carry only public page/source context. Program source context may be attached only by an authorized staff member during internal lead qualification. |
 
 ### 6.5 Search, Filter, and URL State
 
 | ID | Priority | Requirement |
 |---|---|---|
-| FR-SRCH-001 | P0 | Search shall be case-insensitive and locale-aware for the active language. |
-| FR-SRCH-002 | P0 | Query, filters, sort, and page shall be represented with stable URL query parameters. |
+| FR-SRCH-001 | P0 | Public university-showcase search shall be case-insensitive and locale-aware for the active language. Internal catalog search shall be case-insensitive and support both approved translations as necessary for staff use. |
+| FR-SRCH-002 | P0 | Public university-showcase query, basic filters, and page shall be represented with stable URL query parameters. Internal catalog query state need not be indexable or shareable publicly. |
 | FR-SRCH-003 | P0 | Invalid or unknown filter values shall be ignored safely and shall not cause a server error. |
 | FR-SRCH-004 | P0 | Changing search, filters, or sort shall reset pagination to page 1. |
 | FR-SRCH-005 | P0 | Empty results shall explain that no matches were found and offer a reset action and consultation CTA. |
@@ -251,7 +253,7 @@ Sales, Admin, and other future labels receive no technical grant merely from the
 | FR-CNT-001 | P0 | News fields shall include shared slug, bilingual title, summary and body, featured image, author, publication date, and SEO metadata. |
 | FR-CNT-002 | P0 | News shall support `Draft`, `Published`, and `Archived`; Content Editors may publish directly. |
 | FR-CNT-003 | P0 | The news detail page shall show author/date, valid heading hierarchy, social metadata, and related or latest news when content exists. |
-| FR-CNT-004 | P1 | FAQs shall be reusable bilingual records assignable to the homepage, a university, or a program with configurable order. |
+| FR-CNT-004 | P1 | FAQs shall be reusable bilingual records assignable to the homepage, public university showcase, country guide, service, or article with configurable order. Internal Program FAQ associations are permitted for staff reference but cannot be rendered publicly. |
 | FR-CNT-005 | P0 | Published news and FAQ content shall require complete Persian and English versions. |
 
 ### 6.7 Free-Consultation Request
@@ -264,7 +266,7 @@ Sales, Admin, and other future labels receive no technical grant merely from the
 | FR-LEAD-004 | P0 | Validation shall run on client and server; server validation is authoritative. |
 | FR-LEAD-005 | P0 | The system shall persist the lead before attempting Noura synchronization. Noura downtime must never lose an accepted lead. |
 | FR-LEAD-006 | P0 | Each accepted lead shall receive a random, non-sequential tracking/reference code displayed on the success screen. No public tracking portal is included in MVP. |
-| FR-LEAD-007 | P0 | The lead shall store locale, source page URL, and optional source university/program context. |
+| FR-LEAD-007 | P0 | The lead shall store locale, source page URL, and optional public source country/service/university-showcase context. Program context may be added only by an authorized staff member after lead creation. |
 | FR-LEAD-008 | P0 | The form shall not send confirmation email or SMS in the MVP. |
 | FR-LEAD-009 | P0 | Duplicate submissions shall return the existing reference and shall not create another Noura lead. |
 | FR-LEAD-010 | P0 | The success state shall explain that the team will contact the applicant; the error state shall preserve entered non-sensitive values and allow retry. |
@@ -319,7 +321,7 @@ Sales, Admin, and other future labels receive no technical grant merely from the
 | FR-SEO-003 | P0 | The system shall generate XML sitemaps containing only canonical, published, indexable URLs. |
 | FR-SEO-004 | P0 | `robots.txt` shall block administration and non-public endpoints without being used as an access-control mechanism. |
 | FR-SEO-005 | P0 | Breadcrumbs shall be visible and expressed as valid `BreadcrumbList` structured data. |
-| FR-SEO-006 | P0 | Use valid schema.org types only: `Organization`, `WebSite`, `CollegeOrUniversity`, `NewsArticle`/`Article`, `FAQPage` when eligible, and `Course` or `EducationalOccupationalProgram` only when page content satisfies the selected schema. |
+| FR-SEO-006 | P0 | Use valid schema.org types only: `Organization`, `WebSite`, `CollegeOrUniversity`, `NewsArticle`/`Article`, and `FAQPage` when eligible. `Course` and `EducationalOccupationalProgram` structured data are prohibited while Programs are internal-only. |
 | FR-SEO-007 | P0 | Search and arbitrary filter combinations shall be `noindex,follow` with a canonical reference to the unfiltered listing. Curated landing pages may become indexable in a later phase. |
 | FR-SEO-008 | P0 | Archived content shall be removed from sitemaps and return an intentional redirect, `404`, or `410` according to its replacement status. |
 
@@ -331,8 +333,8 @@ The following requirements are approved for the future account/application phase
 
 | ID | Priority | Requirement |
 |---|---|---|
-| FR-ACC-001 | Post-MVP | Guests shall continue to access the homepage, news/articles, university and program lists/details, search/filter/sort, general program facts, FAQs, guides, and the free-consultation form without registration. |
-| FR-ACC-002 | Post-MVP | Registration shall be required for personal or trackable actions: starting a program application, creating an Application, saving favorites or comparisons, personalized recommendations, viewing admission-chance results, viewing complete intake/deadline details, uploading documents, tracking Applications, viewing history, receiving notifications, or saving onboarding/profile progress. |
+| FR-ACC-001 | Post-MVP | Guests shall continue to access the homepage, news/articles, public university showcases, FAQs, country guides, services, and the free-consultation form without registration. Program lists/details and detailed operational university data remain staff-only unless a future approved change explicitly opens them. |
+| FR-ACC-002 | Post-MVP | Registration shall be required for personal or trackable actions: starting an application, creating an Application, saving favorites or comparisons, personalized recommendations, viewing admission-chance results, accessing a staff-approved Program recommendation, uploading documents, tracking Applications, viewing history, receiving notifications, or saving onboarding/profile progress. |
 | FR-ACC-003 | Post-MVP | All public account holders shall use one authorization role, `User`; student/applicant/general-user distinctions shall be profile attributes rather than separate roles. |
 
 #### Authentication and Account Linking
@@ -378,11 +380,11 @@ The following requirements are approved for the future account/application phase
 
 | ID | Category | Requirement |
 |---|---|---|
-| NFR-PERF-001 | Performance | Representative homepage, university list/detail, program list/detail, and consultation pages shall target Lighthouse Performance ≥ 90 on mobile production-like tests. |
+| NFR-PERF-001 | Performance | Representative homepage, country-study-guide, public university showcase list/detail, article, and consultation pages shall target Lighthouse Performance ≥ 90 on mobile production-like tests. |
 | NFR-PERF-002 | Performance | Target Core Web Vitals at the 75th percentile: LCP < 2.5s, INP < 200ms, and CLS < 0.1. |
 | NFR-PERF-003 | Performance | Images shall be responsive, compressed, dimensioned, and lazy-loaded below the fold. Critical hero media shall not be lazy-loaded. |
 | NFR-SCALE-001 | Scalability | The initial architecture shall support at least 100 concurrent public users and 20 concurrent panel users without data loss or error-rate degradation in baseline load tests. |
-| NFR-SCALE-002 | Scalability | University and program counts shall have no commercial hard limit; all list APIs must remain paginated and indexed. |
+| NFR-SCALE-002 | Scalability | University and Program counts shall have no commercial hard limit. Public university-showcase APIs and all internal catalog APIs must remain paginated and indexed. |
 | NFR-AVL-001 | Availability | After production launch, target monthly availability is 99.5%, excluding announced maintenance and upstream provider outages. |
 | NFR-REL-001 | Reliability | A Noura outage shall not block lead acceptance; durable retry shall survive application restarts. |
 | NFR-BCK-001 | Backup | Database and uploaded-file backups shall run daily and be retained for 30 days. |
@@ -406,13 +408,15 @@ The following requirements are approved for the future account/application phase
 - `BR-CNT-004`: Published content or content referenced by another record must be archived/soft-deleted; destructive cleanup requires Super Admin and dependency checks.
 - `BR-CNT-005`: A program belongs to exactly one university; a university belongs to one country.
 - `BR-CNT-006`: A Program is academic in MVP. Language courses must not be modeled as academic programs.
+- `BR-CNT-007`: Publishing a University record does not automatically expose every field. Public serialization is an allowlist defined by `FR-UNI-006`; all other university fields are internal.
+- `BR-CNT-008`: A Program is never public in this product version, regardless of its lifecycle state. It shall not be returned by an unauthenticated route, autocomplete, related-results endpoint, sitemap, structured data, or public media/content relation.
 
 ### 8.2 Tuition and Program Rules
 
 - `BR-PRG-001`: Exact tuition requires `amount` and `currency`.
 - `BR-PRG-002`: Range tuition requires `minimum`, `maximum`, and `currency`, with minimum ≤ maximum.
-- `BR-PRG-003`: Contact tuition stores no public amount.
-- `BR-PRG-004`: Tuition sorting places unknown/contact-priced programs after numeric values.
+- `BR-PRG-003`: Contact tuition stores no public amount; all Program tuition is internal-only in this product version.
+- `BR-PRG-004`: Internal tuition sorting places unknown/contact-priced programs after numeric values.
 - `BR-PRG-005`: Deadlines belong to a specific program intake when possible.
 
 ### 8.3 Lead Rules
@@ -606,7 +610,7 @@ Verified identity values shall be unique where appropriate. Account linking and 
 
 ## 12. API Contracts
 
-All API routes are versioned under `/api/v1`. Public read endpoints return only published, non-archived content.
+All API routes are versioned under `/api/v1`. Public read endpoints return only published, non-archived, **explicitly public-allowlisted** content. Published internal Program records are not public content.
 The complete human-readable endpoint registry, validation rules, permission matrix, status/error
 contracts, MVP/final-product phase boundaries, idempotency policy, and acceptance gates are maintained
 in `API_DESIGN.md`. The machine-readable OpenAPI 3.1 baseline is
@@ -647,14 +651,12 @@ Error:
 | Method and path | Contract |
 |---|---|
 | `GET /api/v1/countries` | Published countries/destinations; optional featured flag and pagination |
-| `GET /api/v1/countries/{slug}` | Localized country detail and related entities |
-| `GET /api/v1/universities` | `locale`, `q`, `page`, `limit`; published results only |
-| `GET /api/v1/universities/{slug}` | Localized university detail and related programs |
+| `GET /api/v1/countries/{slug}` | Localized country-study-guide detail and approved public relations only |
+| `GET /api/v1/universities` | `locale`, `q`, `country`, `page`, `limit`; public university showcases with allowlisted general fields only |
+| `GET /api/v1/universities/{slug}` | Localized public university showcase with allowlisted general fields, approved FAQs/news, and consultation context only |
 | `GET /api/v1/universities/{slug}/related` | Ranked related universities with stable reason codes; maximum 12 results |
-| `GET /api/v1/programs` | `locale`, `q`, `level`, `field`, `intake`, `sort`, `page`, `limit` |
-| `GET /api/v1/programs/{slug}` | Localized program detail with university and intake data |
-| `GET /api/v1/programs/{slug}/related` | Ranked related Programs with stable reason codes; maximum 12 results |
-| `GET /api/v1/discovery/suggestions` | Fast localized University/Program suggestions by `q`, optional `entityType`, maximum 10 results |
+| `GET /api/v1/programs*` | **Removed from the public contract.** It must return `404` and expose no route documentation, redirect, hint, or identifier. |
+| `GET /api/v1/discovery/suggestions` | Fast localized public-university suggestions by `q`, maximum 10 results; `entityType=program` is rejected/ignored and Program results are never returned. |
 | `GET /api/v1/articles` | Published News/Article/Guide search with type, category, Tag, author, featured, sort, and pagination filters |
 | `GET /api/v1/articles/{slug}` | Localized published content detail with author, categories, and Tags |
 | `GET /api/v1/content/{categories\|tags\|authors}` | Published localized editorial reference lists |
@@ -687,8 +689,8 @@ Error:
   "message": "optional",
   "locale": "fa",
   "source": {
-    "pageUrl": "/fa/programs/example",
-    "entityType": "program",
+    "pageUrl": "/fa/universities/example-university",
+    "entityType": "university",
     "entityId": "uuid-or-null"
   },
   "privacyConsent": true,
@@ -708,6 +710,7 @@ Successful creation returns HTTP `201`; a detected duplicate returns HTTP `200` 
 - Admin-user and role assignment endpoints restricted to Super Admin.
 - Audit log read endpoints restricted to Super Admin.
 - Every mutation requires authenticated session, permission check, validation, and audit behavior where applicable.
+- Internal catalog reads require authenticated `catalog.read` permission. Public Program routes, related-Program routes, Program suggestions, and Program SEO endpoints must not exist. Public university serialization must use a dedicated allowlist rather than the administrative response model.
 
 ### 12.5 Noura Adapter Contract
 
@@ -727,7 +730,9 @@ The final field mapping, authentication method, endpoint URLs, update semantics,
 
 ### 13.1 Approved Visual Direction
 
-The attached AI-generated screens and the supplied consultation-form screenshot are approved layout references, not pixel-perfect implementation specifications. The current official logo reference is [jahan-logo.png](./design-references/jahan-logo.png). [ApplyICA](https://applyica.com/) is an external interaction and layout reference for the consultation experience; its brand assets, copy, field set, and visual trade dress must not be copied.
+The attached AI-generated screens and the supplied consultation-form screenshot are approved layout references, not pixel-perfect implementation specifications. The current official logo reference is [jahan-logo.png](./design-references/jahan-logo.png).
+
+**ApplyBoard is retired as a Jahan Academy design, UX, content, or implementation reference.** It must not be used to make future page-design decisions. The approved external benchmark sites are [ApplyICA](https://applyica.com/) and [GO2TR](https://go2tr.com/). They are references for information architecture, conversion patterns, and page families only; their brand assets, copy, statistics, testimonials, claims, data, and visual trade dress must never be copied.
 
 - [Homepage reference](./design-references/homepage-reference.jpeg)
 - [University search reference](./design-references/university-search-reference.jpeg)
@@ -749,7 +754,7 @@ The logo asset and AI screens show different logo treatments. The standalone sup
 - Desktop navigation includes Home, Countries/Destinations, Services, Universities, News/Articles, About, and Contact.
 - Mobile uses an accessible collapsible menu with the primary consultation CTA visible without excessive scrolling.
 - The global primary CTA is always the free-consultation request.
-- Secondary actions may include search, view details, reset filters, and language switch.
+- Secondary actions may include destination/university-showcase search, view details, reset filters, and language switch. They must never expose a public Program search or Program detail path.
 - Post-MVP actions visible in references—compare, save/favorite, WhatsApp consultation, and online calendar booking—must not be presented as working MVP features.
 
 ### 13.4 Forms
@@ -765,16 +770,81 @@ The logo asset and AI screens show different logo treatments. The standalone sup
 - Related fields may share a row on desktop, while longer fields, the consent control, optional message, status/error summaries, and the primary action may span the full form width.
 - Inputs, selects, and text areas use consistent border, radius, height, focus, disabled, error, and success states from the project design system.
 - The primary submit action spans the available form width, uses the project primary color, and has localized text such as `ثبت درخواست مشاوره` / `Submit Consultation Request`.
-- When opened from a university or program page, source context is shown as concise read-only context where useful and is also submitted through trusted hidden identifiers.
+- When opened from a university showcase, country guide, service, or article page, source context is shown as concise read-only context where useful and is also submitted through trusted hidden identifiers. Program identifiers must not originate from public pages.
 - The form may include the approved age, gender, occupation, marital-status, and investment/budget controls from the external reference, but must use Jahan Academy labels, option sets, validation, privacy language, and design tokens. Other fields seen only in the reference remain excluded unless this source-of-truth document is updated.
 
 ### 13.5 Lists and Details
 
-- Filters remain accessible on mobile through a drawer/sheet and must not block result browsing.
-- Active filters are displayed as removable chips.
-- Result count, sort, pagination, reset, empty, loading, and error states are mandatory.
-- University and program detail pages prioritize verified facts, related programs, and the contextual consultation CTA.
+- Public university-showcase filters remain accessible on mobile through a drawer/sheet and must not block result browsing.
+- Active public filters are displayed as removable chips.
+- Public university-showcase result count, pagination, reset, empty, loading, and error states are mandatory. Public price, deadline, Program, and comparison sorting are prohibited.
+- University showcase pages prioritize a concise verified introduction, approved trust facts, relevant guides/FAQs, and the contextual consultation CTA. Program pages do not exist publicly.
 - Layout must mirror correctly between RTL and LTR; directional icons must follow reading direction.
+
+### 13.6 External Benchmark: ApplyICA and GO2TR
+
+Both benchmarks use a content-led conversion model: a visitor enters through a destination, service, or educational guide; receives enough structured context to assess relevance; sees evidence of expertise and outcomes; then reaches a prominent consultation CTA. Jahan Academy adopts that journey: its university and Program catalogue supports staff consultation work, while the public site presents only curated, general university showcases.
+
+| Benchmark | Observed strengths to adapt | Do not adopt for Jahan Academy MVP |
+| --- | --- | --- |
+| [ApplyICA](https://applyica.com/) | Clear service-family navigation; high-touch consultation conversion; trust blocks (experience, admission letters, case stories); department/contact choices; concise service landing pages; FAQ and related-article closure. | Investment, international trade, company registration, startup-visa and work-migration offerings; its branding and copy. |
+| [GO2TR](https://go2tr.com/) | Broad SEO taxonomy; country/academic-level/field/topic hubs; long-form destination guide with quick facts, comparison tables, source links, FAQ, contextual internal links, success stories, and persistent consultation path. | Its very broad non-education migration taxonomy (investment, tourist visas, property, family, birth, etc.); unverified claims; its account/booking behavior unless separately specified. |
+
+#### Shared patterns worth adopting
+
+- Mega-menu grouped by visitor intent, country/destination hubs, service pages, editorial content, About, and Contact.
+- A consistent free-consultation CTA in header, page body, and closing section.
+- Trust elements close to conversion: verified cases or admission letters, team/department contact options, service/process explanation, FAQ, and related reading.
+- Country/service pages that answer practical questions with quick facts, structured tables, timestamps, FAQ, sources where applicable, and links to deeper content.
+- Mobile-first access to telephone/contact channels and an uncomplicated lead form.
+
+#### Deliberate differences for Jahan Academy
+
+| Dimension | Jahan Academy decision |
+| --- | --- |
+| Product focus | Educational migration, academic/career guidance, trust-building content, and consultation—not a general immigration marketplace or a self-service application catalogue. |
+| Primary differentiator | A verified bilingual internal University and Program knowledge base that equips consultants, paired with curated public country guides and university showcases that drive qualified consultation requests. |
+| Languages | Full Persian RTL and English LTR publication parity. Content is not published until both approved translations are ready. |
+| Conversion | Free consultation remains the primary MVP CTA; public page context may be carried into the lead. Program identifiers never originate from the public site. No public applicant account, application workflow, payment, calendar booking, or document upload in MVP. |
+| Scope boundaries | Language courses, investment, business establishment, work migration, tourist visa, property, and other non-academic routes are Post-MVP or out of scope unless this source of truth changes. |
+| Trust | Only approved, evidenced outcomes, staff details, university facts, prices, rankings, and testimonials may be shown. Placeholder AI facts and competitor claims are forbidden. |
+
+### 13.7 Reference Page Families and Representative Templates
+
+The inventories below describe page families, not a requirement to copy every page or publish every destination. Repeated country/service pages share one approved template each. New Jahan Academy pages must use project components, localization, accessibility, SEO, and data-quality rules.
+
+#### ApplyICA page families
+
+| Page family | Representative / purpose | Reusable layout and conversion characteristics |
+| --- | --- | --- |
+| Home | [ApplyICA home](https://applyica.com/) | Brand promise; service-family selector; webinar/promotion; metrics and admission-letter evidence; service highlights; destination cards; case stories; department contact; recent articles; FAQ; footer. |
+| Service hub | International education, investment, business, startup visa, mentoring | Intent-based mega-menu and service cards, each leading to a focused landing page. Jahan uses only the academic-guidance subset. |
+| Educational destination guide | [Study migration to Canada](https://applyica.com/immigration-to-the-canada-for-education/) | Hero and country value proposition; why/conditions/costs; academic-level sections with duration, language, prerequisites, tuition, and timing; post-admission guidance; closing short lead form; FAQ; related articles. This is the compact template for a Jahan **Country Study Guide**, not a University or Program detail page. |
+| Consultation/assessment | Referenced by the supplied approved screenshot | Centered, readable two-column desktop form; persistent field labels; select controls; a clear submit CTA and response-time expectation. Jahan uses its own approved field set, consent, validation, duplicate prevention, tracking code, and bilingual behavior. |
+| Editorial and trust | Articles, webinars, story/about, contact, cases/admission letters | Article listing/detail, webinar promotion, organization narrative, department contact, and evidence-led case presentation. |
+
+#### GO2TR page families
+
+| Page family | Representative / purpose | Reusable layout and conversion characteristics |
+| --- | --- | --- |
+| Home | [GO2TR home](https://go2tr.com/) | Intent mega-menu; headline and consultation CTA; service categories; destination suggestions; successful-case carousel; testimonials; topic-rich internal linking. |
+| Migration-topic hubs | Study abroad, visa, investment, work, other routes, destination country | Large SEO-first taxonomies organized by route, country, academic level, field, test, scholarship, and supporting topic. Jahan adopts only academic destinations, fields, levels, scholarships, tests, and country-living guidance relevant to student decisions. |
+| Study-destination guide | [Study in Canada](https://go2tr.com/canada/study) | This is the sole detailed template for the repeated `study in <country>` family. It contains: country hero; at-a-glance cost/work/post-study facts; CTA; update date; benefit/challenge summary; academic-level cards; sourced tables for eligibility, language, cost, and documents; contextual links; source list; FAQ; and closing consultation path. Jahan uses approved, dated facts but does not expose Program-level availability or eligibility. |
+| University / field / level / scholarship / test guides | Country university lists, field pages, degree-level pages, scholarships, language/entry-test content | SEO landing pages with internal links and a contextual consultation CTA. In Jahan, these are public trust/content hubs; the internal University and Program catalogue is staff-only. |
+| Editorial/company/contact | Magazine, About, Contact, login/register, consultation booking | Editorial funnel and trust/contact pages. MVP Jahan keeps articles, About, Contact, and consultation; public login/register and booking remain Post-MVP. |
+
+#### Required Jahan Academy public page set influenced by these references
+
+1. Home: academic-migration promise, intent entry points, featured destinations/services, verified outcome/trust blocks, recent bilingual content, FAQ, and global consultation CTA.
+2. Country Study Guide (one localized template per approved destination): quick facts, current/sourced academic pathway information, curated university showcases where approved, related articles/FAQ, and consultation CTA.
+3. University showcase index/detail: basic country/name search and curated verified general facts only, official source URL when approved, relevant articles/FAQ, and contextual consultation CTA.
+4. **No public Program index or detail page.** Program availability, level, field, tuition, deadline, intake, fees, requirements, language, and official Program URL are staff-only consultation data.
+5. Services: academic consultation, admission/application guidance, document review, and other approved academic services only; each service has scope, process, FAQ, trust evidence, and CTA.
+6. Articles/news and article detail: bilingual editorial content, category/tag discovery, related content, sources where relevant, and CTA.
+7. Consultation request: approved Jahan-specific form and success/tracking state.
+8. About, Contact, Privacy, Terms, and 404/error pages.
+
+No page family is considered complete merely because it resembles a benchmark. It must meet the functional, security, localization, content-verification, accessibility, and performance requirements in this document.
 
 ## 14. Security Rules
 
@@ -783,6 +853,7 @@ The logo asset and AI screens show different logo treatments. The standalone sup
 - `SEC-003`: Admin passwords require at least 12 characters; password reset tokens are single-use, hashed at rest, and expire within 30 minutes.
 - `SEC-004`: Lock an admin account for 15 minutes after five failed login attempts; log the event without logging submitted passwords.
 - `SEC-005`: Apply server-side RBAC to every admin route and data query, including consultant lead scoping.
+- `SEC-005A`: Public catalogue serialization shall use dedicated allowlisted response models. Internal Program records and non-public university fields must be inaccessible without `catalog.read`, including by guessed URLs, autocomplete, related-content APIs, OpenAPI, sitemap, structured data, cache keys, and logs.
 - `SEC-006`: Protect state-changing browser requests against CSRF according to the session strategy.
 - `SEC-007`: Rate-limit login, password reset, consultation submission, and other abuse-sensitive endpoints.
 - `SEC-008`: Validate and normalize all input; encode output and sanitize rich text with an allowlist to prevent XSS.
@@ -823,7 +894,7 @@ The logo asset and AI screens show different logo treatments. The standalone sup
 ### 15.3 Quality Gates
 
 - Required checks: formatting, lint, TypeScript typecheck, unit/integration tests, production build, and migration validation.
-- Critical E2E paths: locale switching, university/program discovery, filters in URL, consultation creation/deduplication, admin login, lead assignment, role scoping, content publication validation, and failed Noura retry.
+- Critical E2E paths: locale switching, country-guide/public-university-showcase discovery, absence of public Program access, consultation creation/deduplication, admin login, internal catalog authorization, lead assignment, role scoping, content publication validation, and failed Noura retry.
 - A requirement is complete only when implementation, validation, tests proportional to risk, and documentation are complete.
 - No real personal data is used in fixtures, screenshots, or automated tests.
 
@@ -848,6 +919,7 @@ required CI gate for the current feature is green.
 - [x] MVP feature scope supplied and clarified.
 - [x] Consultation workflow, lead states, assignment rules, deletion rules, localization, SEO direction, and operational recommendations approved.
 - [x] Visual references and logo copied into the workspace under `design-references/`.
+- [x] ApplyBoard retired as a design reference; ApplyICA and GO2TR analyzed and recorded as the approved external UX, information-architecture, and conversion-pattern benchmarks, with representative page-family templates and explicit MVP scope boundaries.
 - [x] Requirements baseline, architecture recommendation, data model, API contracts, security rules, and coding standards documented.
 - [x] Post-MVP public account, multi-method login, progressive applicant profile, and document requirements documented without changing MVP scope.
 - [x] Final-product technology architecture selected: Next.js Web, FastAPI modular backend, PostgreSQL/SQLAlchemy/Alembic, Redis/Celery/outbox, and S3-compatible private storage.
@@ -872,14 +944,17 @@ required CI gate for the current feature is green.
 - [ ] Public UI and administration panel implemented.
 - [x] Mock Noura connector implemented and tested: provider-neutral adapter, idempotent mock API, PostgreSQL outbox claiming/recovery, Celery/Beat automatic dispatch, retry schedule, safe error taxonomy, external-ID persistence, independent Pending/Synced/Failed state, and audited manual retry via reversible migration `013_noura_mock`.
 - [x] Media Management implemented: S3-compatible direct upload intents, private quarantine, strict purpose/type/size/extension and real-content validation, SHA-256 verification/deduplication, Pillow dimension checks, active-PDF rejection, ClamAV scanning, public promotion/delivery, search, bilingual alt/attribution metadata, ETag concurrency, dependency-safe deletion, audit evidence, Moto S3-compatible local runtime, and reversible migration `014_media_management`.
-- [x] University Management implemented: public localized discovery/detail and protected admin CRUD, mandatory Persian/English translations, country/city integrity, exact/range/contact tuition with active currency validation, rankings, ready-purpose-matched logo/hero/gallery media, contact fields, publication completeness gates, featured/search/filter/sort/pagination, ETag concurrency, PII-safe audit evidence, archive preservation, dependency-safe draft deletion, `catalog.read`/`catalog.write` permissions, reversible migration `015_university_management`, and PostgreSQL end-to-end coverage.
-- [x] Program Management implemented: localized public discovery/detail and protected admin CRUD, mandatory Persian/English translations, published-university/active-level/field integrity, primary and additional fields, exact/range/contact tuition, exact/free/contact application fees, duration and teaching language, official-source links, intake-year-specific deadlines/status/notes, structured and bilingual admission requirements, publication completeness gates, search/filter/sort/pagination, ETag concurrency, audit evidence, archive preservation, dependency-safe draft deletion, reversible migration `016_program_management`, and PostgreSQL end-to-end coverage.
-- [x] University & Program Discovery API implemented: weighted bilingual PostgreSQL full-text search with GIN indexes and safe partial-match fallback, relevance/default and explicit sorting, existing domain filters and bounded pagination, type-scoped autocomplete suggestions, explainable related-university and related-Program ranking, published-parent visibility enforcement, reversible migration `017_discovery_api`, and full PostgreSQL integration coverage.
+- [x] University Management implemented: protected admin CRUD, mandatory Persian/English translations, country/city integrity, exact/range/contact tuition with active currency validation, rankings, ready-purpose-matched logo/hero/gallery media, contact fields, publication completeness gates, featured/search/filter/sort/pagination, ETag concurrency, PII-safe audit evidence, archive preservation, dependency-safe draft deletion, `catalog.read`/`catalog.write` permissions, reversible migration `015_university_management`, and PostgreSQL end-to-end coverage. The earlier public-detail serialization is superseded by the Lead-first access policy below.
+- [x] Program Management implemented: protected admin CRUD, mandatory Persian/English translations, published-university/active-level/field integrity, primary and additional fields, exact/range/contact tuition, exact/free/contact application fees, duration and teaching language, official-source links, intake-year-specific deadlines/status/notes, structured and bilingual admission requirements, publication completeness gates, search/filter/sort/pagination, ETag concurrency, audit evidence, archive preservation, dependency-safe draft deletion, `catalog.read`/`catalog.write` permissions, reversible migration `016_program_management`, and PostgreSQL end-to-end coverage. All earlier public Program read behavior is superseded by the Lead-first access policy below.
+- [x] University & Program Discovery API implemented internally: weighted bilingual PostgreSQL full-text search with GIN indexes and safe partial-match fallback, relevance/default and explicit sorting, domain filters and bounded pagination, type-scoped autocomplete suggestions, explainable related ranking, published-parent visibility enforcement, reversible migration `017_discovery_api`, and full PostgreSQL integration coverage. Its prior public Program routes are superseded by the Lead-first access policy below.
 - [x] Content Management implemented: bilingual News/Article/Guide CRUD, Category/Tag/Author lifecycle management, Draft/Publish/Scheduled Publish/Archive states, published-only public reads, full-text search, type/category/Tag/author/featured filters, relevance and date/title sorting, ready article-image validation, publication completeness gates, ETag concurrency, audit evidence, dependency-safe draft deletion, `content.read`/`content.write`/`content.publish` permissions, reversible migration `018_content_management`, and PostgreSQL end-to-end coverage.
 - [x] FAQ Management implemented: bilingual FAQ CRUD, reusable assignments to general pages, universities, Programs, and services, per-target display ordering with atomic bulk reorder, Draft/Publish/Archive lifecycle, published-target visibility checks, safe rich-text answers, search/filter/pagination, ETag concurrency, audit evidence, draft-only deletion, reusable content permissions, reversible migration `019_faq_management`, and PostgreSQL end-to-end coverage.
 - [x] Admin User Management implemented under `/api/v1/admin/staff`: Super Admin-only creation of admin, support, consultant, and content-editor accounts; email-based one-time access setup and recovery; active/disabled lifecycle; session revocation and lock clearing for recovery; full-role replacement; ETag concurrency; PII-safe audit events; last-active-Super-Admin and self-deactivation protections; `identity.manage`/`role.manage` permission grants; reversible migration `020_admin_user_management`; and PostgreSQL end-to-end coverage.
 - [x] Audit Log implemented: immutable append-only UI model, successful-login evidence with hashed IP, centralized Super-Admin-only filtered/paginated read API, and indexed actions/entities; existing content, access, Lead/assignment, and Noura-sync audit writers are surfaced by migration `022_audit_log`.
 - [x] SEO Backend Support implemented: public localized metadata contracts, canonical and reciprocal `fa`/`en`/`x-default` hreflang links, schema.org JSON-LD limited to eligible types, root `sitemap.xml` generated from published non-archived entities only, root `robots.txt`, and `noindex,follow` metadata for every filtered listing.
+- [ ] **Lead-first public-catalog hardening (approved change):** replace public University/Program discovery with a constrained public university-showcase API; remove public Program list/detail/related/suggestion/SEO/sitemap/schema access; restrict public university fields to the allowlist in `FR-UNI-006`; remove Program navigation and public Program CTA/source context; add authorization, negative-access, contract, sitemap/schema, and regression tests. This is the next catalog feature and must be implemented in its own branch after the preceding feature's CI gate is confirmed green.
+- [x] Temporary Admin Dashboard & Reporting implemented: role-protected, read-only local operational metrics for Leads, workflow statuses, consultants, conversion, published content, and sanitized Noura sync errors. The response identifies itself as `local_temporary`; Noura ERP remains the final reporting authority.
+- [x] Operational Hardening implemented: Redis-backed API rate limiting plus existing consultation idempotency, correlation-safe structured request logging, security headers, token-protected internal metrics, and scheduled three-year Lead anonymization with idempotency cleanup and audit evidence.
 - [ ] Real Noura connector implemented and accepted.
 - [ ] Staging and production infrastructure provisioned.
 
@@ -912,7 +987,7 @@ required CI gate for the current feature is green.
 
 ### 18.2 Engineering
 
-- Build bilingual public shell, content modules, university/program discovery, news, and consultation flow.
+- Build bilingual public shell, country-guide/service/content modules, constrained public university showcases, news, and consultation flow; keep Program discovery in the authorized administration panel.
 - Build lead operations, audit logs, Noura outbox/worker, mock API, retries, and manual retry.
 - Add frontend unit, E2E, accessibility, performance, and baseline load tests as those application layers are implemented.
 - Produce admin, backup/restore, and production operations documentation.

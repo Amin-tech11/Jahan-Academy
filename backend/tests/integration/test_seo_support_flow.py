@@ -15,14 +15,16 @@ pytestmark = pytest.mark.skipif(
 def test_listing_metadata_uses_noindex_for_any_filter_and_robots_is_public() -> None:
     with TestClient(app) as client:
         filtered = client.get(
-            "/api/v1/seo/listings/programs/metadata", params={"locale": "fa", "q": "data"}
+            "/api/v1/seo/listings/universities/metadata", params={"locale": "fa", "q": "data"}
         )
-        unfiltered = client.get("/api/v1/seo/listings/programs/metadata", params={"locale": "fa"})
+        unfiltered = client.get(
+            "/api/v1/seo/listings/universities/metadata", params={"locale": "fa"}
+        )
         robots = client.get("/robots.txt")
 
     assert filtered.status_code == 200
     assert filtered.json()["robots"] == "noindex,follow"
-    assert filtered.json()["canonical"].endswith("/fa/programs")
+    assert filtered.json()["canonical"].endswith("/fa/universities")
     assert unfiltered.status_code == 200
     assert unfiltered.json()["robots"] == "index,follow"
     assert robots.status_code == 200

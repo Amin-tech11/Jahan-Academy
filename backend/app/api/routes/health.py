@@ -1,8 +1,11 @@
-from fastapi import APIRouter, Response, status
+from fastapi import APIRouter, Header, HTTPException, Response, status
+from fastapi.responses import PlainTextResponse
 from redis.asyncio import Redis
 from sqlalchemy import text
 
+from app.core.config import get_settings
 from app.core.database import session_factory
+from app.core.operational import monitoring_token_is_valid, render_metrics
 from app.core.redis import get_redis
 
 router = APIRouter(tags=["health"])
@@ -31,3 +34,12 @@ async def readiness(response: Response) -> dict[str, object]:
     if not ready:
         response.status_code = status.HTTP_503_SERVICE_UNAVAILABLE
     return {"status": "ok" if ready else "not_ready", "checks": checks}
+
+
+@router.get("/internal/metrics", include_in_schema=False, response_class=PlainTextResponse)
+async def internal_metrics(
+    token: str | None = Header(default=None, alias="X-Monitoring-Token"),
+) -> PlainTextResponse:
+    if not monitoring_token_is_valid(token, get_settings()):
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+    return PlainTextResponse(render_metrics(), media_type="text/plain; version=0.0.4")
