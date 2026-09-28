@@ -109,7 +109,7 @@
   .home-hero--fa .home-hero__image { object-position: 75% center; }
   .home-hero--en .home-hero__image { object-position: 75% center; }
   .home-hero__content { align-items: flex-start; padding: 3rem 1.25rem 4.5rem; }
-  .home-hero h1 { max-width: 13ch; font-size: clamp(2.2rem, 8vw, 2.9rem); }
+  .home-hero h1 { max-width: none; font-size: clamp(1.75rem, 6.8vw, 2.35rem); }
   .home-start { margin-top: -1rem; padding: 1.35rem; }
   .home-start__steps, .home-destinations, .home-services, .home-universities, .home-articles { grid-template-columns: 1fr; }
   .home-start__steps { gap: .9rem; }
