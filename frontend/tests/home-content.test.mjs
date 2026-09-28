@@ -47,11 +47,12 @@ test("Persian hero mirrors only the artwork and layout, not the text", () => {
   assert.doesNotMatch(component, /content\.heroLabel|content\.heroQuote/);
 });
 
-test("hero image stays in the content column with a plain-font slogan", () => {
+test("hero image fills the viewport while copy stays in the content column", () => {
   const component = readFileSync(new URL("../components/home-page.tsx", import.meta.url), "utf8");
   const css = readFileSync(new URL("../app/home.css", import.meta.url), "utf8");
-  assert.match(css, /\.home-hero \{[^}]*width: min\(1160px, calc\(100% - 48px\)\)/);
+  assert.match(css, /\.home-hero \{[^}]*width: 100%/);
   assert.match(css, /\.home-hero h1 \{[^}]*font-family: inherit/);
-  assert.match(component, /src="\/home-hero-contained\.png"/);
+  assert.match(component, /src="\/home-hero-fullbleed\.png"/);
+  assert.match(component, /className="shell home-hero__content"/);
   assert.doesNotMatch(component, /home-hero__quote/);
 });
