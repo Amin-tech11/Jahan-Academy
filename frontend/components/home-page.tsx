@@ -53,7 +53,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
 
   return <SiteShell locale={locale}><main className="home-page">
     <section className={`home-hero home-hero--${locale}`} aria-labelledby="home-title">
-      <Image src="/home-hero-sharp.png" alt="" fill sizes="100vw" preload className="home-hero__image" />
+      <Image src="/home-hero-documentary.png" alt="" fill sizes="100vw" preload className="home-hero__image" />
       <div className="home-hero__shade" aria-hidden="true" />
       <div className="shell home-hero__content">
         <div className="home-hero__copy" dir={locale === "fa" ? "rtl" : "ltr"}>

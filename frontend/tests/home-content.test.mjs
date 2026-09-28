@@ -26,9 +26,11 @@ test("Home copy avoids unverified conversion claims and public Program offers", 
   assert.doesNotMatch(text, /\/programs\b|tuition|application fee|deadline/i);
 });
 
-test("hero uses the approved reference copy in both locales", () => {
-  assert.equal(siteCopy.fa.heroTitle, "آینده تحصیلی‌ات را آگاهانه بساز");
-  assert.equal(siteCopy.fa.heroText, "با مشاوره تخصصی و تجربه‌ی مطمئن، مسیر تحصیل در خارج از کشور را آسان‌تر طی کن.");
+test("hero uses lead-first consultation copy in both locales", () => {
+  assert.equal(siteCopy.fa.heroTitle, "تحصیل در خارج، با همراهی جهان آکادمی");
+  assert.equal(siteCopy.fa.heroText, "از اولین پرسش تا انتخاب مقصد و آماده‌سازی مسیر اپلای، با مشاوره تخصصی و راهنمایی متناسب با شرایطتان در کنار شما هستیم.");
+  assert.equal(siteCopy.en.heroTitle, "Study abroad with Jahan Academy by your side");
+  assert.doesNotMatch(siteCopy.fa.heroText, /شعبه|تضمین|بهترین هزینه|استقرار/);
   assert.deepEqual(getHomeContent("fa").heroQuote, ["فراتر از مرزها", "به سوی آینده‌ای روشن"]);
   assert.equal(getHomeContent("fa").heroServiceLink, "آشنایی با خدمات");
   assert.equal(getHomeContent("en").heroQuote.length, 2);
