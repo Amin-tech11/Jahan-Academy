@@ -5,6 +5,7 @@ import { headers } from "next/headers";
 import "@fontsource-variable/vazirmatn";
 import "./globals.css";
 import "./foundation.css";
+import "./consultation.css";
 
 export const metadata: Metadata = {
   title: "Jahan Academy",

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { ConsultationForm } from "@/components/consultation-form";
+import { ConsultationForm } from "@/components/consultation-request-form";
 import { ConsultationButton, localPath, SiteShell } from "@/components/site-shell";
 import { getUniversityShowcase, getUniversityShowcases } from "@/lib/public-api";
 import { articles, countryGuides, faqItems, fixtureUniversities, type Locale, services, siteCopy } from "@/lib/site-content";
