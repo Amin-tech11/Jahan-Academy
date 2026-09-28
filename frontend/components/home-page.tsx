@@ -53,13 +53,13 @@ export async function HomePage({ locale }: { locale: Locale }) {
 
   return <SiteShell locale={locale}><main className="home-page">
     <section className={`home-hero home-hero--${locale}`} aria-labelledby="home-title">
-      <Image src="/home-hero-fullbleed.png" alt="" fill sizes="100vw" preload className="home-hero__image" />
+      <Image src="/home-hero-compact.png" alt="" fill sizes="100vw" preload className="home-hero__image" />
       <div className="home-hero__shade" aria-hidden="true" />
       <div className="shell home-hero__content">
         <div className="home-hero__copy" dir={locale === "fa" ? "rtl" : "ltr"}>
           <h1 id="home-title">{copy.heroTitle}</h1>
           <p className="home-hero__description">{copy.heroText}</p>
-          <div className="home-hero__actions"><ConsultationButton locale={locale} source="home-hero" /><ButtonLink variant="ghost" href={localPath(locale, "/services")}>{content.heroServiceLink} <Arrow locale={locale} /></ButtonLink></div>
+          <div className="home-hero__actions"><ButtonLink variant="ghost" href={localPath(locale, "/services")}>{content.heroServiceLink} <span aria-hidden="true">{locale === "fa" ? "←" : "→"}</span></ButtonLink><ConsultationButton locale={locale} source="home-hero" /></div>
         </div>
       </div>
     </section>
