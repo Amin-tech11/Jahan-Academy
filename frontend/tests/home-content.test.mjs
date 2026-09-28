@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { test } from "node:test";
 
 import { getHomeContent } from "../lib/home-content.ts";
@@ -31,5 +32,17 @@ test("hero uses the approved reference copy in both locales", () => {
   assert.deepEqual(getHomeContent("fa").heroQuote, ["فراتر از مرزها", "به سوی آینده‌ای روشن"]);
   assert.equal(getHomeContent("fa").heroServiceLink, "آشنایی با خدمات");
   assert.equal(getHomeContent("en").heroQuote.length, 2);
-  assert.equal(getHomeContent("en").heroLabel, getHomeContent("fa").heroLabel);
+  for (const locale of ["fa", "en"]) {
+    assert.equal("heroLabel" in getHomeContent(locale), false);
+    assert.equal("heroQuoteTag" in getHomeContent(locale), false);
+  }
+});
+
+test("Persian hero mirrors only the artwork and layout, not the text", () => {
+  const component = readFileSync(new URL("../components/home-page.tsx", import.meta.url), "utf8");
+  const css = readFileSync(new URL("../app/home.css", import.meta.url), "utf8");
+  assert.match(component, /home-hero--\$\{locale\}/);
+  assert.match(css, /\.home-hero--fa \.home-hero__image, \.home-hero--fa \.home-hero__shade \{ transform: scaleX\(-1\); \}/);
+  assert.match(css, /\.home-hero--fa \.home-hero__content \{ direction: rtl; \}/);
+  assert.doesNotMatch(component, /content\.heroLabel|content\.heroQuoteTag/);
 });

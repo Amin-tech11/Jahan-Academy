@@ -1,10 +1,8 @@
 import type { Locale, Localized } from "./site-content";
 
 export type HomeCopy = {
-  heroLabel: string;
   heroServiceLink: string;
   heroQuote: string[];
-  heroQuoteTag: string;
   startTitle: string;
   startText: string;
   steps: Array<{ number: string; title: string; text: string }>;
@@ -35,10 +33,8 @@ export type HomeCopy = {
 
 export const homeContent: Localized<HomeCopy> = {
   fa: {
-    heroLabel: "STUDY ABROAD\nA BRIGHTER TOMORROW",
     heroServiceLink: "آشنایی با خدمات",
     heroQuote: ["فراتر از مرزها", "به سوی آینده‌ای روشن"],
-    heroQuoteTag: "SAME DREAMS\nA BRIGHTER TOMORROW",
     startTitle: "مسیر شما از یک گفت‌وگوی خوب شروع می‌شود",
     startText: "هدف و شرایط خود را با ما در میان بگذارید؛ تیم جهان آکادمی قدم بعدی را با شما بررسی می‌کند.",
     steps: [
@@ -75,10 +71,8 @@ export const homeContent: Localized<HomeCopy> = {
     articleLabel: "مطلب خواندنی",
   },
   en: {
-    heroLabel: "STUDY ABROAD\nA BRIGHTER TOMORROW",
     heroServiceLink: "Explore our services",
     heroQuote: ["Beyond borders", "Toward a brighter future"],
-    heroQuoteTag: "SAME DREAMS\nA BRIGHTER TOMORROW",
     startTitle: "Your journey starts with a useful conversation",
     startText: "Tell us about your goals and circumstances. Our team will help you consider the next step.",
     steps: [

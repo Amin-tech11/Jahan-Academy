@@ -1,3 +1,4 @@
+@font-face { font-family: "Gulzar"; src: url("/fonts/Gulzar-Regular.ttf") format("truetype"); font-style: normal; font-weight: 400; font-display: swap; }
 .home-page { background: #fff; }
 .home-eyebrow { display: flex; align-items: center; gap: .7rem; margin: 0 0 1.1rem; color: var(--color-brand-700); font-size: .78rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
 .home-eyebrow__line { display: block; width: 1.8rem; height: 2px; background: var(--color-accent); }
@@ -5,8 +6,9 @@
 .home-hero__image { z-index: -2; object-fit: cover; object-position: center 45%; }
 .home-hero__shade { position: absolute; z-index: -1; inset: 0; background: linear-gradient(90deg, rgb(3 22 35 / 72%) 0%, rgb(3 22 35 / 29%) 42%, rgb(3 22 35 / 16%) 67%, rgb(3 22 35 / 63%) 100%), linear-gradient(0deg, rgb(3 22 35 / 46%), transparent 42%); }
 .home-hero__content { display: flex; direction: ltr; align-items: center; justify-content: space-between; gap: 4rem; min-height: inherit; padding-block: 5rem 7rem; }
+.home-hero--fa .home-hero__image, .home-hero--fa .home-hero__shade { transform: scaleX(-1); }
+.home-hero--fa .home-hero__content { direction: rtl; }
 .home-hero__copy { width: min(100%, 34rem); text-align: start; }
-.home-hero__eyebrow, .home-hero__quote small { display: block; margin: 0 0 1.25rem; color: #e1ecf4; font-family: Arial, sans-serif; font-size: .7rem; font-weight: 800; letter-spacing: .22em; line-height: 1.45; white-space: pre-line; }
 .home-hero h1 { max-width: 12ch; margin: 0; color: #fff; font-size: clamp(3rem, 5.4vw, 5.4rem); line-height: 1.13; letter-spacing: -.035em; text-shadow: 0 2px 18px rgb(0 0 0 / 12%); }
 .home-hero__description { max-width: 30rem; margin: 1.3rem 0 0; color: #f3f7f9; font-size: clamp(1rem, 1.4vw, 1.15rem); line-height: 1.95; }
 .home-hero__actions { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; margin-top: 1.5rem; }
@@ -14,9 +16,9 @@
 .home-hero__actions .ui-button--primary:hover { background: #084b9e; }
 .home-hero__actions .ui-button--ghost { color: #fff; }
 .home-hero__quote { align-self: flex-end; max-width: 20rem; padding-bottom: 1.3rem; text-align: start; text-shadow: 0 2px 16px rgb(0 0 0 / 40%); }
-.home-hero__quote p { margin: 0 0 1.1rem; font-size: clamp(1.5rem, 2.1vw, 2.1rem); font-weight: 500; line-height: 1.65; }
+.home-hero__quote p { margin: 0; font-size: clamp(1.5rem, 2.1vw, 2.1rem); font-weight: 500; line-height: 1.65; }
 .home-hero__quote p span { display: block; }
-.home-hero__quote small { margin: 0; font-size: .65rem; }
+.home-hero--fa .home-hero__quote p { font-family: "Gulzar", serif; font-size: clamp(1.65rem, 2.35vw, 2.4rem); font-weight: 400; line-height: 2.05; }
 .home-start { position: relative; z-index: 2; display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.5fr); gap: 2rem; align-items: center; margin-top: -1.6rem; padding: 2rem 2.2rem; border: 1px solid var(--color-border); border-radius: var(--radius-lg); background: #fff; box-shadow: var(--shadow-card); }
 .home-start__lead h2 { margin: 0; color: var(--color-brand-950); font-size: clamp(1.35rem, 2vw, 1.9rem); line-height: 1.35; }
 .home-start__lead > p:last-child { margin: .65rem 0 0; color: var(--color-muted); font-size: .88rem; line-height: 1.8; }
@@ -115,6 +117,7 @@
   .home-hero__content { gap: 2.5rem; padding-block: 3rem 4.5rem; }
   .home-hero h1 { max-width: 13ch; font-size: clamp(2.55rem, 10vw, 3.6rem); }
   .home-hero__quote p { font-size: 1.25rem; }
+  .home-hero--fa .home-hero__quote p { font-size: 1.5rem; }
   .home-start { margin-top: -1rem; padding: 1.35rem; }
   .home-start__steps, .home-destinations, .home-services, .home-universities, .home-articles { grid-template-columns: 1fr; }
   .home-start__steps { gap: .9rem; }
