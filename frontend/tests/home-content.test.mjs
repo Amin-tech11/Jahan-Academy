@@ -48,13 +48,13 @@ test("Persian hero mirrors only the artwork and layout, not the text", () => {
   assert.doesNotMatch(component, /content\.heroLabel|content\.heroQuote/);
 });
 
-test("hero image fills the viewport while copy stays in the content column", () => {
+test("hero image stays full width with actions and no headline or intro copy", () => {
   const component = readFileSync(new URL("../components/home-page.tsx", import.meta.url), "utf8");
   const css = readFileSync(new URL("../app/home.css", import.meta.url), "utf8");
   assert.match(css, /\.home-hero \{[^}]*width: 100%/);
-  assert.match(css, /\.home-hero \{[^}]*min-height: clamp\(25rem, 34vw, 34rem\)/);
-  assert.match(css, /\.home-hero h1 \{[^}]*font-family: inherit/);
-  assert.match(css, /\.home-hero h1 \{[^}]*white-space: pre-line/);
+  assert.match(css, /\.home-hero \{[^}]*min-height: clamp\(20rem, 28vw, 28rem\)/);
+  assert.doesNotMatch(component, /<h1 id="home-title"/);
+  assert.doesNotMatch(component, /home-hero__description/);
   assert.match(component, /src="\/home-hero-compact\.png"/);
   assert.match(component, /className="shell home-hero__content"/);
   assert.match(component, /heroServiceLink} <span aria-hidden="true">\{locale === "fa" \? "←" : "→"\}<\/span><\/ButtonLink><ConsultationButton/);

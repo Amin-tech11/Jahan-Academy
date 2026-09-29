@@ -58,8 +58,6 @@ export async function HomePage({ locale }: { locale: Locale }) {
       <div className="home-hero__shade" aria-hidden="true" />
       <div className="shell home-hero__content">
         <div className="home-hero__copy" dir={locale === "fa" ? "rtl" : "ltr"}>
-          <h1 id="home-title">{copy.heroTitle}</h1>
-          <p className="home-hero__description">{copy.heroText}</p>
           <div className="home-hero__actions"><ButtonLink variant="ghost" href={localPath(locale, "/services")}>{content.heroServiceLink} <span aria-hidden="true">{locale === "fa" ? "←" : "→"}</span></ButtonLink><ConsultationButton locale={locale} source="home-hero" /></div>
         </div>
       </div>
