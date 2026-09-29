@@ -4,10 +4,11 @@ import type { ReactNode } from "react";
 
 import { ConsultationButton, localPath, SiteShell } from "@/components/site-shell";
 import { ButtonLink } from "@/components/ui";
+import { brandContent } from "@/lib/brand-content";
 import { getUniversityShowcases } from "@/lib/public-api";
 import { getHomeContent } from "@/lib/home-content";
 import {
-  articles, faqItems, fixtureUniversities, headerDestinations, siteCopy,
+  articles, fixtureUniversities, headerDestinations, siteCopy,
   type Locale, type UniversityShowcase,
 } from "@/lib/site-content";
 
@@ -71,6 +72,7 @@ function UniversityCard({ university, locale }: { university: UniversityShowcase
 export async function HomePage({ locale }: { locale: Locale }) {
   const copy = siteCopy[locale];
   const content = getHomeContent(locale);
+  const brand = brandContent[locale];
   const publicUniversities = await getUniversityShowcases(locale);
   const universities = (publicUniversities.length ? publicUniversities : fixtureUniversities).slice(0, 3);
   const visibleArticles = articles.filter((article) => article.type === "article").slice(0, 2);
@@ -117,7 +119,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
     </div></section>
 
     <section className="home-section home-trust" aria-labelledby="home-trust-title"><div className="shell home-trust__grid">
-      <div className="home-trust__intro"><p className="home-eyebrow">{content.trustEyebrow}</p><h2 id="home-trust-title">{copy.trustTitle}</h2><p>{copy.trustText}</p><ConsultationButton locale={locale} source="home-trust" /></div>
+      <div className="home-trust__intro"><p className="home-eyebrow">{content.trustEyebrow}</p><h2 id="home-trust-title">{brand.whyTitle}</h2><p>{brand.whyText}</p><ConsultationButton locale={locale} source="home-trust" /></div>
       <div className="home-trust__values">{content.trustValues.map((value) => <div key={value.number}><span>{value.number}</span><div><h3>{value.title}</h3><p>{value.text}</p></div></div>)}</div>
     </div></section>
 
@@ -132,7 +134,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
 
     <section className="home-section home-section--soft" aria-labelledby="home-faq-title"><div className="shell home-faq__grid">
       <div><p className="home-eyebrow">{content.faqEyebrow}</p><h2 id="home-faq-title">{copy.faqTitle}</h2><p>{content.faqText}</p><Link className="home-faq__link" href={localPath(locale, "/faq")}>{content.sectionLink} <Arrow locale={locale} /></Link></div>
-      <div className="home-faq__list">{faqItems[locale].map((item) => <details key={item.question}><summary>{item.question}<span aria-hidden="true">+</span></summary><p>{item.answer}</p></details>)}</div>
+      <div className="home-faq__list">{brand.faqs.slice(0, 4).map((item) => <details key={item.question}><summary>{item.question}<span aria-hidden="true">+</span></summary><p>{item.answer}</p></details>)}</div>
     </div></section>
 
     <section className="home-closing"><div className="shell home-closing__inner"><div><p className="home-eyebrow">JAHAN ACADEMY</p><h2>{content.closingTitle}</h2><p>{content.closingText}</p></div><ConsultationButton locale={locale} source="home-footer" /></div></section>
