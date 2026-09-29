@@ -12,14 +12,6 @@ import {
 } from "@/lib/site-content";
 
 const destinationSlugs = ["united-kingdom", "germany", "italy", "netherlands", "canada"] as const;
-const destinationFlags: Record<(typeof destinationSlugs)[number], string> = {
-  "united-kingdom": "🇬🇧",
-  germany: "🇩🇪",
-  italy: "🇮🇹",
-  netherlands: "🇳🇱",
-  canada: "🇨🇦",
-};
-
 function Arrow({ locale }: { locale: Locale }) {
   return <span aria-hidden="true">{locale === "fa" ? "↖" : "↗"}</span>;
 }
@@ -79,15 +71,16 @@ export async function HomePage({ locale }: { locale: Locale }) {
     </section>
 
     <section className="home-section home-section--soft" aria-labelledby="home-destinations-title"><div className="shell">
-      <SectionHeading id="home-destinations-title" eyebrow={content.destinationEyebrow} title={copy.destinationsTitle} text={content.destinationText} href={localPath(locale, "/countries")} linkText={content.sectionLink} />
+      <h2 id="home-destinations-title" className="home-destinations__title">{copy.destinationsTitle}</h2>
       <div className="home-destinations">{destinationSlugs.map((slug, index) => {
         const destination = headerDestinations.find((entry) => entry.slug === slug);
         if (!destination) return null;
         return <Link key={slug} className="home-destination" href={localPath(locale, `/countries/${slug}`)}>
           <Image src={`/destinations/${slug}.png`} alt="" fill sizes={index < 2 ? "(max-width: 600px) 100vw, (max-width: 800px) 50vw, 50vw" : "(max-width: 600px) 100vw, (max-width: 800px) 50vw, 33vw"} className="home-destination__image" />
-          <span className="home-destination__label"><span className="home-destination__flag" aria-hidden="true">{destinationFlags[slug]}</span><strong>{destination[locale]}</strong></span>
+          <span className="home-destination__label"><span className="home-destination__flag"><Image src={`/destinations/flags/${slug}.jpeg`} alt="" width={44} height={44} /></span><strong>{destination[locale]}</strong></span>
         </Link>;
       })}</div>
+      <div className="home-destinations__footer"><Link className="home-destinations__all" href={localPath(locale, "/countries")}>{content.sectionLink} <span aria-hidden="true">{locale === "fa" ? "←" : "→"}</span></Link></div>
     </div></section>
 
     <section className="home-section" aria-labelledby="home-services-title"><div className="shell">
