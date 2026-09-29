@@ -27,9 +27,10 @@ test("Home copy avoids unverified conversion claims and public Program offers", 
 });
 
 test("hero uses lead-first consultation copy in both locales", () => {
-  assert.equal(siteCopy.fa.heroTitle, "فراتر از مرزها، به سوی آینده‌ای روشن");
-  assert.equal(siteCopy.fa.heroText, "از اولین پرسش تا انتخاب مقصد و آماده‌سازی مسیر اپلای، با مشاوره تخصصی و راهنمایی متناسب با شرایطتان در کنار شما هستیم.");
-  assert.equal(siteCopy.en.heroTitle, "Beyond borders, toward a brighter future");
+  assert.equal(siteCopy.fa.heroTitle, "فراتر از مرز ها\nبه سوی آینده ای روشن");
+  assert.equal(siteCopy.fa.heroText, "برای تحقق رؤیاهای تحصیلی‌تان، از نخستین گام تا انتخاب مسیر مناسب، با مشاوره‌ای تخصصی همراه و پشتیبان شما خواهیم بود.");
+  assert.equal(siteCopy.en.heroTitle, "Beyond borders\nToward a brighter future");
+  assert.match(siteCopy.en.heroText, /expert guidance/);
   assert.doesNotMatch(siteCopy.fa.heroText, /شعبه|تضمین|بهترین هزینه|استقرار/);
   assert.equal(getHomeContent("fa").heroServiceLink, "آشنایی با خدمات");
   for (const locale of ["fa", "en"]) {
@@ -51,8 +52,11 @@ test("hero image fills the viewport while copy stays in the content column", () 
   const component = readFileSync(new URL("../components/home-page.tsx", import.meta.url), "utf8");
   const css = readFileSync(new URL("../app/home.css", import.meta.url), "utf8");
   assert.match(css, /\.home-hero \{[^}]*width: 100%/);
+  assert.match(css, /\.home-hero \{[^}]*min-height: clamp\(25rem, 34vw, 34rem\)/);
   assert.match(css, /\.home-hero h1 \{[^}]*font-family: inherit/);
-  assert.match(component, /src="\/home-hero-fullbleed\.png"/);
+  assert.match(css, /\.home-hero h1 \{[^}]*white-space: pre-line/);
+  assert.match(component, /src="\/home-hero-compact\.png"/);
   assert.match(component, /className="shell home-hero__content"/);
+  assert.match(component, /heroServiceLink} <span aria-hidden="true">\{locale === "fa" \? "←" : "→"\}<\/span><\/ButtonLink><ConsultationButton/);
   assert.doesNotMatch(component, /home-hero__quote/);
 });

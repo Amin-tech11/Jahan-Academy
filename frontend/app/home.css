@@ -1,14 +1,14 @@
 .home-page { background: #fff; }
 .home-eyebrow { display: flex; align-items: center; gap: .7rem; margin: 0 0 1.1rem; color: var(--color-brand-700); font-size: .78rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
 .home-eyebrow__line { display: block; width: 1.8rem; height: 2px; background: var(--color-accent); }
-.home-hero { position: relative; isolation: isolate; overflow: hidden; width: 100%; min-height: clamp(28rem, 40vw, 48rem); color: #fff; background: #112c40; }
+.home-hero { position: relative; isolation: isolate; overflow: hidden; width: 100%; min-height: clamp(25rem, 34vw, 34rem); color: #fff; background: #112c40; }
 .home-hero__image { z-index: -2; object-fit: cover; object-position: center 45%; }
 .home-hero__shade { position: absolute; z-index: -1; inset: 0; background: linear-gradient(90deg, rgb(3 22 35 / 72%) 0%, rgb(3 22 35 / 29%) 42%, rgb(3 22 35 / 16%) 67%, rgb(3 22 35 / 63%) 100%), linear-gradient(0deg, rgb(3 22 35 / 46%), transparent 42%); }
 .home-hero__content { display: flex; direction: ltr; align-items: center; min-height: inherit; padding-block: 2.5rem 3.5rem; }
 .home-hero--fa .home-hero__image, .home-hero--fa .home-hero__shade { transform: scaleX(-1); }
 .home-hero--fa .home-hero__content { direction: rtl; }
-.home-hero__copy { width: min(100%, 30rem); text-align: start; }
-.home-hero h1 { max-width: 15ch; margin: 0; color: #fff; font-family: inherit; font-size: clamp(2.2rem, 3.5vw, 3.25rem); font-weight: 800; line-height: 1.32; letter-spacing: -.025em; text-shadow: 0 2px 18px rgb(0 0 0 / 12%); }
+.home-hero__copy { width: min(100%, 36rem); text-align: start; }
+.home-hero h1 { margin: 0; color: #fff; font-family: inherit; font-size: clamp(2.2rem, 3.5vw, 3.25rem); font-weight: 800; line-height: 1.32; letter-spacing: -.025em; white-space: pre-line; text-shadow: 0 2px 18px rgb(0 0 0 / 12%); }
 .home-hero__description { max-width: 24rem; margin: 1rem 0 0; color: #f3f7f9; font-size: clamp(.9rem, 1.15vw, 1rem); line-height: 1.85; }
 .home-hero__actions { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; margin-top: 1rem; }
 .home-hero__actions .ui-button--primary { background: #0a5bc3; color: #fff; }
@@ -109,7 +109,7 @@
   .home-hero--fa .home-hero__image { object-position: 75% center; }
   .home-hero--en .home-hero__image { object-position: 75% center; }
   .home-hero__content { align-items: flex-start; padding: 3rem 1.25rem 4.5rem; }
-  .home-hero h1 { max-width: 13ch; font-size: clamp(2.2rem, 8vw, 2.9rem); }
+  .home-hero h1 { max-width: none; font-size: clamp(1.75rem, 6.8vw, 2.35rem); }
   .home-start { margin-top: -1rem; padding: 1.35rem; }
   .home-start__steps, .home-destinations, .home-services, .home-universities, .home-articles { grid-template-columns: 1fr; }
   .home-start__steps { gap: .9rem; }
