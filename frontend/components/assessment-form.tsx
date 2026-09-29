@@ -29,7 +29,6 @@ export function AssessmentForm({ locale, source }: { locale: Locale; source: str
       detail("education", "تحصیلات", "Education"),
       detail("budget", "سرمایه مهاجرت", "Migration budget"),
       detail("language", "مهارت زبان انگلیسی", "English proficiency"),
-      detail("service", "زمینه مورد نیاز", "Service interest"),
     ].filter(Boolean).join("\n");
     const fields = {
       firstName: names[0], lastName: names.slice(1).join(" "), mobile,
@@ -72,16 +71,6 @@ export function AssessmentForm({ locale, source }: { locale: Locale; source: str
       <label>{t(locale, "میزان سرمایه شما برای مهاجرت چقدر است؟", "What is your migration budget?")}<select name="budget" defaultValue=""><option value="">{t(locale, "انتخاب کنید", "Select")}</option>{options([["کمتر از ۵۰۰ میلیون", "Under 500 million toman"], ["۱ الی ۲ میلیارد", "1–2 billion toman"], ["۲ الی ۳ میلیارد", "2–3 billion toman"], ["بالای ۴ میلیارد", "Over 4 billion toman"]])}</select></label>
       <label>{t(locale, "مهارت شما در زبان انگلیسی چقدر است؟", "How strong is your English?")}<select name="language" defaultValue=""><option value="">{t(locale, "انتخاب کنید", "Select")}</option>{options([["عالی", "Excellent"], ["متوسط", "Intermediate"], ["ضعیف", "Beginner"]])}</select></label>
     </div>
-    <fieldset className="assessment-form__services"><legend>{t(locale, "در کدام یک از این زمینه‌ها به راهنمایی و خدمات نیاز دارید؟", "What kind of guidance do you need?")}</legend>
-      {([
-        ["تحصیل در دانشگاه‌های بین‌المللی", "Study at international universities"],
-        ["راه‌اندازی یا توسعه کسب‌وکار در خارج از کشور", "Start or expand a business abroad"],
-        ["دریافت ویزای استارتاپ و راه‌اندازی کسب‌وکار", "Startup visa and business setup"],
-        ["سرمایه‌گذاری در بازارهای بین‌المللی", "Investment in international markets"],
-        ["منتورینگ و دریافت مشاوره برای فرایند مهاجرت", "Migration mentoring and consultation"],
-        ["نمی‌دانم کدام گزینه برای من مناسب‌تر است، نیاز به مشاوره دارم.", "I am unsure which option suits me; I need advice."],
-      ] as [string, string][]).map(([fa, en]) => <label key={en}><input name="service" type="radio" value={t(locale, fa, en)} required />{t(locale, fa, en)}</label>)}
-    </fieldset>
     <div className="assessment-form__consents">
       <label><input name="privacyConsent" type="checkbox" required />{t(locale, "با ثبت اطلاعات و شرایط حریم خصوصی موافقم.", "I agree to submit my information under the privacy policy.")} <Link href={`/${locale}/privacy`}>{t(locale, "حریم خصوصی", "Privacy")}</Link></label>
       <label><input name="contactConsent" type="checkbox" required />{t(locale, "با تماس تیم جهان آکادمی برای پیگیری درخواست موافقم.", "I agree to be contacted by Jahan Academy about this request.")}</label>

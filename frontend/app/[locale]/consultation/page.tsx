@@ -36,7 +36,7 @@ export default async function ConsultationPage({ params, searchParams }: PagePro
     <section className="assessment-page__body" aria-label={copy.consultationTitle}>
       <div className="assessment-page__introduction">
         <p>{locale === "fa" ? "انتخاب مسیر مناسب برای مهاجرت، تحصیل یا سرمایه‌گذاری بین‌المللی، یکی از مهم‌ترین تصمیمات زندگی است و به بررسی دقیق شرایط فردی و اهداف بلندمدت نیاز دارد. در جهان آکادمی شرایط و خواسته‌های شما را بررسی می‌کنیم تا مسیر مناسبی را پیشنهاد دهیم." : "Choosing a path for migration, international study or investment is an important decision. We review your circumstances and goals to recommend a suitable route."}</p>
-        <p>{locale === "fa" ? "لطفاً فرم زیر را تکمیل کنید تا کارشناسان ما پس از بررسی اطلاعات، با شما تماس بگیرند. اگر هنوز مطمئن نیستید کدام خدمات برای شما مناسب‌تر است، گزینه «نیاز به مشاوره دارم» را انتخاب کنید." : "Please complete the form so our advisers can review your information and contact you. If you are unsure which service fits, choose the consultation option."}</p>
+        <p>{locale === "fa" ? "لطفاً فرم زیر را تکمیل کنید تا کارشناسان ما پس از بررسی اطلاعات، با شما تماس بگیرند." : "Please complete the form so our advisers can review your information and contact you."}</p>
         <p>{locale === "fa" ? "از همراهی و اعتماد شما سپاسگزاریم. 🙏" : "Thank you for your trust. 🙏"}</p>
       </div>
       <AssessmentForm locale={locale} source={pageUrl} />
