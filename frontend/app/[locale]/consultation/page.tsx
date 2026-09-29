@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { ConsultationForm } from "@/components/consultation-request-form";
+import { AssessmentForm } from "@/components/assessment-form";
 import { SiteShell } from "@/components/site-shell";
 import { sourcePageUrl } from "@/lib/consultation";
 import { isLocale, siteCopy } from "@/lib/site-content";
@@ -25,19 +25,21 @@ export default async function ConsultationPage({ params, searchParams }: PagePro
   const pageUrl = sourcePageUrl(locale, source);
   const copy = siteCopy[locale];
 
-  return <SiteShell locale={locale}><main className="consultation-page">
-    <section className="shell consultation-page__intro" aria-labelledby="consultation-title">
-      <p className="eyebrow">JAHAN ACADEMY · {locale === "fa" ? "مشاوره رایگان" : "FREE CONSULTATION"}</p>
-      <h1 id="consultation-title">{copy.consultationTitle}</h1>
-      <p>{copy.consultationText}</p>
-    </section>
-    <section className="shell consultation-page__panel" aria-label={copy.consultationTitle}>
-      <div className="consultation-page__steps" aria-label={locale === "fa" ? "مراحل درخواست" : "Request steps"}>
-        <div><span>01</span><strong>{locale === "fa" ? "اطلاعات خود را ثبت کنید" : "Share your details"}</strong></div>
-        <div><span>02</span><strong>{locale === "fa" ? "کد پیگیری دریافت کنید" : "Receive a tracking code"}</strong></div>
-        <div><span>03</span><strong>{locale === "fa" ? "منتظر تماس تیم ما باشید" : "Our team will contact you"}</strong></div>
+  return <SiteShell locale={locale}><main className="assessment-page">
+    <section className="assessment-page__hero" aria-labelledby="consultation-title">
+      <div className="assessment-page__hero-content">
+        <h1 id="consultation-title">📑 {locale === "fa" ? "فرم ارزیابی اولیه" : "Initial assessment form"}</h1>
+        <p>{locale === "fa" ? "برای تحقق رویاهایتان، در تمام مسیر مهاجرت همراه و پشتیبان شما خواهیم بود…" : "We will support you throughout your journey toward your goals."}</p>
       </div>
-      <ConsultationForm locale={locale} source={pageUrl} />
+      <span className="assessment-page__wordmark" aria-hidden="true">JAHAN ACADEMY</span>
+    </section>
+    <section className="assessment-page__body" aria-label={copy.consultationTitle}>
+      <div className="assessment-page__introduction">
+        <p>{locale === "fa" ? "انتخاب مسیر مناسب برای مهاجرت، تحصیل یا سرمایه‌گذاری بین‌المللی، یکی از مهم‌ترین تصمیمات زندگی است و به بررسی دقیق شرایط فردی و اهداف بلندمدت نیاز دارد. در جهان آکادمی شرایط و خواسته‌های شما را بررسی می‌کنیم تا مسیر مناسبی را پیشنهاد دهیم." : "Choosing a path for migration, international study or investment is an important decision. We review your circumstances and goals to recommend a suitable route."}</p>
+        <p>{locale === "fa" ? "لطفاً فرم زیر را تکمیل کنید تا کارشناسان ما پس از بررسی اطلاعات، با شما تماس بگیرند." : "Please complete the form so our advisers can review your information and contact you."}</p>
+        <p>{locale === "fa" ? "از همراهی و اعتماد شما سپاسگزاریم. 🙏" : "Thank you for your trust. 🙏"}</p>
+      </div>
+      <AssessmentForm locale={locale} source={pageUrl} />
     </section>
   </main></SiteShell>;
 }
