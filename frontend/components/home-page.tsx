@@ -71,7 +71,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
 
     <section className="home-section home-section--soft" aria-labelledby="home-destinations-title"><div className="shell">
       <SectionHeading id="home-destinations-title" eyebrow={content.destinationEyebrow} title={copy.destinationsTitle} text={content.destinationText} href={localPath(locale, "/countries")} linkText={content.sectionLink} />
-      <div className="home-destinations">{countryGuides.map((guide, index) => <Link key={guide.slug} className={`home-destination home-destination--${index + 1}`} href={localPath(locale, `/countries/${guide.slug}`)}>
+      <div className="home-destinations">{countryGuides.slice(0, 3).map((guide, index) => <Link key={guide.slug} className={`home-destination home-destination--${index + 1}`} href={localPath(locale, `/countries/${guide.slug}`)}>
         <span className="home-destination__number">0{index + 1}</span><span className="home-destination__inner"><small>{content.destinationLabel}</small><strong>{guide.title[locale]}</strong><span className="home-destination__arrow"><Arrow locale={locale} /></span></span>
       </Link>)}</div>
     </div></section>

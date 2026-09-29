@@ -12,8 +12,12 @@ main                         Production-ready history
     └── feature/applications
 ```
 
-`main` and `develop` are protected, long-lived branches. Work is performed in short-lived branches
-and merged through pull requests.
+`main` and `develop` are protected, long-lived branches. New areas use short-lived feature branches;
+existing panels continue on their panel branches. Changes reach integration branches through pull requests.
+
+For changes to an existing panel, continue on that panel's branch instead of creating a new feature
+branch for each change. For example, home-page changes use `codex/home-page`. Keep its pull request
+target consistent with the panel's current integration path.
 
 | Branch | Starts from | Pull request target | Purpose |
 |---|---|---|---|
@@ -40,11 +44,11 @@ Commit with a meaningful Conventional Commit message
     ↓
 Push the feature branch
     ↓
-Open a Pull Request to develop
+Open or update a Pull Request to the appropriate integration branch
     ↓
 CI and Code Review
     ↓
-Squash merge and delete the feature branch
+Verify all CI checks are green; the user performs the merge
 ```
 
 Commands for a normal feature:
@@ -97,8 +101,8 @@ Every pull request must:
 6. Receive at least one approval when another reviewer is available.
 7. Update contracts and documentation before changing externally visible behavior.
 
-Feature PRs use squash merge. Release and hotfix PRs may use a merge commit to preserve the release
-boundary. Delete merged short-lived branches.
+The user performs PR merges. Feature PRs use squash merge. Release and hotfix PRs may use a merge
+commit to preserve the release boundary. Delete merged short-lived branches.
 
 ## 5. Main and Release Rules
 

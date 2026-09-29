@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { ButtonLink } from "@/components/ui";
-import { type Locale, siteCopy } from "@/lib/site-content";
+import { headerDestinations, type Locale, siteCopy } from "@/lib/site-content";
 
 export function SiteHeader({ locale }: { locale: Locale }) {
   const copy = siteCopy[locale];
@@ -25,6 +25,16 @@ export function SiteHeader({ locale }: { locale: Locale }) {
   const links = copy.nav.map((item) => {
     const href = `/${locale}${item.href}`;
     const active = pathname === href || (item.href && pathname.startsWith(`${href}/`));
+    if (item.href === "/countries") {
+      const destinations = [...headerDestinations].sort((a, b) => a[locale].localeCompare(b[locale], locale));
+      return <details className="nav-destinations" key={href}>
+        <summary aria-current={active ? "page" : undefined}>{item.label}</summary>
+        <div className="nav-destinations-list" dir={locale === "fa" ? "rtl" : "ltr"}>
+          {destinations.map((destination) => <Link key={destination.slug} href={`/${locale}/countries/${destination.slug}`} onClick={() => setOpen(false)}>{destination[locale]}</Link>)}
+          <Link className="nav-destinations-all" href={href} onClick={() => setOpen(false)}>{copy.browseAll}</Link>
+        </div>
+      </details>;
+    }
     return <Link key={href} href={href} aria-current={active ? "page" : undefined} onClick={() => setOpen(false)}>{item.label}</Link>;
   });
 
