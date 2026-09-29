@@ -1,13 +1,23 @@
-# Jahan Academy working instructions
+# Jahan Academy panel workflow
 
-These instructions apply to every future feature and behavior change in this repository. Follow `GIT_WORKFLOW.md` for commit conventions, review rules, and release policy, subject to the panel-branch exception below.
+This repository uses the fixed chat, panel, branch, and port mapping in `PANEL_WORKFLOW.md`. User instructions take precedence over older branch conventions in `GIT_WORKFLOW.md`.
 
-## One feature at a time
+## Scope and branch
 
-- For work on an existing panel, use that panel's existing branch (for example, `codex/home-page` for home-page changes). Do not create a separate feature branch for each change to that panel. For a new area without an existing panel branch, use a dedicated `feature/<descriptive-slug>` branch.
-- Complete these stages in order for each feature: Requirement → Data/API/Permission Design → Implementation → Unit Tests → Integration Tests → Security & Code Review → Commit → Push & Pull Request → CI Verification. Stop after CI verification; the user performs merges.
-- Document or confirm the requirement and relevant data, API, and authorization decisions before implementation. Record when a stage does not apply and why.
-- Run the relevant unit and integration tests and resolve failures before review or commit. Review security and code quality, including permission boundaries, before committing.
-- Push the panel or feature branch and create or update its pull request against the appropriate integration branch. Verify all required CI checks are green and resolve review findings. Do not merge pull requests on the user's behalf.
-- Do not begin the next feature until the current feature's required tests and CI checks are green. If an external blocker prevents a stage, report the blocker and leave the feature unfinished.
-- For frontend changes, ensure the local development server serves the changed files and verify the result is visible after refreshing localhost. Start or update the local server as needed; report if localhost cannot be verified.
+- Each panel chat owns only its matching panel branch. For this chat: `home-page:3100` → `home-page` → `http://localhost:3100`.
+- At the start of every task, check the current branch, chat/panel name, and assigned port. Stop and report a mismatch before editing.
+- Keep ordinary panel changes on the existing panel branch. Do not create or switch branches for them. Commit only on the matching branch.
+- Change shared code only when genuinely required by the panel. Identify any cross-panel dependency and affected files to the user before changing them; proceed only after explicit instruction. Do not make broad authentication, schema, or architecture changes without explicit instruction.
+- Never merge or rebase a panel branch into `develop` without the user's explicit merge instruction. The user performs feature PR merges.
+
+## Feature cycle
+
+Requirement → Data/API/Permission Design → Implementation → Unit Tests → Integration Tests → Security & Code Review → Commit → Push & Pull Request → CI Verification. Stop after CI verification.
+
+- Record when a design or test stage does not apply and why. Resolve relevant test and CI failures before starting the next feature.
+- For frontend changes, verify the page after a refresh on the panel's assigned localhost port.
+- At the end, report branch, port, changed files, tests, commit hash, and remaining issues. Check that the working tree is clean.
+
+## Develop integration
+
+`develop` is the full-site integration branch and uses port 5000 from its own checkout. Only when the user explicitly says to merge a branch into `develop`, inspect Git status and branch identity, compare with `develop`, run relevant tests, report conflicts or regression risks, obtain the user's instruction to proceed, then merge, verify `http://localhost:5000`, and report the result.
