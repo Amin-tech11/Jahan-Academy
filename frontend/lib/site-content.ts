@@ -64,11 +64,51 @@ export const services = [
   { slug: "document-review", icon: "⌁", title: { fa: "بررسی مدارک", en: "Document review" }, summary: { fa: "شناخت مدارک موردنیاز و آماده‌سازی منظم برای مرحله بعد.", en: "Understand and organize the documents needed for your next step." } },
 ];
 
-export const countryGuides: CountryGuide[] = [
+const featuredCountryGuides: CountryGuide[] = [
   { slug: "canada", title: { fa: "تحصیل در کانادا", en: "Study in Canada" }, summary: { fa: "راهنمایی مقدماتی برای شناخت مسیرهای تحصیل در کانادا و آماده‌سازی گفت‌وگوی مشاوره.", en: "An introductory guide to understanding study pathways in Canada before your consultation." }, facts: { fa: [{ label: "نوع راهنما", value: "آشنایی اولیه" }, { label: "گام بعدی", value: "مشاوره تخصصی" }], en: [{ label: "Guide type", value: "Initial orientation" }, { label: "Next step", value: "Expert consultation" }] }, sections: { fa: [{ title: "از کجا شروع کنیم؟", body: "هدف تحصیلی، زمان اقدام، پیشینه تحصیلی و اولویت‌های شخصی، نقطه شروع یک مسیر دقیق هستند." }, { title: "برای مشاوره چه آماده کنیم؟", body: "اطلاعات پایه درباره آخرین مدرک، وضعیت زبان، بودجه تقریبی و زمان مدنظر، گفت‌وگو را مؤثرتر می‌کند." }], en: [{ title: "Where to begin", body: "Your academic goal, intended timeline, background, and personal priorities form the starting point for a considered path." }, { title: "What to prepare", body: "Basic details about your education, language position, approximate budget, and timing make the consultation more useful." }] } },
   { slug: "germany", title: { fa: "تحصیل در آلمان", en: "Study in Germany" }, summary: { fa: "شناخت اولیه مسیرهای تحصیل در آلمان پیش از دریافت مشاوره.", en: "A first look at studying in Germany before an expert consultation." }, facts: { fa: [{ label: "نوع راهنما", value: "آشنایی اولیه" }], en: [{ label: "Guide type", value: "Initial orientation" }] }, sections: { fa: [{ title: "مسیر مناسب شما", body: "هر مسیر بر اساس سوابق، هدف و زمان‌بندی شما بررسی می‌شود؛ یک پاسخ یکسان برای همه وجود ندارد." }], en: [{ title: "A route that fits you", body: "Each route should be considered against your background, objective, and timeline; there is no one answer for everyone." }] } },
   { slug: "italy", title: { fa: "تحصیل در ایتالیا", en: "Study in Italy" }, summary: { fa: "نقطه شروعی برای آشنایی با تحصیل در ایتالیا و پرسش‌های مهم پیش از اقدام.", en: "A starting point for understanding study in Italy and the questions to bring to a consultation." }, facts: { fa: [{ label: "نوع راهنما", value: "آشنایی اولیه" }], en: [{ label: "Guide type", value: "Initial orientation" }] }, sections: { fa: [{ title: "تصمیم آگاهانه", body: "شرایط فردی و هدف تحصیلی شما مهم‌تر از مقایسه‌های عمومی هستند." }], en: [{ title: "An informed decision", body: "Your own circumstances and academic goals matter more than broad comparisons." }] } },
 ];
+
+const additionalCountries = [
+  { slug: "united-kingdom", fa: "انگلستان", en: "United Kingdom" },
+  { slug: "netherlands", fa: "هلند", en: "Netherlands" },
+  { slug: "sweden", fa: "سوئد", en: "Sweden" },
+  { slug: "finland", fa: "فنلاند", en: "Finland" },
+  { slug: "australia", fa: "استرالیا", en: "Australia" },
+  { slug: "new-zealand", fa: "نیوزلند", en: "New Zealand" },
+  { slug: "denmark", fa: "دانمارک", en: "Denmark" },
+] as const;
+
+export const countryGuides: CountryGuide[] = [...featuredCountryGuides, ...additionalCountries.map(({ slug, fa, en }) => ({
+  slug,
+  title: { fa: `تحصیل در ${fa}`, en: `Study in ${en}` },
+  summary: {
+    fa: `راهنمای مقدماتی برای آشنایی با مسیر تحصیل در ${fa} و آماده‌سازی پرسش‌های مشاوره.`,
+    en: `An introductory guide to studying in ${en} and preparing for a consultation.`,
+  },
+  facts: {
+    fa: [{ label: "نوع راهنما", value: "آشنایی اولیه" }],
+    en: [{ label: "Guide type", value: "Initial orientation" }],
+  },
+  sections: {
+    fa: [{ title: "از کجا شروع کنیم؟", body: "هدف تحصیلی، پیشینه، وضعیت زبان، بودجه و زمان موردنظر خود را برای بررسی مسیر مناسب آماده کنید." }],
+    en: [{ title: "Where to begin", body: "Prepare your academic goals, background, language position, budget, and timeline to discuss a suitable path." }],
+  },
+}))];
+
+export const headerDestinations = [
+  { slug: "germany", fa: "آلمان", en: "Germany" },
+  { slug: "australia", fa: "استرالیا", en: "Australia" },
+  { slug: "united-kingdom", fa: "انگلستان", en: "United Kingdom" },
+  { slug: "italy", fa: "ایتالیا", en: "Italy" },
+  { slug: "denmark", fa: "دانمارک", en: "Denmark" },
+  { slug: "sweden", fa: "سوئد", en: "Sweden" },
+  { slug: "finland", fa: "فنلاند", en: "Finland" },
+  { slug: "canada", fa: "کانادا", en: "Canada" },
+  { slug: "new-zealand", fa: "نیوزلند", en: "New Zealand" },
+  { slug: "netherlands", fa: "هلند", en: "Netherlands" },
+] as const;
 
 export const fixtureUniversities: UniversityShowcase[] = [
   { slug: "university-of-toronto", name: { fa: "دانشگاه تورنتو", en: "University of Toronto" }, summary: { fa: "یک نمونه دانشگاهی برای آشنایی با نحوه ارائه اطلاعات عمومی و معتبر.", en: "A showcase example of approved, high-level university information." }, country: { fa: "کانادا", en: "Canada" }, city: { fa: "تورنتو", en: "Toronto" }, institutionType: { fa: "دانشگاه عمومی", en: "Public university" }, foundedYear: 1827, websiteUrl: "https://www.utoronto.ca/" },
