@@ -7,11 +7,33 @@ import { ButtonLink } from "@/components/ui";
 import { getUniversityShowcases } from "@/lib/public-api";
 import { getHomeContent } from "@/lib/home-content";
 import {
-  articles, faqItems, fixtureUniversities, headerDestinations, services, siteCopy,
+  articles, faqItems, fixtureUniversities, headerDestinations, siteCopy,
   type Locale, type UniversityShowcase,
 } from "@/lib/site-content";
 
 const destinationSlugs = ["united-kingdom", "germany", "italy", "netherlands", "canada"] as const;
+const homeServices = [
+  {
+    id: "language",
+    title: { fa: "پشتیبانی در مسیر یادگیری زبان", en: "Language learning support" },
+    description: { fa: "با عضویت در پلتفرم آموزش زبان انگلیسی Kalum و دریافت کد تخفیف ویژه، در مسیر یادگیری زبان همراهتان هستیم.", en: "Get support for learning English through the Kalum platform and a special discount code." },
+  },
+  {
+    id: "documents",
+    title: { fa: "نگارش و ویرایش مدارک موردنیاز", en: "Application document writing and editing" },
+    description: { fa: "رزومه تحصیلی، انگیزه‌نامه و سایر مدارک موردنیاز پرونده شما را نگارش و ویرایش می‌کنیم.", en: "We write and edit your academic CV, statement of purpose, and other required application documents." },
+  },
+  {
+    id: "options",
+    title: { fa: "پیشنهاد گزینه‌های مناسب", en: "Suitable study options" },
+    description: { fa: "کشور، دانشگاه و رشته‌های مناسب در آلمان، انگلستان، اسپانیا و فنلاند را بررسی و پیشنهاد می‌کنیم.", en: "We review and recommend suitable countries, universities, and programs in Germany, the UK, Spain, and Finland." },
+  },
+  {
+    id: "assessment",
+    title: { fa: "بررسی تخصصی شرایط هر متقاضی", en: "Individual applicant assessment" },
+    description: { fa: "سوابق تحصیلی، سطح زبان، بودجه و اهداف هر دانشجو را بررسی می‌کنیم.", en: "We assess each student's academic background, language level, budget, and goals." },
+  },
+] as const;
 function Arrow({ locale }: { locale: Locale }) {
   return <span aria-hidden="true">{locale === "fa" ? "↖" : "↗"}</span>;
 }
@@ -25,13 +47,14 @@ function SectionHeading({ id, eyebrow, title, text, href, linkText }: {
   </div>;
 }
 
-function ServiceGlyph({ slug }: { slug: string }) {
+function ServiceGlyph({ id }: { id: (typeof homeServices)[number]["id"] }) {
   const paths: Record<string, ReactNode> = {
-    "education-consultation": <><path d="M4 19.5V5.8c2.6-1.4 5.4-1.3 8 0v13.7c-2.6-1.3-5.4-1.4-8 0Z" /><path d="M20 19.5V5.8c-2.6-1.4-5.4-1.3-8 0v13.7c2.6-1.3 5.4-1.4 8 0Z" /></>,
-    "admission-guidance": <><path d="m3 17 5.5-5.5 3.5 3.5 8-8" /><path d="M15 7h5v5" /><path d="M4 21h16" /></>,
-    "document-review": <><path d="M7 3h7l4 4v14H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z" /><path d="M14 3v5h5M9 12h6M9 16h6" /></>,
+    language: <><path d="M12 6.2c-2.7-1.5-5.3-1.5-8-.1v12.3c2.7-1.4 5.3-1.4 8 .1 2.7-1.5 5.3-1.5 8-.1V6.1c-2.7-1.4-5.3-1.4-8 .1Z" /><path d="M12 6.2v12.3" /></>,
+    documents: <><path d="M6 3h8l4 4v6M14 3v4h4M6 3v18h8M9 11h5M9 15h4" /><path d="m15 19 5-5 2 2-5 5-3 .5.5-2.5Z" /></>,
+    options: <><path d="m2 9 10-5 10 5-10 5L2 9Z" /><path d="M6 11v5c3.5 3 8.5 3 12 0v-5M22 9v7" /></>,
+    assessment: <><circle cx="10" cy="7" r="3.5" /><path d="M3 19v-1a7 7 0 0 1 11-5.7" /><circle cx="17.5" cy="16.5" r="3.5" /><path d="m20 19 2.5 2.5" /></>,
   };
-  return <svg width="29" height="29" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[slug]}</svg>;
+  return <svg width="58" height="58" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[id]}</svg>;
 }
 
 function UniversityCard({ university, locale }: { university: UniversityShowcase; locale: Locale }) {
@@ -81,10 +104,10 @@ export async function HomePage({ locale }: { locale: Locale }) {
     </div></section>
 
     <section className="home-section" aria-labelledby="home-services-title"><div className="shell">
-      <SectionHeading id="home-services-title" eyebrow={content.serviceEyebrow} title={copy.servicesTitle} text={content.serviceText} href={localPath(locale, "/services")} linkText={content.sectionLink} />
-      <div className="home-services">{services.map((service, index) => <Link key={service.slug} className="home-service-card" href={localPath(locale, `/services/${service.slug}`)}>
-        <span className="home-service-card__icon"><ServiceGlyph slug={service.slug} /></span><span className="home-service-card__index">0{index + 1}</span><small>{content.serviceLabel}</small><h3>{service.title[locale]}</h3><p>{service.summary[locale]}</p><span className="home-service-card__link">{copy.viewDetails} <Arrow locale={locale} /></span>
-      </Link>)}</div>
+      <h2 id="home-services-title" className="home-destinations__title" dir={locale === "fa" ? "rtl" : "ltr"}><Link href={localPath(locale, "/services")}>{locale === "fa" ? "خدمات موسسه ما" : "Our institute’s services"}<span className="home-destinations__title-arrow" aria-hidden="true">{locale === "fa" ? "←" : "→"}</span></Link></h2>
+      <div className="home-services" dir={locale === "fa" ? "rtl" : "ltr"}>{homeServices.map((service) => <article key={service.id} className="home-service-card">
+        <span className="home-service-card__icon"><ServiceGlyph id={service.id} /></span><h3>{service.title[locale]}</h3><p>{service.description[locale]}</p>
+      </article>)}</div>
     </div></section>
 
     <section className="home-section home-section--tinted" aria-labelledby="home-universities-title"><div className="shell">
