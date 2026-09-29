@@ -71,7 +71,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
     </section>
 
     <section className="home-section home-section--soft" aria-labelledby="home-destinations-title"><div className="shell">
-      <h2 id="home-destinations-title" className="home-destinations__title">{copy.destinationsTitle}</h2>
+      <h2 id="home-destinations-title" className="home-destinations__title" dir={locale === "fa" ? "rtl" : "ltr"}><Link href={localPath(locale, "/countries")}>{copy.destinationsTitle}<span className="home-destinations__title-arrow" aria-hidden="true">{locale === "fa" ? "↖" : "↗"}</span></Link></h2>
       <div className="home-destinations">{destinationSlugs.map((slug, index) => {
         const destination = headerDestinations.find((entry) => entry.slug === slug);
         if (!destination) return null;
@@ -80,7 +80,6 @@ export async function HomePage({ locale }: { locale: Locale }) {
           <span className="home-destination__label"><span className="home-destination__flag"><Image src={`/destinations/flags/${slug}.jpeg`} alt="" width={44} height={44} /></span><strong>{destination[locale]}</strong></span>
         </Link>;
       })}</div>
-      <div className="home-destinations__footer"><Link className="home-destinations__all" href={localPath(locale, "/countries")}>{content.sectionLink} <span aria-hidden="true">{locale === "fa" ? "←" : "→"}</span></Link></div>
     </div></section>
 
     <section className="home-section" aria-labelledby="home-services-title"><div className="shell">
