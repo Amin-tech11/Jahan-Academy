@@ -47,7 +47,7 @@
 .home-universities { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
 .home-service-card { display: flex; flex-direction: column; align-items: center; min-height: 21rem; padding: 1.35rem 1.15rem 1.6rem; border: 1px solid #edf2f8; border-radius: 1rem; background: linear-gradient(145deg, #f8fbfe, #f0f5fb); text-align: center; }
 .home-service-card__icon { display: grid; width: 6.25rem; height: 6.25rem; flex: none; place-items: center; margin-bottom: 1rem; border-radius: 50%; background: #e7effa; color: #073b87; }
-.home-service-card h3 { min-height: 3.8rem; margin: 0 0 .85rem; color: #073b87; font-size: clamp(1.08rem, 1.35vw, 1.35rem); font-weight: 800; line-height: 1.5; }
+.home-service-card h3 { width: 100%; margin: 0 0 .85rem; color: #073b87; font-size: clamp(.72rem, 1.02vw, .92rem); font-weight: 800; line-height: 1.5; text-align: center; white-space: nowrap; }
 .home-service-card p { margin: 0; color: #52627e; font-size: .92rem; line-height: 1.85; }
 .home-university-card { display: flex; flex-direction: column; min-height: 16rem; padding: 1.5rem; border: 1px solid var(--color-border); border-radius: var(--radius-lg); background: #fff; }
 .home-university-card__top { display: flex; align-items: center; gap: .75rem; margin-bottom: 1.2rem; color: var(--color-brand-700); font-size: .77rem; font-weight: 700; }
@@ -119,6 +119,7 @@
   .home-section-heading, .home-process__inner, .home-closing__inner { flex-direction: column; align-items: start; }
   .home-destination { min-height: 13rem; }
   .home-service-card { min-height: 16rem; }
+  .home-service-card h3 { font-size: 1.1rem; }
   .home-article-card { grid-template-columns: 28% 1fr; }
   .home-article-card__media { padding: .8rem; }
   .home-article-card__media span { font-size: 2.8rem; }
