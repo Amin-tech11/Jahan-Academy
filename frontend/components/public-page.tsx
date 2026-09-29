@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import { ConsultationForm } from "@/components/consultation-request-form";
 import { ConsultationButton, localPath, SiteShell } from "@/components/site-shell";
+import { brandContent } from "@/lib/brand-content";
 import { getUniversityShowcase, getUniversityShowcases } from "@/lib/public-api";
 import { articles, countryGuides, faqItems, fixtureUniversities, type Locale, services, siteCopy } from "@/lib/site-content";
 
@@ -42,6 +43,36 @@ function ServicesPage({ locale, slug }: { locale: Locale; slug?: string }) { con
 
 function ContentPage({ locale, type, slug }: { locale: Locale; type: "article" | "news"; slug?: string }) { const dictionary = siteCopy[locale]; const items = articles.filter((item) => item.type === type); const article = slug ? items.find((item) => item.slug === slug) : undefined; if (slug && !article) notFound(); const title = type === "news" ? (locale === "fa" ? "اخبار" : "News") : (locale === "fa" ? "مقالات و راهنماها" : "Articles and guides"); if (article) return <SiteShell locale={locale}><main><Hero eyebrow={`${type === "news" ? "NEWS" : "GUIDE"} · ${article.date}`} title={article.title[locale]} text={article.excerpt[locale]} action={<ConsultationButton locale={locale} source={`${type}:${article.slug}`} />} /><section className="section"><article className="shell prose article-prose"><p>{locale === "fa" ? "این نسخه، ساختار تجربهٔ محتوایی سایت را نمایش می‌دهد. متن نهایی دوزبانه پس از تأیید تیم محتوا و از CMS منتشر خواهد شد." : "This version demonstrates the content experience. Final bilingual copy will be published from the CMS after editorial approval."}</p><h2>{locale === "fa" ? "برای قدم بعدی آماده‌اید؟" : "Ready to start?"}</h2><p>{dictionary.consultationText}</p></article></section><ConversionBand locale={locale} source={`${type}:${article.slug}:footer`} /></main></SiteShell>; return <SiteShell locale={locale}><main><Hero eyebrow="JAHAN ACADEMY" title={title} text={locale === "fa" ? "محتوای روشن برای کمک به شکل‌گیری پرسش‌های درست پیش از مشاوره." : "Clear editorial content to help you ask better questions before a consultation."} action={<ConsultationButton locale={locale} source={type} />} /><Section title={title}><div className="article-grid">{items.map((item) => <ArticleCard key={item.slug} locale={locale} article={item} />)}</div></Section></main></SiteShell>; }
 
-function StaticPage({ locale, page }: { locale: Locale; page: "about" | "contact" | "faq" | "privacy" | "terms" }) { const dictionary = siteCopy[locale]; if (page === "faq") return <SiteShell locale={locale}><main><Hero eyebrow="JAHAN ACADEMY" title={dictionary.faqTitle} text={locale === "fa" ? "پاسخ‌های کوتاه برای شروع یک گفت‌وگوی روشن." : "Short answers to help start a clear conversation."} action={<ConsultationButton locale={locale} source="faq" />} /><Section title={dictionary.faqTitle}><FaqList locale={locale} /></Section></main></SiteShell>; if (page === "contact") return <SiteShell locale={locale}><main><Hero eyebrow="JAHAN ACADEMY" title={locale === "fa" ? "تماس با ما" : "Contact us"} text={locale === "fa" ? "برای شروع، درخواست مشاوره ثبت کنید تا تیم ما با شما در تماس باشد." : "Submit a consultation request to start the conversation with our team."} /><section className="section"><div className="shell form-layout"><aside><p className="eyebrow">CONTACT</p><h2>{locale === "fa" ? "برای شروع گفت‌وگو آماده‌اید؟" : "Ready to start a conversation?"}</h2><p>{dictionary.consultationText}</p></aside><ConsultationForm locale={locale} source="contact" /></div></section></main></SiteShell>; const isLegal = page === "privacy" || page === "terms"; const title = page === "about" ? (locale === "fa" ? "درباره جهان آکادمی" : "About Jahan Academy") : (page === "privacy" ? (locale === "fa" ? "حریم خصوصی" : "Privacy") : (locale === "fa" ? "قوانین استفاده" : "Terms of use")); const text = page === "about" ? (locale === "fa" ? "ما برای ساختن تجربه‌ای حرفه‌ای، انسانی و روشن در مسیر تحصیلی بین‌المللی تلاش می‌کنیم." : "We are building a professional, human, and clear experience for international academic pathways.") : (locale === "fa" ? "نسخه نهایی این صفحه، پس از تأیید حقوقی و انتشار دوزبانه از CMS جایگزین می‌شود." : "The final legal copy will replace this version after bilingual legal approval and CMS publication."); return <SiteShell locale={locale}><main><Hero eyebrow="JAHAN ACADEMY" title={title} text={text} action={!isLegal ? <ConsultationButton locale={locale} source="about" /> : undefined} /><section className="section"><article className="shell prose"><h2>{isLegal ? title : (locale === "fa" ? "رویکرد ما" : "Our approach")}</h2><p>{text}</p>{page === "about" && <><h2>{locale === "fa" ? "همراه با شما" : "With you at every step"}</h2><p>{dictionary.trustText}</p></>}</article></section></main></SiteShell>; }
+function BrandFaqPage({ locale }: { locale: Locale }) {
+  const dictionary = siteCopy[locale];
+  const brand = brandContent[locale];
+  return <SiteShell locale={locale}><main>
+    <Hero eyebrow="JAHAN ACADEMY" title={dictionary.faqTitle} text={brand.faqIntro} action={<ConsultationButton locale={locale} source="faq" />} />
+    <Section title={dictionary.faqTitle}><div className="faq-list">{brand.faqs.map((item) => <details key={item.question}><summary>{item.question}</summary><p>{item.answer}</p></details>)}</div></Section>
+  </main></SiteShell>;
+}
+
+function AboutPage({ locale }: { locale: Locale }) {
+  const brand = brandContent[locale];
+  return <SiteShell locale={locale}><main>
+    <Hero eyebrow="JAHAN ACADEMY" title={locale === "fa" ? "درباره جهان آکادمی" : "About Jahan Academy"} text={brand.intro} action={<ConsultationButton locale={locale} source="about" />} />
+    <Section title={brand.whyTitle}><div className="prose"><p>{brand.whyText}</p></div></Section>
+    <section className="section"><article className="shell prose">
+      <section><h2>{brand.missionTitle}</h2><p>{brand.missionText}</p></section>
+      <section><h2>{brand.visionTitle}</h2><p>{brand.visionText}</p></section>
+    </article></section>
+    <Section title={brand.valuesTitle}><div className="card-grid">{brand.values.map((value) => <article className="card" key={value.title}><h3>{value.title}</h3><p>{value.text}</p></article>)}</div></Section>
+  </main></SiteShell>;
+}
+
+function StaticPage({ locale, page }: { locale: Locale; page: "about" | "contact" | "faq" | "privacy" | "terms" }) {
+  if (page === "about") return <AboutPage locale={locale} />;
+  if (page === "faq") return <BrandFaqPage locale={locale} />;
+  const dictionary = siteCopy[locale];
+  if (page === "contact") return <SiteShell locale={locale}><main><Hero eyebrow="JAHAN ACADEMY" title={locale === "fa" ? "تماس با ما" : "Contact us"} text={locale === "fa" ? "برای شروع، درخواست مشاوره ثبت کنید تا تیم ما با شما در تماس باشد." : "Submit a consultation request to start the conversation with our team."} /><section className="section"><div className="shell form-layout"><aside><p className="eyebrow">CONTACT</p><h2>{locale === "fa" ? "برای شروع گفت‌وگو آماده‌اید؟" : "Ready to start a conversation?"}</h2><p>{dictionary.consultationText}</p></aside><ConsultationForm locale={locale} source="contact" /></div></section></main></SiteShell>;
+  const title = page === "privacy" ? (locale === "fa" ? "حریم خصوصی" : "Privacy") : (locale === "fa" ? "قوانین استفاده" : "Terms of use");
+  const text = locale === "fa" ? "نسخه نهایی این صفحه، پس از تأیید حقوقی و انتشار دوزبانه از CMS جایگزین می‌شود." : "The final legal copy will replace this version after bilingual legal approval and CMS publication.";
+  return <SiteShell locale={locale}><main><Hero eyebrow="JAHAN ACADEMY" title={title} text={text} /><section className="section"><article className="shell prose"><h2>{title}</h2><p>{text}</p></article></section></main></SiteShell>;
+}
 
 export async function RoutedPublicPage({ locale, segments, source }: { locale: Locale; segments: string[]; source: string }) { const [root, slug] = segments; if (root === "consultation" && !slug) return <ConsultationPage locale={locale} source={source} />; if (root === "countries") return <CountriesPage locale={locale} slug={slug} />; if (root === "universities") return <UniversitiesPage locale={locale} slug={slug} />; if (root === "services") return <ServicesPage locale={locale} slug={slug} />; if (root === "articles") return <ContentPage locale={locale} type="article" slug={slug} />; if (root === "news") return <ContentPage locale={locale} type="news" slug={slug} />; if (!slug && ["about", "contact", "faq", "privacy", "terms"].includes(root)) return <StaticPage locale={locale} page={root as "about" | "contact" | "faq" | "privacy" | "terms"} />; notFound(); }
