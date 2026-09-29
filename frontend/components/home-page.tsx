@@ -69,7 +69,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
     </section>
 
     <section className="home-section home-section--soft" aria-labelledby="home-destinations-title"><div className="shell">
-      <h2 id="home-destinations-title" className="home-destinations__title" dir={locale === "fa" ? "rtl" : "ltr"}><Link href={localPath(locale, "/countries")}>{copy.destinationsTitle}<span className="home-destinations__title-arrow" aria-hidden="true">{locale === "fa" ? "↖" : "↗"}</span></Link></h2>
+      <h2 id="home-destinations-title" className="home-destinations__title" dir={locale === "fa" ? "rtl" : "ltr"}><Link href={localPath(locale, "/countries")}>{copy.destinationsTitle}<span className="home-destinations__title-arrow" aria-hidden="true">{locale === "fa" ? "←" : "→"}</span></Link></h2>
       <div className="home-destinations">{destinationSlugs.map((slug, index) => {
         const destination = headerDestinations.find((entry) => entry.slug === slug);
         if (!destination) return null;
