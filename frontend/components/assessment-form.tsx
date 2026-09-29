@@ -60,8 +60,8 @@ export function AssessmentForm({ locale, source }: { locale: Locale; source: str
   const options = (items: [string, string][]) => items.map(([fa, en]) => <option key={en} value={t(locale, fa, en)}>{t(locale, fa, en)}</option>);
   return <form className="assessment-form" onSubmit={submit} aria-label={t(locale, "فرم ارزیابی اولیه", "Initial assessment form")}>
     <div className="assessment-form__grid">
-      <label>{t(locale, "نام و نام خانوادگی", "Full name")}<input name="fullName" autoComplete="name" required maxLength={200} /></label>
-      <label>{t(locale, "شماره موبایل", "Mobile number")}<input name="mobile" type="tel" inputMode="tel" autoComplete="tel" required placeholder={t(locale, "مثال: ۰۹۱۲۱۲۳۴۵۶۷", "e.g. +989121234567")} /></label>
+      <label>{t(locale, "نام و نام خانوادگی *", "Full name *")}<input name="fullName" autoComplete="name" required maxLength={200} /></label>
+      <label>{t(locale, "شماره موبایل *", "Mobile number *")}<input name="mobile" type="tel" inputMode="tel" autoComplete="tel" required placeholder={t(locale, "مثال: ۰۹۱۲۱۲۳۴۵۶۷", "e.g. +989121234567")} /></label>
       <label>{t(locale, "ایمیل", "Email")}<input name="email" type="email" autoComplete="email" placeholder="example@email.com" /></label>
       <label>{t(locale, "سن", "Age")}<input name="age" type="number" inputMode="numeric" min="18" max="100" placeholder={t(locale, "مثال: ۲۵", "e.g. 25")} /></label>
       <label>{t(locale, "شغل", "Occupation")}<input name="occupation" maxLength={120} placeholder={t(locale, "مثال: دانشجو", "e.g. Student")} /></label>
@@ -77,6 +77,6 @@ export function AssessmentForm({ locale, source }: { locale: Locale; source: str
     </div>
     {status === "error" && <p className="form-error" role="alert">{error}</p>}
     <button className="assessment-form__submit" type="submit" disabled={status === "submitting"}>{status === "submitting" ? copy.sending : t(locale, "ثبت درخواست", "Submit request")}</button>
-    <p className="assessment-form__notice">⏰ {t(locale, "کارشناسان ما درخواست شما را در ۷۲ ساعت آینده بررسی خواهند کرد.", "Our team will review your request within 72 hours.")}</p>
+    <p className="assessment-form__notice">{t(locale, "پس از ثبت، کد پیگیری درخواستتان نمایش داده می‌شود.", "A reference code will appear after you submit your request.")}</p>
   </form>;
 }
