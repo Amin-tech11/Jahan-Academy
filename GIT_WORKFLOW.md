@@ -12,8 +12,14 @@ main                         Production-ready history
     └── feature/applications
 ```
 
-`main` and `develop` are protected, long-lived branches. Work is performed in short-lived branches
-and merged through pull requests.
+`main` and `develop` are protected, long-lived branches. Existing panels continue on their assigned
+panel branches. Create a branch for a new area only when the user explicitly requests it. Changes
+reach integration branches through pull requests controlled by the user.
+
+For changes to an existing panel, continue on that panel's branch instead of creating a new feature
+branch for each change. For example, the `home-page:3100` chat uses the `home-page` branch. See
+`PANEL_WORKFLOW.md` for the fixed mapping. Never merge or rebase a panel branch into `develop`
+without the user's explicit instruction.
 
 | Branch | Starts from | Pull request target | Purpose |
 |---|---|---|---|
@@ -30,7 +36,7 @@ code, specifications, migrations, CI, and engineering policy into the existing r
 ## 2. Required Flow
 
 ```text
-Create branch
+Verify the chat's assigned branch (create a branch only on explicit instruction)
     ↓
 Implement the scoped change
     ↓
@@ -40,14 +46,14 @@ Commit with a meaningful Conventional Commit message
     ↓
 Push the feature branch
     ↓
-Open a Pull Request to develop
+Open or update a Pull Request to the appropriate integration branch
     ↓
 CI and Code Review
     ↓
-Squash merge and delete the feature branch
+Verify all CI checks are green; the user performs the merge
 ```
 
-Commands for a normal feature:
+Commands for a user-authorized new feature branch (not for an existing panel chat):
 
 ```powershell
 git switch develop
@@ -89,7 +95,7 @@ dumps, or personal production data.
 
 Every pull request must:
 
-1. Target `develop`, except release/hotfix pull requests.
+1. Use the approved integration target. Do not merge or rebase into `develop` without an explicit user request.
 2. Explain the outcome, scope, tests, migration impact, and security impact.
 3. Link relevant requirement IDs or design documents.
 4. Pass Lint, Unit Tests, Integration Tests, Build, and Security Checks.
@@ -97,8 +103,8 @@ Every pull request must:
 6. Receive at least one approval when another reviewer is available.
 7. Update contracts and documentation before changing externally visible behavior.
 
-Feature PRs use squash merge. Release and hotfix PRs may use a merge commit to preserve the release
-boundary. Delete merged short-lived branches.
+The user performs PR merges. Feature PRs use squash merge. Release and hotfix PRs may use a merge
+commit to preserve the release boundary. Delete merged short-lived branches.
 
 ## 5. Main and Release Rules
 

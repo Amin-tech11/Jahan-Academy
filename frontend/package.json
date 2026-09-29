@@ -8,11 +8,18 @@
   },
   "scripts": {
     "dev": "next dev",
+    "dev:home": "node scripts/dev-panel.mjs home-page",
+    "dev:dashboard": "node scripts/dev-panel.mjs dashboard",
+    "dev:users": "node scripts/dev-panel.mjs users",
+    "dev:orders": "node scripts/dev-panel.mjs orders",
+    "dev:develop": "node scripts/dev-panel.mjs develop",
     "build": "next build",
     "start": "next start",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "node --test tests/*.test.mjs"
   },
   "dependencies": {
+    "@fontsource-variable/vazirmatn": "^5.3.0",
     "next": "16.3.6",
     "react": "19.3.0",
     "react-dom": "19.3.0"
