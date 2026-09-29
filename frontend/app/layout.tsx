@@ -6,6 +6,7 @@ import "@fontsource-variable/vazirmatn";
 import "./globals.css";
 import "./foundation.css";
 import "./consultation.css";
+import "./home.css";
 
 export const metadata: Metadata = {
   title: "Jahan Academy",
