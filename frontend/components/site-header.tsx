@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -40,8 +41,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
 
   return <header className="site-header"><div className="shell header-inner">
     <Link className="brand" href={`/${locale}`} aria-label={locale === "fa" ? "جهان آکادمی، صفحه اصلی" : "Jahan Academy, home"}>
-      <span className="brand-mark" aria-hidden="true" />
-      <span><strong>JAHAN</strong><small>ACADEMY · {copy.brandTagline}</small></span>
+      <span className="brand-image"><Image src="/jahan-logo.png" alt="" fill sizes="104px" priority /></span>
     </Link>
     <nav className="main-nav" aria-label={locale === "fa" ? "ناوبری اصلی" : "Main navigation"}>{links}</nav>
     <div className="header-actions">
