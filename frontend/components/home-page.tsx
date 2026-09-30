@@ -65,7 +65,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
 
   return <SiteShell locale={locale}><main className="home-page">
     <div className={`home-hero home-hero--${locale}`} aria-hidden="true">
-      <Image src="/home-hero-compact.png" alt="" fill sizes="100vw" preload className="home-hero__image" />
+      <Image src="/home-hero-campus-v2.png" alt="" fill sizes="100vw" preload className="home-hero__image" />
       <div className="home-hero__shade" />
     </div>
 
