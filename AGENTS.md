@@ -4,7 +4,7 @@ This repository uses the fixed chat, panel, branch, and port mapping in `PANEL_W
 
 ## Scope and branch
 
-- Each panel chat owns only its matching panel branch. For this chat: `home-page:3100` → `home-page` → `http://localhost:3100`.
+- Each panel chat owns only its matching panel branch. For this chat: `service-page:3300` → `service-page` → `http://localhost:3300`.
 - At the start of every task, check the current branch, chat/panel name, and assigned port. Stop and report a mismatch before editing.
 - Keep ordinary panel changes on the existing panel branch. Do not create or switch branches for them. Commit only on the matching branch.
 - Change shared code only when genuinely required by the panel. Identify any cross-panel dependency and affected files to the user before changing them; proceed only after explicit instruction. Do not make broad authentication, schema, or architecture changes without explicit instruction.
