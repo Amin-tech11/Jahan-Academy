@@ -99,9 +99,14 @@ export async function HomePage({ locale }: { locale: Locale }) {
       <p className="home-universities__note">{content.universityNote}</p>
     </div></section>
 
-    <section className="home-section home-trust" aria-labelledby="home-trust-title"><div className="shell home-trust__grid">
-      <div className="home-trust__intro"><p className="home-eyebrow">{content.trustEyebrow}</p><h2 id="home-trust-title">{brand.whyTitle}</h2><p>{brand.whyText}</p><ConsultationButton locale={locale} source="home-trust" /></div>
-      <div className="home-trust__values">{content.trustValues.map((value) => <div key={value.number}><span>{value.number}</span><div><h3>{value.title}</h3><p>{value.text}</p></div></div>)}</div>
+    <section className="home-section home-trust" aria-labelledby="home-trust-title"><div className="shell home-trust__inner">
+      <div className="home-trust__header">
+        <div className="home-trust__intro"><h2 id="home-trust-title">{brand.whyTitle}</h2><p>{brand.whyText}</p></div>
+        <ConsultationButton locale={locale} source="home-trust" />
+      </div>
+      <ul className="home-trust__values">{content.trustValues.map((value) => <li className="home-trust__value" key={value.number}>
+        <span className="home-trust__number" aria-hidden="true">{value.number}</span><h3>{value.title}</h3><p>{value.text}</p>
+      </li>)}</ul>
     </div></section>
 
     <section className="home-process"><div className="shell home-process__inner"><div><p className="home-eyebrow">{content.processEyebrow}</p><h2>{content.processTitle}</h2><p>{content.processText}</p></div><Link href={localPath(locale, "/about")}>{locale === "fa" ? "درباره رویکرد ما" : "About our approach"} <Arrow locale={locale} /></Link></div></section>

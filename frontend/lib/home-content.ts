@@ -12,7 +12,6 @@ export type HomeCopy = {
   universityEyebrow: string;
   universityText: string;
   universityNote: string;
-  trustEyebrow: string;
   trustValues: Array<{ number: string; title: string; text: string }>;
   processEyebrow: string;
   processTitle: string;
@@ -47,7 +46,6 @@ export const homeContent: Localized<HomeCopy> = {
     universityEyebrow: "UNIVERSITY SHOWCASES / دانشگاه‌ها",
     universityText: "معرفی‌های کوتاه و عمومی برای آشنایی اولیه با چند دانشگاه؛ بررسی گزینهٔ مناسب در مشاوره انجام می‌شود.",
     universityNote: "نمایش این دانشگاه‌ها به معنی همکاری یا تضمین پذیرش نیست.",
-    trustEyebrow: "WHY JAHAN / چرا جهان آکادمی",
     trustValues: [
       { number: "01", title: "شفافیت و صداقت", text: "گزینه‌ها و محدودیت‌ها را روشن و بدون وعدهٔ اضافه بیان می‌کنیم." },
       { number: "02", title: "تخصص با نگاه انسانی", text: "هدف و شرایط هر فرد را می‌شنویم و پیشنهادها را بر پایهٔ بررسی دقیق شکل می‌دهیم." },
@@ -84,7 +82,6 @@ export const homeContent: Localized<HomeCopy> = {
     universityEyebrow: "UNIVERSITY SHOWCASES",
     universityText: "Concise public introductions to selected universities. We discuss individual fit during consultation.",
     universityNote: "A university appearing here does not imply partnership or guarantee admission.",
-    trustEyebrow: "WHY JAHAN ACADEMY",
     trustValues: [
       { number: "01", title: "Honesty and clarity", text: "We explain options and constraints openly, without making excessive promises." },
       { number: "02", title: "Expertise with a human view", text: "We listen to each person's goals and circumstances, then shape suggestions through careful review." },
