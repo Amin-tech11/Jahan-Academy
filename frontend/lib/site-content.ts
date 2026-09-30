@@ -33,7 +33,7 @@ export const siteCopy: Localized<{
   fa: {
     brandTagline: "تحصیل، رشد، تعلق",
     nav: [{ href: "/countries", label: "مقصدها" }, { href: "/services", label: "خدمات" }, { href: "/universities", label: "دانشگاه‌ها" }, { href: "/articles", label: "مقالات" }, { href: "/about", label: "درباره ما" }],
-      consultation: "درخواست مشاوره رایگان", heroEyebrow: "برای قدم بعدی آماده‌اید؟",
+      consultation: "تکمیل فرم ارزیابی", heroEyebrow: "برای قدم بعدی آماده‌اید؟",
       heroTitle: "فراتر از مرز ها\nبه سوی آینده ای روشن",
       heroText: "برای تحقق رؤیاهای تحصیلی‌تان، از نخستین گام تا انتخاب مسیر مناسب، با مشاوره‌ای تخصصی همراه و پشتیبان شما خواهیم بود.",
     explore: "مشاهده مقصدها", trustTitle: "شفاف، همراه و متعهد به مسیر شما",
@@ -46,7 +46,7 @@ export const siteCopy: Localized<{
   en: {
     brandTagline: "Study · Grow · Belong",
     nav: [{ href: "/countries", label: "Destinations" }, { href: "/services", label: "Services" }, { href: "/universities", label: "Universities" }, { href: "/articles", label: "Articles" }, { href: "/about", label: "About" }],
-      consultation: "Request a free consultation", heroEyebrow: "Ready for your next step?",
+      consultation: "Complete assessment form", heroEyebrow: "Ready for your next step?",
       heroTitle: "Beyond borders\nToward a brighter future",
       heroText: "To help you pursue your academic aspirations, we will stand beside you with expert guidance from the first step to choosing the right path.",
     explore: "Explore destinations", trustTitle: "Clear guidance, thoughtful support",
