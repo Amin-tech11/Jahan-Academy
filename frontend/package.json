@@ -12,6 +12,7 @@
     "dev:dashboard": "node scripts/dev-panel.mjs dashboard",
     "dev:users": "node scripts/dev-panel.mjs users",
     "dev:orders": "node scripts/dev-panel.mjs orders",
+    "dev:universities": "node scripts/dev-panel.mjs universities-page",
     "dev:develop": "node scripts/dev-panel.mjs develop",
     "build": "next build",
     "start": "next start",

@@ -7,6 +7,7 @@ const mapping = {
   dashboard: 3101,
   users: 3102,
   orders: 3103,
+  "universities-page": 3400,
   develop: 5000,
 };
 
