@@ -3,13 +3,12 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { ConsultationButton, localPath, SiteShell } from "@/components/site-shell";
-import { ButtonLink } from "@/components/ui";
 import { brandContent } from "@/lib/brand-content";
-import { getUniversityShowcases } from "@/lib/public-api";
 import { getHomeContent } from "@/lib/home-content";
+import { HomeUniversityShowcase } from "@/components/home-university-showcase";
 import {
-  articles, fixtureUniversities, headerDestinations, siteCopy,
-  type Locale, type UniversityShowcase,
+  articles, headerDestinations, siteCopy,
+  type Locale,
 } from "@/lib/site-content";
 
 const destinationSlugs = ["united-kingdom", "germany", "italy", "netherlands", "canada"] as const;
@@ -58,35 +57,17 @@ function ServiceGlyph({ id }: { id: (typeof homeServices)[number]["id"] }) {
   return <svg width="58" height="58" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[id]}</svg>;
 }
 
-function UniversityCard({ university, locale }: { university: UniversityShowcase; locale: Locale }) {
-  const location = [university.city?.[locale], university.country[locale]].filter(Boolean).join("، ");
-  return <article className="home-university-card">
-    <div className="home-university-card__top"><span className="home-university-card__mark" aria-hidden="true">{university.name.en.slice(0, 1)}</span><span>{university.country[locale]}</span></div>
-    <h3>{university.name[locale]}</h3>
-    <p className="home-university-card__location">{location}</p>
-    <p>{university.summary[locale]}</p>
-    <Link href={localPath(locale, `/universities/${university.slug}`)}>{siteCopy[locale].viewDetails} <Arrow locale={locale} /></Link>
-  </article>;
-}
-
 export async function HomePage({ locale }: { locale: Locale }) {
   const copy = siteCopy[locale];
   const content = getHomeContent(locale);
   const brand = brandContent[locale];
-  const publicUniversities = await getUniversityShowcases(locale);
-  const universities = (publicUniversities.length ? publicUniversities : fixtureUniversities).slice(0, 3);
   const visibleArticles = articles.filter((article) => article.type === "article").slice(0, 2);
 
   return <SiteShell locale={locale}><main className="home-page">
-    <section className={`home-hero home-hero--${locale}`} aria-labelledby="home-title">
-      <Image src="/home-hero-compact.png" alt="" fill sizes="100vw" preload className="home-hero__image" />
-      <div className="home-hero__shade" aria-hidden="true" />
-      <div className="shell home-hero__content">
-        <div className="home-hero__copy" dir={locale === "fa" ? "rtl" : "ltr"}>
-          <div className="home-hero__actions"><ButtonLink variant="ghost" href={localPath(locale, "/services")}>{content.heroServiceLink} <span aria-hidden="true">{locale === "fa" ? "←" : "→"}</span></ButtonLink><ConsultationButton locale={locale} source="home-hero" /></div>
-        </div>
-      </div>
-    </section>
+    <div className={`home-hero home-hero--${locale}`} aria-hidden="true">
+      <Image src="/home-hero-campus-v2.png" alt="" fill sizes="100vw" preload className="home-hero__image" />
+      <div className="home-hero__shade" />
+    </div>
 
     <section className="home-start shell" aria-labelledby="home-start-title">
       <div className="home-start__lead"><p className="home-eyebrow">START HERE</p><h2 id="home-start-title">{content.startTitle}</h2><p>{content.startText}</p></div>
@@ -100,7 +81,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
         if (!destination) return null;
         return <Link key={slug} className="home-destination" href={localPath(locale, `/countries/${slug}`)}>
           <Image src={`/destinations/${slug}.png`} alt="" fill sizes={index < 2 ? "(max-width: 600px) 100vw, (max-width: 800px) 50vw, 50vw" : "(max-width: 600px) 100vw, (max-width: 800px) 50vw, 33vw"} className="home-destination__image" />
-          <span className="home-destination__label"><span className="home-destination__flag"><Image src={`/destinations/flags/${slug}.jpeg`} alt="" width={44} height={44} /></span><strong>{destination[locale]}</strong></span>
+          <span className="home-destination__label"><span className="home-destination__flag"><Image src={`/destinations/flags/${slug}.svg`} alt="" width={44} height={44} /></span><strong>{destination[locale]}</strong></span>
         </Link>;
       })}</div>
     </div></section>
@@ -113,8 +94,8 @@ export async function HomePage({ locale }: { locale: Locale }) {
     </div></section>
 
     <section className="home-section home-section--tinted" aria-labelledby="home-universities-title"><div className="shell">
-      <SectionHeading id="home-universities-title" eyebrow={content.universityEyebrow} title={copy.universitiesTitle} text={content.universityText} href={localPath(locale, "/universities")} linkText={content.sectionLink} />
-      <div className="home-universities">{universities.map((university) => <UniversityCard key={university.slug} university={university} locale={locale} />)}</div>
+      <h2 id="home-universities-title" className="home-destinations__title" dir={locale === "fa" ? "rtl" : "ltr"}><Link href={localPath(locale, "/universities")}>{copy.universitiesTitle}<span className="home-destinations__title-arrow" aria-hidden="true">{locale === "fa" ? "←" : "→"}</span></Link></h2>
+      <HomeUniversityShowcase locale={locale} />
       <p className="home-universities__note">{content.universityNote}</p>
     </div></section>
 

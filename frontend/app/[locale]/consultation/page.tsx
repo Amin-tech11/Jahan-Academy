@@ -42,7 +42,7 @@ export default async function ConsultationPage({ params, searchParams }: PagePro
         <div className="assessment-page__privacy-note"><span aria-hidden="true">✳</span><p>{fa ? "اطلاعات شما فقط برای بررسی همین درخواست و تماس درباره آن استفاده می‌شود." : "Your information is used only to review and follow up on this request."}</p></div>
       </aside>
       <section className="assessment-page__form-card" id="consultation-form" aria-label={fa ? "فرم ارزیابی اولیه" : "Initial assessment form"}>
-        <div className="assessment-page__form-heading"><span className="assessment-page__section-kicker">{fa ? "ارزیابی اولیه" : "INITIAL ASSESSMENT"}</span><h2>{fa ? "کمی درباره خودتان بگویید" : "Tell us about yourself"}</h2><p>{fa ? "تکمیل تمامی فیلدهای این فرم برای ثبت درخواست ارزیابی الزامی است." : "All fields in this form must be completed before submitting your assessment request."}</p></div>
+        <div className="assessment-page__form-heading"><span className="assessment-page__section-kicker">{fa ? "ارزیابی اولیه" : "INITIAL ASSESSMENT"}</span><h2>{fa ? "دوست داریم کمی از شرایطتان بدانیم" : "Tell us about yourself"}</h2><p>{fa ? "تکمیل تمامی فیلدهای این فرم برای ثبت درخواست ارزیابی الزامی است." : "All fields in this form must be completed before submitting your assessment request."}</p></div>
         <AssessmentForm locale={locale} source={pageUrl} />
       </section>
     </div>

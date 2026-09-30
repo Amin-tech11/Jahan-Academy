@@ -4,16 +4,7 @@
 .home-hero { position: relative; isolation: isolate; overflow: hidden; width: 100%; min-height: clamp(20rem, 28vw, 28rem); color: #fff; background: #112c40; }
 .home-hero__image { z-index: -2; object-fit: cover; object-position: center 45%; }
 .home-hero__shade { position: absolute; z-index: -1; inset: 0; background: linear-gradient(90deg, rgb(3 22 35 / 72%) 0%, rgb(3 22 35 / 29%) 42%, rgb(3 22 35 / 16%) 67%, rgb(3 22 35 / 63%) 100%), linear-gradient(0deg, rgb(3 22 35 / 46%), transparent 42%); }
-.home-hero__content { display: flex; direction: ltr; align-items: center; min-height: inherit; padding-block: 2.5rem 3.5rem; }
 .home-hero--fa .home-hero__image, .home-hero--fa .home-hero__shade { transform: scaleX(-1); }
-.home-hero--fa .home-hero__content { direction: rtl; }
-.home-hero__copy { width: fit-content; max-width: 100%; text-align: start; }
-.home-hero h1 { margin: 0; color: #fff; font-family: inherit; font-size: clamp(2.2rem, 3.5vw, 3.25rem); font-weight: 800; line-height: 1.32; letter-spacing: -.025em; white-space: pre-line; text-shadow: 0 2px 18px rgb(0 0 0 / 12%); }
-.home-hero__description { max-width: 24rem; margin: 1rem 0 0; color: #f3f7f9; font-size: clamp(.9rem, 1.15vw, 1rem); line-height: 1.85; }
-.home-hero__actions { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; margin-top: 1rem; }
-.home-hero__actions .ui-button--primary { background: #0a5bc3; color: #fff; }
-.home-hero__actions .ui-button--primary:hover { background: #084b9e; }
-.home-hero__actions .ui-button--ghost { color: #fff; }
 .home-start { position: relative; z-index: 2; display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.5fr); gap: 1.25rem; align-items: center; margin-top: -1.1rem; padding: 1.25rem 1.5rem; border: 1px solid var(--color-border); border-radius: var(--radius-lg); background: #fff; box-shadow: var(--shadow-card); }
 .home-start__lead h2 { margin: 0; color: var(--color-brand-950); font-size: clamp(1.2rem, 1.7vw, 1.55rem); line-height: 1.35; }
 .home-start__lead > p:last-child { margin: .45rem 0 0; color: var(--color-muted); font-size: .82rem; line-height: 1.7; }
@@ -44,16 +35,28 @@
 .home-destination__flag img { width: 100%; height: 100%; object-fit: cover; }
 .home-destination:focus-visible { outline-offset: 4px; }
 .home-services { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .9rem; }
-.home-universities { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+.home-universities__filters { display: flex; flex-wrap: wrap; justify-content: center; gap: .65rem; margin: 0 0 2rem; }
+.home-universities__country { display: inline-flex; align-items: center; gap: .55rem; padding: .35rem .9rem .35rem .4rem; border: 1px solid #cbdcf5; border-radius: 2rem; background: #fff; color: #173a67; font: inherit; font-weight: 700; cursor: pointer; transition: background .18s ease, color .18s ease, border-color .18s ease; }
+.home-universities__country:hover { border-color: #0a5bc3; color: #0a5bc3; }
+.home-universities__country[aria-pressed="true"] { border-color: #0a5bc3; background: #0a5bc3; color: #fff; }
+.home-universities__country:focus-visible { outline: 2px solid #0a5bc3; outline-offset: 3px; }
+.home-universities__country img { width: 2rem; height: 2rem; border-radius: 50%; object-fit: cover; background: #fff; }
+.home-universities { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; }
 .home-service-card { display: flex; flex-direction: column; align-items: center; min-height: 21rem; padding: 1.35rem 1.15rem 1.6rem; border: 1px solid #edf2f8; border-radius: 1rem; background: linear-gradient(145deg, #f8fbfe, #f0f5fb); text-align: center; }
 .home-service-card__icon { display: grid; width: 6.25rem; height: 6.25rem; flex: none; place-items: center; margin-bottom: 1rem; border-radius: 50%; background: #e7effa; color: #073b87; }
 .home-service-card h3 { width: 100%; margin: 0 0 .85rem; color: #073b87; font-size: clamp(.72rem, 1.02vw, .92rem); font-weight: 800; line-height: 1.5; text-align: center; white-space: nowrap; }
 .home-service-card p { margin: 0; color: #52627e; font-size: .92rem; line-height: 1.85; }
-.home-university-card { display: flex; flex-direction: column; min-height: 16rem; padding: 1.5rem; border: 1px solid var(--color-border); border-radius: var(--radius-lg); background: #fff; }
-.home-university-card__top { display: flex; align-items: center; gap: .75rem; margin-bottom: 1.2rem; color: var(--color-brand-700); font-size: .77rem; font-weight: 700; }
-.home-university-card__mark { display: grid; width: 2.8rem; height: 2.8rem; place-items: center; border-radius: .7rem; color: #fff; background: var(--color-brand-900); font-family: Georgia, serif; font-size: 1.3rem; }
-.home-university-card__location { margin: 0 0 .7rem; color: var(--color-brand-700); font-size: .82rem; }
-.home-university-card > a { display: inline-flex; align-items: center; gap: .5rem; margin-top: auto; padding-top: 1.35rem; color: var(--color-brand-900); font-size: .85rem; font-weight: 750; }
+.home-university-card { min-width: 0; overflow: hidden; border: 1px solid #d4deee; border-radius: 1.2rem; background: #fff; }
+.home-university-card__media { position: relative; height: clamp(12rem, 17vw, 14rem); overflow: hidden; background: #e6eef7; }
+.home-university-card__media img { object-fit: cover; }
+.home-university-card__body { padding: 1.15rem 1.2rem 1.5rem; text-align: start; }
+.home-university-card__mark { display: grid; width: 3rem; height: 3rem; place-items: center; margin: 0 auto 1.1rem 0; padding: .35rem; overflow: hidden; border: 1px solid #cbdcf5; border-radius: 50%; color: #113c82; background: #fff; font-family: Georgia, serif; font-size: 1.25rem; font-weight: 700; }
+.home-university-card__mark--dark { background: #25386b; border-color: #25386b; }
+.home-university-card__mark img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.home-university-card h3 { margin: 0 0 .35rem; color: #172a48; font-size: 1.2rem; line-height: 1.45; }
+.home-university-card h3, .home-university-card__location { text-align: left; }
+.home-university-card__location { margin: 0 0 .85rem; color: #5275ae; font-size: .85rem; }
+.home-university-card__summary { margin: 0; color: #344763; font-size: .9rem; line-height: 1.8; }
 .home-universities__note { margin: 1.1rem 0 0; color: var(--color-muted); font-size: .75rem; }
 .home-trust__grid { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); gap: clamp(2rem, 6vw, 6rem); align-items: center; }
 .home-trust__intro .ui-button { margin-top: 1.6rem; }
