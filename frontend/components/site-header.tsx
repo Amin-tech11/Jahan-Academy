@@ -31,7 +31,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
       return <details className="nav-destinations" key={href}>
         <summary aria-current={active ? "page" : undefined}>{item.label}</summary>
         <div className="nav-destinations-list" dir={locale === "fa" ? "rtl" : "ltr"}>
-          {destinations.map((destination) => <Link key={destination.slug} href={`/${locale}/countries/${destination.slug}`} onClick={() => setOpen(false)}><span className="nav-destination-flag" aria-hidden="true"><Image src={`/destinations/flags/${destination.slug}.svg`} alt="" width={28} height={28} style={{ objectFit: destination.slug === "canada" ? "contain" : "cover" }} /></span><span>{destination[locale]}</span></Link>)}
+          {destinations.map((destination) => <Link key={destination.slug} href={`/${locale}/countries/${destination.slug}`} onClick={() => setOpen(false)}><span className="nav-destination-flag" aria-hidden="true"><Image src={`/destinations/flags/${destination.slug}.svg`} alt="" width={28} height={28} /></span><span>{destination[locale]}</span></Link>)}
           <Link className="nav-destinations-all" href={href} onClick={() => setOpen(false)}>{copy.browseAll}</Link>
         </div>
       </details>;
