@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { localPath, SiteShell } from "@/components/site-shell";
+import { ServicesNavigation } from "@/components/services-navigation";
 import { isLocale, type Locale } from "@/lib/site-content";
 
 import "../../services.css";
@@ -16,22 +17,22 @@ const content = {
     detailsLabel: "جزئیات خدمت",
     services: [
       {
-        id: "assessment", number: "01", short: "بررسی شرایط", title: "بررسی تخصصی شرایط هر متقاضی",
+        id: "assessment", short: "بررسی شرایط", title: "بررسی تخصصی شرایط هر متقاضی",
         description: "مسیر تحصیلی با شناخت شما آغاز می‌شود. سوابق تحصیلی، سطح زبان، بودجه و هدف‌های شما را کنار هم می‌گذاریم تا نقطه شروع روشن باشد.",
         points: ["سوابق و مقطع تحصیلی", "سطح زبان و زمان‌بندی", "بودجه و هدف دانشجو"], symbol: "◎",
       },
       {
-        id: "options", number: "02", short: "پیشنهاد گزینه‌ها", title: "پیشنهاد گزینه‌های مناسب",
+        id: "options", short: "پیشنهاد گزینه‌ها", title: "پیشنهاد گزینه‌های مناسب",
         description: "بر پایه شرایط و اولویت‌ها، کشور، دانشگاه و رشته‌های مرتبط را بررسی می‌کنیم؛ از جمله گزینه‌های تحصیل در آلمان، انگلستان، اسپانیا و فنلاند.",
         points: ["بررسی کشور و دانشگاه", "تناسب رشته با هدف", "مقایسه گزینه‌های قابل بررسی"], symbol: "↗",
       },
       {
-        id: "documents", number: "03", short: "آماده‌سازی مدارک", title: "نگارش و ویرایش مدارک موردنیاز",
+        id: "documents", short: "آماده‌سازی مدارک", title: "نگارش و ویرایش مدارک موردنیاز",
         description: "برای آماده شدن پرونده، در تنظیم و بازبینی رزومه تحصیلی، انگیزه‌نامه و دیگر مدارک موردنیاز همراهتان هستیم.",
         points: ["رزومه تحصیلی", "انگیزه‌نامه", "بازبینی مدارک پرونده"], symbol: "✎",
       },
       {
-        id: "language", number: "04", short: "پشتیبانی زبان", title: "پشتیبانی در مسیر یادگیری زبان",
+        id: "language", short: "پشتیبانی زبان", title: "پشتیبانی در مسیر یادگیری زبان",
         description: "زبان بخشی از برنامه تحصیلی شماست. درباره مسیر یادگیری و امکان استفاده از پلتفرم آموزش انگلیسی Kalum و شرایط تخفیف ویژه راهنمایی می‌کنیم.",
         points: ["بررسی نیاز زبانی", "برنامه‌ریزی برای یادگیری", "آشنایی با Kalum"], symbol: "Aa",
       },
@@ -50,22 +51,22 @@ const content = {
     detailsLabel: "Service details",
     services: [
       {
-        id: "assessment", number: "01", short: "Your profile", title: "A thoughtful review of your profile",
+        id: "assessment", short: "Your profile", title: "A thoughtful review of your profile",
         description: "Your academic path starts with understanding you. We look at your education, language level, budget, and goals together to establish a clear starting point.",
         points: ["Academic background", "Language level and timeline", "Budget and goals"], symbol: "◎",
       },
       {
-        id: "options", number: "02", short: "Suitable options", title: "Options suited to your goals",
+        id: "options", short: "Suitable options", title: "Options suited to your goals",
         description: "Based on your priorities, we explore relevant countries, universities, and programs, including options in Germany, the UK, Spain, and Finland.",
         points: ["Country and university review", "Program fit", "Comparable options"], symbol: "↗",
       },
       {
-        id: "documents", number: "03", short: "Documents", title: "Writing and reviewing documents",
+        id: "documents", short: "Documents", title: "Writing and reviewing documents",
         description: "We help you prepare and review your academic CV, statement of purpose, and other documents needed for your application.",
         points: ["Academic CV", "Statement of purpose", "Application document review"], symbol: "✎",
       },
       {
-        id: "language", number: "04", short: "Language support", title: "Support for your language journey",
+        id: "language", short: "Language support", title: "Support for your language journey",
         description: "Language learning belongs in your study plan. We can discuss your learning path and access to the Kalum English learning platform, including any available discount terms.",
         points: ["Language needs", "Learning plan", "Introducing Kalum"], symbol: "Aa",
       },
@@ -100,18 +101,15 @@ export default async function ServicesPage({ params }: PageProps) {
       <section className="services-intro" aria-labelledby="services-title">
         <div className="services-container">
           <h1 id="services-title">{copy.title}</h1>
-          <nav className="services-navigation" aria-label={copy.jumpLabel}>
-            {copy.services.map((service) => <a key={service.id} href={`#${service.id}`}>{service.short}</a>)}
-          </nav>
+          <ServicesNavigation label={copy.jumpLabel} services={copy.services.map(({ id, short }) => ({ id, label: short }))} />
         </div>
       </section>
 
       <div className="services-list" aria-label={copy.detailsLabel}>
         {copy.services.map((service) => <section className="services-feature" id={service.id} key={service.id} aria-labelledby={`${service.id}-title`}>
           <div className="services-container services-feature__grid">
-            <div className="services-feature__art" aria-hidden="true"><span className="services-feature__art-ring" /><span className="services-feature__art-symbol">{service.symbol}</span><span className="services-feature__art-number">{service.number} / 04</span></div>
+            <div className="services-feature__art" aria-hidden="true"><span className="services-feature__art-ring" /><span className="services-feature__art-symbol">{service.symbol}</span></div>
             <div className="services-feature__copy">
-              <span className="services-feature__number">{service.number} / 04</span>
               <h2 id={`${service.id}-title`}>{service.title}</h2>
               <p>{service.description}</p>
               <ul>{service.points.map((point) => <li key={point}>{point}</li>)}</ul>
