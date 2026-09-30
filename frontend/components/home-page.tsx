@@ -81,7 +81,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
         if (!destination) return null;
         return <Link key={slug} className="home-destination" href={localPath(locale, `/countries/${slug}`)}>
           <Image src={`/destinations/${slug}.png`} alt="" fill sizes={index < 2 ? "(max-width: 600px) 100vw, (max-width: 800px) 50vw, 50vw" : "(max-width: 600px) 100vw, (max-width: 800px) 50vw, 33vw"} className="home-destination__image" />
-          <span className="home-destination__label"><span className="home-destination__flag"><Image src={`/destinations/flags/${slug}.svg`} alt="" width={44} height={44} /></span><strong>{destination[locale]}</strong></span>
+          <span className="home-destination__label"><span className="home-destination__flag"><Image src={`/destinations/flags/${slug}.svg`} alt="" width={44} height={44} style={{ objectFit: slug === "canada" ? "contain" : "cover" }} /></span><strong>{destination[locale]}</strong></span>
         </Link>;
       })}</div>
     </div></section>

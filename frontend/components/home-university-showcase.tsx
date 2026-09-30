@@ -28,7 +28,7 @@ export function HomeUniversityShowcase({ locale }: { locale: Locale }) {
   return <>
     <div className="home-universities__filters" role="group" aria-label={locale === "fa" ? "انتخاب کشور دانشگاه‌ها" : "Choose a university country"} dir={locale === "fa" ? "rtl" : "ltr"}>
       {countries.map((country) => <button key={country.slug} type="button" className="home-universities__country" aria-pressed={activeCountry === country.slug} onClick={() => setActiveCountry(country.slug)}>
-        <Image src={`/destinations/flags/${country.slug}.svg`} alt="" width={32} height={32} />
+        <Image src={`/destinations/flags/${country.slug}.svg`} alt="" width={32} height={32} style={{ objectFit: country.slug === "canada" ? "contain" : "cover" }} />
         <span>{country[locale]}</span>
       </button>)}
     </div>
