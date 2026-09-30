@@ -17,6 +17,7 @@ const homeUniversities = [
     slug: "dalhousie-university",
     name: "Dalhousie University",
     monogram: "D",
+    logo: "/universities/dalhousie-logo.jpg",
     image: "/universities/dalhousie.jpg",
     location: { fa: "هلیفکس، نوا اسکوشیا، کانادا", en: "Halifax, Nova Scotia, Canada" },
     summary: {
@@ -96,12 +97,11 @@ function UniversityCard({ university, locale }: { university: (typeof homeUniver
   return <article className="home-university-card">
     <div className="home-university-card__media">
       <Image src={university.image} alt={locale === "fa" ? `محوطهٔ ${university.name}` : `${university.name} campus`} fill sizes="(max-width: 600px) 100vw, (max-width: 800px) 50vw, 33vw" />
-      <span className="home-university-card__badge"><span aria-hidden="true" />{locale === "fa" ? "منتخب" : "Featured"}</span>
     </div>
     <div className="home-university-card__body" dir={locale === "fa" ? "rtl" : "ltr"}>
-      <span className={`home-university-card__mark home-university-card__mark--${university.slug}`} aria-hidden="true">{university.monogram}</span>
-      <h3><bdi>{university.name}</bdi></h3>
-      <p className="home-university-card__location">{university.location[locale]}</p>
+      <span className={`home-university-card__mark home-university-card__mark--${university.slug}`} aria-hidden="true">{"logo" in university ? <Image src={university.logo} alt="" width={44} height={44} /> : university.monogram}</span>
+      <h3 dir="ltr">{university.name}</h3>
+      <p className="home-university-card__location" dir="ltr">{university.location[locale]}</p>
       <p className="home-university-card__summary">{university.summary[locale]}</p>
     </div>
   </article>;

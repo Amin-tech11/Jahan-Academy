@@ -55,13 +55,13 @@
 .home-university-card { min-width: 0; overflow: hidden; border: 1px solid #d4deee; border-radius: 1.2rem; background: #fff; }
 .home-university-card__media { position: relative; height: clamp(12rem, 17vw, 14rem); overflow: hidden; background: #e6eef7; }
 .home-university-card__media img { object-fit: cover; }
-.home-university-card__badge { position: absolute; top: 1rem; left: 1rem; display: inline-flex; align-items: center; gap: .5rem; padding: .4rem .75rem; border-radius: 2rem; background: #eaf3ff; color: #1f579e; font-size: .75rem; font-weight: 750; }
-.home-university-card__badge span { width: .45rem; height: .45rem; border-radius: 50%; background: #2776ea; }
 .home-university-card__body { padding: 1.15rem 1.2rem 1.5rem; text-align: start; }
 .home-university-card__mark { display: grid; width: 3rem; height: 3rem; place-items: center; margin-bottom: 1.1rem; border: 1px solid #cbdcf5; border-radius: 50%; color: #113c82; background: #fff; font-family: Georgia, serif; font-size: 1.25rem; font-weight: 700; }
+.home-university-card__mark img { width: 100%; height: 100%; border-radius: 50%; object-fit: contain; }
 .home-university-card__mark--laval-university { color: #ae172e; }
 .home-university-card__mark--mcgill-university { color: #d71920; }
 .home-university-card h3 { margin: 0 0 .35rem; color: #172a48; font-size: 1.2rem; line-height: 1.45; }
+.home-university-card h3, .home-university-card__location { text-align: left; }
 .home-university-card__location { margin: 0 0 .85rem; color: #5275ae; font-size: .85rem; }
 .home-university-card__summary { margin: 0; color: #344763; font-size: .9rem; line-height: 1.8; }
 .home-universities__note { margin: 1.1rem 0 0; color: var(--color-muted); font-size: .75rem; }
