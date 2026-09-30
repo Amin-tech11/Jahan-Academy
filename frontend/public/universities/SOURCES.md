@@ -8,11 +8,11 @@ The campus images in this folder are resized copies of public-domain/CC0 photos 
 
 Card summaries and locations are based on [Dalhousie](https://www.dal.ca/about.html), [Université Laval](https://www.ulaval.ca/en/about-us/universite-laval-at-a-glance), and [McGill](https://www.mcgill.ca/about/) official university pages.
 
-`dalhousie-logo.jpg` was supplied by the user for use on the Dalhousie card.
+`dalhousie-logo.png` is the [official vertical full-colour logo](https://www.dal.ca/about/our-story/dal-brand.html) distributed by Dalhousie University.
 
 ## Additional university cards
 
-Campus photographs and Wikipedia/Wikimedia logo files added for the nine further countries are credited below. The nine supplied logos for Cardiff, Durham, Imperial, Chalmers, KTH, Karolinska, Massey, Auckland, and Otago were provided by the user. The Laval and McGill shields come from [Laval](https://en.wikipedia.org/wiki/File:Ulaval_Shield.svg) and [McGill](https://en.wikipedia.org/wiki/File:McGill_University_CoA.svg) on Wikipedia.
+Campus photographs and Wikipedia/Wikimedia logo files added for the nine further countries are credited below. The Cardiff, Durham, Imperial, Chalmers, KTH, Karolinska, Massey, Auckland, and Otago badges use the vector sources listed below. The Laval and McGill shields come from [Laval](https://en.wikipedia.org/wiki/File:Ulaval_Shield.svg) and [McGill](https://en.wikipedia.org/wiki/File:McGill_University_CoA.svg) on Wikipedia.
 
 The location and short descriptions follow the linked universities' own overview pages and their Wikipedia entries. Adelaide University's merger and 2026 opening were checked against [Adelaide University's transition material](https://www.adelaide.edu.au/publications/ua/media/513/2024-university-of-adelaide-annual-report.pdf). These cards are introductory descriptions, not admissions guidance.
 - `braunschweig-university-of-technology.jpg` — [Wikimedia Commons: Hochschulforum Braunschweig Panorama.jpg](https://commons.wikimedia.org/wiki/File%3AHochschulforum_Braunschweig_Panorama.jpg), CC BY-SA 4.0, Adler35.
@@ -60,3 +60,15 @@ The location and short descriptions follow the linked universities' own overview
 - `delft-university-of-technology-logo.svg` — [Wikipedia file: Delft University of Technology logo.svg](https://en.wikipedia.org/wiki/File%3ADelft_University_of_Technology_logo.svg).
 - `eindhoven-university-of-technology-logo.svg` — [Wikipedia file: Eindhoven University of Technology logo new.svg](https://commons.wikimedia.org/wiki/File%3AEindhoven_University_of_Technology_logo_new.svg).
 - `erasmus-university-rotterdam-logo.png` — [Wikipedia file: Erasmus University Rotterdam Stacked logo (Colour).png](https://commons.wikimedia.org/wiki/File%3AErasmus_University_Rotterdam_Stacked_logo_(Colour).png).
+
+## Vector badges for Canada, United Kingdom, Sweden, and New Zealand
+
+- `cardiff-university-logo.svg` — [Cardiff University logo](https://commons.wikimedia.org/wiki/File:Cardiff_University_(logo).svg).
+- `durham-university-logo.svg` — [Durham University arms](https://commons.wikimedia.org/wiki/File:University_of_Durham_arms.svg).
+- `imperial-college-london-logo.svg` — [Imperial College London shield](https://commons.wikimedia.org/wiki/File:Shield_of_Imperial_College_London.svg).
+- `chalmers-university-of-technology-logo.svg` — [Chalmers official emblem](https://www.chalmers.se/en/); the white emblem is displayed on a dark badge.
+- `kth-royal-institute-of-technology-logo.svg` — [KTH official blue logo](https://app.kth.se/style/en/components/logotype).
+- `karolinska-institute-logo.svg` — [Karolinska Institutet logo](https://fr.wikipedia.org/wiki/Fichier:Institut_Karolinska_(logo).svg).
+- `massey-university-logo.svg` — [Massey University coat of arms](https://commons.wikimedia.org/wiki/File:Coat_of_Arms_of_Massey_University.svg).
+- `the-university-of-auckland-logo.svg` — [University of Auckland coat of arms](https://commons.wikimedia.org/wiki/File:Coat_of_arms_of_the_University_of_Auckland.svg).
+- `university-of-otago-logo.svg` — [University of Otago arms](https://commons.wikimedia.org/wiki/File:Arms_of_the_University_of_Otago.svg).
