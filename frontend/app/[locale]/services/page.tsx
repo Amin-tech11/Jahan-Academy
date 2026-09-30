@@ -12,7 +12,6 @@ type PageProps = { params: Promise<{ locale: string }> };
 const content = {
   fa: {
     title: "خدمات جهان آکادمی",
-    intro: "از بررسی شرایط فردی تا آماده‌سازی پرونده و برنامه‌ریزی زبان، هر گام را متناسب با هدف تحصیلی شما پیش می‌بریم.",
     jumpLabel: "فهرست خدمات",
     detailsLabel: "جزئیات خدمت",
     services: [
@@ -47,7 +46,6 @@ const content = {
   },
   en: {
     title: "Jahan Academy services",
-    intro: "From understanding your circumstances to preparing your application and language plan, we shape each step around your academic goals.",
     jumpLabel: "Explore services",
     detailsLabel: "Service details",
     services: [
@@ -101,11 +99,9 @@ export default async function ServicesPage({ params }: PageProps) {
 
       <section className="services-intro" aria-labelledby="services-title">
         <div className="services-container">
-          <p className="services-kicker">JAHAN ACADEMY / SERVICES</p>
           <h1 id="services-title">{copy.title}</h1>
-          <p className="services-intro__text">{copy.intro}</p>
           <nav className="services-navigation" aria-label={copy.jumpLabel}>
-            {copy.services.map((service) => <a key={service.id} href={`#${service.id}`}><span>{service.number}</span>{service.short}</a>)}
+            {copy.services.map((service) => <a key={service.id} href={`#${service.id}`}>{service.short}</a>)}
           </nav>
         </div>
       </section>
