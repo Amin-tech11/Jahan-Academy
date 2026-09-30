@@ -42,10 +42,6 @@ const content = {
         image: "/services/language-support.png", imageAlt: "جلسه پشتیبانی و برنامه‌ریزی یادگیری زبان",
       },
     ],
-    partnerKicker: "برای همکاران",
-    partnerTitle: "همکاری با مؤسسات و آژانس‌های مسافرتی",
-    partnerText: "اگر با متقاضیان تحصیل در خارج از کشور در ارتباط هستید، اطلاعات اولیه پرونده را با تیم جهان آکادمی در میان بگذارید تا درباره شیوه همکاری و خدمات متناسب با هر پرونده گفت‌وگو کنیم.",
-    partnerNote: "جزئیات همکاری و هزینه خدمات پس از بررسی هر پرونده اعلام می‌شود.",
     ctaTitle: "مسیر تحصیلی شما از یک گفت‌وگوی دقیق شروع می‌شود.",
     ctaText: "شرایط و هدف خود را با ما در میان بگذارید تا گام بعدی را با هم بررسی کنیم.",
     cta: "شروع گفت‌وگو",
@@ -80,10 +76,6 @@ const content = {
         image: "/services/language-support.png", imageAlt: "A personalized language support session",
       },
     ],
-    partnerKicker: "For partners",
-    partnerTitle: "Working with institutions and travel agencies",
-    partnerText: "If you work with prospective international students, share the initial case details with Jahan Academy so we can discuss the right service and partnership approach.",
-    partnerNote: "Partnership terms and service fees are discussed after each case is reviewed.",
     ctaTitle: "A considered academic path begins with a conversation.",
     ctaText: "Tell us about your goals and circumstances, and we can discuss the next step together.",
     cta: "Start a conversation",
@@ -128,13 +120,6 @@ export default async function ServicesPage({ params }: PageProps) {
           </div>
         </section>)}
       </div>
-
-      <section className="services-partners" aria-labelledby="services-partners-title">
-        <div className="services-container services-partners__grid">
-          <div><p className="services-kicker">{copy.partnerKicker}</p><h2 id="services-partners-title">{copy.partnerTitle}</h2></div>
-          <div><p>{copy.partnerText}</p><small>{copy.partnerNote}</small></div>
-        </div>
-      </section>
 
       <section className="services-cta" aria-labelledby="services-cta-title">
         <div className="services-container services-cta__inner"><div><h2 id="services-cta-title">{copy.ctaTitle}</h2><p>{copy.ctaText}</p></div><Link href={`${localPath(locale, "/consultation")}?source=services`} className="services-cta__link">{copy.cta}<span aria-hidden="true">↗</span></Link></div>
