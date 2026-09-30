@@ -8,6 +8,8 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     UV_NO_CACHE=1 \
     HOME=/app
 WORKDIR /app
+# Refresh Debian security packages so the runtime image includes patched system libraries.
+RUN apt-get update && apt-get upgrade -y && rm -rf /var/lib/apt/lists/*
 RUN addgroup --system jahan && adduser --system --ingroup jahan jahan
 COPY --from=uv /uv /uvx /bin/
 COPY backend/pyproject.toml backend/uv.lock ./

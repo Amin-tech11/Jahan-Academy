@@ -3,7 +3,6 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { ConsultationButton, localPath, SiteShell } from "@/components/site-shell";
-import { ButtonLink } from "@/components/ui";
 import { brandContent } from "@/lib/brand-content";
 import { getHomeContent } from "@/lib/home-content";
 import { HomeUniversityShowcase } from "@/components/home-university-showcase";
@@ -65,15 +64,10 @@ export async function HomePage({ locale }: { locale: Locale }) {
   const visibleArticles = articles.filter((article) => article.type === "article").slice(0, 2);
 
   return <SiteShell locale={locale}><main className="home-page">
-    <section className={`home-hero home-hero--${locale}`} aria-labelledby="home-title">
+    <div className={`home-hero home-hero--${locale}`} aria-hidden="true">
       <Image src="/home-hero-compact.png" alt="" fill sizes="100vw" preload className="home-hero__image" />
-      <div className="home-hero__shade" aria-hidden="true" />
-      <div className="shell home-hero__content">
-        <div className="home-hero__copy" dir={locale === "fa" ? "rtl" : "ltr"}>
-          <div className="home-hero__actions"><ButtonLink variant="ghost" href={localPath(locale, "/services")}>{content.heroServiceLink} <span aria-hidden="true">{locale === "fa" ? "←" : "→"}</span></ButtonLink><ConsultationButton locale={locale} source="home-hero" /></div>
-        </div>
-      </div>
-    </section>
+      <div className="home-hero__shade" />
+    </div>
 
     <section className="home-start shell" aria-labelledby="home-start-title">
       <div className="home-start__lead"><p className="home-eyebrow">START HERE</p><h2 id="home-start-title">{content.startTitle}</h2><p>{content.startText}</p></div>
