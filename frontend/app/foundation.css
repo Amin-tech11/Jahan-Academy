@@ -75,7 +75,9 @@ button, input, select, textarea { font: inherit; }
 .nav-destinations summary::after { content: ""; width: .4rem; height: .4rem; border-inline-end: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(45deg) translateY(-2px); }
 .nav-destinations summary[aria-current="page"] { color: var(--color-brand-900); text-decoration: underline; text-underline-offset: .45rem; }
 .nav-destinations-list { display: grid; min-width: 11rem; max-height: min(70vh, 30rem); overflow-y: auto; padding: .45rem; background: #fff; border: 1px solid var(--color-border); border-radius: var(--radius-sm); box-shadow: var(--shadow-card); text-align: start; }
-.nav-destinations-list a { display: block; padding: .55rem .75rem; border-radius: .35rem; white-space: nowrap; text-align: start; }
+.nav-destinations-list a { display: flex; align-items: center; gap: .6rem; padding: .55rem .75rem; border-radius: .35rem; white-space: nowrap; text-align: start; }
+.nav-destination-flag { position: relative; display: block; width: 1.45rem; height: 1.45rem; flex: none; overflow: hidden; border: 1px solid rgb(15 39 73 / 12%); border-radius: 50%; background: #fff; }
+.nav-destination-flag img { width: 100%; height: 100%; object-fit: cover; }
 .nav-destinations-list a:hover, .nav-destinations-list a:focus-visible { background: var(--color-brand-100); }
 .nav-destinations-all { border-top: 1px solid var(--color-border); margin-top: .25rem; }
 .main-nav .nav-destinations-list { position: absolute; top: calc(100% + .75rem); inset-inline-start: 0; z-index: 50; }
