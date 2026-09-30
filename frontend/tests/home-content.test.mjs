@@ -29,7 +29,7 @@ test("hero remains full width and mirrors the artwork in Persian", () => {
   const component = readFileSync(new URL("../components/home-page.tsx", import.meta.url), "utf8");
   const css = readFileSync(new URL("../app/home.css", import.meta.url), "utf8");
   assert.match(component, /home-hero--\$\{locale\}/);
-  assert.match(component, /src="\/home-hero-compact\.png"/);
+  assert.match(component, /src="\/home-hero-campus-v2\.png"/);
   assert.match(css, /\.home-hero \{[^}]*width: 100%/);
   assert.match(css, /\.home-hero \{[^}]*min-height: clamp\(20rem, 28vw, 28rem\)/);
   assert.match(css, /\.home-hero--fa \.home-hero__image, \.home-hero--fa \.home-hero__shade \{ transform: scaleX\(-1\); \}/);
