@@ -44,8 +44,11 @@
 .home-destination__flag img { width: 100%; height: 100%; object-fit: cover; }
 .home-destination:focus-visible { outline-offset: 4px; }
 .home-services { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .9rem; }
-.home-universities__filters { display: flex; justify-content: center; margin: 0 0 2rem; }
-.home-universities__country { display: inline-flex; align-items: center; gap: .55rem; padding: .35rem .9rem .35rem .4rem; border: 1px solid #0a5bc3; border-radius: 2rem; background: #0a5bc3; color: #fff; font-weight: 700; }
+.home-universities__filters { display: flex; flex-wrap: wrap; justify-content: center; gap: .65rem; margin: 0 0 2rem; }
+.home-universities__country { display: inline-flex; align-items: center; gap: .55rem; padding: .35rem .9rem .35rem .4rem; border: 1px solid #cbdcf5; border-radius: 2rem; background: #fff; color: #173a67; font: inherit; font-weight: 700; cursor: pointer; transition: background .18s ease, color .18s ease, border-color .18s ease; }
+.home-universities__country:hover { border-color: #0a5bc3; color: #0a5bc3; }
+.home-universities__country[aria-pressed="true"] { border-color: #0a5bc3; background: #0a5bc3; color: #fff; }
+.home-universities__country:focus-visible { outline: 2px solid #0a5bc3; outline-offset: 3px; }
 .home-universities__country img { width: 2rem; height: 2rem; border-radius: 50%; object-fit: cover; background: #fff; }
 .home-universities { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; }
 .home-service-card { display: flex; flex-direction: column; align-items: center; min-height: 21rem; padding: 1.35rem 1.15rem 1.6rem; border: 1px solid #edf2f8; border-radius: 1rem; background: linear-gradient(145deg, #f8fbfe, #f0f5fb); text-align: center; }
@@ -58,8 +61,6 @@
 .home-university-card__body { padding: 1.15rem 1.2rem 1.5rem; text-align: start; }
 .home-university-card__mark { display: grid; width: 3rem; height: 3rem; place-items: center; margin-bottom: 1.1rem; border: 1px solid #cbdcf5; border-radius: 50%; color: #113c82; background: #fff; font-family: Georgia, serif; font-size: 1.25rem; font-weight: 700; }
 .home-university-card__mark img { width: 100%; height: 100%; border-radius: 50%; object-fit: contain; }
-.home-university-card__mark--laval-university { color: #ae172e; }
-.home-university-card__mark--mcgill-university { color: #d71920; }
 .home-university-card h3 { margin: 0 0 .35rem; color: #172a48; font-size: 1.2rem; line-height: 1.45; }
 .home-university-card h3, .home-university-card__location { text-align: left; }
 .home-university-card__location { margin: 0 0 .85rem; color: #5275ae; font-size: .85rem; }

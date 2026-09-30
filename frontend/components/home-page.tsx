@@ -6,48 +6,13 @@ import { ConsultationButton, localPath, SiteShell } from "@/components/site-shel
 import { ButtonLink } from "@/components/ui";
 import { brandContent } from "@/lib/brand-content";
 import { getHomeContent } from "@/lib/home-content";
+import { HomeUniversityShowcase } from "@/components/home-university-showcase";
 import {
   articles, headerDestinations, siteCopy,
   type Locale,
 } from "@/lib/site-content";
 
 const destinationSlugs = ["united-kingdom", "germany", "italy", "netherlands", "canada"] as const;
-const homeUniversities = [
-  {
-    slug: "dalhousie-university",
-    name: "Dalhousie University",
-    monogram: "D",
-    logo: "/universities/dalhousie-logo.jpg",
-    image: "/universities/dalhousie.jpg",
-    location: { fa: "هلیفکس، نوا اسکوشیا، کانادا", en: "Halifax, Nova Scotia, Canada" },
-    summary: {
-      fa: "دانشگاه دالهاوزی از سال ۱۸۱۸ در هلیفکس فعالیت می‌کند و آموزش را با پژوهش اثرگذار و مسئولیت اجتماعی پیوند می‌دهد.",
-      en: "Founded in Halifax in 1818, Dalhousie combines meaningful teaching, high-impact research, and social responsibility.",
-    },
-  },
-  {
-    slug: "laval-university",
-    name: "Laval University",
-    monogram: "L",
-    image: "/universities/laval.jpg",
-    location: { fa: "شهر کبک، کبک، کانادا", en: "Québec City, Québec, Canada" },
-    summary: {
-      fa: "دانشگاه لاوال در شهر کبک، یک دانشگاه بزرگ فرانسوی‌زبان با ۱۷ دانشکده و فرصت‌های گستردهٔ آموزش و پژوهش است.",
-      en: "Located in Québec City, Université Laval is a major French-language university with 17 faculties and a broad range of study and research opportunities.",
-    },
-  },
-  {
-    slug: "mcgill-university",
-    name: "McGill University",
-    monogram: "M",
-    image: "/universities/mcgill.jpg",
-    location: { fa: "مونترآل، کبک، کانادا", en: "Montréal, Québec, Canada" },
-    summary: {
-      fa: "دانشگاه مک‌گیل در مونترآل از سال ۱۸۲۱ فعالیت دارد و به آموزش و پژوهش بین‌المللی در رشته‌های گوناگون شناخته می‌شود.",
-      en: "Founded in 1821 in Montréal, McGill is known internationally for its teaching and research across many fields.",
-    },
-  },
-] as const;
 const homeServices = [
   {
     id: "language",
@@ -93,20 +58,6 @@ function ServiceGlyph({ id }: { id: (typeof homeServices)[number]["id"] }) {
   return <svg width="58" height="58" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[id]}</svg>;
 }
 
-function UniversityCard({ university, locale }: { university: (typeof homeUniversities)[number]; locale: Locale }) {
-  return <article className="home-university-card">
-    <div className="home-university-card__media">
-      <Image src={university.image} alt={locale === "fa" ? `محوطهٔ ${university.name}` : `${university.name} campus`} fill sizes="(max-width: 600px) 100vw, (max-width: 800px) 50vw, 33vw" />
-    </div>
-    <div className="home-university-card__body" dir={locale === "fa" ? "rtl" : "ltr"}>
-      <span className={`home-university-card__mark home-university-card__mark--${university.slug}`} aria-hidden="true">{"logo" in university ? <Image src={university.logo} alt="" width={44} height={44} /> : university.monogram}</span>
-      <h3 dir="ltr">{university.name}</h3>
-      <p className="home-university-card__location" dir="ltr">{university.location[locale]}</p>
-      <p className="home-university-card__summary">{university.summary[locale]}</p>
-    </div>
-  </article>;
-}
-
 export async function HomePage({ locale }: { locale: Locale }) {
   const copy = siteCopy[locale];
   const content = getHomeContent(locale);
@@ -150,8 +101,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
 
     <section className="home-section home-section--tinted" aria-labelledby="home-universities-title"><div className="shell">
       <h2 id="home-universities-title" className="home-destinations__title" dir={locale === "fa" ? "rtl" : "ltr"}><Link href={localPath(locale, "/universities")}>{copy.universitiesTitle}<span className="home-destinations__title-arrow" aria-hidden="true">{locale === "fa" ? "←" : "→"}</span></Link></h2>
-      <div className="home-universities__filters" dir={locale === "fa" ? "rtl" : "ltr"}><span className="home-universities__country"><Image src="/destinations/flags/canada.jpeg" alt="" width={32} height={32} />{locale === "fa" ? "کانادا" : "Canada"}</span></div>
-      <div className="home-universities" dir={locale === "fa" ? "rtl" : "ltr"}>{homeUniversities.map((university) => <UniversityCard key={university.slug} university={university} locale={locale} />)}</div>
+      <HomeUniversityShowcase locale={locale} />
       <p className="home-universities__note">{content.universityNote}</p>
     </div></section>
 
