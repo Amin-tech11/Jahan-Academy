@@ -4,7 +4,7 @@
 .services-hero { position: relative; display: grid; min-height: clamp(24rem, 28.4vw, 34rem); overflow: hidden; place-items: center; isolation: isolate; background: #1b303d url('/services-hero.png') center 48% / cover no-repeat; }
 .services-hero::after { position: absolute; inset: 0; z-index: -1; content: ''; background: linear-gradient(90deg, rgba(10, 29, 42, .32), rgba(7, 24, 36, .57) 50%, rgba(10, 29, 42, .32)); }
 .services-hero__brand { padding: 1rem; color: #fff; font-family: Arial, sans-serif; font-size: clamp(2rem, 2.84vw, 3.4rem); font-weight: 400; letter-spacing: .27em; line-height: 1.15; text-align: center; text-shadow: 0 3px 22px rgba(2, 15, 24, .65); direction: ltr; }
-.services-intro { position: sticky; top: 78px; z-index: 30; padding: 1rem 0 0; border-bottom: 1px solid #e9eef1; background: #fff; text-align: center; }
+.services-intro { position: sticky; top: 78px; z-index: 30; padding: 1rem 0 0; background: #fff; text-align: center; }
 .services-kicker { margin: 0; color: #a17c48; font-size: .78rem; font-weight: 800; letter-spacing: .16em; }
 .services-intro h1 { margin: 0; color: #213b58; font-size: clamp(1.5rem, 2.6vw, 2.1rem); line-height: 1.35; }
 .services-navigation { display: flex; width: min(100%, 940px); margin: .65rem auto 0; padding: .45rem 1.25rem; align-items: center; border: 1px solid #e6e9ed; border-radius: 999px; background: #fff; box-shadow: 0 3px 8px rgba(25, 44, 61, .17); overflow-x: auto; scrollbar-width: none; }
