@@ -21,7 +21,7 @@ export const homeUniversities: HomeUniversity[] = [
       "en": "Dalhousie is a research university in Halifax offering study across a broad range of disciplines."
     },
     "image": "/universities/dalhousie.jpg",
-    "logo": "/universities/dalhousie-logo.jpg"
+    "logo": "/universities/dalhousie-logo.png"
   },
   {
     "country": "canada",
@@ -201,7 +201,7 @@ export const homeUniversities: HomeUniversity[] = [
       "en": "Cardiff University is a research university in the Welsh capital with a broad range of subjects."
     },
     "image": "/universities/cardiff-university.jpg",
-    "logo": "/universities/cardiff-university-logo.png"
+    "logo": "/universities/cardiff-university-logo.svg"
   },
   {
     "country": "united-kingdom",
@@ -213,7 +213,7 @@ export const homeUniversities: HomeUniversity[] = [
       "en": "Durham is a collegiate research university in the historic city of Durham."
     },
     "image": "/universities/durham-university.jpg",
-    "logo": "/universities/durham-university-logo.png"
+    "logo": "/universities/durham-university-logo.svg"
   },
   {
     "country": "united-kingdom",
@@ -225,7 +225,7 @@ export const homeUniversities: HomeUniversity[] = [
       "en": "Imperial College London focuses on science, engineering, medicine, and business."
     },
     "image": "/universities/imperial-college-london.jpg",
-    "logo": "/universities/imperial-college-london-logo.png"
+    "logo": "/universities/imperial-college-london-logo.svg"
   },
   {
     "country": "finland",
@@ -309,7 +309,7 @@ export const homeUniversities: HomeUniversity[] = [
       "en": "Massey University has campuses in Palmerston North, Auckland, and Wellington."
     },
     "image": "/universities/massey-university.jpg",
-    "logo": "/universities/massey-university-logo.png"
+    "logo": "/universities/massey-university-logo.svg"
   },
   {
     "country": "new-zealand",
@@ -321,7 +321,7 @@ export const homeUniversities: HomeUniversity[] = [
       "en": "The University of Auckland is a broad research university in New Zealand's largest city."
     },
     "image": "/universities/the-university-of-auckland.jpg",
-    "logo": "/universities/the-university-of-auckland-logo.png"
+    "logo": "/universities/the-university-of-auckland-logo.svg"
   },
   {
     "country": "new-zealand",
@@ -333,7 +333,7 @@ export const homeUniversities: HomeUniversity[] = [
       "en": "Based in Dunedin, the University of Otago offers study and research across health, sciences, humanities, and more."
     },
     "image": "/universities/university-of-otago.jpg",
-    "logo": "/universities/university-of-otago-logo.png"
+    "logo": "/universities/university-of-otago-logo.svg"
   },
   {
     "country": "sweden",
@@ -345,7 +345,7 @@ export const homeUniversities: HomeUniversity[] = [
       "en": "Chalmers is a Gothenburg university focused on engineering, science, and applied research."
     },
     "image": "/universities/chalmers-university-of-technology.jpg",
-    "logo": "/universities/chalmers-university-of-technology-logo.png"
+    "logo": "/universities/chalmers-university-of-technology-logo.svg"
   },
   {
     "country": "sweden",
@@ -357,7 +357,7 @@ export const homeUniversities: HomeUniversity[] = [
       "en": "KTH is a Stockholm-based university for engineering and technology."
     },
     "image": "/universities/kth-royal-institute-of-technology.jpg",
-    "logo": "/universities/kth-royal-institute-of-technology-logo.png"
+    "logo": "/universities/kth-royal-institute-of-technology-logo.svg"
   },
   {
     "country": "sweden",
@@ -369,6 +369,6 @@ export const homeUniversities: HomeUniversity[] = [
       "en": "Karolinska Institutet specializes in medical and health sciences education and research."
     },
     "image": "/universities/karolinska-institute.jpg",
-    "logo": "/universities/karolinska-institute-logo.png"
+    "logo": "/universities/karolinska-institute-logo.svg"
   }
 ];

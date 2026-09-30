@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { test } from "node:test";
 
 import { homeUniversities } from "../lib/home-universities.ts";
@@ -27,4 +27,12 @@ test("Adelaide card identifies the new merged university", () => {
   const adelaide = homeUniversities.find(({ slug }) => slug === "adelaide-university");
   assert.ok(adelaide);
   assert.match(adelaide.summary.en, /University of Adelaide.*University of South Australia/);
+});
+
+test("every destination has a local vector flag", () => {
+  for (const { slug } of headerDestinations) {
+    const flag = new URL(`../public/destinations/flags/${slug}.svg`, import.meta.url);
+    assert.ok(existsSync(flag), `Missing vector flag: ${slug}`);
+    assert.match(readFileSync(flag, "utf8"), /<svg\b/);
+  }
 });
