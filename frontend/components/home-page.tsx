@@ -68,9 +68,18 @@ export async function HomePage({ locale }: { locale: Locale }) {
       <div className="home-hero__shade" />
     </div>
 
-    <section className="home-start shell" aria-labelledby="home-start-title">
-      <div className="home-start__lead"><p className="home-eyebrow">START HERE</p><h2 id="home-start-title">{content.startTitle}</h2><p>{content.startText}</p></div>
-      <ol className="home-start__steps">{content.steps.map((step) => <li key={step.number}><span>{step.number}</span><div><strong>{step.title}</strong><p>{step.text}</p></div></li>)}</ol>
+    <section className="home-start shell" aria-label={locale === "fa" ? "شروع مسیر با جهان آکادمی" : "Start your journey with Jahan Academy"}>
+      <ul className="home-start__features">
+        {[
+          { path: "M4 15a8 8 0 1 1 4 4l-5 2 1-6Z M8 11h.01 M12 11h.01 M16 11h.01", fa: ["مشاوره تخصصی", "بررسی اهداف و شرایط شما در گفت‌وگو با مشاور"], en: ["Expert consultation", "Discuss your goals and circumstances with an advisor"] },
+          { path: "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z M16 8l-2 6-6 2 2-6 6-2Z", fa: ["بررسی مسیر تحصیلی", "انتخاب دانشگاه و رشته متناسب با شرایط شما"], en: ["Your study pathway", "Explore universities and programs suited to your profile"] },
+          { path: "M6 3h8l4 4v14H6V3Z M14 3v4h4 M9 11h6 M9 15h6 M9 18h4", fa: ["راهنمای مدارک", "چک‌لیست، نگارش و بررسی مدارک پذیرش و ویزا"], en: ["Document guidance", "Checklists, writing and review for admission and visa documents"] },
+          { path: "M12 4a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z M6 21v-2a6 6 0 0 1 12 0v2H6Z M5 6a2.5 2.5 0 0 0 0 5 M19 6a2.5 2.5 0 0 1 0 5 M2 18v-1a5 5 0 0 1 4-5 M22 18v-1a5 5 0 0 0-4-5", fa: ["همراهی تا دریافت نتیجه", "پیگیری پرونده در مراحل پذیرش و درخواست ویزا"], en: ["Support through the outcome", "Follow-up throughout admission and the visa application"] },
+        ].map((feature) => <li key={feature.en[0]}>
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.65" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={feature.path} /></svg>
+          <h2>{feature[locale][0]}</h2><p>{feature[locale][1]}</p>
+        </li>)}
+      </ul>
     </section>
 
     <section className="home-section home-section--soft" aria-labelledby="home-destinations-title"><div className="shell">
