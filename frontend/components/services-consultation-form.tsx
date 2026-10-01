@@ -12,7 +12,6 @@ export function ServicesConsultationForm({ locale }: { locale: Locale }) {
   const id = useId();
   const fa = locale === "fa";
   const t = (persian: string, english: string) => fa ? persian : english;
-  const year = new Date().getUTCFullYear();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [receipt, setReceipt] = useState<Receipt | null>(null);
@@ -30,8 +29,7 @@ export function ServicesConsultationForm({ locale }: { locale: Locale }) {
     if (!form.reportValidity() || !mobile) return;
     const payload = {
       firstName: value("firstName"), lastName: value("lastName"), mobile,
-      desiredCountryText: value("country"), intakeTerm: value("intake"),
-      startYear: Number(value("startYear")), locale, source: { pageUrl: `/${locale}/services` },
+      occupation: value("occupation"), locale, source: { pageUrl: `/${locale}/services` },
       privacyConsent: data.get("privacyConsent") === "on",
       contactConsent: data.get("contactConsent") === "on", website: value("website"),
       message: value("contactTime") ? `${t("زمان ترجیحی تماس", "Preferred contact time")}: ${value("contactTime")}` : null,
@@ -58,22 +56,19 @@ export function ServicesConsultationForm({ locale }: { locale: Locale }) {
   </div>;
 
   return <form className="services-request" onSubmit={submit} aria-label={t("درخواست مشاوره تخصصی رایگان", "Request a free expert consultation")}>
-    <h3>{t("درخواست مشاوره تخصصی رایگان", "Request a free expert consultation")}</h3>
+    <h3>{fa ? <>درخواست مشاوره تخصصی <strong className="services-request__free">رایگان</strong></> : <>Request a <strong className="services-request__free">free</strong> expert consultation</>}</h3>
     <p className="services-request__hint">{t("اطلاعات کوتاه زیر را بنویسید تا برای هماهنگی مشاوره با شما تماس بگیریم.", "Share a few details so we can contact you to arrange your consultation.")}</p>
     <div className="services-request__fields">
       <label htmlFor={`${id}-first`}>{t("نام", "First name")} *<input id={`${id}-first`} name="firstName" autoComplete="given-name" required maxLength={100} /></label>
       <label htmlFor={`${id}-last`}>{t("نام خانوادگی", "Last name")} *<input id={`${id}-last`} name="lastName" autoComplete="family-name" required maxLength={100} /></label>
       <label htmlFor={`${id}-phone`}>{t("شماره موبایل", "Mobile number")} *<input id={`${id}-phone`} name="mobile" type="tel" inputMode="tel" autoComplete="tel" dir="ltr" placeholder="0912 000 0000" required maxLength={32} onInput={(event) => event.currentTarget.setCustomValidity("")} /></label>
-      <label htmlFor={`${id}-country`}>{t("مقصد مورد نظر", "Preferred destination")} *<input id={`${id}-country`} name="country" placeholder={t("مثلاً آلمان یا هنوز تصمیم نگرفته‌ام", "e.g. Germany or undecided")} required maxLength={100} /></label>
-      <label htmlFor={`${id}-intake`}>{t("زمان شروع تحصیل", "Preferred intake")} *<select id={`${id}-intake`} name="intake" defaultValue="unknown"><option value="unknown">{t("هنوز مشخص نیست", "Undecided")}</option>{["spring", "summer", "fall", "winter"].map((value, index) => <option key={value} value={value}>{fa ? ["بهار", "تابستان", "پاییز", "زمستان"][index] : ["Spring", "Summer", "Fall", "Winter"][index]}</option>)}</select></label>
-      <label htmlFor={`${id}-year`}>{t("سال شروع تحصیل", "Start year")} *<select id={`${id}-year`} name="startYear" defaultValue={year}>{Array.from({ length: 11 }, (_, index) => <option key={index} value={year + index}>{year + index}</option>)}</select></label>
+      <label htmlFor={`${id}-occupation`}>{t("حوزه فعالیت", "Field of activity")} *<select id={`${id}-occupation`} name="occupation" defaultValue="" required><option value="" disabled>{t("حوزه فعالیت خود را انتخاب کنید", "Select your field of activity")}</option>{[ ["مهندسی", "Engineering"], ["علوم پایه", "Natural sciences"], ["پزشکی", "Medicine"], ["پیراپزشکی", "Allied health"], ["علوم انسانی", "Humanities"], ["مدیریت و کسب‌وکار", "Business and management"], ["هنر و معماری", "Art and architecture"], ["سایر", "Other"] ].map(([persian, english]) => <option key={english} value={t(persian, english)}>{t(persian, english)}</option>)}</select></label>
       <label className="services-request__wide" htmlFor={`${id}-time`}>{t("زمان مناسب تماس (اختیاری)", "Preferred contact time (optional)")}<select id={`${id}-time`} name="contactTime" defaultValue=""><option value="">{t("فرقی ندارد", "No preference")}</option>{["10:00–12:00", "12:00–14:00", "14:00–16:00", "16:00–18:00"].map((time) => <option key={time} value={time}>{time}</option>)}</select></label>
     </div>
     <div className="services-request__trap" aria-hidden="true"><label>Website<input name="website" tabIndex={-1} autoComplete="off" /></label></div>
     <label className="services-request__consent"><input type="checkbox" name="privacyConsent" required /><span>{t("با ثبت اطلاعاتم طبق", "I agree to submit my information under the")} <Link href={`/${locale}/privacy`}>{t("سیاست حریم خصوصی", "privacy policy")}</Link> {t("موافقم.", ".")}</span></label>
     <label className="services-request__consent"><input type="checkbox" name="contactConsent" required /><span>{t("با تماس تیم جهان آکادمی برای این درخواست موافقم.", "I agree to be contacted by Jahan Academy about this request.")}</span></label>
     {error && <p className="services-request__error" role="alert">{error}</p>}
-    <button type="submit" disabled={busy} aria-busy={busy}>{busy ? t("در حال ارسال…", "Sending…") : t("ثبت درخواست مشاوره رایگان", "Request a free consultation")}<span aria-hidden="true">↗</span></button>
-    <p className="services-request__note">{t("مشاوره اولیه رایگان است؛ زمان تماس پس از ثبت درخواست هماهنگ می‌شود.", "Your initial consultation is free. We will arrange a time after receiving your request.")}</p>
+    <button type="submit" disabled={busy} aria-busy={busy}>{busy ? t("در حال ارسال…", "Sending…") : t("ثبت درخواست مشاوره", "Request a consultation")}</button>
   </form>;
 }
