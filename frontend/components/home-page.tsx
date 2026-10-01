@@ -123,8 +123,8 @@ export async function HomePage({ locale }: { locale: Locale }) {
     </div></section>
 
     <section className="home-section home-section--soft" aria-labelledby="home-faq-title"><div className="shell home-faq__grid">
-      <div><p className="home-eyebrow">{content.faqEyebrow}</p><h2 id="home-faq-title">{copy.faqTitle}</h2><p>{content.faqText}</p><Link className="home-faq__link" href={localPath(locale, "/faq")}>{content.sectionLink} <Arrow locale={locale} /></Link></div>
-      <div className="home-faq__list">{brand.faqs.slice(0, 4).map((item) => <details key={item.question}><summary>{item.question}<span aria-hidden="true">+</span></summary><p>{item.answer}</p></details>)}</div>
+      <div className="home-faq__intro"><h2 id="home-faq-title">{locale === "fa" ? "سؤال دارید؟ ما پاسخ می‌دهیم" : "Got Questions? We Have Answers"}</h2></div>
+      <div className="home-faq__list">{brand.faqs.slice(0, 5).map((item) => <details name="home-faq" key={item.question}><summary><span>{item.question}</span><svg className="home-faq__chevron" aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="m3 6 5 5 5-5" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" /></svg></summary><p>{item.answer}</p></details>)}</div>
     </div></section>
 
     <section className="home-closing"><div className="shell home-closing__inner"><div><p className="home-eyebrow">JAHAN ACADEMY</p><h2>{content.closingTitle}</h2><p>{content.closingText}</p></div><ConsultationButton locale={locale} source="home-footer" /></div></section>

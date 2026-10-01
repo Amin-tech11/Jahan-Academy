@@ -69,6 +69,7 @@ button, input, select, textarea { font: inherit; }
 .site-header .brand-image { position: relative; display: block; width: 104px; height: 78px; overflow: hidden; }
 .site-header .brand-image img { object-fit: contain; transform: scale(1.75); }
 .main-nav a[aria-current="page"] { color: var(--color-brand-900); text-decoration: underline; text-underline-offset: .45rem; }
+.main-nav > a:hover, .main-nav > a:focus-visible, .header-actions .locale-link:hover, .header-actions .locale-link:focus-visible { color: #0a5bc3; }
 .nav-destinations { position: relative; }
 .nav-destinations summary { display: flex; align-items: center; gap: .4rem; cursor: pointer; list-style: none; }
 .nav-destinations summary::-webkit-details-marker { display: none; }
