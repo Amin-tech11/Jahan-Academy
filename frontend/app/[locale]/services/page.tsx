@@ -97,26 +97,28 @@ export default async function ServicesPage({ params }: PageProps) {
         <div className="services-hero__brand">JAHAN ACADEMY</div>
       </section>
 
-      <section className="services-intro" aria-labelledby="services-title">
-        <div className="services-container">
-          <h1 id="services-title">{copy.title}</h1>
-          <ServicesNavigation label={copy.jumpLabel} services={copy.services.map(({ id, short }) => ({ id, label: short }))} />
-        </div>
-      </section>
-
-      <div className="services-list" aria-label={copy.detailsLabel}>
-        {copy.services.map((service) => <section className="services-feature" id={service.id} key={service.id} aria-labelledby={`${service.id}-title`}>
-          <div className="services-container services-feature__grid">
-            <div className="services-feature__art">
-              <Image className="services-feature__image" src={service.image} alt={service.imageAlt} fill sizes="(max-width: 1000px) calc(100vw - 2rem), 540px" />
-            </div>
-            <div className="services-feature__copy">
-              <h2 id={`${service.id}-title`}>{service.title}</h2>
-              <p>{service.description}</p>
-              <ul>{service.points.map((point) => <li key={point}>{point}</li>)}</ul>
-            </div>
+      <div className="services-content">
+        <section className="services-intro" aria-labelledby="services-title">
+          <div className="services-container">
+            <h1 id="services-title">{copy.title}</h1>
+            <ServicesNavigation label={copy.jumpLabel} services={copy.services.map(({ id, short }) => ({ id, label: short }))} />
           </div>
-        </section>)}
+        </section>
+
+        <div className="services-list" aria-label={copy.detailsLabel}>
+          {copy.services.map((service) => <section className="services-feature" id={service.id} key={service.id} aria-labelledby={`${service.id}-title`}>
+            <div className="services-container services-feature__grid">
+              <div className="services-feature__art">
+                <Image className="services-feature__image" src={service.image} alt={service.imageAlt} fill sizes="(max-width: 1000px) calc(100vw - 2rem), 540px" />
+              </div>
+              <div className="services-feature__copy">
+                <h2 id={`${service.id}-title`}>{service.title}</h2>
+                <p>{service.description}</p>
+                <ul>{service.points.map((point) => <li key={point}>{point}</li>)}</ul>
+              </div>
+            </div>
+          </section>)}
+        </div>
       </div>
 
       <section className="services-cta" aria-labelledby="services-cta-title">
