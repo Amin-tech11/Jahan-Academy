@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { HomeJourneyProgress } from "@/components/home-journey-progress";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
@@ -34,6 +35,12 @@ const homeServices = [
     description: { fa: "سوابق تحصیلی، سطح زبان، بودجه و اهداف هر دانشجو را بررسی می‌کنیم.", en: "We assess each student's academic background, language level, budget, and goals." },
   },
 ] as const;
+const processImages = [
+  "profile-assessment", "profile-assessment", "document-preparation", "document-preparation",
+  "study-options", "document-preparation", "study-options", "study-options", "study-options",
+  "profile-assessment", "document-preparation", "document-preparation", "language-support",
+].map((name) => `/journey/${name}.png`);
+
 function Arrow({ locale }: { locale: Locale }) {
   return <span aria-hidden="true">{locale === "fa" ? "↖" : "↗"}</span>;
 }
@@ -109,7 +116,14 @@ export async function HomePage({ locale }: { locale: Locale }) {
       </li>)}</ul>
     </div></section>
 
-    <section className="home-process"><div className="shell home-process__inner"><div><p className="home-eyebrow">{content.processEyebrow}</p><h2>{content.processTitle}</h2><p>{content.processText}</p></div><Link href={localPath(locale, "/about")}>{locale === "fa" ? "درباره رویکرد ما" : "About our approach"} <Arrow locale={locale} /></Link></div></section>
+    <section className="home-section home-process" aria-labelledby="home-process-title"><div className="shell">
+      <h2 id="home-process-title" className="home-destinations__title">{content.processTitle}</h2>
+      <HomeJourneyProgress>{content.processSteps.map((step, index) => <li className="home-process__step" key={step.number}>
+        <div className="home-process__rail" aria-hidden="true"><svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M50 0 C50 18 15 32 50 50 C85 68 50 82 50 100" /></svg><span className="home-process__number">{Number(step.number)}</span></div>
+        <div className="home-process__media"><Image src={processImages[index]} alt="" fill sizes="(max-width: 700px) 90vw, 40vw" /></div>
+        <div className="home-process__copy" dir={locale === "fa" ? "rtl" : "ltr"}><h3>{step.title}</h3><p>{step.text}</p></div>
+      </li>)}</HomeJourneyProgress>
+    </div></section>
 
     <section className="home-section" aria-labelledby="home-articles-title"><div className="shell">
       <SectionHeading id="home-articles-title" eyebrow={content.articleEyebrow} title={copy.articlesTitle} text={content.articleText} href={localPath(locale, "/articles")} linkText={content.sectionLink} />
