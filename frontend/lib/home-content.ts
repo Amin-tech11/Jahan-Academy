@@ -13,9 +13,8 @@ export type HomeCopy = {
   universityText: string;
   universityNote: string;
   trustValues: Array<{ number: string; title: string; text: string }>;
-  processEyebrow: string;
   processTitle: string;
-  processText: string;
+  processSteps: Array<{ number: string; title: string; text: string }>;
   articleEyebrow: string;
   articleText: string;
   faqEyebrow: string;
@@ -51,9 +50,22 @@ export const homeContent: Localized<HomeCopy> = {
       { number: "02", title: "تخصص با نگاه انسانی", text: "هدف و شرایط هر فرد را می‌شنویم و پیشنهادها را بر پایهٔ بررسی دقیق شکل می‌دهیم." },
       { number: "03", title: "همراهی در مسیر رشد", text: "کمک می‌کنیم قدم بعدی را در پیوند با مسیر یادگیری و آیندهٔ خود ببینید." },
     ],
-    processEyebrow: "THE JOURNEY / مسیر همکاری",
-    processTitle: "از شناخت مسیر تا قدم بعدی",
-    processText: "گزینه‌ها را بشناسید، برای تصمیم آماده شوید و با آگاهی قدم بعدی را انتخاب کنید.",
+    processTitle: "مسیر همراهی شما با جهان آکادمی",
+    processSteps: [
+      { number: "01", title: "ثبت درخواست مشاوره", text: "با تکمیل فرم مشاوره، هدف تحصیلی و شرایط اولیهٔ خود را با ما در میان بگذارید." },
+      { number: "02", title: "برگزاری جلسهٔ مشاوره", text: "در یک گفت‌وگوی تخصصی، اهداف، سوابق و پرسش‌های شما را بررسی می‌کنیم تا مسیر روشن‌تری پیش رو داشته باشید." },
+      { number: "03", title: "توافق و عقد قرارداد", text: "پس از مشخص‌شدن مسیر، خدمات، تعهدات و شرایط همکاری را شفاف توضیح می‌دهیم و قرارداد را تنظیم می‌کنیم." },
+      { number: "04", title: "ارائهٔ چک‌لیست مدارک", text: "فهرست مدارک موردنیاز برای پروندهٔ تحصیلی را در اختیارتان قرار می‌دهیم و برای آماده‌سازی آن‌ها راهنمایی‌تان می‌کنیم." },
+      { number: "05", title: "انتخاب دانشگاه و رشته", text: "با توجه به سوابق تحصیلی، سطح زبان، بودجه و اولویت‌های شما، دانشگاه‌ها و رشته‌های مناسب را بررسی و انتخاب می‌کنیم." },
+      { number: "06", title: "نگارش مدارک اپلای", text: "رزومه، انگیزه‌نامه و توصیه‌نامه‌ها را متناسب با سوابق واقعی شما و الزامات دانشگاه آماده و ویرایش می‌کنیم." },
+      { number: "07", title: "ثبت درخواست پذیرش", text: "پرونده و مدارک آماده‌شده را بررسی می‌کنیم و درخواست پذیرش را برای دانشگاه‌های انتخاب‌شده ثبت می‌کنیم." },
+      { number: "08", title: "پیگیری درخواست دانشگاه", text: "وضعیت بررسی پرونده را پیگیری می‌کنیم و در صورت نیاز به مدارک یا توضیحات تکمیلی، شما را در جریان می‌گذاریم." },
+      { number: "09", title: "دریافت نتیجهٔ دانشگاه", text: "نتیجهٔ دانشگاه را با شما مرور می‌کنیم و شرایط اعلام‌شده و اقدامات بعدی را توضیح می‌دهیم." },
+      { number: "10", title: "چک‌لیست مدارک و جلسهٔ ویزا", text: "در جلسهٔ راهنمایی ویزا، مراحل اقدام و فهرست مدارک موردنیاز را متناسب با مقصد و شرایط شما بررسی می‌کنیم." },
+      { number: "11", title: "دریافت و بررسی مدارک ویزا", text: "مدارک آماده‌شدهٔ شما را دریافت و بررسی می‌کنیم تا موارد ناقص یا نیازمند اصلاح پیش از ثبت درخواست مشخص شوند." },
+      { number: "12", title: "ثبت درخواست ویزا و انگشت‌نگاری", text: "برای ثبت درخواست ویزا و هماهنگی مراحل انگشت‌نگاری، مطابق فرایند کشور مقصد، همراه و راهنمای شما هستیم." },
+      { number: "13", title: "پیگیری و دریافت نتیجهٔ ویزا", text: "وضعیت درخواست ویزا را پیگیری می‌کنیم و پس از اعلام نتیجه، آن را همراه با راهنمایی دربارهٔ گام بعدی با شما در میان می‌گذاریم." },
+    ],
     articleEyebrow: "INSIGHTS / راهنماها",
     articleText: "مطالبی برای بهتر پرسیدن، بهتر سنجیدن و آماده‌تر شدن پیش از مشاوره.",
     faqEyebrow: "FAQ / پرسش‌های پرتکرار",
@@ -87,9 +99,22 @@ export const homeContent: Localized<HomeCopy> = {
       { number: "02", title: "Expertise with a human view", text: "We listen to each person's goals and circumstances, then shape suggestions through careful review." },
       { number: "03", title: "Support for growth", text: "We help you connect your next step with your learning path and future." },
     ],
-    processEyebrow: "THE JOURNEY",
-    processTitle: "From understanding your path to the next step",
-    processText: "Explore your options, prepare to decide, and choose your next step with a clearer understanding.",
+    processTitle: "Your journey with Jahan Academy",
+    processSteps: [
+      { number: "01", title: "Request a consultation", text: "Complete the consultation form to share your study goals and initial circumstances with our team." },
+      { number: "02", title: "Meet your advisor", text: "We discuss your goals, background, and questions in a dedicated consultation to help clarify your path." },
+      { number: "03", title: "Agree on the partnership", text: "Once the approach is clear, we explain the services, responsibilities, and terms of our collaboration and prepare the agreement." },
+      { number: "04", title: "Receive your document checklist", text: "We provide a checklist for your academic application and guide you through preparing the required documents." },
+      { number: "05", title: "Choose universities and programs", text: "We review suitable universities and programs based on your academic background, language level, budget, and priorities." },
+      { number: "06", title: "Prepare application documents", text: "We prepare and edit your CV, statement of purpose, and recommendation letters using your actual background and university requirements." },
+      { number: "07", title: "Submit university applications", text: "We review the completed application and documents, then submit them to the universities you have selected." },
+      { number: "08", title: "Follow up with universities", text: "We track your application and keep you informed if a university requests additional documents or clarification." },
+      { number: "09", title: "Review university decisions", text: "We review the university decision with you and explain any conditions and the next steps." },
+      { number: "10", title: "Plan your visa application", text: "In a visa guidance session, we review the process and document checklist for your destination and circumstances." },
+      { number: "11", title: "Review your visa documents", text: "We receive and review your prepared documents to identify missing items or corrections before submission." },
+      { number: "12", title: "Apply for a visa and biometrics", text: "We guide you through the visa application and biometric appointment process required by your destination." },
+      { number: "13", title: "Receive your visa decision", text: "We follow the status of your visa application and share the decision with guidance on your next step." },
+    ],
     articleEyebrow: "INSIGHTS",
     articleText: "Useful reading to ask better questions and arrive better prepared for a consultation.",
     faqEyebrow: "FREQUENTLY ASKED QUESTIONS",

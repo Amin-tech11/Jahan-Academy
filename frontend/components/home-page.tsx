@@ -109,7 +109,13 @@ export async function HomePage({ locale }: { locale: Locale }) {
       </li>)}</ul>
     </div></section>
 
-    <section className="home-process"><div className="shell home-process__inner"><div><p className="home-eyebrow">{content.processEyebrow}</p><h2>{content.processTitle}</h2><p>{content.processText}</p></div><Link href={localPath(locale, "/about")}>{locale === "fa" ? "درباره رویکرد ما" : "About our approach"} <Arrow locale={locale} /></Link></div></section>
+    <section className="home-section home-process" aria-labelledby="home-process-title"><div className="shell">
+      <h2 id="home-process-title" className="home-destinations__title">{content.processTitle}</h2>
+      <ol className="home-process__steps">{content.processSteps.map((step) => <li className="home-process__step" key={step.number}>
+        <span className="home-process__number" aria-hidden="true">{step.number}</span>
+        <div><h3>{step.title}</h3><p>{step.text}</p></div>
+      </li>)}</ol>
+    </div></section>
 
     <section className="home-section" aria-labelledby="home-articles-title"><div className="shell">
       <SectionHeading id="home-articles-title" eyebrow={content.articleEyebrow} title={copy.articlesTitle} text={content.articleText} href={localPath(locale, "/articles")} linkText={content.sectionLink} />
