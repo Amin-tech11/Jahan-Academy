@@ -118,7 +118,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
     <section className="home-section home-process" aria-labelledby="home-process-title"><div className="shell">
       <h2 id="home-process-title" className="home-destinations__title">{content.processTitle}</h2>
       <ol className="home-process__steps">{content.processSteps.map((step, index) => <li className="home-process__step" key={step.number}>
-        <div className="home-process__rail" aria-hidden="true"><svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M50 0 C50 25 15 25 50 50 S85 75 50 100" /></svg><span className="home-process__number">{step.number}</span></div>
+        <div className="home-process__rail" aria-hidden="true"><svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M50 0 C50 18 15 32 50 50 C85 68 50 82 50 100" /></svg><span className="home-process__number">{Number(step.number)}</span></div>
         <div className="home-process__media"><Image src={processImages[index]} alt="" fill sizes="(max-width: 700px) 90vw, 40vw" /></div>
         <div className="home-process__copy" dir={locale === "fa" ? "rtl" : "ltr"}><h3>{step.title}</h3><p>{step.text}</p></div>
       </li>)}</ol>
