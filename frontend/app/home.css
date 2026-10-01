@@ -95,7 +95,8 @@
   .home-process__step h3 { margin-bottom: .6rem; }
 }
 .home-news { overflow: hidden; }
-.home-news__viewport { overflow: hidden; direction: ltr; padding-block: .3rem; }
+.home-news__viewport { overflow: hidden; direction: ltr; padding-block: .3rem; cursor: grab; touch-action: pan-y; user-select: none; }
+.home-news__viewport[data-dragging="true"] { cursor: grabbing; }
 .home-news__track { display: flex; width: max-content; animation: home-news-scroll linear infinite; }
 .home-news__group { display: flex; align-items: center; gap: 1rem; padding-right: 1rem; flex: none; }
 .home-news__card { position: relative; isolation: isolate; display: block; flex: none; width: clamp(17rem, 31vw, 24rem); height: clamp(13rem, 20vw, 15rem); overflow: hidden; border-radius: .85rem; background: #173a52; color: #fff; }
@@ -107,7 +108,7 @@
 .home-news__caption h3 { margin: 0 0 .5rem; color: #fff; font-size: 1.05rem; font-weight: 750; line-height: 1.7; }
 .home-news__meta { display: flex; align-items: center; gap: .75rem; color: #e2eaf1; font-size: .75rem; }
 .home-news__meta time { direction: ltr; }
-.home-news__viewport:hover .home-news__track, .home-news__viewport:focus-within .home-news__track { animation-play-state: paused; }
+.home-news__viewport[data-dragging="true"] .home-news__track, .home-news__viewport:hover .home-news__track, .home-news__viewport:focus-within .home-news__track { animation-play-state: paused; }
 @keyframes home-news-scroll { from { transform: translateX(-50%); } to { transform: translateX(0); } }
 @media (max-width: 600px) { .home-news__card { width: 80vw; height: 13.5rem; } }
 @media (prefers-reduced-motion: reduce) {
