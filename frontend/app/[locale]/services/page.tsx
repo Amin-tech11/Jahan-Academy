@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { localPath, SiteShell } from "@/components/site-shell";
+import { SiteShell } from "@/components/site-shell";
+import { ServicesConsultationForm } from "@/components/services-consultation-form";
 import { ServicesNavigation } from "@/components/services-navigation";
 import { isLocale, type Locale } from "@/lib/site-content";
 
@@ -42,9 +42,8 @@ const content = {
         image: "/services/language-support.png", imageAlt: "جلسه پشتیبانی و برنامه‌ریزی یادگیری زبان",
       },
     ],
-    ctaTitle: "مسیر تحصیلی شما از یک گفت‌وگوی دقیق شروع می‌شود.",
-    ctaText: "شرایط و هدف خود را با ما در میان بگذارید تا گام بعدی را با هم بررسی کنیم.",
-    cta: "شروع گفت‌وگو",
+    ctaTitle: "بیایید درباره آینده تحصیلی‌تان گپ بزنیم.",
+    ctaText: "از آرزوها و سؤال‌هایتان برای ما بگویید؛ کنار شما هستیم تا قدم بعدی را با خیال راحت‌تر بردارید.",
   },
   en: {
     title: "Jahan Academy services",
@@ -76,9 +75,8 @@ const content = {
         image: "/services/language-support.png", imageAlt: "A personalized language support session",
       },
     ],
-    ctaTitle: "A considered academic path begins with a conversation.",
-    ctaText: "Tell us about your goals and circumstances, and we can discuss the next step together.",
-    cta: "Start a conversation",
+    ctaTitle: "Let's talk about your study dreams.",
+    ctaText: "Tell us what's on your mind. We're here to help you take your next step with more confidence.",
   },
 } as const;
 
@@ -122,7 +120,13 @@ export default async function ServicesPage({ params }: PageProps) {
       </div>
 
       <section className="services-cta" aria-labelledby="services-cta-title">
-        <div className="services-container services-cta__inner"><div><h2 id="services-cta-title">{copy.ctaTitle}</h2><p>{copy.ctaText}</p></div><Link href={`${localPath(locale, "/consultation")}?source=services`} className="services-cta__link">{copy.cta}<span aria-hidden="true">↗</span></Link></div>
+        <div className="services-container">
+          <div className="services-cta__heading"><h2 id="services-cta-title">{copy.ctaTitle}</h2><p>{copy.ctaText}</p></div>
+          <div className="services-cta__layout">
+            <div className="services-cta__photo"><Image src="/consultation-hero.png" alt={locale === "fa" ? "تیم مشاوره جهان آکادمی" : "Jahan Academy consultation team"} fill sizes="(max-width: 900px) 100vw, 600px" /></div>
+            <div className="services-cta__card"><ServicesConsultationForm locale={locale} /></div>
+          </div>
+        </div>
       </section>
     </main>
   </SiteShell>;
