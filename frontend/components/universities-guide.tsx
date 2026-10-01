@@ -1,0 +1,23 @@
+import type { Locale } from "@/lib/site-content";
+import { universityContent, universityCountries, universityRankingSources } from "@/lib/universities-content";
+import { ConsultationButton } from "./site-shell";
+import styles from "./universities-guide.module.css";
+
+const sectionIds = ["university-types", "university-rankings", "university-countries", "university-criteria", "iran-universities", "college-university", "university-faq"];
+
+export function UniversitiesGuide({ locale }: { locale: Locale }) {
+  const content = universityContent[locale];
+  return <div className={`shell ${styles.guide}`}>
+    <header className={styles.intro}><h2>{content.title}</h2><p>{content.intro}</p></header>
+    <nav className={styles.navigation} aria-label={content.navigation}><strong>{content.navigation}</strong><div>{content.sections.map((title, index) => <a href={`#${sectionIds[index]}`} key={title}>{title}</a>)}</div></nav>
+    <section id={sectionIds[0]} className={styles.section}><h2>{content.sections[0]}</h2><div className={styles.cards}>{content.types.map(item => <article className={styles.card} key={item.title}><h3>{item.title}</h3><p>{item.text}</p></article>)}</div><a className={styles.source} href="https://educationusa.state.gov/experience-studying-usa/us-educational-system/frequently-asked-questions-faqs" target="_blank" rel="noreferrer">EducationUSA ↗</a></section>
+    <section id={sectionIds[1]} className={styles.section}><h2>{content.sections[1]}</h2><p>{content.rankingIntro}</p><div className={styles.cards}>{content.rankings.map((item, index) => <article className={styles.card} key={item.title}><h3 dir="ltr">{item.title}</h3><p>{item.text}</p><a href={universityRankingSources[index]} target="_blank" rel="noreferrer">{content.rankingLink} ↗</a></article>)}</div></section>
+    <section id={sectionIds[2]} className={styles.section}><h2>{content.sections[2]}</h2><p>{content.countriesIntro}</p><div className={styles.countries}>{universityCountries.map(country => <article className={styles.card} key={country.id}><h3>{country[locale]}</h3><p>{country.university[locale]}</p><a href={country.url} target="_blank" rel="noreferrer">{content.officialSite} ↗</a></article>)}</div></section>
+    <section id={sectionIds[3]} className={styles.section}><h2>{content.sections[3]}</h2><div className={styles.criteria}>{content.criteria.map((item, index) => <article className={styles.card} key={item.title}><span className={styles.number} aria-hidden="true">0{index + 1}</span><h3>{item.title}</h3><p>{item.text}</p></article>)}</div></section>
+    <section id={sectionIds[4]} className={styles.section}><h2>{content.sections[4]}</h2><p>{content.iranIntro}</p><div className={styles.links}><a href="https://ut.ac.ir/en" target="_blank" rel="noreferrer">{content.iranLinks[0]} ↗</a><a href="https://www.sharif.edu/" target="_blank" rel="noreferrer">{content.iranLinks[1]} ↗</a></div></section>
+    <section id={sectionIds[5]} className={styles.section}><h2>{content.sections[5]}</h2><p>{content.collegeIntro}</p><div className={styles.tableWrap}><table><thead><tr>{content.comparisonLabels.map(label => <th scope="col" key={label}>{label}</th>)}</tr></thead><tbody>{content.comparison.map(row => <tr key={row[0]}><th scope="row">{row[0]}</th><td>{row[1]}</td><td>{row[2]}</td></tr>)}</tbody></table></div></section>
+    <section id={sectionIds[6]} className={styles.section}><h2>{content.sections[6]}</h2><div className="faq-list">{content.faq.map(item => <details key={item.question}><summary>{item.question}</summary><p>{item.answer}</p></details>)}</div></section>
+    <section className={styles.closing}><div><h2>{content.closingTitle}</h2><p>{content.closingText}</p></div><ConsultationButton locale={locale} source="universities" /></section>
+    <aside className={styles.sources}><h3>{content.sourcesTitle}</h3><div className={styles.links}><a href="https://www.topuniversities.com/world-university-rankings" target="_blank" rel="noreferrer">QS</a><a href="https://www.timeshighereducation.com/world-university-rankings/world-university-rankings-2026-methodology" target="_blank" rel="noreferrer">THE</a><a href="https://www.shanghairanking.com/rankings/arwu/2025" target="_blank" rel="noreferrer">ARWU 2025</a><a href="https://educationusa.state.gov/your-5-steps-us-study/research-your-options/undergraduate" target="_blank" rel="noreferrer">EducationUSA</a></div></aside>
+  </div>;
+}
