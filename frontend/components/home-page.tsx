@@ -1,4 +1,6 @@
 import Image from "next/image";
+import { HomeNewsTicker } from "@/components/home-news-ticker";
+import { HomeJourneyProgress } from "@/components/home-journey-progress";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
@@ -34,17 +36,14 @@ const homeServices = [
     description: { fa: "سوابق تحصیلی، سطح زبان، بودجه و اهداف هر دانشجو را بررسی می‌کنیم.", en: "We assess each student's academic background, language level, budget, and goals." },
   },
 ] as const;
+const processImages = [
+  "profile-assessment", "profile-assessment", "document-preparation", "document-preparation",
+  "study-options", "document-preparation", "study-options", "study-options", "study-options",
+  "profile-assessment", "document-preparation", "document-preparation", "language-support",
+].map((name) => `/journey/${name}.png`);
+
 function Arrow({ locale }: { locale: Locale }) {
   return <span aria-hidden="true">{locale === "fa" ? "↖" : "↗"}</span>;
-}
-
-function SectionHeading({ id, eyebrow, title, text, href, linkText }: {
-  id: string; eyebrow: string; title: string; text: string; href?: string; linkText?: string;
-}) {
-  return <div className="home-section-heading">
-    <div><p className="home-eyebrow">{eyebrow}</p><h2 id={id}>{title}</h2><p>{text}</p></div>
-    {href && linkText && <Link className="home-section-heading__link" href={href}>{linkText} <span aria-hidden="true">↗</span></Link>}
-  </div>;
 }
 
 function ServiceGlyph({ id }: { id: (typeof homeServices)[number]["id"] }) {
@@ -61,7 +60,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
   const copy = siteCopy[locale];
   const content = getHomeContent(locale);
   const brand = brandContent[locale];
-  const visibleArticles = articles.filter((article) => article.type === "article").slice(0, 2);
+  const visibleArticles = [...articles].sort((a, b) => b.date.localeCompare(a.date));
 
   return <SiteShell locale={locale}><main className="home-page">
     <div className={`home-hero home-hero--${locale}`} aria-hidden="true">
@@ -99,23 +98,33 @@ export async function HomePage({ locale }: { locale: Locale }) {
       <p className="home-universities__note">{content.universityNote}</p>
     </div></section>
 
-    <section className="home-section home-trust" aria-labelledby="home-trust-title"><div className="shell home-trust__grid">
-      <div className="home-trust__intro"><p className="home-eyebrow">{content.trustEyebrow}</p><h2 id="home-trust-title">{brand.whyTitle}</h2><p>{brand.whyText}</p><ConsultationButton locale={locale} source="home-trust" /></div>
-      <div className="home-trust__values">{content.trustValues.map((value) => <div key={value.number}><span>{value.number}</span><div><h3>{value.title}</h3><p>{value.text}</p></div></div>)}</div>
+    <section className="home-section home-trust" aria-labelledby="home-trust-title"><div className="shell home-trust__inner">
+      <div className="home-trust__header">
+        <div className="home-trust__intro"><h2 id="home-trust-title">{brand.whyTitle}</h2><p>{brand.whyText}</p></div>
+        <ConsultationButton locale={locale} source="home-trust" />
+      </div>
+      <ul className="home-trust__values">{content.trustValues.map((value) => <li className="home-trust__value" key={value.number}>
+        <span className="home-trust__number" aria-hidden="true">{value.number}</span><h3>{value.title}</h3><p>{value.text}</p>
+      </li>)}</ul>
     </div></section>
 
-    <section className="home-process"><div className="shell home-process__inner"><div><p className="home-eyebrow">{content.processEyebrow}</p><h2>{content.processTitle}</h2><p>{content.processText}</p></div><Link href={localPath(locale, "/about")}>{locale === "fa" ? "درباره رویکرد ما" : "About our approach"} <Arrow locale={locale} /></Link></div></section>
+    <section className="home-section home-process" aria-labelledby="home-process-title"><div className="shell">
+      <h2 id="home-process-title" className="home-destinations__title">{content.processTitle}</h2>
+      <HomeJourneyProgress>{content.processSteps.map((step, index) => <li className="home-process__step" key={step.number}>
+        <div className="home-process__rail" aria-hidden="true"><svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M50 0 C50 18 15 32 50 50 C85 68 50 82 50 100" /></svg><span className="home-process__number">{Number(step.number)}</span></div>
+        <div className="home-process__media"><Image src={processImages[index]} alt="" fill sizes="(max-width: 700px) 90vw, 40vw" /></div>
+        <div className="home-process__copy" dir={locale === "fa" ? "rtl" : "ltr"}><h3>{step.title}</h3><p>{step.text}</p></div>
+      </li>)}</HomeJourneyProgress>
+    </div></section>
 
     <section className="home-section" aria-labelledby="home-articles-title"><div className="shell">
-      <SectionHeading id="home-articles-title" eyebrow={content.articleEyebrow} title={copy.articlesTitle} text={content.articleText} href={localPath(locale, "/articles")} linkText={content.sectionLink} />
-      <div className="home-articles">{visibleArticles.map((article, index) => <article className="home-article-card" key={article.slug}>
-        <div className="home-article-card__media" aria-hidden="true"><span>0{index + 1}</span></div><div className="home-article-card__body"><small>{content.articleLabel} · <time dateTime={article.date}>{article.date}</time></small><h3>{article.title[locale]}</h3><p>{article.excerpt[locale]}</p><Link href={localPath(locale, `/articles/${article.slug}`)}>{copy.readMore} <Arrow locale={locale} /></Link></div>
-      </article>)}</div>
+      <h2 id="home-articles-title" className="home-destinations__title" dir={locale === "fa" ? "rtl" : "ltr"}><Link href={localPath(locale, "/articles")}>{locale === "fa" ? "خبر ها" : "News"}<span className="home-destinations__title-arrow" aria-hidden="true">{locale === "fa" ? "←" : "→"}</span></Link></h2>
+      <HomeNewsTicker items={visibleArticles} locale={locale} />
     </div></section>
 
     <section className="home-section home-section--soft" aria-labelledby="home-faq-title"><div className="shell home-faq__grid">
-      <div><p className="home-eyebrow">{content.faqEyebrow}</p><h2 id="home-faq-title">{copy.faqTitle}</h2><p>{content.faqText}</p><Link className="home-faq__link" href={localPath(locale, "/faq")}>{content.sectionLink} <Arrow locale={locale} /></Link></div>
-      <div className="home-faq__list">{brand.faqs.slice(0, 4).map((item) => <details key={item.question}><summary>{item.question}<span aria-hidden="true">+</span></summary><p>{item.answer}</p></details>)}</div>
+      <div className="home-faq__intro"><h2 id="home-faq-title">{locale === "fa" ? "سوالات متداول" : "Frequently Asked Questions"}</h2></div>
+      <div className="home-faq__list">{brand.faqs.slice(0, 5).map((item) => <details name="home-faq" key={item.question}><summary><span className="home-faq__question-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M20 11.5a8 8 0 0 1-8 8H5l-3 2v-10a10 10 0 0 1 2-6 8 8 0 0 1 16 6Z" /><path d="M9.5 8.5a2.5 2.5 0 0 1 5 .5c0 1.5-2.5 1.7-2.5 3" /><path d="M12 15.5h.01" /></svg></span><span className="home-faq__question-text">{item.question}</span><svg className="home-faq__chevron" aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="m3 6 5 5 5-5" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" /></svg></summary><p>{item.answer}</p></details>)}</div>
     </div></section>
 
     <section className="home-closing"><div className="shell home-closing__inner"><div><p className="home-eyebrow">JAHAN ACADEMY</p><h2>{content.closingTitle}</h2><p>{content.closingText}</p></div><ConsultationButton locale={locale} source="home-footer" /></div></section>
