@@ -123,7 +123,7 @@ export default async function ServicesPage({ params }: PageProps) {
         <div className="services-container">
           <div className="services-cta__heading"><h2 id="services-cta-title">{copy.ctaTitle}</h2><p>{copy.ctaText}</p></div>
           <div className="services-cta__layout">
-            <div className="services-cta__photo"><Image src="/consultation-hero.png" alt={locale === "fa" ? "تیم مشاوره جهان آکادمی" : "Jahan Academy consultation team"} fill sizes="(max-width: 900px) 100vw, 600px" /></div>
+            <div className="services-cta__photo"><Image src="/services/consultation-options/consultation-04.png" alt={locale === "fa" ? "مشاور جهان آکادمی در حال گفت‌وگو با متقاضی" : "A Jahan Academy advisor speaking with an applicant"} fill sizes="(max-width: 900px) 100vw, 600px" /></div>
             <div className="services-cta__card"><ServicesConsultationForm locale={locale} /></div>
           </div>
         </div>
