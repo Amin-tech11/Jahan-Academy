@@ -10,12 +10,23 @@ export function HomeJourneyProgress({ children }: { children: ReactNode }) {
     let frame: number | null = null;
     const update = () => {
       frame = null;
-      const arrivalLine = window.innerHeight * 0.65;
+      const focusLine = window.innerHeight * 0.5;
+      let activeStep: HTMLElement | undefined;
+      let closestDistance = Infinity;
       for (const step of steps) {
         const copy = step.querySelector<HTMLElement>(".home-process__copy");
-        if (copy && copy.getBoundingClientRect().top <= arrivalLine) {
-          step.dataset.reached = "true";
+        if (!copy) continue;
+        const bounds = copy.getBoundingClientRect();
+        if (bounds.top > window.innerHeight * 0.65 || bounds.bottom < window.innerHeight * 0.15) continue;
+        const distance = Math.abs((bounds.top + bounds.bottom) / 2 - focusLine);
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          activeStep = step;
         }
+      }
+      for (const step of steps) {
+        if (step === activeStep) step.dataset.active = "true";
+        else delete step.dataset.active;
       }
     };
     const schedule = () => {

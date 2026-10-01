@@ -11,7 +11,7 @@ const source = readFileSync(new URL("../components/home-journey-progress.tsx", i
 function setup(positions) {
   const steps = positions.map((top) => ({
     top, dataset: {},
-    querySelector() { return { getBoundingClientRect: () => ({ top: this.top }) }; },
+    querySelector() { return { getBoundingClientRect: () => ({ top: this.top, bottom: this.top + 100 }) }; },
   }));
   const events = new Map();
   let effect;
@@ -45,25 +45,27 @@ function setup(positions) {
 
 test("journey markers stay unreached until their description enters the arrival area", () => {
   const app = setup([700, 1200]);
-  assert.equal(app.steps[0].dataset.reached, undefined);
-  assert.equal(app.steps[1].dataset.reached, undefined);
+  assert.equal(app.steps[0].dataset.active, undefined);
+  assert.equal(app.steps[1].dataset.active, undefined);
   app.steps[0].top = 600;
   app.events.get("scroll")();
   app.flush();
-  assert.equal(app.steps[0].dataset.reached, "true");
-  assert.equal(app.steps[1].dataset.reached, undefined);
+  assert.equal(app.steps[0].dataset.active, "true");
+  assert.equal(app.steps[1].dataset.active, undefined);
   app.cleanup();
 });
 
-test("already reached steps remain filled when scrolling back", () => {
+test("only the current step is active and scrolling back reactivates it", () => {
   const app = setup([-100, 400, 900]);
-  assert.equal(app.steps[0].dataset.reached, "true");
-  assert.equal(app.steps[1].dataset.reached, "true");
+  assert.equal(app.steps[0].dataset.active, undefined);
+  assert.equal(app.steps[1].dataset.active, "true");
+  app.steps[0].top = 400;
   app.steps[1].top = 900;
   app.events.get("scroll")();
   app.flush();
-  assert.equal(app.steps[1].dataset.reached, "true");
-  assert.equal(app.steps[2].dataset.reached, undefined);
+  assert.equal(app.steps[0].dataset.active, "true");
+  assert.equal(app.steps[1].dataset.active, undefined);
+  assert.equal(app.steps[2].dataset.active, undefined);
   app.cleanup();
 });
 
@@ -72,7 +74,18 @@ test("viewport resizing updates arrival and unmount removes listeners", () => {
   app.window.innerHeight = 1200;
   app.events.get("resize")();
   app.flush();
-  assert.equal(app.steps[0].dataset.reached, "true");
+  assert.equal(app.steps[0].dataset.active, "true");
   app.cleanup();
   assert.equal(app.events.size, 0);
+});
+
+test("all circles reset when the journey is outside the viewport", () => {
+  const app = setup([400, 900]);
+  assert.equal(app.steps[0].dataset.active, "true");
+  app.steps[0].top = -500;
+  app.steps[1].top = -200;
+  app.events.get("scroll")();
+  app.flush();
+  assert.ok(app.steps.every((step) => step.dataset.active === undefined));
+  app.cleanup();
 });
