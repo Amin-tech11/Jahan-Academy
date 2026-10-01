@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { HomeFaq } from "@/components/home-faq";
 import { HomeNewsTicker } from "@/components/home-news-ticker";
 import { HomeJourneyProgress } from "@/components/home-journey-progress";
 import Link from "next/link";
@@ -133,7 +134,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
 
     <section className="home-section home-section--soft" aria-labelledby="home-faq-title"><div className="shell home-faq__grid">
       <div className="home-faq__intro"><h2 id="home-faq-title">{locale === "fa" ? "سوالات متداول" : "Frequently Asked Questions"}</h2></div>
-      <div className="home-faq__list">{brand.faqs.slice(0, 5).map((item) => <details name="home-faq" key={item.question}><summary><span className="home-faq__question-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M20 11.5a8 8 0 0 1-8 8H5l-3 2v-10a10 10 0 0 1 2-6 8 8 0 0 1 16 6Z" /><path d="M9.5 8.5a2.5 2.5 0 0 1 5 .5c0 1.5-2.5 1.7-2.5 3" /><path d="M12 15.5h.01" /></svg></span><span className="home-faq__question-text">{item.question}</span><svg className="home-faq__chevron" aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="m3 6 5 5 5-5" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" /></svg></summary><p>{item.answer}</p></details>)}</div>
+      <HomeFaq items={brand.faqs.slice(0, 5)} />
     </div></section>
 
     <section className="home-closing"><div className="shell home-closing__inner"><div><p className="home-eyebrow">JAHAN ACADEMY</p><h2>{content.closingTitle}</h2><p>{content.closingText}</p></div><ConsultationButton locale={locale} source="home-footer" /></div></section>
