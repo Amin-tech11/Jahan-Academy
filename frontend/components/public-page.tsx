@@ -2,7 +2,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { ConsultationForm } from "@/components/consultation-request-form";
-import { UniversitiesHero } from "@/components/universities-hero";
 import { ConsultationButton, localPath, SiteShell } from "@/components/site-shell";
 import { brandContent } from "@/lib/brand-content";
 import { getUniversityShowcase, getUniversityShowcases } from "@/lib/public-api";
@@ -34,7 +33,7 @@ function ConsultationPage({ locale, source }: { locale: Locale; source: string }
 async function UniversitiesPage({ locale, slug }: { locale: Locale; slug?: string }) {
   const dictionary = siteCopy[locale];
   if (slug) { const university = await getUniversityShowcase(slug, locale); if (!university) notFound(); return <SiteShell locale={locale}><main><Hero eyebrow={university.country[locale]} title={university.name[locale]} text={university.summary[locale]} action={<ConsultationButton locale={locale} source={`university:${university.slug}`} />} /><section className="section"><div className="shell detail-grid"><div className="facts">{university.city && <Fact label={locale === "fa" ? "شهر" : "City"} value={university.city[locale]} />}{university.institutionType && <Fact label={locale === "fa" ? "نوع مؤسسه" : "Institution type"} value={university.institutionType[locale]} />}{university.foundedYear && <Fact label={locale === "fa" ? "سال تأسیس" : "Founded"} value={String(university.foundedYear)} />}</div><article className="prose"><h2>{locale === "fa" ? "درباره این دانشگاه" : "About this university"}</h2><p>{university.summary[locale]}</p>{university.websiteUrl && <a className="button button-secondary" href={university.websiteUrl} target="_blank" rel="noreferrer">{locale === "fa" ? "وب‌سایت رسمی" : "Official website"}</a>}</article></div></section><Section title={copy[locale].faq}><FaqList locale={locale} /></Section><ConversionBand locale={locale} source={`university:${university.slug}:footer`} /></main></SiteShell>; }
-  const universities = await getUniversityShowcases(locale); return <SiteShell locale={locale}><main><UniversitiesHero locale={locale} /><Section title={dictionary.universitiesTitle}><UniversityCards locale={locale} universities={universities} /></Section></main></SiteShell>;
+  const universities = await getUniversityShowcases(locale); return <SiteShell locale={locale}><main><section className="section"><div className="shell"><div className="section-heading"><h1>{dictionary.universitiesTitle}</h1></div><UniversityCards locale={locale} universities={universities} /></div></section></main></SiteShell>;
 }
 function Fact({ label, value }: { label: string; value: string }) { return <div><span>{label}</span><strong>{value}</strong></div>; }
 
