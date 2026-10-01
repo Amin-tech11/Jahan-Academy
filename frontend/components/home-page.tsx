@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { HomeNewsTicker } from "@/components/home-news-ticker";
 import { HomeJourneyProgress } from "@/components/home-journey-progress";
 import Link from "next/link";
 import type { ReactNode } from "react";
@@ -45,15 +46,6 @@ function Arrow({ locale }: { locale: Locale }) {
   return <span aria-hidden="true">{locale === "fa" ? "↖" : "↗"}</span>;
 }
 
-function SectionHeading({ id, eyebrow, title, text, href, linkText }: {
-  id: string; eyebrow: string; title: string; text: string; href?: string; linkText?: string;
-}) {
-  return <div className="home-section-heading">
-    <div><p className="home-eyebrow">{eyebrow}</p><h2 id={id}>{title}</h2><p>{text}</p></div>
-    {href && linkText && <Link className="home-section-heading__link" href={href}>{linkText} <span aria-hidden="true">↗</span></Link>}
-  </div>;
-}
-
 function ServiceGlyph({ id }: { id: (typeof homeServices)[number]["id"] }) {
   const paths: Record<string, ReactNode> = {
     language: <><path d="M12 6.2c-2.7-1.5-5.3-1.5-8-.1v12.3c2.7-1.4 5.3-1.4 8 .1 2.7-1.5 5.3-1.5 8-.1V6.1c-2.7-1.4-5.3-1.4-8 .1Z" /><path d="M12 6.2v12.3" /></>,
@@ -68,7 +60,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
   const copy = siteCopy[locale];
   const content = getHomeContent(locale);
   const brand = brandContent[locale];
-  const visibleArticles = articles.filter((article) => article.type === "article").slice(0, 2);
+  const visibleArticles = [...articles].sort((a, b) => b.date.localeCompare(a.date));
 
   return <SiteShell locale={locale}><main className="home-page">
     <div className={`home-hero home-hero--${locale}`} aria-hidden="true">
@@ -126,10 +118,8 @@ export async function HomePage({ locale }: { locale: Locale }) {
     </div></section>
 
     <section className="home-section" aria-labelledby="home-articles-title"><div className="shell">
-      <SectionHeading id="home-articles-title" eyebrow={content.articleEyebrow} title={copy.articlesTitle} text={content.articleText} href={localPath(locale, "/articles")} linkText={content.sectionLink} />
-      <div className="home-articles">{visibleArticles.map((article, index) => <article className="home-article-card" key={article.slug}>
-        <div className="home-article-card__media" aria-hidden="true"><span>0{index + 1}</span></div><div className="home-article-card__body"><small>{content.articleLabel} · <time dateTime={article.date}>{article.date}</time></small><h3>{article.title[locale]}</h3><p>{article.excerpt[locale]}</p><Link href={localPath(locale, `/articles/${article.slug}`)}>{copy.readMore} <Arrow locale={locale} /></Link></div>
-      </article>)}</div>
+      <h2 id="home-articles-title" className="home-destinations__title" dir={locale === "fa" ? "rtl" : "ltr"}><Link href={localPath(locale, "/articles")}>{locale === "fa" ? "خبر ها" : "News"}<span className="home-destinations__title-arrow" aria-hidden="true">{locale === "fa" ? "←" : "→"}</span></Link></h2>
+      <HomeNewsTicker items={visibleArticles} locale={locale} />
     </div></section>
 
     <section className="home-section home-section--soft" aria-labelledby="home-faq-title"><div className="shell home-faq__grid">
