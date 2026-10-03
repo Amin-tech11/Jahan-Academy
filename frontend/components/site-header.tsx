@@ -45,7 +45,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
 
   return <header className="site-header"><div className="shell header-inner">
     <Link className="brand" href={`/${locale}`} aria-label={locale === "fa" ? "جهان آکادمی، صفحه اصلی" : "Jahan Academy, home"}>
-      <span className="brand-image"><Image src="/jahan-logo.png" alt="" fill sizes="104px" priority /></span>
+      <span className="brand-image"><Image src="/brand/jahan-academy-official.png" alt="" fill sizes="(max-width: 600px) 180px, 240px" preload /></span>
     </Link>
     <nav className="main-nav" aria-label={locale === "fa" ? "ناوبری اصلی" : "Main navigation"}>{links(true)}</nav>
     <div className="header-actions">

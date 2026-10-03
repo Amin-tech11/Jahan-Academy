@@ -85,7 +85,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
     </section>
 
     <section className="home-section home-section--soft" aria-labelledby="home-destinations-title"><div className="shell">
-      <h2 id="home-destinations-title" className="home-destinations__title" dir={locale === "fa" ? "rtl" : "ltr"}><Link href={localPath(locale, "/countries")}>{copy.destinationsTitle}<span className="home-destinations__title-arrow" aria-hidden="true">{locale === "fa" ? "←" : "→"}</span></Link></h2>
+      <h2 id="home-destinations-title" className="home-destinations__title" dir={locale === "fa" ? "rtl" : "ltr"}><Link href={localPath(locale, "/countries")}>{copy.destinationsTitle}<svg className="home-destinations__title-arrow" aria-hidden="true" width="14" height="16" viewBox="0 0 14 16" fill="currentColor"><path d="M1 8 12 1v14L1 8Z" /></svg></Link></h2>
       <div className="home-destinations">{destinationSlugs.map((slug, index) => {
         const destination = headerDestinations.find((entry) => entry.slug === slug);
         if (!destination) return null;
@@ -97,14 +97,14 @@ export async function HomePage({ locale }: { locale: Locale }) {
     </div></section>
 
     <section className="home-section" aria-labelledby="home-services-title"><div className="shell">
-      <h2 id="home-services-title" className="home-destinations__title" dir={locale === "fa" ? "rtl" : "ltr"}><Link href={localPath(locale, "/services")}>{locale === "fa" ? "خدمات موسسه ما" : "Our institute’s services"}<span className="home-destinations__title-arrow" aria-hidden="true">{locale === "fa" ? "←" : "→"}</span></Link></h2>
+      <h2 id="home-services-title" className="home-destinations__title" dir={locale === "fa" ? "rtl" : "ltr"}><Link href={localPath(locale, "/services")}>{locale === "fa" ? "خدمات موسسه ما" : "Our institute’s services"}<svg className="home-destinations__title-arrow" aria-hidden="true" width="14" height="16" viewBox="0 0 14 16" fill="currentColor"><path d="M1 8 12 1v14L1 8Z" /></svg></Link></h2>
       <div className="home-services" dir={locale === "fa" ? "rtl" : "ltr"}>{homeServices.map((service) => <article key={service.id} className="home-service-card">
         <span className="home-service-card__icon"><ServiceGlyph id={service.id} /></span><h3>{service.title[locale]}</h3><p>{service.description[locale]}</p>
       </article>)}</div>
     </div></section>
 
     <section className="home-section home-section--tinted" aria-labelledby="home-universities-title"><div className="shell">
-      <h2 id="home-universities-title" className="home-destinations__title" dir={locale === "fa" ? "rtl" : "ltr"}><Link href={localPath(locale, "/universities")}>{copy.universitiesTitle}<span className="home-destinations__title-arrow" aria-hidden="true">{locale === "fa" ? "←" : "→"}</span></Link></h2>
+      <h2 id="home-universities-title" className="home-destinations__title" dir={locale === "fa" ? "rtl" : "ltr"}><Link href={localPath(locale, "/universities")}>{copy.universitiesTitle}<svg className="home-destinations__title-arrow" aria-hidden="true" width="14" height="16" viewBox="0 0 14 16" fill="currentColor"><path d="M1 8 12 1v14L1 8Z" /></svg></Link></h2>
       <HomeUniversityShowcase locale={locale} />
       <p className="home-universities__note">{content.universityNote}</p>
     </div></section>
@@ -129,7 +129,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
     </div></section>
 
     <section className="home-section" aria-labelledby="home-articles-title"><div className="shell">
-      <h2 id="home-articles-title" className="home-destinations__title" dir={locale === "fa" ? "rtl" : "ltr"}><Link href={localPath(locale, "/articles")}>{locale === "fa" ? "خبر ها" : "News"}<span className="home-destinations__title-arrow" aria-hidden="true">{locale === "fa" ? "←" : "→"}</span></Link></h2>
+      <h2 id="home-articles-title" className="home-destinations__title" dir={locale === "fa" ? "rtl" : "ltr"}><Link href={localPath(locale, "/articles")}>{locale === "fa" ? "خبر ها" : "News"}<svg className="home-destinations__title-arrow" aria-hidden="true" width="14" height="16" viewBox="0 0 14 16" fill="currentColor"><path d="M1 8 12 1v14L1 8Z" /></svg></Link></h2>
       <HomeNewsTicker items={visibleArticles} locale={locale} />
     </div></section>
 
@@ -140,9 +140,9 @@ export async function HomePage({ locale }: { locale: Locale }) {
 
     <section className="home-closing" id="home-consultation" aria-labelledby="home-closing-title">
       <div className="shell">
-        <header className="home-closing__heading"><h2 id="home-closing-title">{locale === "fa" ? "بیایید دربارهٔ آیندهٔ تحصیلی‌تان گپ بزنیم." : "Let’s talk about your academic future."}</h2><p>{locale === "fa" ? "از آرزوها و سؤال‌هایتان برای ما بگویید؛ کنار شما هستیم تا قدم بعدی را با خیال راحت‌تر بردارید." : "Tell us about your goals and questions. We’re here to help you take your next step with greater confidence."}</p></header>
+        <header className="home-closing__heading"><h2 id="home-closing-title">{content.closingTitle}</h2><p>{content.closingText.replaceAll("هٔ", "ه")}</p></header>
         <div className="home-closing__layout">
-          <div className="home-closing__image"><Image src="/journey/profile-assessment.png" alt={locale === "fa" ? "مشاوره دربارهٔ مسیر تحصیلی" : "Study pathway consultation"} fill sizes="(max-width: 800px) 100vw, 50vw" /></div>
+          <div className="home-closing__image"><Image src="/journey/profile-assessment.png" alt={locale === "fa" ? "مشاوره درباره مسیر تحصیلی" : "Study pathway consultation"} fill sizes="(max-width: 800px) 100vw, 50vw" /></div>
           <HomeConsultation locale={locale} />
         </div>
       </div>
