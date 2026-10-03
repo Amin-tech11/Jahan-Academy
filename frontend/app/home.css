@@ -319,3 +319,8 @@
   .home-page [data-home-pending],
   .home-page + .site-footer[data-home-pending] { opacity: 1; }
 }
+
+.home-process__timeline { position: relative; }
+.home-process__dot { position: absolute; top: 0; left: 0; z-index: 1; width: .7rem; height: .7rem; border-radius: 50%; background: var(--color-brand-900); box-shadow: 0 0 0 3px var(--color-page); pointer-events: none; visibility: hidden; }
+.home-process__dot[data-ready="true"] { visibility: visible; }
+.home-process__number { z-index: 2; }
