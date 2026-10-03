@@ -13,9 +13,9 @@
   background: var(--paper);
   color: var(--ink);
 }
-.panel :global(.site-header), .panel :global(.site-footer) { background: var(--surface); }
-.panel :global(.main-nav), .panel :global(.footer-brand), .panel :global(.locale-link) { color: var(--ink); }
-.panel :global(.main-nav) a:hover, .panel :global(.footer-links) a:hover { color: var(--navy); }
+.panel :global(.site-header) { background: var(--surface); }
+.panel :global(.main-nav), .panel :global(.locale-link) { color: var(--ink); }
+.panel :global(.main-nav) a:hover { color: var(--navy); }
 .panel :global(.button-primary) { background: var(--navy); color: var(--surface); }
 .panel :global(.button-primary):hover { box-shadow: 0 0 0 3px var(--line); }
 .panel :global(.faq-list) summary { color: var(--ink); }
@@ -23,3 +23,4 @@
 .panel :global(.faq-list) details[open] summary { color: var(--navy); }
 .panel :global(.faq-list) summary::marker { color: var(--navy); }
 .panel :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+.panel :global(.site-footer) :focus-visible { outline-color: var(--surface); }
