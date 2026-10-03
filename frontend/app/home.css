@@ -280,3 +280,5 @@
 .home-consultation__form p { font-size: .85rem; }
 .home-consultation__form p[role="alert"] { color: #ad3030; }
 @media (max-width: 480px) { .home-consultation__fields { grid-template-columns: 1fr; } }
+
+.home-consultation__form > h3, .home-consultation__form > p:not([role="alert"]) { text-align: center; }

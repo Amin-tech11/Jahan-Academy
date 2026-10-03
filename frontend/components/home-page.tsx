@@ -140,9 +140,9 @@ export async function HomePage({ locale }: { locale: Locale }) {
 
     <section className="home-closing" id="home-consultation" aria-labelledby="home-closing-title">
       <div className="shell">
-        <header className="home-closing__heading"><h2 id="home-closing-title">{locale === "fa" ? "بیایید دربارهٔ آیندهٔ تحصیلی‌تان گپ بزنیم." : "Let’s talk about your academic future."}</h2><p>{locale === "fa" ? "از آرزوها و سؤال‌هایتان برای ما بگویید؛ کنار شما هستیم تا قدم بعدی را با خیال راحت‌تر بردارید." : "Tell us about your goals and questions. We’re here to help you take your next step with greater confidence."}</p></header>
+        <header className="home-closing__heading"><h2 id="home-closing-title">{content.closingTitle}</h2><p>{content.closingText.replaceAll("هٔ", "ه")}</p></header>
         <div className="home-closing__layout">
-          <div className="home-closing__image"><Image src="/journey/profile-assessment.png" alt={locale === "fa" ? "مشاوره دربارهٔ مسیر تحصیلی" : "Study pathway consultation"} fill sizes="(max-width: 800px) 100vw, 50vw" /></div>
+          <div className="home-closing__image"><Image src="/journey/profile-assessment.png" alt={locale === "fa" ? "مشاوره درباره مسیر تحصیلی" : "Study pathway consultation"} fill sizes="(max-width: 800px) 100vw, 50vw" /></div>
           <HomeConsultation locale={locale} />
         </div>
       </div>
