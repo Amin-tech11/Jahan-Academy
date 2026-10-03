@@ -126,3 +126,23 @@ test("decorative dot is outside the semantic list and hidden from assistive tech
   assert.equal(app.point({ getScreenCTM: () => null }, 0), null);
   app.cleanup();
 });
+
+test("dot fully disappears at a numbered circle and returns beyond it in both scroll directions", () => {
+  for (const mobile of [false, true]) {
+    const app = setup(mobile ? 492 : 340, mobile);
+    assert.equal(app.dot.style.opacity, "1");
+    app.shift(-15);
+    assert.equal(app.dot.style.opacity, "0");
+    app.shift(-25);
+    assert.equal(app.dot.style.opacity, "0");
+    assert.equal(app.steps[0].dataset.active, "true");
+    app.shift(-40);
+    assert.equal(app.dot.style.opacity, "1");
+    assert.equal(app.steps[0].dataset.active, undefined);
+    app.shift(40);
+    assert.equal(app.dot.style.opacity, "0");
+    app.shift(40);
+    assert.equal(app.dot.style.opacity, "1");
+    app.cleanup();
+  }
+});

@@ -36,10 +36,11 @@ export function HomeUniversityShowcase({ locale }: { locale: Locale }) {
   return <>
     <div className="home-universities__filters" role="group" aria-label={locale === "fa" ? "انتخاب کشور دانشگاه‌ها" : "Choose a university country"} dir={locale === "fa" ? "rtl" : "ltr"}>
       {countries.map((country) => <button key={country.slug} type="button" className="home-universities__country" aria-pressed={activeCountry === country.slug} onClick={() => setActiveCountry(country.slug)}>
-        <Image src={`/destinations/flags/${country.slug}.svg`} alt="" width={32} height={32} />
+        <Image src={`/home-country-maps/${country.slug}.svg`} alt="" width={64} height={64} />
         <span>{country[locale]}</span>
       </button>)}
     </div>
+    <a className="home-universities__map-credits" href="/home-country-maps/credits.html" target="_blank" rel="noreferrer">{locale === "fa" ? "منابع نقشه‌ها" : "Map credits"}</a>
     <div className="home-universities" ref={gridRef} dir={locale === "fa" ? "rtl" : "ltr"} aria-live="polite">
       {visibleUniversities.map((university) => <UniversityCard key={university.slug} university={university} locale={locale} />)}
     </div>

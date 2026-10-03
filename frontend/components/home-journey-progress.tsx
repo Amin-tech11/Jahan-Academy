@@ -64,6 +64,8 @@ export function HomeJourneyProgress({ children }: { children: ReactNode }) {
           nearest = distance;
         }
       }
+      // Hide the entire dot while it passes through the numbered circle.
+      dot.style.opacity = active ? "0" : "1";
       for (const { step } of steps) {
         if (step === active) step.dataset.active = "true";
         else delete step.dataset.active;
