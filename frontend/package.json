@@ -8,11 +8,13 @@
   },
   "scripts": {
     "dev": "next dev",
+    "dev:destination": "node scripts/dev-destination.mjs",
     "dev:home": "node scripts/dev-panel.mjs home-page",
     "dev:destinations": "node scripts/dev-panel.mjs destinationS",
     "dev:dashboard": "node scripts/dev-panel.mjs dashboard",
     "dev:users": "node scripts/dev-panel.mjs users",
     "dev:orders": "node scripts/dev-panel.mjs orders",
+    "dev:university-info": "node scripts/dev-panel.mjs university-info",
     "dev:develop": "node scripts/dev-panel.mjs develop",
     "build": "next build",
     "start": "next start",

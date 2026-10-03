@@ -14,7 +14,11 @@
 # JavaScript
 **/node_modules/
 **/.next/
+**/.next-*/
 **/*.tsbuildinfo
+# Next.js dev generates local agent guidance in the frontend checkout.
+/frontend/AGENTS.md
+/frontend/CLAUDE.md
 
 # Editors and operating systems
 .idea/
