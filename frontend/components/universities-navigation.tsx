@@ -36,13 +36,21 @@ export function UniversitiesNavigation({ title, items }: { title: string; items:
     let frame = 0;
     const syncPosition = () => {
       frame = 0;
-      // Match the anchor offset so headings below the sticky bar activate immediately.
-      const arrival = header.getBoundingClientRect().height + nav.getBoundingClientRect().height + 24;
+      // Measure visible content below the actual sticky bar, not a heading threshold.
+      const visibleTop = Math.max(header.getBoundingClientRect().bottom, nav.getBoundingClientRect().bottom);
+      const visibleBottom = window.innerHeight;
       let current = items[0]?.id;
+      let largestVisibleArea = 0;
       sections.forEach((section, index) => {
-        if (section && section.getBoundingClientRect().top <= arrival) current = items[index].id;
+        if (!section) return;
+        const bounds = section.getBoundingClientRect();
+        const visibleArea = Math.max(0, Math.min(bounds.bottom, visibleBottom) - Math.max(bounds.top, visibleTop));
+        if (visibleArea > largestVisibleArea) {
+          largestVisibleArea = visibleArea;
+          current = items[index].id;
+        }
       });
-      setActive(current);
+      if (largestVisibleArea > 0) setActive(current);
     };
     const schedule = () => {
       if (!frame) frame = window.requestAnimationFrame(syncPosition);
