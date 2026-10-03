@@ -9,8 +9,8 @@ const sectionIds = ["university-types", "university-rankings", "university-count
 export function UniversitiesGuide({ locale }: { locale: Locale }) {
   const content = universityContent[locale];
   return <div className={`shell ${styles.guide}`}>
-    <header className={styles.intro}><h2>{content.title}</h2><p>{content.intro}</p></header>
-    <UniversitiesNavigation title={content.navigation} items={content.sections.map((label, index) => ({ id: sectionIds[index], label }))} />
+    <UniversitiesNavigation title={content.title} items={content.sections.map((label, index) => ({ id: sectionIds[index], label }))} />
+    <div className={styles.intro}><p>{content.intro}</p></div>
     <section id={sectionIds[0]} className={styles.section}><h2>{content.sections[0]}</h2><div className={styles.cards}>{content.types.map(item => <article className={styles.card} key={item.title}><h3>{item.title}</h3><p>{item.text}</p></article>)}</div><a className={styles.source} href="https://educationusa.state.gov/experience-studying-usa/us-educational-system/frequently-asked-questions-faqs" target="_blank" rel="noreferrer">EducationUSA ↗</a></section>
     <section id={sectionIds[1]} className={styles.section}><h2>{content.sections[1]}</h2><p>{content.rankingIntro}</p><div className={styles.cards}>{content.rankings.map((item, index) => <article className={styles.card} key={item.title}><h3 dir="ltr">{item.title}</h3><p>{item.text}</p><a href={universityRankingSources[index]} target="_blank" rel="noreferrer">{content.rankingLink} ↗</a></article>)}</div></section>
     <section id={sectionIds[2]} className={styles.section}><h2>{content.sections[2]}</h2><p>{content.countriesIntro}</p><div className={styles.countries}>{universityCountries.map(country => <article className={styles.card} key={country.id}><h3>{country[locale]}</h3><p>{country.university[locale]}</p><a href={country.url} target="_blank" rel="noreferrer">{content.officialSite} ↗</a></article>)}</div></section>
