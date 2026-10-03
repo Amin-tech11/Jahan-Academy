@@ -20,12 +20,11 @@ export function UniversitiesGuide({ locale }: { locale: Locale }) {
     <section id={sectionIds[1]} className={styles.section}><h2>{content.sections[1]}</h2><p>{content.rankingIntro}</p><div className={styles.cards}>{content.rankings.map((item, index) => <article className={`${styles.card} ${styles.typeCard}`} key={item.title}><span className={styles.typeIcon}><UniversityRankingIcon index={index} /></span><h3 dir="ltr">{item.title}</h3><p>{item.text}</p><a href={universityRankingSources[index]} target="_blank" rel="noreferrer">{content.rankingLink} ↗</a></article>)}</div></section>
     <section id={sectionIds[2]} className={`${styles.section} ${styles.showcase}`}><h2>{content.sections[2]}</h2><HomeUniversityShowcase locale={locale} /><p className={styles.universityNote}>{locale === "fa" ? "نمایش این دانشگاه‌ها به معنی همکاری یا تضمین پذیرش نیست." : "Listing these universities does not imply a partnership or guaranteed admission."}</p></section>
     <section id={sectionIds[3]} className={styles.section}>
-      <header className={styles.criteriaHeader}>
-        <div className={styles.criteriaEmblem} aria-hidden="true"><span /><svg width="36" height="30" viewBox="0 0 36 30" fill="none" stroke="currentColor" strokeWidth="1.6"><path d="m2 10 16-7 16 7-16 7-16-7Zm6 4v8c6 4 14 4 20 0v-8M33 11v12" /></svg><span /></div>
+      <header>
         <h2>{content.sections[3]}</h2>
         <p>{locale === "fa" ? "با در نظر گرفتن این معیارها، مسیر تحصیلی آگاهانه‌تری برای آیندهٔ خود بسازید." : "Consider these criteria to make a more informed choice about your study path."}</p>
       </header>
-      <div className={styles.criteria}>{content.criteria.map((item, index) => <article className={styles.criteriaCard} key={item.title}><span className={styles.criteriaIcon}><UniversityCriteriaIcon index={index} /></span><div><h3>{item.title}</h3><p>{item.text}</p></div></article>)}</div>
+      <div className={styles.criteria}>{content.criteria.map((item, index) => <article className={`${styles.card} ${styles.typeCard}`} key={item.title}><span className={styles.typeIcon}><UniversityCriteriaIcon index={index} /></span><div><h3>{item.title}</h3><p>{item.text}</p></div></article>)}</div>
     </section>
     <section id={sectionIds[4]} className={styles.section}><h2>{content.sections[4]}</h2><p>{content.collegeIntro}</p><div className={styles.tableWrap}><table><thead><tr>{content.comparisonLabels.map(label => <th scope="col" key={label}>{label}</th>)}</tr></thead><tbody>{content.comparison.map(row => <tr key={row[0]}><th scope="row">{row[0]}</th><td>{row[1]}</td><td>{row[2]}</td></tr>)}</tbody></table></div></section>
     <section id={sectionIds[5]} className={`${styles.section} ${styles.faq}`} aria-labelledby="university-faq-title"><div className="home-faq__grid"><div className="home-faq__intro"><h2 id="university-faq-title">{content.sections[5]}</h2></div><HomeFaq items={content.faq} /></div></section>
