@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { animateHomeElement } from "@/lib/home-motion";
 
 import { homeUniversities, type HomeUniversity } from "@/lib/home-universities";
 import { headerDestinations, type Locale } from "@/lib/site-content";
@@ -22,6 +23,13 @@ function UniversityCard({ university, locale }: { university: HomeUniversity; lo
 
 export function HomeUniversityShowcase({ locale }: { locale: Locale }) {
   const [activeCountry, setActiveCountry] = useState("canada");
+  const gridRef = useRef<HTMLDivElement>(null);
+  const previousCountry = useRef(activeCountry);
+  useEffect(() => {
+    if (previousCountry.current === activeCountry) return;
+    previousCountry.current = activeCountry;
+    if (gridRef.current) return animateHomeElement(gridRef.current);
+  }, [activeCountry]);
   const countries = [...headerDestinations].sort((a, b) => a[locale].localeCompare(b[locale], locale));
   const visibleUniversities = homeUniversities.filter((university) => university.country === activeCountry);
 
@@ -32,7 +40,7 @@ export function HomeUniversityShowcase({ locale }: { locale: Locale }) {
         <span>{country[locale]}</span>
       </button>)}
     </div>
-    <div className="home-universities" dir={locale === "fa" ? "rtl" : "ltr"} aria-live="polite">
+    <div className="home-universities" ref={gridRef} dir={locale === "fa" ? "rtl" : "ltr"} aria-live="polite">
       {visibleUniversities.map((university) => <UniversityCard key={university.slug} university={university} locale={locale} />)}
     </div>
   </>;
