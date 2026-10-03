@@ -22,7 +22,7 @@ export function UniversitiesGuide({ locale }: { locale: Locale }) {
     <section id={sectionIds[3]} className={styles.section}>
       <header>
         <h2>{content.sections[3]}</h2>
-        <p>{locale === "fa" ? "با در نظر گرفتن این معیارها، مسیر تحصیلی آگاهانه‌تری برای آیندهٔ خود بسازید." : "Consider these criteria to make a more informed choice about your study path."}</p>
+        <p>{locale === "fa" ? "با در نظر گرفتن این معیارها، مسیر تحصیلی آگاهانه‌تری برای آینده خود بسازید." : "Consider these criteria to make a more informed choice about your study path."}</p>
       </header>
       <div className={styles.criteria}>{content.criteria.map((item, index) => <article className={`${styles.card} ${styles.typeCard}`} key={item.title}><span className={styles.typeIcon}><UniversityCriteriaIcon index={index} /></span><div><h3>{item.title}</h3><p>{item.text}</p></div></article>)}</div>
     </section>
