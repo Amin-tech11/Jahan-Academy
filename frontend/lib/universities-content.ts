@@ -25,7 +25,7 @@ export const universityContent = {
     title: "راهنمای دانشگاه‌های جهان",
     intro: "انتخاب دانشگاه از شناخت هدف شما شروع می‌شود: چه رشته‌ای می‌خواهید بخوانید، در چه مقطعی ادامه دهید و چه محیطی برای یادگیری شما مناسب است؟ در جهان آکادمی، این راهنما نقطهٔ شروعی برای بررسی دانشگاه‌ها، مقایسهٔ گزینه‌ها و آماده‌کردن پرسش‌های شما پیش از ارزیابی تحصیلی است.",
     navigation: "در این راهنما",
-    sections: ["انواع دانشگاه", "رتبه‌بندی‌ها", "دانشگاه های برتر", "معیارهای انتخاب", "دانشگاه‌های ایران", "کالج و دانشگاه", "پرسش‌های متداول"],
+    sections: ["انواع دانشگاه", "رتبه‌بندی‌ها", "دانشگاه های برتر", "معیارهای انتخاب", "کالج و دانشگاه", "پرسش‌های متداول"],
     types: [
       { title: "دولتی و عمومی", text: "این دانشگاه‌ها با پشتیبانی بخش عمومی فعالیت می‌کنند. هنگام بررسی شهریه، وضعیت دانشجوی بین‌المللی و مقررات همان دانشگاه را در نظر بگیرید؛ عنوان دولتی به‌تنهایی به معنی تحصیل رایگان نیست." },
       { title: "خصوصی", text: "مدیریت و تأمین مالی این مؤسسات مستقل از ساختار دانشگاه‌های دولتی است. هزینهٔ اعلام‌شده، کمک‌هزینهٔ قابل دریافت و اعتبار مؤسسه را کنار هم بررسی کنید." },
@@ -46,8 +46,6 @@ export const universityContent = {
       { title: "آمادگی و زمان‌بندی", text: "برای مدارک، ترجمه‌ها، زبان و ارسال درخواست زمان بگذارید. یک جدول شخصی از کارهای باقی‌مانده و تاریخ‌های اعلام‌شدهٔ هر دانشگاه تهیه کنید." },
       { title: "محیط زندگی و یادگیری", text: "اندازهٔ شهر و دانشگاه، خدمات پشتیبانی، دسترسی به محل اقامت و شیوهٔ ارتباط با استادان را با ترجیحات خود بسنجید." },
     ],
-    iranIntro: "برای مقایسهٔ گزینه‌های داخل و خارج، می‌توانید دانشگاه‌های ایران را هم در همان سال و همان نظام رتبه‌بندی بررسی کنید. دانشگاه تهران و دانشگاه صنعتی شریف دو نقطهٔ شروع برای این جست‌وجو هستند.",
-    iranLinks: ["دانشگاه تهران", "دانشگاه صنعتی شریف"],
     collegeIntro: "نام کالج و دانشگاه در همهٔ کشورها معنای یکسانی ندارد. برای نمونه، در آمریکا کالج و دانشگاه هر دو می‌توانند آموزش کارشناسی ارائه کنند، در حالی که دانشگاه معمولاً برنامه‌های تحصیلات تکمیلی هم دارد. برای انتخاب، مدرک نهایی و اعتبار دوره را بررسی کنید.",
     comparisonLabels: ["موضوع بررسی", "کالج", "دانشگاه"],
     comparison: [
@@ -69,7 +67,7 @@ export const universityContent = {
     title: "A guide to universities worldwide",
     intro: "Choosing a university starts with your goals: what you want to study, which degree you want to pursue and where you learn best. This Jahan Academy guide helps you explore institutions, compare options and prepare questions for an academic assessment.",
     navigation: "In this guide",
-    sections: ["University types", "Rankings", "Top universities", "Selection criteria", "Universities in Iran", "College and university", "Frequently asked questions"],
+    sections: ["University types", "Rankings", "Top universities", "Selection criteria", "College and university", "Frequently asked questions"],
     types: [
       { title: "Public institutions", text: "These institutions receive public support. Check the rules and international student fees of each university; public status alone does not imply free tuition." },
       { title: "Private institutions", text: "Their governance and funding differ from public institutions. Consider published costs, available financial aid and institutional recognition together." },
@@ -90,8 +88,6 @@ export const universityContent = {
       { title: "Preparation and timing", text: "Allow time for documents, translations, language preparation and applications. Keep a personal checklist of remaining tasks and each institution's published dates." },
       { title: "Living and learning", text: "Consider the city, institution size, support services, accommodation options and contact with teaching staff alongside your preferences." },
     ],
-    iranIntro: "Compare Iranian and overseas institutions within the same ranking system and edition. The University of Tehran and Sharif University of Technology are two starting points for exploring institutions in Iran.",
-    iranLinks: ["University of Tehran", "Sharif University of Technology"],
     collegeIntro: "The terms college and university differ across education systems. In the United States, both can offer undergraduate education, while universities typically also offer graduate programmes. Check the qualification awarded and the recognition of the course.",
     comparisonLabels: ["What to check", "College", "University"],
     comparison: [
