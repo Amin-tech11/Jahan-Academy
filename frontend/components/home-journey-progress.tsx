@@ -55,17 +55,26 @@ export function HomeJourneyProgress({ children }: { children: ReactNode }) {
 
       let active: HTMLElement | undefined;
       let nearest = Infinity;
+      let absorption = 0;
       for (const entry of segments) {
         const marker = entry.marker!.getBoundingClientRect();
-        const distance = Math.abs(point.y - (marker.top + marker.bottom) / 2);
-        // Activate only the number the moving point is currently reaching.
-        if (focusLine >= first && focusLine <= last && distance <= marker.height / 2 + 8 && distance < nearest) {
+        const center = (marker.top + marker.bottom) / 2;
+        const distance = Math.abs(point.y - center);
+        const radius = marker.height / 2;
+        entry.step.style.setProperty("--journey-fill", "0");
+        // Exchange the moving dot for a radial fill as it reaches the numbered circle.
+        if (focusLine >= first && focusLine <= last && distance <= radius + 14 && distance < nearest) {
           active = entry.step;
           nearest = distance;
+          const progress = Math.max(0, Math.min(1, (radius + 14 - distance) / (radius * .65 + 14)));
+          absorption = progress * progress * (3 - 2 * progress);
+          entry.step.style.setProperty("--journey-fill-origin", point.y < center ? "50% 0%" : "50% 100%");
         }
       }
+      active?.style.setProperty("--journey-fill", absorption.toFixed(4));
+      dot.style.opacity = (1 - absorption).toFixed(4);
       for (const { step } of steps) {
-        if (step === active) step.dataset.active = "true";
+        if (step === active && absorption >= .65) step.dataset.active = "true";
         else delete step.dataset.active;
       }
     };
