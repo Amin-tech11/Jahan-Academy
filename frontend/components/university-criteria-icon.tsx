@@ -1,8 +1,27 @@
 export function UniversityCriteriaIcon({ index }: { index: number }) {
-  return <svg width="72" height="72" viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
-    {index === 0 ? <><circle cx="24" cy="26" r="17" /><circle cx="24" cy="5" r="3" /><path d="M24 8v3M24 12v3M24 37v3M10 26h3M35 26h3m-8-6-4 8-8 4 4-8 8-4Z" /><path d="m30 20-8 4 4 4 4-8Z" fill="currentColor" /></>
-      : index === 1 ? <><path d="M8 15 32 7c2-1 3 0 4 2l2 8M9 17h29a3 3 0 0 1 3 3v18a3 3 0 0 1-3 3H9a4 4 0 0 1-4-4V18a4 4 0 0 1 4-4M41 25H31a5 5 0 0 0 0 10h10" /><circle cx="32" cy="30" r="1" /></>
-      : index === 2 ? <><rect x="7" y="10" width="34" height="33" rx="4" /><path d="M7 21h34M15 5v11M33 5v11M15 28h2m7 0h2m7 0h2M15 35h2m7 0h2m7 0h2" /></>
-      : <><path d="m8 20 16-9 16 9H8ZM10 41h28M6 44h36M14 24v13m10-13v13m10-13v13M24 11V3l8 3-8 3" /><path d="M5 38c-5-2-3-10 0-14 3 4 5 12 0 14Zm0 0v6M43 38c-5-2-3-10 0-14 3 4 5 12 0 14Zm0 0v6" /></>}
+  return <svg width="48" height="48" viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
+    {index === 0 ? <>
+      <circle cx="24" cy="24" r="18" fill="currentColor" fillOpacity=".05" />
+      <path d="M24 10v3m0 22v3M10 24h3m22 0h3" />
+      <path d="m31 17-4 10-10 4 4-10 10-4Z" fill="currentColor" fillOpacity=".12" />
+      <path d="m31 17-10 4 6 6 4-10Z" fill="currentColor" stroke="none" />
+      <circle cx="24" cy="24" r="1.5" fill="white" stroke="none" />
+    </> : index === 1 ? <>
+      <path d="M8 15 32 8a3 3 0 0 1 4 3v5" />
+      <rect x="6" y="16" width="36" height="25" rx="5" fill="currentColor" fillOpacity=".05" />
+      <path d="M42 24H32a5 5 0 0 0 0 10h10" fill="currentColor" fillOpacity=".1" />
+      <circle cx="32" cy="29" r="1.5" fill="currentColor" stroke="none" />
+      <path d="M12 21h10" />
+    </> : index === 2 ? <>
+      <rect x="7" y="10" width="34" height="32" rx="5" fill="currentColor" fillOpacity=".05" />
+      <path d="M7 20h34M16 6v8M32 6v8" />
+      <path d="M14 27h3m7 0h3m-13 7h3" />
+      <path d="m25 34 4 4 7-9" strokeWidth="2.5" />
+    </> : <>
+      <path d="m5 18 19-11 19 11H5Z" fill="currentColor" fillOpacity=".1" />
+      <path d="M8 22h32v15H8Z" fill="currentColor" fillOpacity=".04" />
+      <path d="M15 22v15m9-15v15m9-15v15M5 42h38M8 37h32" />
+      <circle cx="24" cy="14" r="1.5" fill="currentColor" stroke="none" />
+    </>}
   </svg>;
 }
