@@ -3,7 +3,6 @@ import { readFileSync } from "node:fs";
 import { test } from "node:test";
 
 import { getHomeContent } from "../lib/home-content.ts";
-import { siteCopy } from "../lib/site-content.ts";
 
 test("Home copy is complete and parallel in Persian and English", () => {
   const fa = getHomeContent("fa");
@@ -26,37 +25,20 @@ test("Home copy avoids unverified conversion claims and public Program offers", 
   assert.doesNotMatch(text, /\/programs\b|tuition|application fee|deadline/i);
 });
 
-test("hero uses lead-first consultation copy in both locales", () => {
-  assert.equal(siteCopy.fa.heroTitle, "فراتر از مرز ها\nبه سوی آینده ای روشن");
-  assert.equal(siteCopy.fa.heroText, "برای تحقق رؤیاهای تحصیلی‌تان، از نخستین گام تا انتخاب مسیر مناسب، با مشاوره‌ای تخصصی همراه و پشتیبان شما خواهیم بود.");
-  assert.equal(siteCopy.en.heroTitle, "Beyond borders\nToward a brighter future");
-  assert.match(siteCopy.en.heroText, /expert guidance/);
-  assert.doesNotMatch(siteCopy.fa.heroText, /شعبه|تضمین|بهترین هزینه|استقرار/);
-  assert.equal(getHomeContent("fa").heroServiceLink, "آشنایی با خدمات");
-  for (const locale of ["fa", "en"]) {
-    assert.equal("heroLabel" in getHomeContent(locale), false);
-    assert.equal("heroQuote" in getHomeContent(locale), false);
-  }
-});
-
-test("Persian hero mirrors only the artwork and layout, not the text", () => {
+test("hero remains full width and mirrors the artwork in Persian", () => {
   const component = readFileSync(new URL("../components/home-page.tsx", import.meta.url), "utf8");
   const css = readFileSync(new URL("../app/home.css", import.meta.url), "utf8");
   assert.match(component, /home-hero--\$\{locale\}/);
-  assert.match(css, /\.home-hero--fa \.home-hero__image, \.home-hero--fa \.home-hero__shade \{ transform: scaleX\(-1\); \}/);
-  assert.match(css, /\.home-hero--fa \.home-hero__content \{ direction: rtl; \}/);
-  assert.doesNotMatch(component, /content\.heroLabel|content\.heroQuote/);
-});
-
-test("hero image stays full width with actions and no headline or intro copy", () => {
-  const component = readFileSync(new URL("../components/home-page.tsx", import.meta.url), "utf8");
-  const css = readFileSync(new URL("../app/home.css", import.meta.url), "utf8");
+  assert.match(component, /src="\/home-hero-campus-v2\.png"/);
   assert.match(css, /\.home-hero \{[^}]*width: 100%/);
   assert.match(css, /\.home-hero \{[^}]*min-height: clamp\(20rem, 28vw, 28rem\)/);
-  assert.doesNotMatch(component, /<h1 id="home-title"/);
-  assert.doesNotMatch(component, /home-hero__description/);
-  assert.match(component, /src="\/home-hero-compact\.png"/);
-  assert.match(component, /className="shell home-hero__content"/);
-  assert.match(component, /heroServiceLink} <span aria-hidden="true">\{locale === "fa" \? "←" : "→"\}<\/span><\/ButtonLink><ConsultationButton/);
-  assert.doesNotMatch(component, /home-hero__quote/);
+  assert.match(css, /\.home-hero--fa \.home-hero__image, \.home-hero--fa \.home-hero__shade \{ transform: scaleX\(-1\); \}/);
+});
+
+test("hero has no service or assessment actions in either locale", () => {
+  const component = readFileSync(new URL("../components/home-page.tsx", import.meta.url), "utf8");
+  const hero = component.match(/<div className=\{`home-hero[\s\S]*?<\/div>/)?.[0];
+  assert.ok(hero);
+  assert.doesNotMatch(hero, /ButtonLink|ConsultationButton|heroServiceLink|home-hero__actions/);
+  assert.match(hero, /aria-hidden="true"/);
 });
