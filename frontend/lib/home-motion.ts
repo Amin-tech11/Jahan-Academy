@@ -1,20 +1,20 @@
 type Direction = "up" | "left" | "right" | "fade" | "hero";
 
 const groups: readonly [string, Direction, number][] = [
-  [".home-start__features > li", "up", 80],
+  [".home-start__features > li", "up", 60],
   [".home-destinations__title, .home-faq__intro, .home-closing__heading", "up", 0],
-  [".home-destination", "up", 80],
-  [".home-service-card", "up", 80],
+  [".home-destination", "up", 60],
+  [".home-service-card", "up", 60],
   [".home-universities__filters", "up", 0],
   [".home-universities", "up", 0],
   [".home-trust__header", "up", 0],
-  [".home-trust__value", "up", 80],
+  [".home-trust__value", "up", 60],
   [".home-process__media", "right", 0],
   [".home-process__copy", "left", 0],
   [".home-news", "up", 0],
   [".home-faq__item", "up", 60],
   [".home-closing__image", "left", 0],
-  [".home-closing__card", "right", 80],
+  [".home-closing__card", "right", 60],
 ];
 
 export function animateHomeElement(element: HTMLElement, direction: Direction = "up", delay = 0) {
@@ -23,11 +23,11 @@ export function animateHomeElement(element: HTMLElement, direction: Direction = 
   const mobile = window.matchMedia("(max-width: 800px)").matches;
   const offset = direction === "fade" ? "0 0"
     : mobile ? "0 8px"
-    : direction === "left" ? "-20px 0"
-    : direction === "right" ? "20px 0" : "0 20px";
+    : direction === "left" ? "-16px 0"
+    : direction === "right" ? "16px 0" : "0 16px";
   const animation = element.animate(
-    direction === "hero" ? [{ scale: 1.03 }, { scale: 1 }] : [{ opacity: 0, translate: offset }, { opacity: 1, translate: "0 0" }],
-    { duration: direction === "hero" ? 900 : direction === "fade" ? 400 : mobile ? 400 : 560, delay: mobile ? Math.min(delay / 2, 120) : Math.min(delay, 240), easing: "cubic-bezier(.22,1,.36,1)", fill: "backwards" },
+    direction === "hero" ? [{ scale: 1.02 }, { scale: 1 }] : [{ opacity: 0, translate: offset }, { opacity: 1, translate: "0 0" }],
+    { duration: direction === "hero" ? 1200 : direction === "fade" ? 600 : mobile ? 560 : 760, delay: mobile ? Math.min(delay / 2, 60) : Math.min(delay, 120), easing: "cubic-bezier(.25,.1,.25,1)", fill: "backwards" },
   );
   const cancel = () => {
     animation.cancel();

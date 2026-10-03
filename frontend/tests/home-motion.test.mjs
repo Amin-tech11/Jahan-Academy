@@ -122,8 +122,8 @@ test("mobile entrances use short vertical travel and preserve hero mirroring", (
   const app = setup({ mobile: true });
   app.observer.enter(app.media);
   assert.equal(app.media.animations[0].frames[0].translate, "0 8px");
-  assert.equal(app.media.animations[0].options.duration, 400);
-  assert.equal(app.hero.animations[0].frames[0].scale, 1.03);
+  assert.equal(app.media.animations[0].options.duration, 560);
+  assert.equal(app.hero.animations[0].frames[0].scale, 1.02);
   assert.equal("transform" in app.hero.animations[0].frames[0], false);
   app.cleanup();
 });
@@ -132,7 +132,7 @@ test("alternating journey entrances and footer use their intended directions", (
   const app = setup();
   app.observer.enter(app.media);
   app.observer.enter(app.footer);
-  assert.equal(app.media.animations[0].frames[0].translate, "-20px 0");
+  assert.equal(app.media.animations[0].frames[0].translate, "-16px 0");
   assert.equal(app.footer.animations[0].frames[0].translate, "0 0");
   app.cleanup();
   assert.equal(app.media.animations[0].canceled, true);
@@ -188,7 +188,7 @@ test("focused form stays visible and hero replays on return to the top", () => {
   app.observer.leave(app.hero, -500);
   app.observer.enter(app.hero);
   assert.equal(app.hero.animations.length, 2);
-  assert.equal(app.hero.animations[1].frames[0].scale, 1.03);
+  assert.equal(app.hero.animations[1].frames[0].scale, 1.02);
   app.cleanup();
 });
 
