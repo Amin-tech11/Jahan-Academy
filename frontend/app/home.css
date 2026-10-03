@@ -325,16 +325,6 @@
 .home-process__dot[data-ready="true"] { visibility: visible; }
 .home-process__number { z-index: 2; }
 
-/* Transfer the dot into a radial fill, with the reverse driven by the same scroll position. */
-.home-process__number { isolation: isolate; overflow: hidden; transition: color .12s ease; }
-.home-process__number::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; background: var(--color-brand-900); transform: scale(var(--journey-fill, 0)); transform-origin: var(--journey-fill-origin, 50% 0%); pointer-events: none; }
-.home-process__step[data-active="true"] .home-process__number { background: #fff; color: #fff; }
-@media (prefers-reduced-motion: reduce) {
-  .home-process__number { transition: none; }
-  .home-process__number::before { transform: scale(0); }
-  .home-process__step[data-active="true"] .home-process__number::before { transform: scale(1); }
-}
-
 /* A lightweight, illustrative conversation in the open left side of the hero. */
 .home-hero-chat { position: relative; width: min(42rem, 43vw); margin: 2rem auto 5rem 6%; border: 1px solid rgb(255 255 255 / 65%); border-radius: 1.1rem; background: rgb(255 255 255 / 97%); color: var(--color-text); box-shadow: 0 18px 55px rgb(0 0 0 / 20%); overflow: hidden; }
 .home-hero-chat__header { display: flex; align-items: center; gap: .7rem; min-height: 4rem; padding: .65rem 1rem; border-bottom: 1px solid var(--color-border); background: #fff; }

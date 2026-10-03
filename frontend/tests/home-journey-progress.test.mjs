@@ -9,7 +9,7 @@ const ts = require("typescript");
 const source = readFileSync(new URL("../components/home-journey-progress.tsx", import.meta.url), "utf8");
 function setup(top = 700, mobile = false) {
   const steps = [0, 1, 2].map((index) => {
-    const entry = { top: top + index * 400, dataset: {}, style: { setProperty(name, value) { this[name] = value; } } };
+    const entry = { top: top + index * 400, dataset: {} };
     const path = {
       getTotalLength: () => 100,
       getPointAtLength: (n) => ({ x: mobile ? 50 : 50 + 12 * Math.sin(n * Math.PI / 50), y: n }),
@@ -124,42 +124,5 @@ test("decorative dot is outside the semantic list and hidden from assistive tech
   assert.equal(dot.type, "span");
   assert.equal(dot.props["aria-hidden"], "true");
   assert.equal(app.point({ getScreenCTM: () => null }, 0), null);
-  app.cleanup();
-});
-
-test("dot dissolves into the circle then returns as it leaves, in either direction", () => {
-  const app = setup(350);
-  near(Number(app.dot.style.opacity), 1);
-  app.shift(-25);
-  const partial = Number(app.dot.style.opacity);
-  assert.ok(partial > 0 && partial < 1);
-  assert.equal(app.steps[0].style["--journey-fill-origin"], "50% 0%");
-  app.shift(-25);
-  near(Number(app.dot.style.opacity), 0);
-  near(Number(app.steps[0].style["--journey-fill"]), 1);
-  assert.equal(app.steps[0].dataset.active, "true");
-  app.shift(-25);
-  near(Number(app.dot.style.opacity), partial);
-  assert.equal(app.steps[0].style["--journey-fill-origin"], "50% 100%");
-  app.shift(-25);
-  near(Number(app.dot.style.opacity), 1);
-  near(Number(app.steps[0].style["--journey-fill"]), 0);
-  assert.equal(app.steps[0].dataset.active, undefined);
-  app.shift(50);
-  near(Number(app.dot.style.opacity), 0);
-  assert.equal(app.steps[0].dataset.active, "true");
-  app.cleanup();
-});
-
-test("mobile absorption resets the previous fill when jumping between steps", () => {
-  const app = setup(452, true);
-  near(Number(app.dot.style.opacity), 0);
-  app.shift(-400);
-  near(Number(app.steps[0].style["--journey-fill"]), 0);
-  near(Number(app.steps[1].style["--journey-fill"]), 1);
-  near(Number(app.dot.style.opacity), 0);
-  app.shift(-100);
-  near(Number(app.dot.style.opacity), 1);
-  assert.ok(app.steps.every((step) => Number(step.style["--journey-fill"]) === 0));
   app.cleanup();
 });
