@@ -68,6 +68,9 @@ button, input, select, textarea { font: inherit; }
 .site-header .brand { width: 240px; min-width: 240px; height: 80px; flex: none; }
 .site-header .brand-image { position: relative; display: block; width: 240px; height: 80px; overflow: hidden; }
 .site-header .brand-image img { object-fit: cover; object-position: center; }
+@media (min-width: 901px) {
+  .site-header .brand, .site-header .brand-image { width: 150px; min-width: 150px; height: 50px; }
+}
 .main-nav a[aria-current="page"] { color: var(--color-brand-900); text-decoration: underline; text-underline-offset: .45rem; }
 .main-nav > a:hover, .main-nav > a:focus-visible, .header-actions .locale-link:hover, .header-actions .locale-link:focus-visible { color: #0a5bc3; }
 .nav-destinations { position: relative; }
