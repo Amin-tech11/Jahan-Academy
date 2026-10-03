@@ -1,4 +1,6 @@
 .guide { padding-block: 44px 56px; }
+/* The sticky navigation stops at the end of the guide, before consultation. */
+.guideContent { position: relative; display: flow-root; }
 .guide h2 { margin: 0 0 20px; color: var(--navy); font-size: clamp(24px, 3vw, 32px); line-height: 1.5; }
 .guide h3 { margin: 0 0 12px; color: var(--ink); font-size: 19px; line-height: 1.6; }
 .guide p { margin: 0; color: var(--muted); font-size: 16px; line-height: 2; }
