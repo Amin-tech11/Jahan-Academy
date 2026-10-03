@@ -9,7 +9,7 @@
 .site:has(.services-page) .site-footer p, .site:has(.services-page) .site-footer .footer-links { color: var(--services-muted); }
 .services-container { width: min(100% - 3rem, 1200px); margin-inline: auto; }
 .services-hero { position: relative; display: grid; min-height: clamp(24rem, 28.4vw, 34rem); overflow: hidden; place-items: center; isolation: isolate; background: var(--services-brand) url('/services-hero.png') center 48% / cover no-repeat; }
-.services-hero::after { position: absolute; inset: 0; z-index: -1; content: ''; background: linear-gradient(90deg, rgba(0, 0, 0, .49), rgba(0, 0, 0, .55)); pointer-events: none; }
+.services-hero::after { position: absolute; inset: 0; z-index: -1; content: ''; background: linear-gradient(90deg, rgba(0, 0, 0, .32), rgba(0, 0, 0, .38)); pointer-events: none; }
 .services-hero__brand { padding: 1rem; color: #fff; font-family: Arial, sans-serif; font-size: clamp(2rem, 2.84vw, 3.4rem); font-weight: 400; letter-spacing: .5em; line-height: 1.15; text-align: center; text-shadow: 0 3px 22px rgba(2, 15, 24, .65); direction: ltr; }
 .services-intro { position: sticky; top: 78px; z-index: 30; padding: 1.5rem 0 1rem; background: var(--services-background); text-align: center; }
 .services-intro h1 { margin: 0; color: var(--services-brand); font-size: clamp(1.5rem, 2.6vw, 2.1rem); line-height: 1.35; }
