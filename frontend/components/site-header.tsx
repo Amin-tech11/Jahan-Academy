@@ -29,6 +29,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
     if (item.href === "/countries") {
       const destinations = [...headerDestinations].sort((a, b) => a[locale].localeCompare(b[locale], locale));
       const options = <div className="nav-destinations-list" dir={locale === "fa" ? "rtl" : "ltr"}>
+        <Link href={href} onClick={() => setOpen(false)}>{locale === "fa" ? "همه مقصدها" : "All destinations"}</Link>
         {destinations.map((destination) => <Link key={destination.slug} href={`/${locale}/countries/${destination.slug}`} onClick={() => setOpen(false)}><span className="nav-destination-flag" aria-hidden="true"><Image src={`/destinations/flags/${destination.slug}.svg`} alt="" width={28} height={28} /></span><span>{destination[locale]}</span></Link>)}
       </div>;
       if (desktop) return <div className="nav-destinations nav-destinations--desktop" key={href}>

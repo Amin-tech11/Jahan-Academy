@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "next dev",
     "dev:home": "node scripts/dev-panel.mjs home-page",
+    "dev:destinations": "node scripts/dev-panel.mjs destinationS",
     "dev:dashboard": "node scripts/dev-panel.mjs dashboard",
     "dev:users": "node scripts/dev-panel.mjs users",
     "dev:orders": "node scripts/dev-panel.mjs orders",
