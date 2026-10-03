@@ -19,24 +19,18 @@ const conversations = {
 
 export function HomeHeroChat({ locale }: { locale: Locale }) {
   const root = useRef<HTMLDivElement>(null);
-  const controller = useRef<ReturnType<typeof startHeroChat> | null>(null);
   const [frame, setFrame] = useState<HeroChatFrame>({ scene: 0, phase: 2 });
-  const [paused, setPaused] = useState(false);
   useEffect(() => {
     if (!root.current) return;
     const player = startHeroChat(root.current, setFrame);
-    controller.current = player;
-    return () => { player.dispose(); controller.current = null; };
+    return () => player.dispose();
   }, []);
   const conversation = conversations[locale][frame.scene];
   const fa = locale === "fa";
-  return <div className="home-hero-chat" ref={root} dir={fa ? "rtl" : "ltr"} role="group" aria-label={fa ? "نمونه گفت‌وگو با مشاور جهان آکادمی" : "Example conversation with a Jahan Academy advisor"} data-paused={paused || undefined}>
+  return <div className="home-hero-chat" ref={root} dir={fa ? "rtl" : "ltr"} role="group" aria-label={fa ? "نمونه گفت‌وگو با مشاور جهان آکادمی" : "Example conversation with a Jahan Academy advisor"}>
     <header className="home-hero-chat__header">
       <span className="home-hero-chat__avatar" aria-hidden="true"><svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M4 13v-2a8 8 0 0 1 16 0v5a4 4 0 0 1-4 4h-3M4 11H2v6h4v-6H4Zm16 0h2v6h-4v-6h2Z" /><path d="M9 20h4" /></svg></span>
-      <div><strong>{fa ? "جهان آکادمی" : "Jahan Academy"}</strong><span>{fa ? "نمونه گفت‌وگو با مشاور" : "A sample advisor conversation"}</span></div>
-      <button className="home-hero-chat__pause" type="button" aria-pressed={paused} onClick={() => { const next = !paused; setPaused(next); controller.current?.setPaused(next); }}>
-        {paused ? (fa ? "ادامه نمایش" : "Resume") : (fa ? "توقف نمایش" : "Pause")}
-      </button>
+      <div><strong>{fa ? "جهان آکادمی" : "Jahan Academy"}</strong></div>
     </header>
     <div className="home-hero-chat__body" aria-live="off" key={frame.scene}>
       <p className="home-hero-chat__topic">{conversation.topic}</p>
