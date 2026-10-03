@@ -3,6 +3,7 @@
 | Panel | Chat title | Branch | Local URL | Command from that branch's `frontend` directory |
 |---|---|---|---|---|
 | Home Page | `home-page:3100` | `home-page` | `http://localhost:3100` | `pnpm dev:home` |
+| Blog | `blog:3900` | `blog` | `http://localhost:3900/fa/articles` | `node scripts/dev-blog.mjs` |
 | Dashboard | `dashboard:3101` | `dashboard` | `http://localhost:3101` | `pnpm dev:dashboard` |
 | Users | `users:3102` | `users` | `http://localhost:3102` | `pnpm dev:users` |
 | Orders | `orders:3103` | `orders` | `http://localhost:3103` | `pnpm dev:orders` |
