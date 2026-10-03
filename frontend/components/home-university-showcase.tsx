@@ -41,7 +41,6 @@ export function HomeUniversityShowcase({ locale }: { locale: Locale }) {
         <span>{country[locale]}</span>
       </button>)}
     </div>
-    <a className="home-universities__map-credits" href="/home-country-maps/credits.html" target="_blank" rel="noreferrer">{locale === "fa" ? "منابع نقشه‌ها" : "Map credits"}</a>
     <div className="home-universities" ref={gridRef} dir={locale === "fa" ? "rtl" : "ltr"} aria-live="polite">
       {visibleUniversities.map((university) => <UniversityCard key={university.slug} university={university} locale={locale} />)}
     </div>
