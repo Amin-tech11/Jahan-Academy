@@ -1,6 +1,7 @@
 import type { Locale } from "@/lib/site-content";
 import { universityContent, universityRankingSources } from "@/lib/universities-content";
 import { HomeUniversityShowcase } from "./home-university-showcase";
+import { HomeFaq } from "./home-faq";
 import { ConsultationButton } from "./site-shell";
 import styles from "./universities-guide.module.css";
 import { UniversitiesNavigation } from "./universities-navigation";
@@ -19,7 +20,7 @@ export function UniversitiesGuide({ locale }: { locale: Locale }) {
     <section id={sectionIds[2]} className={`${styles.section} ${styles.showcase}`}><h2>{content.sections[2]}</h2><HomeUniversityShowcase locale={locale} /><p className={styles.universityNote}>{locale === "fa" ? "نمایش این دانشگاه‌ها به معنی همکاری یا تضمین پذیرش نیست." : "Listing these universities does not imply a partnership or guaranteed admission."}</p></section>
     <section id={sectionIds[3]} className={styles.section}><h2>{content.sections[3]}</h2><div className={styles.criteria}>{content.criteria.map((item, index) => <article className={styles.card} key={item.title}><span className={styles.number} aria-hidden="true">0{index + 1}</span><h3>{item.title}</h3><p>{item.text}</p></article>)}</div></section>
     <section id={sectionIds[4]} className={styles.section}><h2>{content.sections[4]}</h2><p>{content.collegeIntro}</p><div className={styles.tableWrap}><table><thead><tr>{content.comparisonLabels.map(label => <th scope="col" key={label}>{label}</th>)}</tr></thead><tbody>{content.comparison.map(row => <tr key={row[0]}><th scope="row">{row[0]}</th><td>{row[1]}</td><td>{row[2]}</td></tr>)}</tbody></table></div></section>
-    <section id={sectionIds[5]} className={styles.section}><h2>{content.sections[5]}</h2><div className="faq-list">{content.faq.map(item => <details key={item.question}><summary>{item.question}</summary><p>{item.answer}</p></details>)}</div></section>
+    <section id={sectionIds[5]} className={`${styles.section} ${styles.faq}`} aria-labelledby="university-faq-title"><div className="home-faq__grid"><div className="home-faq__intro"><h2 id="university-faq-title">{content.sections[5]}</h2></div><HomeFaq items={content.faq} /></div></section>
     <section className={styles.closing}><div><h2>{content.closingTitle}</h2><p>{content.closingText}</p></div><ConsultationButton locale={locale} source="universities" /></section>
   </div>;
 }
