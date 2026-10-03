@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { SiteShell } from "@/components/site-shell";
 import { ServicesConsultationForm } from "@/components/services-consultation-form";
 import { ServicesNavigation } from "@/components/services-navigation";
+import { ServicesMotion } from "@/components/services-motion";
 import { isLocale, type Locale } from "@/lib/site-content";
 
 import "../../services.css";
@@ -97,6 +98,7 @@ export default async function ServicesPage({ params }: PageProps) {
         <div className="services-hero__brand">JAHAN ACADEMY</div>
       </section>
 
+      <ServicesMotion>
       <div className="services-content">
         <section className="services-intro" aria-labelledby="services-title">
           <div className="services-container">
@@ -109,7 +111,7 @@ export default async function ServicesPage({ params }: PageProps) {
           {copy.services.map((service) => <section className="services-feature" id={service.id} key={service.id} aria-labelledby={`${service.id}-title`}>
             <div className="services-container services-feature__grid">
               <div className="services-feature__art">
-                <Image className="services-feature__image" src={service.image} alt={service.imageAlt} fill sizes="(max-width: 1000px) calc(100vw - 2rem), 540px" />
+                <Image className="services-feature__image" src={service.image} alt={service.imageAlt} fill sizes="(max-width: 900px) calc(100vw - 3rem), 600px" />
               </div>
               <div className="services-feature__copy">
                 <h2 id={`${service.id}-title`}>{service.title}</h2>
@@ -130,6 +132,7 @@ export default async function ServicesPage({ params }: PageProps) {
           </div>
         </div>
       </section>
+      </ServicesMotion>
     </main>
   </SiteShell>;
 }
