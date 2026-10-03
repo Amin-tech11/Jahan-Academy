@@ -8,6 +8,7 @@
   },
   "scripts": {
     "dev": "next dev",
+    "dev:destination": "node scripts/dev-destination.mjs",
     "dev:home": "node scripts/dev-panel.mjs home-page",
     "dev:dashboard": "node scripts/dev-panel.mjs dashboard",
     "dev:users": "node scripts/dev-panel.mjs users",
