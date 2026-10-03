@@ -1,9 +1,11 @@
 import type { Locale } from "@/lib/site-content";
+import Image from "next/image";
+import Link from "next/link";
 import { universityContent, universityRankingSources } from "@/lib/universities-content";
 import { HomeUniversityShowcase } from "./home-university-showcase";
 import { HomeFaq } from "./home-faq";
 import { UniversityCriteriaIcon } from "./university-criteria-icon";
-import { ConsultationButton } from "./site-shell";
+import { localPath } from "./site-shell";
 import styles from "./universities-guide.module.css";
 import { UniversitiesNavigation } from "./universities-navigation";
 import { UniversityTypeIcon } from "./university-type-icon";
@@ -28,6 +30,13 @@ export function UniversitiesGuide({ locale }: { locale: Locale }) {
     </section>
     <section id={sectionIds[4]} className={styles.section}><h2>{content.sections[4]}</h2><p>{content.collegeIntro}</p><div className={styles.tableWrap}><table><thead><tr>{content.comparisonLabels.map(label => <th scope="col" key={label}>{label}</th>)}</tr></thead><tbody>{content.comparison.map(row => <tr key={row[0]}><th scope="row">{row[0]}</th><td>{row[1]}</td><td>{row[2]}</td></tr>)}</tbody></table></div></section>
     <section id={sectionIds[5]} className={`${styles.section} ${styles.faq}`} aria-labelledby="university-faq-title"><div className="home-faq__grid"><div className="home-faq__intro"><h2 id="university-faq-title">{content.sections[5]}</h2></div><HomeFaq items={content.faq} /></div></section>
-    <section className={styles.closing}><div><h2>{content.closingTitle}</h2><p>{content.closingText}</p></div><ConsultationButton locale={locale} source="universities" /></section>
+    <section className={styles.closing} aria-labelledby="university-closing-title">
+      <div className={styles.closingArtwork} aria-hidden="true"><Image src="/universities/personal-path-design.png" alt="" width={1672} height={941} sizes="(max-width: 700px) 200vw, 1100px" /></div>
+      <div className={styles.closingContent} dir={locale === "fa" ? "rtl" : "ltr"}>
+        <h2 id="university-closing-title">{content.closingTitle}</h2>
+        <p>{locale === "fa" ? "گزینه‌های خود را بررسی کرده‌اید؟ قدم بعدی را با ارزیابی شرایط تحصیلی خود روشن کنید." : "Explored your options? Clarify your next step with an assessment of your academic background."}</p>
+        <Link className={styles.closingButton} href={`${localPath(locale, "/consultation")}?source=universities`}><span>{locale === "fa" ? "تکمیل فرم ارزیابی" : "Complete the assessment form"}</span><span aria-hidden="true">{locale === "fa" ? "←" : "→"}</span></Link>
+      </div>
+    </section>
   </div>;
 }
