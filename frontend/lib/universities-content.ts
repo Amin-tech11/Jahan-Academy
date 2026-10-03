@@ -25,7 +25,7 @@ export const universityContent = {
     title: "راهنمای دانشگاه‌های جهان",
     intro: "انتخاب دانشگاه از شناخت هدف شما شروع می‌شود: چه رشته‌ای می‌خواهید بخوانید، در چه مقطعی ادامه دهید و چه محیطی برای یادگیری شما مناسب است؟ در جهان آکادمی، این راهنما نقطهٔ شروعی برای بررسی دانشگاه‌ها، مقایسهٔ گزینه‌ها و آماده‌کردن پرسش‌های شما پیش از ارزیابی تحصیلی است.",
     navigation: "در این راهنما",
-    sections: ["انواع دانشگاه", "رتبه‌بندی‌ها", "دانشگاه‌ها بر اساس کشور", "معیارهای انتخاب", "دانشگاه‌های ایران", "کالج و دانشگاه", "پرسش‌های متداول"],
+    sections: ["انواع دانشگاه", "رتبه‌بندی‌ها", "دانشگاه های برتر", "معیارهای انتخاب", "دانشگاه‌های ایران", "کالج و دانشگاه", "پرسش‌های متداول"],
     types: [
       { title: "دولتی و عمومی", text: "این دانشگاه‌ها با پشتیبانی بخش عمومی فعالیت می‌کنند. هنگام بررسی شهریه، وضعیت دانشجوی بین‌المللی و مقررات همان دانشگاه را در نظر بگیرید؛ عنوان دولتی به‌تنهایی به معنی تحصیل رایگان نیست." },
       { title: "خصوصی", text: "مدیریت و تأمین مالی این مؤسسات مستقل از ساختار دانشگاه‌های دولتی است. هزینهٔ اعلام‌شده، کمک‌هزینهٔ قابل دریافت و اعتبار مؤسسه را کنار هم بررسی کنید." },
@@ -69,7 +69,7 @@ export const universityContent = {
     title: "A guide to universities worldwide",
     intro: "Choosing a university starts with your goals: what you want to study, which degree you want to pursue and where you learn best. This Jahan Academy guide helps you explore institutions, compare options and prepare questions for an academic assessment.",
     navigation: "In this guide",
-    sections: ["University types", "Rankings", "Universities by country", "Selection criteria", "Universities in Iran", "College and university", "Frequently asked questions"],
+    sections: ["University types", "Rankings", "Top universities", "Selection criteria", "Universities in Iran", "College and university", "Frequently asked questions"],
     types: [
       { title: "Public institutions", text: "These institutions receive public support. Check the rules and international student fees of each university; public status alone does not imply free tuition." },
       { title: "Private institutions", text: "Their governance and funding differ from public institutions. Consider published costs, available financial aid and institutional recognition together." },
