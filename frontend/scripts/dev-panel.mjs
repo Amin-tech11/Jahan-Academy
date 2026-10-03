@@ -9,6 +9,7 @@ const mapping = {
   orders: 3103,
   "university-info": 3600,
   "service-page": 3300,
+  "universities-page": 3400,
   develop: 5000,
 };
 

@@ -7,6 +7,7 @@ This repository uses the fixed chat, panel, branch, and port mapping in `PANEL_W
 - Each panel chat owns only its matching panel branch. For this chat: `Develop:5000` → `develop` → `http://localhost:5000`.
 - At the start of every task, check the current branch, chat/panel name, and assigned port. Stop and report a mismatch before editing.
 - Keep ordinary panel changes on the existing panel branch. Do not create or switch branches for them. Commit only on the matching branch.
+- The user approved `frontend/public/universities/hero/classical-campus.png` as the university listing hero, with the centered `JAHAN ACADEMY` wordmark matching the consultation hero. Do not replace it or add other hero images without an explicit user request. Generate other requested images as standalone review assets.
 - Change shared code only when genuinely required by the panel. Identify any cross-panel dependency and affected files to the user before changing them; proceed only after explicit instruction. Do not make broad authentication, schema, or architecture changes without explicit instruction.
 - Never merge or rebase a panel branch into `develop` without the user's explicit merge instruction. The user performs feature PR merges.
 

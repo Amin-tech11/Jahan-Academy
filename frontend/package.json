@@ -15,6 +15,7 @@
     "dev:orders": "node scripts/dev-panel.mjs orders",
     "dev:university-info": "node scripts/dev-panel.mjs university-info",
     "dev:services": "node scripts/dev-panel.mjs service-page",
+    "dev:universities": "node scripts/dev-panel.mjs universities-page",
     "dev:develop": "node scripts/dev-panel.mjs develop",
     "build": "next build",
     "start": "next start",
