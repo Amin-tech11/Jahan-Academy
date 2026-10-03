@@ -32,7 +32,6 @@
 .closing { display: flex; align-items: center; justify-content: space-between; gap: 28px; margin-top: 56px; padding: 32px; border: 1px solid var(--line); border-inline-start: 4px solid var(--navy); border-radius: 14px; background: var(--surface); }
 .closing div { max-width: 780px; }
 .closing a { flex-shrink: 0; }
-.sources { margin-top: 36px; padding-top: 24px; border-top: 1px solid var(--line); }
 .showcase :global(.home-university-card) h3 { margin: 0 0 .35rem; color: var(--color-text); font-size: 1.2rem; line-height: 1.45; }
 .showcase :global(.home-university-card__location) { margin: 0 0 .85rem; color: var(--color-muted); font-size: .85rem; line-height: normal; }
 .showcase :global(.home-university-card__summary) { margin: 0; color: var(--color-muted); font-size: .9rem; line-height: 1.8; }

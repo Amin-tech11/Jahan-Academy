@@ -61,7 +61,6 @@ export const universityContent = {
     ],
     closingTitle: "فهرستتان را به یک مسیر شخصی تبدیل کنید",
     closingText: "اگر چند دانشگاه را بررسی کرده‌اید و در انتخاب قدم بعدی تردید دارید، اطلاعاتتان را در فرم ارزیابی ثبت کنید تا دربارهٔ اولویت‌ها و مسیر مناسب شما گفت‌وگو کنیم.",
-    sourcesTitle: "منابع برای بررسی بیشتر",
   },
   en: {
     title: "A guide to universities worldwide",
@@ -103,7 +102,6 @@ export const universityContent = {
     ],
     closingTitle: "Turn your shortlist into a personal path",
     closingText: "If you have explored several universities and need help choosing the next step, submit the assessment form so we can discuss your priorities and study path.",
-    sourcesTitle: "Sources for further research",
   },
 } satisfies Record<Locale, unknown>;
 
