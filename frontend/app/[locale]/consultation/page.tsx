@@ -14,7 +14,8 @@ type PageProps = {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { locale } = await params;
   if (!isLocale(locale)) return {};
-  return { title: `${siteCopy[locale].consultationTitle} | Jahan Academy` };
+  const title = locale === "fa" ? "فرم ارزیابی اولیه" : "Initial assessment form";
+  return { title: `${title} | Jahan Academy` };
 }
 
 export default async function ConsultationPage({ params, searchParams }: PageProps) {
@@ -23,20 +24,10 @@ export default async function ConsultationPage({ params, searchParams }: PagePro
   const query = await searchParams;
   const source = typeof query.source === "string" ? query.source : undefined;
   const pageUrl = sourcePageUrl(locale, source);
-  const copy = siteCopy[locale];
-
   const fa = locale === "fa";
   return <SiteShell locale={locale}><main className="assessment-page">
     <section className="assessment-page__hero" aria-labelledby="consultation-title">
-      <div className="assessment-page__hero-inner">
-        <div className="assessment-page__hero-content">
-          <span className="assessment-page__eyebrow">JAHAN ACADEMY <span aria-hidden="true">/</span> {fa ? "مشاوره تخصصی" : "PERSONAL ADVICE"}</span>
-          <h1 id="consultation-title">{fa ? "مسیر بعدی‌تان را با اطمینان انتخاب کنید." : "Choose your next step with confidence."}</h1>
-          <p>{fa ? "هر مسیر مهاجرتی از یک گفت‌وگوی دقیق شروع می‌شود. چند دقیقه درباره شرایطتان بگویید تا تیم ما بتواند درخواست شما را بررسی کند." : "Every migration journey begins with a thoughtful conversation. Tell us a little about your situation so our team can review your request."}</p>
-          <a className="assessment-page__hero-link" href="#consultation-form">{fa ? "شروع ارزیابی" : "Start your assessment"}<span aria-hidden="true">↗</span></a>
-        </div>
-        <div className="assessment-page__hero-aside" aria-hidden="true"><span>01 / 03</span><strong>{fa ? "از شرایط شما شروع می‌کنیم" : "It starts with you"}</strong><div className="assessment-page__hero-rule" /><span>{fa ? "یک مسیر، متناسب با هدف شما" : "A route shaped around your goals"}</span></div>
-      </div>
+      <h1 className="assessment-page__wordmark" id="consultation-title" dir="ltr">JAHAN ACADEMY</h1>
     </section>
     <div className="assessment-page__body">
       <aside className="assessment-page__sidebar" aria-label={fa ? "مراحل درخواست" : "Request steps"}>
@@ -50,8 +41,8 @@ export default async function ConsultationPage({ params, searchParams }: PagePro
         </ol>
         <div className="assessment-page__privacy-note"><span aria-hidden="true">✳</span><p>{fa ? "اطلاعات شما فقط برای بررسی همین درخواست و تماس درباره آن استفاده می‌شود." : "Your information is used only to review and follow up on this request."}</p></div>
       </aside>
-      <section className="assessment-page__form-card" id="consultation-form" aria-label={copy.consultationTitle}>
-        <div className="assessment-page__form-heading"><span className="assessment-page__section-kicker">{fa ? "ارزیابی اولیه" : "INITIAL ASSESSMENT"}</span><h2>{fa ? "کمی درباره خودتان بگویید" : "Tell us about yourself"}</h2><p>{fa ? "فیلدهای ضروری با * مشخص شده‌اند. تکمیل سایر موارد به ما کمک می‌کند بهتر با شرایط شما آشنا شویم." : "Required fields are marked *. Optional details help us understand your situation."}</p></div>
+      <section className="assessment-page__form-card" id="consultation-form" aria-label={fa ? "فرم ارزیابی اولیه" : "Initial assessment form"}>
+        <div className="assessment-page__form-heading"><span className="assessment-page__section-kicker">{fa ? "ارزیابی اولیه" : "INITIAL ASSESSMENT"}</span><h2>{fa ? "دوست داریم کمی از شرایطتان بدانیم" : "Tell us about yourself"}</h2><p>{fa ? "تکمیل تمامی فیلدهای این فرم برای ثبت درخواست ارزیابی الزامی است." : "All fields in this form must be completed before submitting your assessment request."}</p></div>
         <AssessmentForm locale={locale} source={pageUrl} />
       </section>
     </div>
