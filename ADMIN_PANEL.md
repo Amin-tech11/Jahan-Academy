@@ -40,3 +40,13 @@ The dedicated `/admin/api/*` bridge has a fixed environment-selected backend, an
 - Media upload depends on the backend's signed storage URL being reachable from the browser and its storage CORS configuration.
 - Full role-aware navigation, accessible end-to-end audits, and authenticated browser workflows should be accepted with real administrative accounts before deployment. The backend remains authoritative meanwhile.
 - No merge to `develop` or production deployment is included. The owner merges feature PRs.
+
+## Login redesign and local account — 2026-10-03
+
+The owner's approved update replaces the login with a sky/aircraft background, white/navy split card, official Jahan Academy branding, required username/password controls, and an accessible password-visibility button. Recovery remains email-based.
+
+The local `Amin` username is configured by the ignored `ADMIN_LOCAL_USERNAME` and `ADMIN_LOCAL_EMAIL` server variables. The adapter enables this alias only in Next.js development mode and delegates actual credential verification to the backend. Existing email identities remain supported. This is a temporary local alias, not a change to the production email identity contract or the global password policy.
+
+The requested local account was provisioned as active and verified, with an Argon2 password hash, a global `super_admin` grant, and a `staff.local_bootstrap` audit event. The password is not included in repository files. The reusable local provisioning script accepts process environment values, refuses non-local environments, uses a reserved example.com identity, and never overwrites an existing account. No migrations or backend rebuild were performed.
+
+Live login, authenticated identity/lead/Program reads, and logout were tested successfully. This supersedes the earlier statement that no local admin account is available. Full CRUD and the previously listed backend-version gaps remain outside this login update.

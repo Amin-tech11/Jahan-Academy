@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { loginPayload } from "../../../../lib/admin-login";
 
 export const dynamic = "force-dynamic";
 async function proxy(
@@ -39,6 +40,26 @@ async function proxy(
     process.env.ADMIN_CSRF_COOKIE ?? "jahan_csrf",
   )?.value;
   if (csrf) headers.set("x-csrf-token", csrf);
+  let body = request.method === "GET" ? undefined : await request.text();
+  if (relative === "auth/login" && request.method === "POST") {
+    let input: unknown;
+    try {
+      input = JSON.parse(body ?? "{}");
+    } catch {
+      input = null;
+    }
+    const payload = loginPayload(input, {
+      environment: process.env.NODE_ENV,
+      username: process.env.ADMIN_LOCAL_USERNAME,
+      email: process.env.ADMIN_LOCAL_EMAIL,
+    });
+    if (!payload)
+      return NextResponse.json(
+        { error: { message: "نام کاربری یا رمز عبور معتبر نیست." } },
+        { status: 400, headers: { "Cache-Control": "no-store" } },
+      );
+    body = JSON.stringify(payload);
+  }
   try {
     const upstream = await fetch(
       `${base}${base.endsWith("/api/v1") ? "" : "/api/v1"}/${relative}${request.nextUrl.search}`,
@@ -48,7 +69,7 @@ async function proxy(
         cache: "no-store",
         redirect: "manual",
         signal: AbortSignal.timeout(15000),
-        ...(request.method === "GET" ? {} : { body: await request.text() }),
+        ...(body === undefined ? {} : { body }),
       },
     );
     const response = new NextResponse(

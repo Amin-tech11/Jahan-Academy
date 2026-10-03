@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import "./admin.css";
+import "./login.css";
 
 export const metadata: Metadata = {
   title: "مدیریت جهان آکادمی",
