@@ -89,10 +89,12 @@ button, input, select, textarea { font: inherit; }
 .mobile-menu-toggle, .mobile-nav { display: none; }
 .mobile-menu-toggle { min-width: 2.75rem; min-height: 2.75rem; border: 1px solid var(--color-border); border-radius: var(--radius-sm); background: #fff; color: var(--color-brand-900); cursor: pointer; }
 .mobile-menu-toggle span { font-size: 1.4rem; line-height: 1; }
-.site-footer { background: var(--color-brand-950); color: #f2f6f8; }
+.site-footer { background: #123B78; color: #FFFFFF; border-top-color: #123B78; }
 .site-footer a { color: inherit; }
-.site-footer .footer-brand { color: #fff; }
-.footer-bottom { border-top: 1px solid rgb(255 255 255 / 18%); margin-top: var(--space-8); padding-top: var(--space-4); font-size: .85rem; opacity: .76; }
+.site-footer .footer-brand, .site-footer p, .site-footer .footer-links, .site-footer .footer-bottom { color: #FFFFFF; }
+.site-footer a:hover { color: #FFFFFF; text-decoration: underline; text-underline-offset: .25rem; }
+.site-footer a:focus-visible { outline-color: #FFFFFF; }
+.footer-bottom { border-top: 1px solid rgb(255 255 255 / 18%); margin-top: var(--space-8); padding-top: var(--space-4); font-size: .85rem; opacity: 1; }
 
 @media (max-width: 900px) {
   .site-header .header-inner { min-height: 4.5rem; }

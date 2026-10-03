@@ -244,13 +244,7 @@
 .site:has(> .home-page) .nav-destinations--desktop:hover .nav-destinations-trigger,
 .site:has(> .home-page) .nav-destinations--desktop:focus-within .nav-destinations-trigger,
 .site:has(> .home-page) .locale-link:hover { color: var(--color-brand-900); }
-.site:has(> .home-page) .site-footer { background: var(--color-surface); border-color: var(--color-border); color: var(--color-text); }
-.site:has(> .home-page) .footer-brand { color: var(--color-brand-900); }
-.site:has(> .home-page) .site-footer p,
-.site:has(> .home-page) .footer-links,
-.site:has(> .home-page) .footer-bottom { color: var(--color-muted); }
-.site:has(> .home-page) .footer-bottom { border-color: var(--color-border); opacity: 1; }
-.site:has(> .home-page) .footer-links a:hover { color: var(--color-brand-900); }
+
 
 .home-closing { background: var(--color-page); padding-block: 3.5rem 4rem; }
 .home-closing__heading { text-align: center; margin-bottom: 2.75rem; }
