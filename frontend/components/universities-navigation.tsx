@@ -29,13 +29,39 @@ export function UniversitiesNavigation({ title, items }: { title: string; items:
   }, []);
 
   useEffect(() => {
-    const syncHash = () => {
-      const id = window.location.hash.slice(1);
-      setActive(items.some(item => item.id === id) ? id : items[0]?.id);
+    const nav = navigation.current;
+    const header = nav?.closest(".site")?.querySelector<HTMLElement>(".site-header");
+    if (!nav || !header) return;
+    const sections = items.map(item => document.getElementById(item.id));
+    let frame = 0;
+    const syncPosition = () => {
+      frame = 0;
+      // Match the anchor offset so headings below the sticky bar activate immediately.
+      const arrival = header.getBoundingClientRect().height + nav.getBoundingClientRect().height + 24;
+      let current = items[0]?.id;
+      sections.forEach((section, index) => {
+        if (section && section.getBoundingClientRect().top <= arrival) current = items[index].id;
+      });
+      setActive(current);
     };
-    syncHash();
-    window.addEventListener("hashchange", syncHash);
-    return () => window.removeEventListener("hashchange", syncHash);
+    const schedule = () => {
+      if (!frame) frame = window.requestAnimationFrame(syncPosition);
+    };
+    const observer = new ResizeObserver(schedule);
+    observer.observe(header);
+    observer.observe(nav);
+    sections.forEach(section => { if (section) observer.observe(section); });
+    syncPosition();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    window.addEventListener("hashchange", schedule);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      observer.disconnect();
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+      window.removeEventListener("hashchange", schedule);
+    };
   }, [items]);
 
   return <nav ref={navigation} className={styles.navigation} aria-label={title}>
