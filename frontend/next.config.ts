@@ -5,8 +5,11 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
   async redirects() {
-    return process.env.JAHAN_PANEL === "admin"
-      ? [{ source: "/", destination: "/admin", permanent: false }]
+    if (process.env.JAHAN_PANEL === "admin") {
+      return [{ source: "/", destination: "/admin", permanent: false }];
+    }
+    return process.env.JAHAN_DESTINATION_PANEL === "1"
+      ? [{ source: "/", destination: "/fa/countries/canada", permanent: false }]
       : [];
   },
   // Separate build locks allow panel dev servers to share one checkout.

@@ -36,3 +36,12 @@ test("every destination has a local vector flag", () => {
     assert.match(readFileSync(flag, "utf8"), /<svg\b/);
   }
 });
+test("university country maps have local SVG assets and source credits", () => {
+  const sources = JSON.parse(readFileSync(new URL("../public/home-country-maps/sources.json", import.meta.url), "utf8").replace(/^\uFEFF/, ""));
+  for (const { slug } of headerDestinations) {
+    const svg = readFileSync(new URL(`../public/home-country-maps/${slug}.svg`, import.meta.url), "utf8");
+    assert.match(svg, /<svg\b/);
+    assert.doesNotMatch(svg, /<script\b|<foreignObject\b|\bon(?:load|error)\s*=/i);
+    assert.ok(sources.some((source) => source.slug === slug && source.url && source.license));
+  }
+});
