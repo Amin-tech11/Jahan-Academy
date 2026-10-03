@@ -7,6 +7,7 @@
     "node": ">=24 <25"
   },
   "scripts": {
+    "dev:admin": "node scripts/dev-panel.mjs admin",
     "dev": "next dev",
     "dev:home": "node scripts/dev-panel.mjs home-page",
     "dev:dashboard": "node scripts/dev-panel.mjs dashboard",

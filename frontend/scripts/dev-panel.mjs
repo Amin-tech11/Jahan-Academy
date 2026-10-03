@@ -3,6 +3,7 @@ import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 
 const mapping = {
+  admin: 3500,
   "home-page": 3100,
   dashboard: 3101,
   users: 3102,
@@ -31,6 +32,7 @@ const require = createRequire(import.meta.url);
 const nextBin = require.resolve("next/dist/bin/next");
 const child = spawn(process.execPath, [nextBin, "dev", "--port", String(mapping[panel])], {
   cwd: frontendRoot,
+  env: { ...process.env, JAHAN_PANEL: panel },
   stdio: "inherit",
 });
 
