@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { HomeMotion } from "@/components/home-motion";
 import { HomeConsultation } from "@/components/home-consultation";
 import { HomeFaq } from "@/components/home-faq";
 import { HomeNewsTicker } from "@/components/home-news-ticker";
@@ -64,7 +65,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
   const brand = brandContent[locale];
   const visibleArticles = [...articles].sort((a, b) => b.date.localeCompare(a.date));
 
-  return <SiteShell locale={locale}><main className="home-page">
+  return <SiteShell locale={locale}><HomeMotion>
     <div className={`home-hero home-hero--${locale}`} aria-hidden="true">
       <Image src="/home-hero-campus-v2.png" alt="" fill sizes="100vw" preload className="home-hero__image" />
       <div className="home-hero__shade" />
@@ -147,5 +148,5 @@ export async function HomePage({ locale }: { locale: Locale }) {
         </div>
       </div>
     </section>
-  </main></SiteShell>;
+  </HomeMotion></SiteShell>;
 }

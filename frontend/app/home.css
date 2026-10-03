@@ -282,3 +282,17 @@
 .home-service-card:hover, .home-service-card:focus-visible { border-color: var(--color-brand-900); box-shadow: 0 0 0 1px var(--color-brand-900); }
 .home-service-card:focus-visible { outline: 2px solid var(--color-brand-900); outline-offset: 4px; }
 @media (prefers-reduced-motion: reduce) { .home-service-card { transition: none; } }
+
+/* Only enhanced offscreen targets wait for their first viewport entrance. */
+@media (prefers-reduced-motion: no-preference) {
+  .home-page [data-home-pending="true"],
+  .home-page + .site-footer[data-home-pending="true"] { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-destination:hover .home-destination__image,
+  .home-news__card:hover .home-news__image { transform: none; }
+}
+@media print {
+  .home-page [data-home-pending],
+  .home-page + .site-footer[data-home-pending] { opacity: 1; }
+}
