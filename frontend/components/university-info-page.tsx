@@ -44,7 +44,6 @@ export function UniversityInfoPage({ university: u, locale }: { university: Univ
   ];
   const location = <section className={styles.campusLocation} aria-label={fa ? `موقعیت ${u.name.fa}` : `Location for ${u.englishName}`}>
     <h2>{fa ? `موقعیت ${u.name.fa}` : `Location for ${u.englishName}`}</h2>
-    <span className={styles.mapLabel}>{fa ? "نقشه" : "Map"}</span>
     <figure className={styles.campusMap}>
       <div className={styles.mapCanvas}>
         <iframe src={universityMapEmbedUrl(u)} title={fa ? `نقشهٔ ${u.name.fa}` : `Map of ${u.englishName}`} loading="lazy" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen />

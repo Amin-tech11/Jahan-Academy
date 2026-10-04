@@ -79,7 +79,6 @@
 .disciplineList meter::-moz-meter-bar { border-radius:0; background:#0c55df; }
 .disciplinesEmpty { margin:20px 0 0; color:var(--muted); font-size:13px; line-height:1.9; }
 .campusLocation h2 { font-size:22px; font-weight:600; line-height:1.5; margin-bottom:14px; }
-.mapLabel { display:inline-block; padding:7px 14px; border-radius:7px; color:#fff; background:#0c55df; font-size:14px; font-weight:700; line-height:1.5; margin-bottom:16px; }
 .campusMap { margin:0; }
 .mapCanvas { position:relative; }
 .mapInfo { position:absolute; top:18px; left:50%; transform:translateX(-50%); width:280px; max-width:calc(100% - 32px); display:grid; gap:4px; padding:12px; border-radius:8px; background:white; box-shadow:0 2px 9px #20283330; color:#536b96; text-align:left; font:14px/1.4 "Segoe UI",Arial,sans-serif; pointer-events:none; }
