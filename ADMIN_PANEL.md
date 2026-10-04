@@ -2,6 +2,10 @@
 
 Source of truth: `Project_Context.md`, especially sections 4, 6.3–6.10 and 16.
 
+## Consultation status selector — 2026-10-04
+
+The detail editor includes a localized status selector saved with «ذخیره تغییرات». Current workflow transitions and assignee requirements constrain choices; closed/archived records cannot transition. Status-only edits call the existing versioned status-transitions endpoint without PATCH. Combined edits save fields first and use the returned version for the transition. If the transition fails, the editor retains the saved fields/version, explains partial success, and allows retrying only the pending status. Unsaved status changes participate in close/reload warnings; the table refreshes after successful save. The removed record-operations panel remains absent. No backend, schema or permission changes are needed. Tests cover transport, versions, transitions, partial failure/retry and permission/stale errors; backend workflow integration coverage is unchanged.
+
 ## Consultation record editor — 2026-10-04
 
 The consultation editor replaces the combined assessment-message textarea with individual education, investment and English-proficiency fields, alongside gender and marital status. Existing structured budgets keep their range/currency representation. Changes to assessment answers update only their exact Persian/English labeled lines in the existing message, preserving unrelated lines and omitting message entirely on unrelated edits. Virtual form fields are never sent as unknown API fields. The record-operations section, technical detail dump, assignment/status/archive/Noura controls and history are removed only from the consultation editor; other resources retain their operations. No backend, schema or permission changes. Regression tests cover answer edits, language, clearing, notes preservation, newline/length validation and structured budgets. Existing API permissions and version checks still apply.

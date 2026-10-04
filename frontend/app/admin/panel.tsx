@@ -7,6 +7,7 @@ import AccessManager from "./access-manager";
 import { visibleSections, type PanelAccess } from "../../lib/admin-access";
 import { startLiveRefresh } from "../../lib/admin-live";
 import { leadCell, leadEditData, leadEditPayload, newLeadIds } from "../../lib/admin-leads";
+import { canChangeLeadStatus, saveLeadChanges } from "../../lib/admin-lead-status";
 
 import {
   useCallback,
@@ -30,6 +31,7 @@ import {
   formData,
   getValue,
   labels,
+  leadStatuses,
   resources,
   setValue,
   normalizeRecord,
@@ -356,6 +358,9 @@ function Editor({
   const [source, setSource] = useState<RecordData>(item ?? {});
   const [data, setData] = useState<RecordData>({});
   const [dirty, setDirty] = useState(false);
+  const [leadStatus, setLeadStatus] = useState(String(item?.status ?? ""));
+  const statusDirty = resource.id === "leads" && leadStatus !== String(source.status ?? "");
+  const hasChanges = dirty || statusDirty;
   const [busy, setBusy] = useState(Boolean(item));
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
@@ -408,6 +413,7 @@ function Editor({
         if (!alive) return;
         const normalized = normalizeRecord(resource.id === "leads" ? leadEditData(next) : next);
         setSource(next);
+        setLeadStatus(String(next.status ?? ""));
         setData({
           ...formData(fields, normalized),
           ...(resource.id === "leads" && next.investmentRangeCode ? {
@@ -432,14 +438,15 @@ function Editor({
   }, []); // Editor is remounted for each record.
   useEffect(() => {
     const handler = (event: BeforeUnloadEvent) => {
-      if (dirty) event.preventDefault();
+      if (hasChanges) event.preventDefault();
     };
     window.addEventListener("beforeunload", handler);
     return () => window.removeEventListener("beforeunload", handler);
-  }, [dirty]);
+  }, [hasChanges]);
   function close() {
+    if (busy) return;
     if (
-      !dirty ||
+      !hasChanges ||
       window.confirm("تغییرات ذخیره نشده‌اند. از فرم خارج می‌شوید؟")
     )
       onClose();
@@ -452,12 +459,19 @@ function Editor({
       const rawBody = writePayload(resource, data, source, creating);
       const body = resource.id === "leads" ? leadEditPayload(data, source, rawBody) : rawBody;
 
-      await adminRequest(
-        `${resource.path}${item ? `/${item.id}` : ""}`,
-        item ? (resource.method ?? "PUT") : "POST",
-        body,
-        Number(source.version) || undefined,
-      );
+      if (resource.id === "leads" && item) {
+        await saveLeadChanges(adminRequest, source, dirty ? body : undefined, leadStatus, (saved) => {
+          setSource(saved);
+          setDirty(false);
+        });
+      } else {
+        await adminRequest(
+          `${resource.path}${item ? `/${item.id}` : ""}`,
+          item ? (resource.method ?? "PUT") : "POST",
+          body,
+          Number(source.version) || undefined,
+        );
+      }
       setDirty(false);
       onSaved();
     } catch (err) {
@@ -548,11 +562,38 @@ function Editor({
                   setDirty(true);
                 }}
               />
+              {resource.id === "leads" && item && loaded && (
+                <div className="adm-fields">
+                  <label>
+                    وضعیت
+                    <select
+                      value={leadStatus}
+                      disabled={Boolean(source.archived) || source.status === "closed"}
+                      aria-describedby="lead-status-help"
+                      onChange={(event) => setLeadStatus(event.target.value)}
+                    >
+                      {leadStatuses.map((status) => (
+                        <option key={status} value={status} disabled={status !== source.status && !canChangeLeadStatus(source, status)}>
+                          {labels[status] ?? status}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <p id="lead-status-help" className="adm-wide">
+                    {source.archived ? "وضعیت درخواست بایگانی‌شده قابل تغییر نیست." : source.status === "closed"
+                      ? "این درخواست بسته شده و وضعیت دیگری برای آن قابل انتخاب نیست."
+                      : !source.assignee
+                        ? "برای وضعیت‌های پیگیری، ابتدا باید مسئول درخواست تعیین شده باشد؛ در حال حاضر فقط بستن درخواست مجاز است."
+                        : "وضعیت‌های قابل انتخاب بر اساس مرحلهٔ فعلی درخواست نمایش داده می‌شوند."}
+                    {" "}تغییر وضعیت با «ذخیره تغییرات» ثبت می‌شود.
+                  </p>
+                </div>
+              )}
               <footer className="adm-form-footer">
                 <button
                   type="submit"
                   className="adm-primary"
-                  disabled={busy || (!dirty && !creating)}
+                  disabled={busy || (!hasChanges && !creating)}
                 >
                   ذخیره تغییرات
                 </button>
