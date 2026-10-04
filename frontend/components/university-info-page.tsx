@@ -11,14 +11,47 @@ function Pin() {
 }
 
 function OfferingIcon({ icon }: { icon: UniversityOffering["icon"] }) {
-  const paths = {
-    permit: <><path d="M7 3h9l3 3v7M7 3v18h6M10 8h5M10 12h3" /><circle cx="17" cy="17" r="5" /><path d="m15 17 1.5 1.5L19 16" /></>,
-    internship: <><rect x="3" y="7" width="18" height="14" rx="2" /><path d="M8 7V4h8v3M3 12l9 3 9-3M12 13v4" /></>,
-    work: <><path d="M3 21h18M5 21V4h14v17M9 8h1m4 0h1M9 12h1m4 0h1M10 21v-5h4v5" /></>,
-    offer: <><path d="M3 10v11h18V10M3 10l9 7 9-7M7 12V3h10v9M10 6h4M10 9h3" /></>,
-    home: <><path d="m3 11 9-8 9 8M5 10v11h14V10M9 21v-7h6v7M10 8h4" /></>,
+  const artwork = {
+    permit: <>
+      <rect x="6" y="5" width="18" height="24" rx="2.5" fill="#bceee5" />
+      <rect x="4" y="3" width="18" height="24" rx="2.5" fill="#179b89" />
+      <rect x="6" y="6" width="14" height="18" rx="1" fill="#effbf8" />
+      <path d="M10 3V2h6v1" stroke="#117568" strokeWidth="1.5" /><rect x="9" y="3" width="8" height="4" rx="1" fill="#73d3be" />
+      <path d="M9 11h8M9 15h6M9 19h4" stroke="#55aa9b" strokeWidth="1.4" />
+      <circle cx="23" cy="23" r="7" fill="#fff" /><circle cx="23" cy="23" r="5.8" fill="#20bfa3" />
+      <path d="m20 23 2 2 4-4" stroke="#fff" strokeWidth="1.8" />
+    </>,
+    internship: <g transform="rotate(-14 16 17)">
+      <path d="M11 9V6a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v3" stroke="#1556c4" strokeWidth="2.5" />
+      <rect x="3" y="9" width="26" height="19" rx="3" fill="#155bd7" />
+      <path d="M3 19h26v6a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3Z" fill="#1249ae" />
+      <path d="M3 11a2 2 0 0 1 2-2h22a2 2 0 0 1 2 2v7l-13 3-13-3Z" fill="#2f83ff" />
+      <path d="M7 11h6" stroke="#9bcaff" strokeWidth="1.5" /><rect x="14" y="17" width="4" height="5" rx="1" fill="#d5eaff" />
+    </g>,
+    work: <>
+      <path d="M5 7h22v22H5Z" fill="#7354cf" /><path d="M4 4h24v4H4Z" fill="#9c81ec" />
+      <path d="M8 10h16v16H8Z" fill="#ebe4ff" /><path d="M8 16h16M16 10v11" stroke="#a58add" strokeWidth="1.3" />
+      <path d="M11 12h2v2h-2Zm8 0h2v2h-2Z" fill="#f7c664" />
+      <circle cx="11.5" cy="19" r="1.7" fill="#f4b088" /><path d="M9 24v-2a2.5 2.5 0 0 1 5 0v2" fill="#39bfa9" />
+      <circle cx="20.5" cy="19" r="1.7" fill="#f4b088" /><path d="M18 24v-2a2.5 2.5 0 0 1 5 0v2" fill="#f08b9c" />
+      <path d="M14 24h4v5h-4Z" fill="#4d329b" /><path d="M3 29h26" stroke="#50369d" strokeWidth="2" />
+    </>,
+    offer: <g transform="rotate(12 16 17)">
+      <path d="m3 14 13-9 13 9v14H3Z" fill="#e79b2f" />
+      <rect x="8" y="3" width="16" height="20" rx="2" fill="#fff1cd" />
+      <path d="M11 8h7M11 12h10M11 16h7" stroke="#dba74e" strokeWidth="1.3" />
+      <path d="m3 14 13 9 13-9v14H3Z" fill="#ffc86b" /><path d="m3 28 10-9a4 4 0 0 1 6 0l10 9" fill="#ffdf9e" />
+      <circle cx="23" cy="7" r="5" fill="#f08b39" /><path d="m21 7 1.4 1.4L25 6" stroke="#fff" strokeWidth="1.5" />
+    </g>,
+    home: <>
+      <path d="M7 13h18v16H7Z" fill="#ffb5c8" /><path d="M19 5h4v7h-4Z" fill="#d94072" />
+      <path d="m3 14 13-11 13 11-2 2-11-9-11 9Z" fill="#ed5483" />
+      <path d="m8 13 8-6 8 6Z" fill="#fff0f4" /><rect x="13" y="10" width="6" height="5" rx="1" fill="#f68fab" />
+      <path d="M10 18h5v5h-5Zm10 0h3v5h-3Z" fill="#fff5f8" /><path d="M16 20h5v9h-5Z" fill="#b92e5b" />
+      <path d="M5 29h22" stroke="#cf3c69" strokeWidth="2" /><path d="M16 29h5" stroke="#ffe0e8" strokeWidth="2" />
+    </>,
   };
-  return <svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">{paths[icon]}</svg>;
+  return <svg aria-hidden="true" focusable="false" width="32" height="32" viewBox="0 0 32 32" fill="none" strokeLinecap="round" strokeLinejoin="round">{artwork[icon]}</svg>;
 }
 
 function CampusLifeIcon({ index }: { index: number }) {

@@ -89,9 +89,7 @@
 .featureSummary::-webkit-details-marker { display:none; }
 .featureSummary:hover { background:#f7f9fd; }
 .featureSummary:focus-visible { outline:2px solid #0c55df; outline-offset:-4px; border-radius:12px; }
-.featureIcon { display:grid; place-items:center; flex:0 0 30px; color:#2468d8; }
-.featureItem:nth-child(4) .featureIcon { color:#c56685; }
-.featureItem:nth-child(5) .featureIcon { color:#ca597c; }
+.featureIcon { display:grid; place-items:center; flex:0 0 34px; color:#2468d8; }
 .featureTitle { flex:1; min-width:0; font-size:15px; font-weight:600; line-height:1.8; }
 .featureStatus { color:#536b96; font-size:12px; text-align:end; }
 .featureChevron { flex-shrink:0; color:#63789d; }
