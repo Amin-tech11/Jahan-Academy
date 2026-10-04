@@ -76,6 +76,10 @@
 .disciplineList meter::-webkit-meter-optimum-value { border-radius:0; background:#0c55df; }
 .disciplineList meter::-moz-meter-bar { border-radius:0; background:#0c55df; }
 .disciplinesEmpty { margin:20px 0 0; color:var(--muted); font-size:13px; line-height:1.9; }
+.academicFields { display:grid; gap:0; margin:10px 0 0; padding:0; list-style:none; }
+.academicFields li { display:flex; align-items:center; gap:10px; padding:17px 0; border-bottom:1px solid #edf0f6; font-size:15px; line-height:1.6; }
+.academicFields li::before { content:""; width:7px; height:7px; flex-shrink:0; border-radius:50%; background:#0c55df; }
+.academicFields li:last-child { border-bottom:0; padding-bottom:0; }
 .campusLocation h2 { font-size:22px; font-weight:600; line-height:1.5; margin-bottom:14px; }
 .campusMap { margin:0; }
 .mapCanvas { position:relative; }

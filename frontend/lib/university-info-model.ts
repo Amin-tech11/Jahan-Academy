@@ -22,6 +22,7 @@ export type UniversityInfo = UniversityShowcase & {
   coordinates?: { latitude: number; longitude: number };
   dli?: string;
   topDisciplines?: UniversityDiscipline[];
+  academicFields?: Record<Locale, string>[];
   whyChoose?: UniversityOverviewPoint[];
   notes?: UniversityOverviewPoint[];
   sources: { label: string; url: string }[];
