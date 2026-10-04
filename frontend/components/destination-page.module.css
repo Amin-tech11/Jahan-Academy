@@ -59,7 +59,8 @@
 .fact dd{margin:8px 0 0;font-size:18px;font-weight:500;line-height:1.9;color:var(--muted);overflow-wrap:anywhere}
 .currencyValue{display:inline-flex;align-items:baseline;gap:8px;unicode-bidi:isolate}
 .page .navigationTitle{margin-block:0 12px;text-align:center;font-size:clamp(23px,2.5vw,32px);line-height:1.7;font-weight:500;color:var(--brand)}
-.navigation{position:sticky;top:78px;z-index:5;background:var(--canvas);margin-top:40px;padding-block:8px 12px}
+.guide{display:flow-root;margin-top:40px}
+.navigation{position:sticky;top:78px;z-index:5;background:var(--canvas);padding-block:8px 12px}
 .navigation nav{display:flex;gap:6px;overflow-x:auto;padding:7px;background:var(--content);border:1px solid var(--line);border-radius:999px;box-shadow:0 3px 10px rgb(32 40 51 / 6%);scrollbar-width:thin}
 .navigation a{flex:1;display:flex;align-items:center;justify-content:center;white-space:nowrap;font-size:14px;padding:9px 18px;min-height:40px;border-radius:999px;font-weight:750;color:var(--text);transition:background .2s,color .2s}
 .navigation a:hover{background:var(--canvas);color:var(--brand)}
@@ -98,7 +99,6 @@
 .visaPhoto{grid-area:photo;margin:0}
 .visaCopy{grid-area:copy;min-width:0}
 .more{text-align:center}
-.page .moreEyebrow{margin:0 0 10px;color:var(--brand);font-size:15px;letter-spacing:.04em}
 .more>div{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px 24px;margin-top:40px}
 .more a{display:flex;justify-content:center;gap:14px;align-items:center;min-height:68px;padding:15px 22px;border:1px solid transparent;border-radius:24px;font-size:21px;font-weight:700;line-height:1.5;box-shadow:0 4px 12px rgb(18 59 120 / 8%);transition:background .2s,box-shadow .2s}
 .more a:hover{box-shadow:0 6px 18px rgb(18 59 120 / 14%)}

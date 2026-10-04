@@ -62,6 +62,7 @@ export function DestinationPage({ destination: d, locale }: { destination: Desti
       </div>)}
     </dl>
 
+    <div className={styles.guide}>
     <div ref={navigationRef} className={styles.navigation}>
       <h2 id="destination-guide-title" className={`${styles.container} ${styles.navigationTitle}`}>{t(`۵ دلیل شگفت‌انگیز برای تحصیل در ${d.name.fa}`, `5 Incredible Reasons to Study in ${d.name.en}`)}</h2>
       <nav className={styles.container} aria-labelledby="destination-guide-title">{tabs.map(([id, title]) => <a key={id} className={active === id ? styles.selectedTab : ""} aria-current={active === id ? "location" : undefined} href={`#${id}`}>{title}</a>)}</nav>
@@ -120,11 +121,9 @@ export function DestinationPage({ destination: d, locale }: { destination: Desti
         <p className={styles.planningNote}>{t("مسیر و مدارک به تابعیت، دوره و شرایط شما بستگی دارد؛ پیش از اقدام، آخرین فهرست مرجع رسمی را بررسی کنید.", "The route and documents depend on your nationality, course and circumstances; check the official current checklist before applying.")}</p>
       </div>
     </section>
-
-
+    </div>
 
     <section aria-labelledby="more-destinations-title" className={`${styles.container} ${styles.section} ${styles.more}`}>
-      <p className={styles.moreEyebrow}>{t("مقصدهای تحصیلی", "STUDY DESTINATIONS")}</p>
       <h2 id="more-destinations-title">{t("مقصدهای دیگر را کشف کنید", "More Study Destinations to Explore")}</h2>
       <div>{destinations.filter((item) => item.slug !== d.slug).map((item) => <Link key={item.slug} href={`/${locale}/countries/${item.slug}`}>
         <Image src={`/destinations/word-flags/${item.slug}.svg`} alt="" width={28} height={22} />
