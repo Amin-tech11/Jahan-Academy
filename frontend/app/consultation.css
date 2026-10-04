@@ -97,6 +97,12 @@ body:has(.assessment-page) {
 .assessment-page .consultation-receipt h2, .assessment-page .consultation-receipt__code strong { color: #202833; }
 .assessment-page .consultation-receipt p { color: #66717f; }
 .assessment-page .consultation-receipt__code { border-color: #aeb7c2; background: #f7f8fa; }
+.assessment-page .assessment-receipt__code { position: relative; width: min(100%, 350px); min-width: 0; padding: 3.25rem 1rem 1.25rem; text-align: center; }
+.assessment-receipt__code strong { display: block; width: 100%; text-align: center; overflow-wrap: anywhere; user-select: all; }
+.assessment-receipt__copy { position: absolute; top: .5rem; right: .5rem; display: inline-flex; align-items: center; justify-content: center; gap: .35rem; min-height: 36px; padding: .35rem .6rem; border: 1px solid #d6dce4; border-radius: 6px; background: #fff; color: #123b78; font: inherit; font-size: .8rem; cursor: pointer; }
+.assessment-receipt__copy:hover { background: #edf2fa; }
+.assessment-receipt__copy:focus-visible { outline: 2px solid #123b78; outline-offset: 3px; }
+.assessment-receipt__copy:disabled { opacity: .6; cursor: wait; }
 .assessment-page .consultation-receipt > a { color: #123b78; text-decoration: underline; text-underline-offset: .2rem; }
 @media (max-width: 850px) { .assessment-page__body { grid-template-columns: 1fr; } .assessment-page__sidebar { display: grid; grid-template-columns: 1fr 1fr; column-gap: 2rem; } .assessment-page__sidebar .assessment-page__section-kicker, .assessment-page__sidebar h2, .assessment-page__sidebar > p { grid-column: 1 / -1; } .assessment-page__privacy-note { align-self: start; margin-top: 2.5rem; } }
 @media (max-width: 600px) { .assessment-page__hero { min-height: 330px; } .assessment-page__wordmark { font-size: clamp(1.15rem, 5vw, 1.55rem); letter-spacing: .22em; } .assessment-page__body { width: min(100% - 2rem, 1200px); } .assessment-page__sidebar { display: block; } .assessment-page__timeline { margin-top: 1.5rem; } .assessment-page__timeline li { min-height: 85px; } .assessment-page__privacy-note { margin-top: 0; } .assessment-form__grid { grid-template-columns: 1fr; gap: 1rem; } .assessment-page__form-card { padding: 1.3rem; } }

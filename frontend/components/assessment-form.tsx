@@ -13,7 +13,18 @@ export function AssessmentForm({ locale, source }: { locale: Locale; source: str
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [error, setError] = useState("");
   const [receipt, setReceipt] = useState<Receipt | null>(null);
+  const [copyStatus, setCopyStatus] = useState<"idle" | "copying" | "copied" | "error">("idle");
   const requestKey = useRef<{ payload: string; key: string } | null>(null);
+  async function copyReference() {
+    if (!receipt || copyStatus === "copying") return;
+    setCopyStatus("copying");
+    try {
+      await navigator.clipboard.writeText(receipt.reference);
+      setCopyStatus("copied");
+    } catch {
+      setCopyStatus("error");
+    }
+  }
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (status === "submitting") return;
@@ -53,12 +64,21 @@ export function AssessmentForm({ locale, source }: { locale: Locale; source: str
   }
   if (status === "success" && receipt) return <section className="consultation-receipt" role="status" aria-live="polite">
     <span className="consultation-receipt__icon" aria-hidden="true">✓</span><h2>{copy.thankYou}</h2>
-    <p>{receipt.duplicate ? copy.duplicate : t(locale, "فرم ارزیابی اولیه شما با موفقیت دریافت شد. تیم ما اطلاعات را بررسی می‌کند.", "Your initial assessment form has been received. Our team will review your information.")}</p>
-    <div className="consultation-receipt__code"><span>{copy.trackingCode}</span><strong dir="ltr">{receipt.reference}</strong></div>
+    <p>{receipt.duplicate ? copy.duplicate : t(locale, "فرم ارزیابی اولیه شما با موفقیت دریافت شد. تیم ما اطلاعات شما را بررسی میکنند و با شما تماس میگیرند.", "Your initial assessment form has been received. Our team will review your information and contact you.")}</p>
+    <div className="consultation-receipt__code assessment-receipt__code">
+      <button className="assessment-receipt__copy" type="button" onClick={copyReference} disabled={copyStatus === "copying"} aria-label={t(locale, "کپی کد پیگیری", "Copy reference code")}>
+        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7"><rect x="8" y="8" width="12" height="13" rx="2" /><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3" /></svg>
+        {copyStatus === "copied" ? t(locale, "کپی شد", "Copied") : t(locale, "کپی", "Copy")}
+      </button>
+      <span>{copy.trackingCode}</span><strong dir="ltr">{receipt.reference}</strong>
+    </div>
+    {copyStatus === "error" && <p className="consultation-receipt__note" role="alert">{t(locale, "کپی خودکار انجام نشد. کد پیگیری را انتخاب و کپی کنید.", "Could not copy automatically. Select and copy your reference code.")}</p>}
     <Link href={`/${locale}`}>{t(locale, "بازگشت به صفحه اصلی", "Back to home")}</Link>
   </section>;
   const options = (items: [string, string][]) => items.map(([fa, en]) => <option key={en} value={t(locale, fa, en)}>{t(locale, fa, en)}</option>);
-  return <form className="assessment-form" onSubmit={submit} aria-label={t(locale, "فرم ارزیابی اولیه", "Initial assessment form")}>
+  return <>
+    <div className="assessment-page__form-heading"><span className="assessment-page__section-kicker">{t(locale, "ارزیابی اولیه", "INITIAL ASSESSMENT")}</span><h2>{t(locale, "دوست داریم کمی از شرایطتان بدانیم", "Tell us about yourself")}</h2><p>{t(locale, "تکمیل تمامی فیلدهای این فرم برای ثبت درخواست ارزیابی الزامی است.", "All fields in this form must be completed before submitting your assessment request.")}</p></div>
+    <form className="assessment-form" onSubmit={submit} aria-label={t(locale, "فرم ارزیابی اولیه", "Initial assessment form")}>
     <div className="assessment-form__grid">
       <label>{t(locale, "نام و نام خانوادگی", "Full name")}<input name="fullName" autoComplete="name" required maxLength={200} /></label>
       <label>{t(locale, "شماره موبایل", "Mobile number")}<input name="mobile" type="tel" inputMode="tel" autoComplete="tel" required placeholder={t(locale, "مثال: ۰۹۱۲۱۲۳۴۵۶۷", "e.g. +989121234567")} /></label>
@@ -78,5 +98,5 @@ export function AssessmentForm({ locale, source }: { locale: Locale; source: str
     {status === "error" && <p className="form-error" role="alert">{error}</p>}
     <button className="assessment-form__submit" type="submit" disabled={status === "submitting"}>{status === "submitting" ? copy.sending : t(locale, "ثبت درخواست", "Submit request")}</button>
     <p className="assessment-form__notice">{t(locale, "پس از ثبت، کد پیگیری درخواستتان نمایش داده می‌شود.", "A reference code will appear after you submit your request.")}</p>
-  </form>;
+  </form></>;
 }
