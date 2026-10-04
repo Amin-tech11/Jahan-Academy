@@ -61,3 +61,9 @@ Current owner-approved scope exposes only consultation requests after login. Oth
 - Existing backend persistence, deduplication and permission checks remain authoritative. No schema, authentication or permission changes; migration testing does not apply. Duplicate submissions retain the backend's existing reference behavior.
 - Verification: 84 frontend tests, TypeScript, production build and HTTP authorization checks pass. In the browser, both a synthetic consultation and a submission through the actual assessment form appeared without manually refreshing the inbox. Assessment details, search and refresh persistence were checked. The two synthetic records were then archived by their exact references, preserving the test audit trail without leaving active leads. Noura was confirmed to target the local mock service.
 - Existing missing backend capabilities (notably standalone internal notes) remain outside this table/submission scope. This change does not claim full CRM acceptance or merge into develop.
+
+## Site palette alignment — 2026-10-04
+
+Admin-only CSS now uses the current home-page palette from frontend/app/home.css: brand blue #123B78, silver #AEB7C2, canvas #F7F8FA, text #202833 and muted text #66717F. Scoped tokens cover navigation, tables, controls, dialogs, live-update indicators and login. Success/warning/error colors retain their semantic meaning; the existing login artwork is preserved.
+
+Validation: production build (including TypeScript), browser refresh on localhost:3500, visual inspection of the request table/sidebar/login, and contrast calculations for body, muted, primary, selected and semantic text (all at least 4.5:1). No new unit tests, API/permission design, migrations or data integration tests apply because this update changes CSS colors only. Existing behavior is covered by CI.

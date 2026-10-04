@@ -1,6 +1,6 @@
 .adm-sky-login {
-  --entry-navy: #132f64;
-  --entry-blue: #205cc2;
+  --entry-navy: var(--adm-brand);
+  --entry-blue: var(--adm-brand);
   min-height: 100svh;
   background: #9bc3e4 url("/admin/login-sky.png") center/cover no-repeat;
   display: flex;
@@ -10,7 +10,7 @@
   padding: 145px 30px 62px;
   position: relative;
   isolation: isolate;
-  color: #172a48;
+  color: var(--adm-ink);
 }
 .adm-sky-login::before {
   content: "";
@@ -41,11 +41,11 @@
   overflow: hidden;
   border: 1px solid #ffffffd6;
   border-radius: 24px;
-  box-shadow: 0 22px 75px #17386329;
-  background: #f9fbff;
+  box-shadow: 0 22px 75px #123b7829;
+  background: var(--adm-surface);
 }
 .adm-entry-brand {
-  background: linear-gradient(150deg, #193f83 0%, #102c5e 90%);
+  background: linear-gradient(150deg, var(--adm-brand) 0%, var(--adm-brand-hover) 90%);
   padding: 42px 46px 32px;
   display: flex;
   flex-direction: column;
@@ -70,7 +70,7 @@
   pointer-events: none;
 }
 .adm-entry-overline {
-  color: #d5e3ff;
+  color: #e8eff8;
   font-size: 11px;
   font-weight: 600;
 }
@@ -81,7 +81,7 @@
   height: 157px;
   display: grid;
   place-items: center;
-  box-shadow: 0 8px 24px #0a1e4b12;
+  box-shadow: 0 8px 24px #123b7812;
 }
 .adm-entry-logo img {
   width: 176px;
@@ -95,7 +95,7 @@
   margin-bottom: 10px;
 }
 .adm-entry-brand-copy p {
-  color: #d4e1fa;
+  color: #e8eff8;
   font-size: 13px;
   line-height: 2;
 }
@@ -104,35 +104,35 @@
   gap: 7px;
   align-items: center;
   font-size: 10px;
-  color: #aebfdd;
+  color: #d6dce4;
   margin-top: 3px;
 }
 .adm-entry-brand-footer > span {
   height: 5px;
   width: 5px;
-  background: #91bddf;
+  background: var(--adm-silver);
   border-radius: 50%;
 }
 .adm-entry-form {
   padding: 41px 45px 27px;
-  background: #f9fbff;
+  background: var(--adm-surface);
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 .adm-entry-kicker {
   font-size: 10px;
-  color: #8493ac;
+  color: var(--adm-muted);
   display: block;
   margin-bottom: 6px;
 }
 .adm-entry-heading h2 {
-  color: #172a48;
+  color: var(--adm-ink);
   font-size: 25px;
   font-weight: 800;
 }
 .adm-entry-heading p {
-  color: #7383a0;
+  color: var(--adm-muted);
   font-size: 12px;
   margin-top: 8px;
   line-height: 2;
@@ -143,30 +143,30 @@
   margin-top: 28px;
 }
 .adm-entry-form label {
-  color: #203756;
+  color: var(--adm-ink);
   font-size: 12px;
   font-weight: 550;
   gap: 8px;
 }
 .adm-entry-form label b {
   font-size: 14px;
-  color: #e46367;
+  color: var(--adm-danger);
   font-weight: 400;
   margin-right: 3px;
 }
 .adm-entry-form input {
-  border-color: #d6e1f4;
+  border-color: var(--adm-line);
   border-radius: 11px;
   min-height: 46px;
   background: white;
-  box-shadow: 0 2px 3px #152d5a05;
+  box-shadow: 0 2px 3px #123b7805;
   font-size: 14px;
-  color: #24375b;
+  color: var(--adm-ink);
 }
 .adm-entry-form input:focus-visible {
-  outline: 3px solid #a4c6f488;
+  outline: 3px solid var(--adm-brand);
   outline-offset: 2px;
-  border-color: #87b0e9;
+  border-color: var(--adm-brand);
 }
 .adm-password-field {
   display: flex;
@@ -189,11 +189,11 @@
   place-items: center;
   border: 0;
   background: transparent;
-  color: #748aa9;
+  color: var(--adm-muted);
   padding: 9px;
 }
 .adm-password-input button:hover {
-  background: #eef4fc;
+  background: var(--adm-tint);
 }
 .adm-password-input svg {
   width: 20px;
@@ -211,11 +211,11 @@
   min-height: 48px;
   font-size: 13px;
   font-weight: 650;
-  box-shadow: 0 3px 6px #205cc21a;
+  box-shadow: 0 3px 6px #123b781a;
 }
 .adm-entry-form .adm-entry-submit:hover {
-  background: #174da9;
-  border-color: #174da9;
+  background: var(--adm-brand-hover);
+  border-color: var(--adm-brand-hover);
 }
 .adm-entry-links {
   display: flex;
@@ -226,14 +226,14 @@
 }
 .adm-entry-links button {
   font-size: 10px;
-  color: #637fa5;
+  color: var(--adm-brand);
   border: 0;
   background: transparent;
   padding: 5px;
 }
 .adm-entry-links button:hover {
   background: transparent;
-  color: #205cc2;
+  color: var(--adm-brand);
   text-decoration: underline;
 }
 .adm-entry-footnote {
@@ -242,7 +242,7 @@
   justify-content: center;
   gap: 7px;
   font-size: 10px;
-  color: #93a0b3 !important;
+  color: var(--adm-muted) !important;
   margin-top: 25px !important;
 }
 .adm-entry-footnote svg {
