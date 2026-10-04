@@ -69,6 +69,5 @@ export function UniversityInfoPage({ university: u, locale }: { university: Univ
         </section>
       </aside>
     </div>
-    <div className={styles.returnBar}><span>{fa ? "هر دانشگاه، یک دنیای تازه" : "Every university, a new perspective"}</span><Link href={`/${locale}/universities`}>{fa ? "بازگشت به دانشگاه‌ها" : "Back to universities"}<span aria-hidden="true">{fa ? "←" : "→"}</span></Link></div>
   </main></SiteShell></div>;
 }
