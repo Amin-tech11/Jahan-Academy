@@ -1,12 +1,23 @@
 .admin-app {
-  --adm-ink: #183b3d;
-  --adm-muted: #718285;
-  --adm-green: #16574f;
-  --adm-lime: #d9edbd;
-  --adm-line: #e1e8e5;
+  /* Match the live home-page palette; scope tokens to the admin panel. */
+  --adm-brand: #123b78;
+  --adm-brand-hover: #0e2f60;
+  --adm-silver: #aeb7c2;
+  --adm-ink: #202833;
+  --adm-muted: #66717f;
+  --adm-line: #d6dce4;
+  --adm-page: #f7f8fa;
+  --adm-surface: #ffffff;
+  --adm-tint: #e8eff8;
+  --adm-success: #067647;
+  --adm-success-bg: #ecfdf3;
+  --adm-danger: #b42318;
+  --adm-danger-bg: #fef3f2;
+  --adm-warning: #b54708;
+  --adm-warning-bg: #fffaeb;
   font-family: "Vazirmatn Variable", sans-serif;
   color: var(--adm-ink);
-  background: #f4f6f3;
+  background: var(--adm-page);
   min-height: 100vh;
   font-size: 14px;
   line-height: 1.8;
@@ -23,14 +34,14 @@
 .admin-app button {
   cursor: pointer;
   border: 1px solid var(--adm-line);
-  background: #fff;
+  background: var(--adm-surface);
   border-radius: 9px;
   padding: 9px 17px;
   color: var(--adm-ink);
   transition: background 0.15s;
 }
 .admin-app button:hover {
-  background: #e9f0e9;
+  background: var(--adm-tint);
 }
 .admin-app button:disabled {
   opacity: 0.45;
@@ -40,18 +51,18 @@
 .admin-app select,
 .admin-app textarea {
   width: 100%;
-  border: 1px solid #d8e1dc;
-  background: #fff;
+  border: 1px solid var(--adm-line);
+  background: var(--adm-surface);
   border-radius: 8px;
   padding: 11px 13px;
-  color: #233f40;
+  color: var(--adm-ink);
   min-height: 44px;
 }
 .admin-app input[type="checkbox"] {
   width: 19px;
   height: 19px;
   min-height: 0;
-  accent-color: var(--adm-green);
+  accent-color: var(--adm-brand);
 }
 .admin-app label {
   display: flex;
@@ -59,7 +70,7 @@
   gap: 7px;
 }
 .admin-app :focus-visible {
-  outline: 3px solid #b1c877;
+  outline: 3px solid var(--adm-brand);
   outline-offset: 3px;
 }
 .admin-app h1,
@@ -81,17 +92,17 @@
   color: var(--adm-muted);
 }
 .admin-app .adm-primary {
-  background: var(--adm-green);
+  background: var(--adm-brand);
   color: white;
-  border-color: var(--adm-green);
+  border-color: var(--adm-brand);
 }
 .admin-app .adm-primary:hover {
-  background: #0c443e;
+  background: var(--adm-brand-hover);
 }
 .admin-app .adm-link {
   border: 0;
   background: transparent;
-  color: var(--adm-green);
+  color: var(--adm-brand);
   padding: 7px 9px;
 }
 .adm-eyebrow {
@@ -99,7 +110,7 @@
   font-size: 12px;
   letter-spacing: 0.02em;
   margin-bottom: 13px;
-  color: #658077;
+  color: var(--adm-muted);
 }
 .adm-brand {
   display: flex;
@@ -112,7 +123,7 @@
   width: 49px;
   height: 49px;
   object-fit: contain;
-  background: #fff;
+  background: var(--adm-surface);
   border-radius: 12px;
   padding: 3px;
 }
@@ -134,7 +145,8 @@
 }
 .adm-sidebar {
   width: 245px;
-  background: #fff;
+  background: var(--adm-brand);
+  color: var(--adm-surface);
   border-left: 1px solid var(--adm-line);
   padding: 27px 18px;
   position: fixed;
@@ -161,6 +173,7 @@
   margin: 16px 17px 9px;
 }
 .adm-sidebar nav button {
+  color: var(--adm-surface);
   display: flex;
   gap: 14px;
   align-items: center;
@@ -174,28 +187,29 @@
   margin: 2px 0;
 }
 .adm-sidebar nav button.selected {
-  background: #eaf1e5;
-  color: #194c40;
+  background: var(--adm-surface);
+  color: var(--adm-brand);
   font-weight: 700;
 }
 .adm-nav-dot {
   width: 7px;
   height: 7px;
-  border: 1.5px solid #8d9e96;
+  border: 1.5px solid var(--adm-silver);
   border-radius: 2px;
 }
 .selected .adm-nav-dot {
-  background: var(--adm-green);
-  border-color: var(--adm-green);
+  background: var(--adm-brand);
+  border-color: var(--adm-brand);
 }
 .adm-sidebar-note {
   margin-top: 35px;
-  background: #f1f5ee;
+  background: var(--adm-brand-hover);
   padding: 20px;
   border-radius: 12px;
   font-size: 12px;
 }
 .adm-sidebar-note small {
+  color: var(--adm-silver);
   display: block;
   font-size: 9px;
   letter-spacing: 1px;
@@ -211,7 +225,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 38px;
-  background: #fff;
+  background: var(--adm-surface);
   border-bottom: 1px solid var(--adm-line);
   gap: 18px;
 }
@@ -233,7 +247,7 @@
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: #e3ecd8;
+  background: var(--adm-tint);
   width: 36px;
   height: 36px;
   font-weight: 700;
@@ -248,8 +262,8 @@
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  background: #e6eeda;
-  border: 1px solid #dbe5cd;
+  background: var(--adm-tint);
+  border: 1px solid var(--adm-line);
   border-radius: 15px;
   padding: 29px 32px;
   margin-bottom: 25px;
@@ -266,7 +280,7 @@
 }
 .adm-welcome button {
   background: #fff9;
-  border-color: #c3d1b5;
+  border-color: var(--adm-line);
   white-space: nowrap;
 }
 .adm-toolbar {
@@ -302,14 +316,14 @@
   margin: 22px 0;
 }
 .adm-stat {
-  background: #fff;
+  background: var(--adm-surface);
   border: 1px solid var(--adm-line);
   border-radius: 12px;
   padding: 22px;
 }
 .adm-stat span {
   display: block;
-  color: #72817b;
+  color: var(--adm-muted);
   font-size: 12px;
 }
 .adm-stat strong {
@@ -327,7 +341,7 @@
   gap: 20px;
 }
 .adm-card {
-  background: #fff;
+  background: var(--adm-surface);
   border: 1px solid var(--adm-line);
   border-radius: 13px;
   padding: 25px;
@@ -350,14 +364,14 @@
 .adm-progress > div {
   height: 7px;
   border-radius: 10px;
-  background: #eef2ea;
+  background: var(--adm-page);
   flex: 1;
   overflow: hidden;
 }
 .adm-progress i {
   height: 100%;
   display: block;
-  background: #82a78c;
+  background: var(--adm-brand);
   border-radius: 10px;
 }
 .adm-progress > b {
@@ -369,14 +383,14 @@
   display: flex;
   justify-content: space-between;
   padding: 18px 0;
-  border-bottom: 1px solid #edf0eb;
+  border-bottom: 1px solid var(--adm-line);
 }
 .adm-badge {
   display: inline-block;
   padding: 3px 10px;
   border-radius: 5px;
-  background: #f0f2ef;
-  color: #6d7a72;
+  background: var(--adm-page);
+  color: var(--adm-muted);
   font-size: 10px;
   white-space: nowrap;
 }
@@ -386,22 +400,25 @@
 .adm-ready,
 .adm-converted,
 .adm-active {
-  background: #e6f1e8;
-  color: #3f7952;
+  background: var(--adm-success-bg);
+  color: var(--adm-success);
 }
 .adm-failed,
 .adm-rejected,
 .adm-disabled,
 .adm-locked {
-  background: #fceee9;
-  color: #a2604d;
+  background: var(--adm-danger-bg);
+  color: var(--adm-danger);
 }
 .adm-new,
-.adm-pending,
-.adm-processing,
 .adm-assigned {
-  background: #faf1da;
-  color: #a28139;
+  background: var(--adm-tint);
+  color: var(--adm-brand);
+}
+.adm-pending,
+.adm-processing {
+  background: var(--adm-warning-bg);
+  color: var(--adm-warning);
 }
 .adm-table-wrap {
   overflow-x: auto;
@@ -415,31 +432,31 @@
   white-space: nowrap;
 }
 .admin-app th {
-  font-weight: 500;
-  color: #7e8b82;
-  background: #f6f8f3;
+  font-weight: 650;
+  color: var(--adm-brand);
+  background: var(--adm-tint);
   padding: 13px 14px;
 }
 .admin-app td {
   padding: 16px 14px;
-  border-bottom: 1px solid #eef1eb;
+  border-bottom: 1px solid var(--adm-line);
   max-width: 250px;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 .admin-app tbody tr:hover {
-  background: #fafbf8;
+  background: var(--adm-page);
 }
 .adm-empty {
   padding: 48px 15px;
   text-align: center;
-  color: #8a978e;
+  color: var(--adm-muted);
   font-size: 12px;
 }
 .adm-empty strong {
   font-size: 16px;
   font-weight: 500;
-  color: #587264;
+  color: var(--adm-ink);
 }
 .adm-pagination {
   display: flex;
@@ -470,25 +487,25 @@
   text-align: center;
   padding: 28px;
   font-size: 10px;
-  color: #8a978e;
+  color: var(--adm-muted);
 }
 .admin-app .adm-menu {
   display: none;
 }
 .adm-error,
 .adm-success {
-  border: 1px solid #efd6ca;
+  border: 1px solid #fecdca;
   border-radius: 9px;
-  background: #fff2ec;
+  background: var(--adm-danger-bg);
   padding: 13px 16px;
   font-size: 12px;
   margin: 12px 0;
-  color: #975641;
+  color: var(--adm-danger);
 }
 .adm-success {
-  background: #eef5e7;
-  border-color: #dbe8cd;
-  color: #4a7041;
+  background: var(--adm-success-bg);
+  border-color: #abefc6;
+  color: var(--adm-success);
 }
 .adm-dialog {
   width: min(850px, 94vw);
@@ -498,14 +515,14 @@
   border: 1px solid var(--adm-line);
   border-radius: 18px;
   padding: 25px;
-  background: #fff;
+  background: var(--adm-surface);
   color: var(--adm-ink);
-  box-shadow: 0 20px 100px #143a3930;
+  box-shadow: 0 20px 100px #123b7830;
   font: inherit;
   direction: rtl;
 }
 .adm-dialog::backdrop {
-  background: #13393266;
+  background: #20283366;
   backdrop-filter: blur(3px);
 }
 .adm-dialog-heading {
@@ -579,12 +596,12 @@
   grid-template-columns: 1fr 1fr;
   gap: 13px;
   padding: 18px;
-  background: #f8faf6;
+  background: var(--adm-page);
   border-radius: 10px;
   font-size: 11px;
 }
 .adm-details dt {
-  color: #7d8b81;
+  color: var(--adm-muted);
 }
 .adm-details dd {
   margin: 2px 0;
@@ -614,7 +631,7 @@
   align-items: center;
 }
 .adm-history article {
-  border-right: 2px solid #bbd0ae;
+  border-right: 2px solid var(--adm-silver);
   padding: 12px;
   margin: 10px;
 }
@@ -668,7 +685,7 @@
   }
   .adm-sidebar.is-open {
     display: flex;
-    box-shadow: -20px 0 60px #163d3720;
+    box-shadow: -20px 0 60px #123b7820;
   }
   .adm-main {
     margin-right: 0;
@@ -745,3 +762,20 @@
     scroll-behavior: auto !important;
   }
 }
+
+.adm-live-status { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; color: var(--adm-brand); font-size: 13px; padding-bottom: 12px; }
+.adm-live-status small { color: var(--adm-muted); margin-right: auto; }
+.adm-live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--adm-brand); box-shadow: 0 0 0 4px #123b7815; }
+.adm-live-dot.is-stale { background: var(--adm-warning); }
+.adm-live-announcement:empty { display: none; }
+.adm-live-announcement { color: var(--adm-brand); font-size: 13px; }
+.adm-list-hint { color: var(--adm-muted); font-size: 12px; }
+.adm-new-lead { background: var(--adm-tint); }
+.adm-lead-value { white-space: pre-wrap; overflow-wrap: anywhere; }
+.adm-table-wrap td[dir="ltr"] { text-align: right; unicode-bidi: isolate; }
+
+.adm-sidebar nav button:hover:not(.selected) { background: var(--adm-brand-hover); }
+.adm-sidebar :focus-visible { outline-color: var(--adm-silver); }
+.admin-app input::placeholder, .admin-app textarea::placeholder { color: var(--adm-muted); opacity: 1; }
+.admin-app input:hover:not(:disabled), .admin-app select:hover:not(:disabled), .admin-app textarea:hover:not(:disabled) { border-color: var(--adm-silver); }
+.adm-new-lead:hover { background: var(--adm-tint) !important; }
