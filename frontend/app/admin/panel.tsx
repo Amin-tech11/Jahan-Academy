@@ -1145,7 +1145,7 @@ function ResourceList({ resource }: { resource: Resource }) {
                 </tr>
               </thead>
               <tbody>
-                {!rows.length && <tr><td colSpan={resource.columns.length}><div className="adm-empty">درخواستی مطابق فیلترهای فعلی پیدا نشد.</div></td></tr>}
+                {!rows.length && !error && <tr><td colSpan={resource.columns.length}><div className="adm-empty">درخواستی مطابق فیلترهای فعلی پیدا نشد.</div></td></tr>}
                 {rows.map((row) => (
                   <tr key={String(row.id)} className={newIds.includes(String(row.id)) ? "adm-new-lead" : undefined}>
                     {resource.columns.map((column) => (
