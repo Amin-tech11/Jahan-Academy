@@ -3,6 +3,10 @@ import type { Locale, UniversityShowcase } from "./site-content";
 
 export type UniversityPhoto = { src: string; caption: Record<Locale, string> };
 export type UniversityFeature = { title: Record<Locale, string>; text: Record<Locale, string>; url: string };
+export type UniversityOffering = UniversityFeature & {
+  icon: "permit" | "internship" | "work" | "offer" | "home";
+  status: Record<Locale, string>;
+};
 export type UniversityDiscipline = { name: Record<Locale, string>; percentage: number };
 export type UniversityOverviewPoint = { title: Record<Locale, string>; text: Record<Locale, string>; sourceUrl: string };
 export type UniversityInfo = UniversityShowcase & {
@@ -12,6 +16,7 @@ export type UniversityInfo = UniversityShowcase & {
   photos: UniversityPhoto[];
   about: Record<Locale, string>;
   features: UniversityFeature[];
+  offerings?: UniversityOffering[];
   address?: string;
   shortAddress?: string;
   coordinates?: { latitude: number; longitude: number };
@@ -150,6 +155,38 @@ export const westernUniversity: UniversityInfo = {
     { title: { fa: "پردیس سبز و معماری تاریخی", en: "A green, historic campus" }, text: { fa: "محوطه‌های باز و ساختمان‌های تاریخی و مدرن در کنار یکدیگر قرار دارند.", en: "Open green spaces connect historic and modern university buildings." }, url: "https://www.uwo.ca/about/visit/index.html" },
     { title: { fa: "اقامتگاه‌های دانشجویی", en: "Campus residences" }, text: { fa: "گزینه‌های مختلف اقامت در پردیس؛ جزئیات هر ساختمان در وب‌سایت رسمی دانشگاه قابل بررسی است.", en: "Explore different residence buildings and living arrangements on Western's official website." }, url: "https://residence.uwo.ca/buildings" },
     { title: { fa: "کتابخانه‌ها و فضاهای مطالعه", en: "Libraries and study spaces" }, text: { fa: "کتابخانه‌های دانشگاه فضایی برای مطالعه و دسترسی به منابع پژوهشی فراهم می‌کنند.", en: "University libraries provide places to study and access research collections." }, url: "https://www.lib.uwo.ca/contact/libraries/index.html" },
+  ],
+  offerings: [
+    {
+      icon: "permit", title: { fa: "مجوز کار پس از تحصیل", en: "Post-Graduation Work Permit" },
+      status: { fa: "با احراز شرایط", en: "Subject to eligibility" },
+      text: { fa: "فارغ‌التحصیلان واجد شرایط می‌توانند برای مجوز کار پس از تحصیل (PGWP) اقدام کنند. امکان دریافت این مجوز به دورهٔ تحصیلی و رعایت الزامات ادارهٔ مهاجرت کانادا، از جمله شرایط تحصیل و زبان، بستگی دارد و خودکار نیست.", en: "Eligible graduates may apply for a post-graduation work permit (PGWP). Eligibility depends on the study program and meeting IRCC requirements, including study and language requirements; the permit is not automatic." },
+      url: "https://www.canada.ca/en/immigration-refugees-citizenship/services/study-canada/work/after-graduation/eligibility.html",
+    },
+    {
+      icon: "internship", title: { fa: "کوآپ و کارآموزی", en: "Co-op / Internship Participation" },
+      status: { fa: "بسته به رشته", en: "Program dependent" },
+      text: { fa: "کوآپ، کارآموزی و دوره‌های عملی، یادگیری دانشگاهی را با تجربهٔ محیط کار ترکیب می‌کنند. وسترن این فرصت‌ها را در رشته‌های مختلف ارائه می‌دهد؛ شیوهٔ شرکت، مدت و شرایط هر فرصت به دانشکده و دورهٔ تحصیلی بستگی دارد.", en: "Co-op, internships and practicums combine academic learning with workplace experience. Western offers these opportunities across different fields; participation, duration and requirements depend on the faculty and study program." },
+      url: "https://experience.uwo.ca/students/workexperience.html",
+    },
+    {
+      icon: "work", title: { fa: "کار هنگام تحصیل", en: "Work While Studying" },
+      status: { fa: "با احراز شرایط", en: "Subject to eligibility" },
+      text: { fa: "دانشجویان بین‌المللی در صورت احراز شرایط می‌توانند هنگام تحصیل خارج از پردیس کار کنند. پیش از شروع کار، شرایط مجوز تحصیل، وضعیت ثبت‌نام و محدودیت ساعات کار را در راهنمای رسمی ادارهٔ مهاجرت کانادا بررسی کنید.", en: "International students who meet the requirements may work off campus while studying. Before starting work, check your study permit conditions, enrolment status and working-hour limits in the official IRCC guidance." },
+      url: "https://www.canada.ca/en/immigration-refugees-citizenship/services/study-canada/work/work-off-campus.html",
+    },
+    {
+      icon: "offer", title: { fa: "نامهٔ پذیرش مشروط", en: "Conditional Offer Letter" },
+      status: { fa: "ارائه می‌شود", en: "Available" },
+      text: { fa: "پذیرش اولیه ممکن است مشروط به تکمیل شرایط ذکرشده در نامهٔ پذیرش باشد. برای نهایی شدن پذیرش، باید مدارک نهایی و سایر الزامات مشخص‌شده در پورتال پذیرش وسترن را در مهلت مقرر ارائه کنید.", en: "An initial offer may be conditional on meeting the requirements stated in your offer. To finalize admission, submit your final documents and meet the conditions shown in Western’s offer portal by the specified deadline." },
+      url: "https://welcome.uwo.ca/next-steps/accept-offer/meet-your-admission-conditions.html",
+    },
+    {
+      icon: "home", title: { fa: "اقامتگاه‌های دانشجویی", en: "Accommodations" },
+      status: { fa: "ارائه می‌شود", en: "Available" },
+      text: { fa: "وسترن اقامتگاه‌های دانشجویی با چیدمان‌های مختلف در پردیس دارد. درخواست خوابگاه مراحل و مهلت‌های جداگانه دارد؛ تضمین اقامت سال اول به احراز شرایط و تکمیل مراحل در موعد مقرر وابسته است.", en: "Western offers on-campus residences with different living arrangements. Residence has separate application steps and deadlines; the first-year guarantee depends on eligibility and completing the required steps on time." },
+      url: "https://residence.uwo.ca/applying/key_steps",
+    },
   ],
   sources: [
     { label: "Western University", url: "https://www.uwo.ca/about/visit/index.html" },

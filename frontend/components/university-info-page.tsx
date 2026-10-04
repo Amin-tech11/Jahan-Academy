@@ -3,11 +3,22 @@ import Link from "next/link";
 import { SiteShell } from "@/components/site-shell";
 import { UniversityGallery, UniversityTabs } from "@/components/university-info-interactive";
 import type { Locale } from "@/lib/site-content";
-import { safeUniversityUrl, universityIdentityLocation, universityMapEmbedUrl, type UniversityInfo } from "@/lib/university-info-model";
+import { safeUniversityUrl, universityIdentityLocation, universityMapEmbedUrl, type UniversityInfo, type UniversityOffering } from "@/lib/university-info-model";
 import styles from "./university-info.module.css";
 
 function Pin() {
   return <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z" stroke="currentColor" strokeWidth="1.6" /><circle cx="12" cy="10" r="2.3" stroke="currentColor" strokeWidth="1.6" /></svg>;
+}
+
+function OfferingIcon({ icon }: { icon: UniversityOffering["icon"] }) {
+  const paths = {
+    permit: <><path d="M7 3h9l3 3v7M7 3v18h6M10 8h5M10 12h3" /><circle cx="17" cy="17" r="5" /><path d="m15 17 1.5 1.5L19 16" /></>,
+    internship: <><rect x="3" y="7" width="18" height="14" rx="2" /><path d="M8 7V4h8v3M3 12l9 3 9-3M12 13v4" /></>,
+    work: <><path d="M3 21h18M5 21V4h14v17M9 8h1m4 0h1M9 12h1m4 0h1M10 21v-5h4v5" /></>,
+    offer: <><path d="M3 10v11h18V10M3 10l9 7 9-7M7 12V3h10v9M10 6h4M10 9h3" /></>,
+    home: <><path d="m3 11 9-8 9 8M5 10v11h14V10M9 21v-7h6v7M10 8h4" /></>,
+  };
+  return <svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">{paths[icon]}</svg>;
 }
 
 function CampusLifeIcon({ index }: { index: number }) {
@@ -23,6 +34,7 @@ export function UniversityInfoPage({ university: u, locale }: { university: Univ
   const fa = locale === "fa";
   const website = safeUniversityUrl(u.websiteUrl);
   const identityLocation = universityIdentityLocation(u);
+  const offerings: (UniversityInfo["features"][number] & Partial<Pick<UniversityOffering, "icon" | "status">>)[] = u.offerings ?? u.features;
   const facts = [
     { label: fa ? "کشور" : "Country", value: u.country[locale] },
     ...(u.city ? [{ label: fa ? "شهر" : "City", value: u.city[locale] }] : []),
@@ -60,8 +72,19 @@ export function UniversityInfoPage({ university: u, locale }: { university: Univ
     </section>}
   </>;
   const features = <>
-    <p className={styles.eyebrow}>{fa ? "در فضای دانشگاه" : "ON CAMPUS"}</p><h2>{fa ? "ویژگی‌های دانشگاه" : "Campus features"}</h2>
-    {u.features.length ? <div className={styles.featureList}>{u.features.map((feature, index) => <article key={feature.url}><span aria-hidden="true">{["⌂", "◇", "▤"][index % 3]}</span><div><h3>{feature.title[locale]}</h3><p>{feature.text[locale]}</p>{safeUniversityUrl(feature.url) && <a href={feature.url} target="_blank" rel="noopener noreferrer">{fa ? "اطلاعات رسمی" : "Official information"} ↗</a>}</div></article>)}</div> : <p className={styles.prose}>{fa ? "جزئیات ویژگی‌های این دانشگاه هنوز منتشر نشده است." : "Campus feature details have not yet been published for this university."}</p>}
+    <h2>{fa ? `امکانات و ویژگی‌های ${u.name.fa}` : `What we offer at ${u.englishName}`}</h2>
+    {offerings.length ? <div className={styles.featureList}>{offerings.map((feature, index) => {
+      const url = safeUniversityUrl(feature.url);
+      return <details className={styles.featureItem} key={feature.url}>
+        <summary className={styles.featureSummary}>
+          <span className={styles.featureIcon}>{feature.icon ? <OfferingIcon icon={feature.icon} /> : <CampusLifeIcon index={index} />}</span>
+          <span className={styles.featureTitle}>{feature.title[locale]}</span>
+          {feature.status && <span className={styles.featureStatus}>{feature.status[locale]}</span>}
+          <svg className={styles.featureChevron} aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="m6 9 6 6 6-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+        </summary>
+        <div className={styles.featureDescription}><p>{feature.text[locale]}</p>{url && <a href={url} target="_blank" rel="noopener noreferrer">{fa ? "جزئیات در وب‌سایت رسمی" : "Details on the official website"} ↗</a>}</div>
+      </details>;
+    })}</div> : <p className={styles.prose}>{fa ? "جزئیات ویژگی‌های این دانشگاه هنوز منتشر نشده است." : "Campus feature details have not yet been published for this university."}</p>}
   </>;
   return <div className={styles.panel}><SiteShell locale={locale}><main className={styles.main}>
     <nav className={styles.breadcrumb} aria-label={fa ? "مسیر صفحه" : "Breadcrumb"}><Link href={`/${locale}`}>{fa ? "صفحه اصلی" : "Home"}</Link><span aria-hidden="true">/</span><Link href={`/${locale}/universities`}>{fa ? "دانشگاه‌ها" : "Universities"}</Link><span aria-hidden="true">/</span><span aria-current="page">{u.name[locale]}</span></nav>
