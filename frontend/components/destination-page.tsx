@@ -91,7 +91,7 @@ export function DestinationPage({ destination: d, locale }: { destination: Desti
       <div>
         <h2>{t("هزینه‌ها را با تصویر کامل ببینید", "Plan for the whole experience")}</h2>
         <p>{d.planning.summary[locale]}</p>
-        <ul className={`${styles.checklist} ${styles.planningList}`}>{([
+        <ul className={`${styles.checklist} ${styles.detailList}`}>{([
           ["tuition", t("شهریه و آموزش", "Tuition & study")],
           ["living", t("بودجه زندگی", "Everyday budget")],
           ["arrival", t("هزینه‌های شروع", "Getting started")],
@@ -101,7 +101,19 @@ export function DestinationPage({ destination: d, locale }: { destination: Desti
       </div>
     </section>
 
-    <section id="visa" data-destination-section className={`${styles.container} ${styles.section} ${styles.visa}`}><div><p className={styles.eyebrow}>{t("قدم بعدی، با اطلاعات معتبر", "YOUR NEXT STEP, WELL INFORMED")}</p><h2>{t(`آمادهٔ مسیر تحصیل در ${d.name.fa} شوید`, `Prepare for your journey to ${d.name.en}`)}</h2><p>{t("ابتدا شرایط پذیرش دانشگاه را بررسی کنید؛ سپس راهنمای رسمی ویزا و اقامت متناسب با تابعیت و وضعیت خود را بخوانید. الزامات و هزینه‌ها ممکن است تغییر کنند.", "Start with your university’s admission requirements, then check official visa and residence guidance for your nationality and circumstances. Requirements and fees can change.")}</p></div><ol className={styles.steps}>{[t("هدف، رشته و مقطع را مشخص کنید", "Define your subject and study level"), t("شرایط دانشگاه و مدارک را بررسی کنید", "Check entry requirements and documents"), t("زمان‌بندی و بودجه خود را آماده کنید", "Prepare your timeline and budget"), t("الزامات ویزا را از مرجع رسمی بخوانید", "Read official visa guidance")].map((item, i) => <li key={item}><span>{(i + 1).toLocaleString(locale)}</span>{item}</li>)}</ol></section>
+    <section id="visa" data-destination-section className={`${styles.container} ${styles.section} ${styles.visa}`}>
+      <figure className={styles.visaPhoto}><Image className={styles.campusPhoto} src={d.image} alt={d.imageLabel[locale]} width={620} height={430} sizes="(max-width: 760px) 100vw, 45vw" /></figure>
+      <div className={styles.visaCopy} dir={locale === "fa" ? "rtl" : "ltr"}>
+        <h2>{t(`پذیرش و ویزای تحصیلی ${d.name.fa}`, `Admission & student visas for ${d.name.en}`)}</h2>
+        <p>{d.visa.summary[locale]}</p>
+        <ul className={`${styles.checklist} ${styles.detailList}`}>{([
+          ["admission", t("پذیرش و تأیید ثبت‌نام", "Admission & enrolment")],
+          ["documents", t("مدارک و آمادگی پرونده", "Documents & preparation")],
+          ["process", t("مراحل ویزا و اقامت", "Visa & residence process")],
+        ] as const).map(([key, title]) => <li key={key}><div><strong>{title}</strong><p>{d.visa[key][locale]}</p></div></li>)}</ul>
+        <p className={styles.planningNote}>{t("مسیر و مدارک به تابعیت، دوره و شرایط شما بستگی دارد؛ پیش از اقدام، آخرین فهرست مرجع رسمی را بررسی کنید.", "The route and documents depend on your nationality, course and circumstances; check the official current checklist before applying.")}</p>
+      </div>
+    </section>
 
     <section className={`${styles.container} ${styles.cta}`}><div><p className={styles.eyebrow}>JAHAN ACADEMY</p><h2>{t("مقصد را شناختید؛ حالا مسیر خودتان را بسازید", "You know the destination. Let’s plan your journey.")}</h2><p>{t("شرایط و هدف خود را با ما در میان بگذارید تا قدم بعدی روشن‌تر شود.", "Share your background and goals with us to clarify your next step.")}</p></div><Link href={consultation}>{t("درخواست مشاوره", "Request a consultation")} <span aria-hidden="true">{t("←", "→")}</span></Link></section>
 

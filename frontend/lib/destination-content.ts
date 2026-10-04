@@ -7,6 +7,7 @@ export type Destination = {
   tagline: Localized;
   academics: Localized;
   life: Localized;
+  visa: { summary: Localized; admission: Localized; documents: Localized; process: Localized };
   planning: { summary: Localized; tuition: Localized; living: Localized; arrival: Localized; funding: Localized };
   language: Localized;
   currency: string;
@@ -30,6 +31,12 @@ export const destinations: Destination[] = [
       arrival: text("برای خوابگاه ممکن است پرداخت سالانه لازم باشد؛ بیمه دانشجویی را نیز متناسب با استان و پوشش دانشگاه بررسی کنید.", "Some residences require annual payment. Check student health insurance against provincial coverage and your institution’s plan."),
       funding: text("پیش از انتخاب نهایی، گزینه‌های بورسیه و مهلتشان را بررسی کنید و فقط کمک‌هزینه تأییدشده را وارد بودجه کنید.", "Explore scholarship options and deadlines before deciding, and include only confirmed awards in your budget."),
     },
+    visa: {
+      summary: text("مسیر تحصیل در کانادا با پذیرش از مؤسسه آموزشی مورد تأیید (DLI) شروع می‌شود. شرایط دوره و پرونده مجوز تحصیل را جداگانه بررسی کنید.", "Start with admission to a designated learning institution (DLI). Check course requirements separately from study-permit requirements."),
+      admission: text("نامه پذیرش (LOA) بگیرید؛ برای بیشتر متقاضیان، نامه استانی یا قلمرویی PAL/TAL نیز لازم است. مقررات کبک و CAQ را جدا بررسی کنید.", "Obtain a letter of acceptance. Most applicants also need a PAL/TAL; check Quebec’s separate CAQ requirements."),
+      documents: text("گذرنامه و مدارک تأمین هزینه‌ها را آماده کنید؛ معاینه پزشکی و مدارک تکمیلی به وضعیت پرونده بستگی دارند.", "Prepare your passport and financial evidence; medical examinations and additional documents depend on your circumstances."),
+      process: text("درخواست مجوز تحصیل را طبق راهنمای IRCC آنلاین ثبت کنید و مراحل احراز هویت یا بیومتریکِ خواسته‌شده را دنبال کنید.", "Apply online through IRCC and follow any requested identity or biometric steps."),
+    },
     language: text("انگلیسی / فرانسوی", "English / French"), currency: "CAD",
     cities: text("تورنتو، مونترآل، هلیفکس", "Toronto, Montréal, Halifax"),
     image: "/destinations/canada.png", imageLabel: text("چشم‌انداز تورنتو، کانادا", "Toronto skyline, Canada"),
@@ -46,6 +53,12 @@ export const destinations: Destination[] = [
       living: text("سهم ترمی، بیمه، خوراک و حمل‌ونقل را کنار اجاره بنویسید؛ پوشش بلیت حمل‌ونقل در سهم ترمی یکسان نیست.", "Budget for semester contributions, insurance, food and transport alongside rent; transport-ticket coverage varies."),
       arrival: text("هزینه منابع درسی و مخارج شروع اقامت را جدا کنید؛ بودجه واقعی زندگی با مبلغ اثبات تمکن الزاماً برابر نیست.", "Keep study materials and arrival costs separate; actual spending and proof-of-funds requirements are not necessarily equal."),
       funding: text("بورسیه‌ها را زود بررسی کنید و پوشش همه مخارج زندگی را به درآمد احتمالی کار دانشجویی وابسته نکنید.", "Research scholarships early; do not depend on prospective student work to cover all living expenses."),
+    },
+    visa: {
+      summary: text("برای تحصیل در آلمان، تناسب مدرک قبلی با شرایط ورود دانشگاه و زبان دوره را بررسی کنید. نیاز به ویزا به تابعیت و وضعیت اقامت بستگی دارد.", "Check whether your prior qualification and language skills meet the German programme’s entry requirements. Visa requirements depend on citizenship and residence status."),
+      admission: text("از دانشگاه مورد تأیید پذیرش بگیرید؛ ممکن است ارزیابی مدرک، دوره آمادگی یا آزمون ورودی لازم باشد.", "Secure admission to a recognised institution; qualification assessment, preparation or an entrance examination may be needed."),
+      documents: text("تمکن مالی را با روش پذیرفته‌شده مانند حساب مسدود، بورسیه یا تعهدنامه مالی اثبات کنید.", "Prove funding through an accepted route, such as a blocked account, scholarship or declaration of commitment."),
+      process: text("در صورت نیاز، ویزای تحصیلی را پیش از سفر و اجازه اقامت تحصیلی را پس از ورود از مرجع مربوط پیگیری کنید.", "If required, arrange a study visa before travelling and the relevant study residence permit after arrival."),
     },
     language: text("آلمانی / انگلیسی، بسته به دوره", "German / English, by course"), currency: "EUR",
     cities: text("برلین، براونشوایگ، توبینگن", "Berlin, Braunschweig, Tübingen"),
@@ -64,6 +77,12 @@ export const destinations: Destination[] = [
       arrival: text("هزینه درخواست ویزا، خدمات درمانی مهاجرتی و سفر را جدا از شهریه و اجاره برآورد کنید.", "Allow separately for the visa application, immigration health surcharge and travel."),
       funding: text("تخفیف‌های دانشجویی و بورسیه‌ها را بررسی کنید؛ بودجه کل را برای تمام ماه‌های دوره ببندید.", "Explore student discounts and scholarships, and budget for every month of the course."),
     },
+    visa: {
+      summary: text("برای مسیر Student visa بریتانیا، پذیرش باید از مؤسسه دارای مجوز حمایت از دانشجوی بین‌المللی باشد. شرایط علمی و زبان دوره را پیش از اپلای بررسی کنید.", "For the UK Student visa route, choose a licensed student sponsor and check the course’s academic and English requirements."),
+      admission: text("پس از پذیرش، شماره تأییدیه CAS را از مؤسسه بگیرید؛ برای درخواست ویزا به این شماره نیاز دارید.", "After admission, obtain your Confirmation of Acceptance for Studies (CAS) reference for the visa application."),
+      documents: text("گذرنامه و مدارک مالیِ لازم را آماده کنید؛ گواهی سل یا ATAS تنها در شرایط مربوط به پرونده لازم می‌شود.", "Prepare your passport and required financial evidence; TB testing or ATAS clearance applies only in relevant cases."),
+      process: text("درخواست را آنلاین ثبت کنید و روش تعیین‌شده برای احراز هویت و ارائه مدارک را تکمیل کنید.", "Apply online and complete the specified identity-check and document-submission steps."),
+    },
     language: text("انگلیسی", "English"), currency: "GBP", cities: text("لندن، دورهام، کاردیف", "London, Durham, Cardiff"),
     image: "/destinations/united-kingdom.png", imageLabel: text("چشم‌اندازی از بریتانیا", "Explore the United Kingdom"), source: "https://study-uk.britishcouncil.org/", sourceName: "Study UK · British Council",
   },
@@ -77,6 +96,12 @@ export const destinations: Destination[] = [
       living: text("اجاره و قبوض را جدا مقایسه کنید و خوراک، منابع درسی و حمل‌ونقل را به برآورد شهر اضافه کنید.", "Compare rent and utilities separately, then add food, study materials and local transport."),
       arrival: text("مهلت ارائه مدارک مالی و پرداخت اقساط را در تقویم ثبت کنید؛ تأخیر ممکن است هزینه اضافی داشته باشد.", "Track financial-document and instalment deadlines; late payment can incur extra charges."),
       funding: text("کمک‌هزینه، خوابگاه و خدمات غذایی منطقه‌ای را با شرایط همان فراخوان بررسی کنید؛ دریافت آن‌ها تضمین‌شده نیست.", "Check regional grants, housing and meal support against the relevant call; awards are not guaranteed."),
+    },
+    visa: {
+      summary: text("پذیرش دانشگاه و صدور ویزای ایتالیا دو مرحله جدا هستند. ابتدا شرایط مدرک، زبان و مهلت درخواستِ رشته موردنظر را از دانشگاه بررسی کنید.", "University admission and an Italian visa are separate decisions. Check the institution’s qualification, language and application requirements."),
+      admission: text("اگر برای تحصیل به ویزا نیاز دارید، پیش‌ثبت‌نام Universitaly را طبق راهنمای دانشگاه انجام دهید تا دانشگاه آن را بررسی و تأیید کند.", "If you need a study visa, complete Universitaly pre-enrolment for validation by your institution."),
+      documents: text("نسخه تأییدشده پیش‌ثبت‌نام و مدارک خواسته‌شده را با قالب تعیین‌شده سفارت یا کنسولگری آماده کنید.", "Prepare the validated pre-enrolment and supporting documents in the format required by the embassy or consulate."),
+      process: text("پرونده ویزا را نزد نمایندگی مربوط پیگیری کنید؛ پس از ورود با ویزای تحصیلی بلندمدت، مراحل اجازه اقامت و ثبت‌نام نهایی را انجام دهید.", "Follow the consular visa process, then arrange the study residence permit and final enrolment after arrival."),
     },
     language: text("ایتالیایی / انگلیسی، بسته به دوره", "Italian / English, by course"), currency: "EUR", cities: text("میلان، تورین، رم", "Milan, Turin, Rome"),
     image: "/destinations/italy.png", imageLabel: text("ایتالیا؛ فرهنگ، هنر و تحصیل", "Explore Italy"), source: "https://studyinitaly.esteri.it/", sourceName: "Study in Italy",
@@ -92,6 +117,12 @@ export const destinations: Destination[] = [
       arrival: text("برخی مؤسسات هزینه بررسی درخواست دارند؛ آن را همراه با مخارج اولیه مسکن در بودجه شروع تحصیل لحاظ کنید.", "Some institutions charge application handling fees; include these alongside initial housing expenses."),
       funding: text("مبلغ و مدت بورسیه را دقیق بخوانید؛ برای نمونه، NL Scholarship کل شهریه را پوشش نمی‌دهد.", "Check each scholarship’s amount and duration; the NL Scholarship, for example, does not cover full tuition."),
     },
+    visa: {
+      summary: text("در هلند، دانشگاه هم شرایط پذیرش را تعیین می‌کند و هم در مسیر اقامت تحصیلی نقش مستقیم دارد. دوره و مؤسسه مناسب را پیش از آماده‌سازی پرونده انتخاب کنید.", "Dutch institutions set admission requirements and have a direct role in student residence applications. Start by choosing an eligible course and institution."),
+      admission: text("مدرک قبلی و زبان را با شرایط دوره تطبیق دهید؛ برای این مسیر اقامت، دوره باید تمام‌وقت و معتبر و مؤسسه حامیِ مورد تأیید IND باشد.", "Check qualifications and language requirements; this permit requires a full-time accredited course and an IND-recognised sponsor."),
+      documents: text("مدارک هویتی و تمکن مالی را طبق فهرست دانشگاه آماده کنید؛ ترجمه یا تأیید مدارک خارجی ممکن است لازم باشد.", "Prepare identity and funding evidence for the institution; foreign documents may need translation or legalisation."),
+      process: text("دانشگاه درخواست اجازه اقامت و، در صورت نیاز، ویزای ورود MVV را برای شما نزد IND ثبت می‌کند.", "Your institution submits the residence application and, where needed, the MVV entry-visa application to IND."),
+    },
     language: text("هلندی / انگلیسی، بسته به دوره", "Dutch / English, by course"), currency: "EUR", cities: text("دلفت، آیندهوون، روتردام", "Delft, Eindhoven, Rotterdam"),
     image: "/destinations/netherlands.png", imageLabel: text("چشم‌انداز هلند", "Explore the Netherlands"), source: "https://www.studyinnl.org/", sourceName: "Study in NL · Nuffic",
   },
@@ -105,6 +136,12 @@ export const destinations: Destination[] = [
       living: text("در اجاره، شمول آب، برق و اینترنت را بررسی کنید؛ اقامتگاه دانشگاهی و خانه اشتراکی را با هزینه نهایی مقایسه کنید.", "Check whether rent includes utilities and internet; compare university housing and shared rentals by total cost."),
       arrival: text("ودیعه مسکن و بیمه درمانی دانشجویان خارجی، OSHC، را از ابتدا در برنامه پرداخت بگنجانید.", "Include the housing bond and Overseas Student Health Cover (OSHC) in your initial payment plan."),
       funding: text("بودجه را براساس هزینه واقعی شهر تنظیم کنید؛ حداقل مالی ویزا ممکن است تمام مخارج زندگی را پوشش ندهد.", "Use actual local expenses for your budget; the visa financial minimum may not cover your living costs."),
+    },
+    visa: {
+      summary: text("مسیر ویزای دانشجویی استرالیا با پیشنهاد پذیرش و ثبت‌نام در دوره آغاز می‌شود. پیش از پذیرش پیشنهاد، شرایط دوره، هزینه‌ها و ضوابط بازپرداخت را بخوانید.", "Australia’s student-visa route starts with an offer and course enrolment. Read the offer’s conditions, fees and refund terms before accepting."),
+      admission: text("پس از قبول پیشنهاد و پرداخت ودیعه لازم، تأییدیه ثبت‌نام CoE را از مؤسسه دریافت کنید.", "Accept the offer and pay the required deposit to obtain your Confirmation of Enrolment (CoE)."),
+      documents: text("مدارک مالی، پوشش درمانی OSHC و مدرک زبانِ لازم را آماده کنید؛ پاسخ‌های Genuine Student باید هدف تحصیل شما را توضیح دهند.", "Prepare financial evidence, OSHC health cover and any required English evidence; explain your study plans through the Genuine Student questions."),
+      process: text("برای ویزای Student subclass 500 از ImmiAccount اقدام کنید و CoE و مدارک خواسته‌شده را ارائه دهید.", "Apply for the Student subclass 500 visa through ImmiAccount with your CoE and supporting evidence."),
     },
     language: text("انگلیسی", "English"), currency: "AUD", cities: text("کانبرا، آدلاید، پرت", "Canberra, Adelaide, Perth"),
     image: "/universities/australian-national-university.jpg", imageLabel: text("دانشگاه ملی استرالیا، کانبرا", "Australian National University, Canberra"), source: "https://www.studyaustralia.gov.au/", sourceName: "Study Australia",
@@ -120,6 +157,12 @@ export const destinations: Destination[] = [
       arrival: text("برای ودیعه، وسایل خانه و اقامت موقت احتمالی پول کنار بگذارید و زود وارد صف مسکن شوید.", "Set aside funds for deposits, household items and possible temporary housing; join housing queues early."),
       funding: text("آشپزی در خانه، خرید دست‌دوم و تخفیف‌های دانشجویی می‌توانند هزینه را کم کنند؛ مقداری ذخیره برای مخارج پیش‌بینی‌نشده نگه دارید.", "Home cooking, second-hand shopping and student discounts can lower costs; retain a buffer for unexpected expenses."),
     },
+    visa: {
+      summary: text("برای سوئد، شرایط عمومی و اختصاصی پذیرش را متناسب با مقطع بررسی کنید. بیشتر دانشجویان خارج از اتحادیه اروپا و منطقه اقتصادی اروپا برای تحصیل بلندمدت به اجازه اقامت نیاز دارند.", "Check Sweden’s general and programme-specific entry requirements. Most non-EU/EEA students need a residence permit for longer studies."),
+      admission: text("پذیرش نهایی در دوره تمام‌وقت و حضوری لازم است؛ اگر شهریه شامل شما می‌شود، پرداخت لازم را پیش از درخواست اقامت انجام دهید.", "Secure final admission to full-time, on-site studies and pay applicable tuition before applying for residence."),
+      documents: text("گذرنامه، نامه پذیرش و مدارک تأمین هزینه زندگی را آماده کنید؛ برای دوره کمتر از یک سال، بیمه درمانی جامع را بررسی کنید.", "Prepare your passport, admission decision and maintenance evidence; check comprehensive health insurance for studies under one year."),
+      process: text("درخواست را به اداره مهاجرت سوئد ارائه دهید و پیش از سفر، صدور اجازه اقامت موردنیاز را پیگیری کنید.", "Apply to the Swedish Migration Agency and obtain the required residence permit before travelling."),
+    },
     language: text("سوئدی / انگلیسی، بسته به دوره", "Swedish / English, by course"), currency: "SEK", cities: text("استکهلم، گوتنبرگ", "Stockholm, Gothenburg"),
     image: "/universities/kth-royal-institute-of-technology.jpg", imageLabel: text("مؤسسه سلطنتی فناوری، استکهلم", "KTH Royal Institute of Technology, Stockholm"), source: "https://studyinsweden.se/", sourceName: "Study in Sweden",
   },
@@ -133,6 +176,12 @@ export const destinations: Destination[] = [
       living: text("اجاره، خوراک و رفت‌وآمد را با هزینه‌های احتمالی اتحادیه دانشجویی و خدمات سلامت در یک جدول قرار دهید.", "Combine rent, food and transport with any applicable student-union and healthcare fees."),
       arrival: text("هزینه درخواست، بیمه و مخارج شروع اقامت را جداگانه بررسی کنید؛ همه مبالغ در شهریه دانشگاه گنجانده نمی‌شوند.", "Check application fees, insurance and arrival expenses separately; tuition does not include every cost."),
       funding: text("برای کل دوره تأمین مالی داشته باشید؛ پیدا کردن کار پاره‌وقت قطعی نیست و نباید پایه اصلی بودجه باشد.", "Arrange funding for the full study period; part-time employment is uncertain and should not underpin your budget."),
+    },
+    visa: {
+      summary: text("در فنلاند، زمان درخواست و شیوه گزینش به دانشگاه و دوره بستگی دارد. برای اغلب متقاضیان خارج از اتحادیه اروپا و منطقه اقتصادی اروپا، تحصیل بیش از ۹۰ روز نیازمند اجازه اقامت است.", "Finnish application periods and selection methods vary by programme. Most non-EU/EEA students need a residence permit for studies exceeding 90 days."),
+      admission: text("شرایط دوره را در Studyinfo و سایت دانشگاه بخوانید و پذیرش بگیرید؛ مدارک زبان و آزمون‌های لازم را طبق همان دوره آماده کنید.", "Check Studyinfo and the university, meet the course’s language or examination requirements and secure admission."),
+      documents: text("مدارک تأمین هزینه زندگی، پوشش شهریه و بیمه درمانی قابل‌قبول را برای پرونده اقامت فراهم کنید.", "Prepare evidence of living funds, tuition coverage and acceptable health insurance."),
+      process: text("درخواست نخست را معمولاً از خارج فنلاند در Enter Finland ثبت کنید؛ سپس برای احراز هویت و ارائه اصل مدارک به نمایندگی مراجعه کنید.", "Normally submit your first application from abroad through Enter Finland, then visit a mission for identity checks and original documents."),
     },
     language: text("فنلاندی / سوئدی / انگلیسی، بسته به دوره", "Finnish / Swedish / English, by course"), currency: "EUR", cities: text("هلسینکی، اسپو، تامپره", "Helsinki, Espoo, Tampere"),
     image: "/universities/university-of-helsinki.jpg", imageLabel: text("دانشگاه هلسینکی، فنلاند", "University of Helsinki, Finland"), source: "https://www.studyinfinland.fi/", sourceName: "Study in Finland",
@@ -148,6 +197,12 @@ export const destinations: Destination[] = [
       arrival: text("پول اجاره، ودیعه و وسایل اولیه هفته‌های نخست را پیش از رسیدن آماده کنید؛ انتقال وجه هم ممکن است کارمزد داشته باشد.", "Prepare funds for initial rent, deposits and household items; transfers may also incur fees."),
       funding: text("دوچرخه‌سواری و غذا پختن در خانه را در برنامه صرفه‌جویی بگنجانید و کمک‌هزینه‌ها را مطابق شرایط دانشگاه بررسی کنید.", "Consider cycling and home cooking to reduce costs, and check funding against your institution’s conditions."),
     },
+    visa: {
+      summary: text("برای اقامت تحصیلی دانمارک، پذیرش در دوره واجد شرایط مبنای پرونده است. وضعیت تأیید رسمی دوره و شرایط همان برنامه را پیش از انتخاب بررسی کنید.", "Admission to an eligible programme is the basis for Danish student residence. Check the programme’s official approval status and entry conditions."),
+      admission: text("ابتدا پذیرش بگیرید و با دانشگاه درباره شروع پرونده هماهنگ شوید؛ مؤسسه و دانشجو هرکدام بخشی از درخواست را تکمیل می‌کنند.", "Obtain admission and coordinate with the institution; you and the institution each complete a part of the application."),
+      documents: text("نسخه گذرنامه، مدرک پرداخت هزینه بررسی و مدارک تأمین هزینه زندگی را طبق فهرست SIRI آماده کنید.", "Prepare passport copies, the processing-fee receipt and maintenance evidence using SIRI’s checklist."),
+      process: text("در فرم آنلاین ST1، دانشگاه بخش نخست را تکمیل می‌کند؛ سپس بخش خودتان و ثبت اطلاعات بیومتریک را در مهلت اعلام‌شده انجام دهید.", "For online ST1, the institution completes its part first; complete yours and arrange biometrics within the stated deadline."),
+    },
     language: text("دانمارکی / انگلیسی، بسته به دوره", "Danish / English, by course"), currency: "DKK", cities: text("کپنهاگ، آرهوس، آلبورگ", "Copenhagen, Aarhus, Aalborg"),
     image: "/universities/aarhus-university.jpg", imageLabel: text("دانشگاه آرهوس، دانمارک", "Aarhus University, Denmark"), source: "https://studyindenmark.dk/", sourceName: "Study in Denmark",
   },
@@ -161,6 +216,12 @@ export const destinations: Destination[] = [
       living: text("اجاره، خرید مواد غذایی، برق، اینترنت و رفت‌وآمد را تفکیک کنید؛ در خوابگاه، شمول غذا و قبوض را بپرسید.", "Separate rent, groceries, power, internet and transport; ask whether halls include meals and utilities."),
       arrival: text("ودیعه، سفر و مخارج استقرار را از هزینه ماهانه جدا کنید و نرخ‌های هفتگی را برای کل مدت اقامت جمع بزنید.", "Separate deposits, travel and settling-in costs from recurring spending; total weekly rates across your full stay."),
       funding: text("بودجه ماهانه را با منابع مالی قطعی هماهنگ کنید؛ خدمات انجمن دانشجویی و تخفیف‌ها می‌توانند به مدیریت مخارج کمک کنند.", "Match monthly spending to confirmed funding; student-association services and discounts can help manage costs."),
+    },
+    visa: {
+      summary: text("برای مسیر Fee Paying Student Visa نیوزیلند، پیشنهاد پذیرش از مؤسسه واجد شرایط نقطه شروع است. مؤسسه باید توانایی علمی و زبان شما را برای دوره ارزیابی کند.", "For New Zealand’s Fee Paying Student Visa, start with an eligible provider’s offer. The provider assesses your academic and English readiness."),
+      admission: text("درخواست از خارج کشور می‌تواند با پذیرش مشروط آغاز شود، اما تأیید نهایی ویزا به پذیرش بدون شرط نیاز دارد.", "Offshore applicants can start with a conditional offer, but final visa approval requires an unconditional offer."),
+      documents: text("مدارک شهریه، هزینه زندگی و امکان خروج از کشور را آماده کنید؛ شرایط بیمه، سلامت و سوءپیشینه را نیز بررسی کنید.", "Prepare tuition, living-funds and outward-travel evidence; check insurance, health and character requirements."),
+      process: text("پرونده را آنلاین به Immigration New Zealand ارائه دهید و زمان پرداخت شهریه را مطابق راهنمای وضعیت خودتان تنظیم کنید.", "Apply online to Immigration New Zealand and follow the tuition-payment sequence appropriate to your circumstances."),
     },
     language: text("انگلیسی", "English"), currency: "NZD", cities: text("اوکلند، داندین، پالمرستون نورث", "Auckland, Dunedin, Palmerston North"),
     image: "/universities/the-university-of-auckland.jpg", imageLabel: text("دانشگاه اوکلند، نیوزلند", "University of Auckland, New Zealand"), source: "https://www.studywithnewzealand.govt.nz/en", sourceName: "Study with New Zealand",
