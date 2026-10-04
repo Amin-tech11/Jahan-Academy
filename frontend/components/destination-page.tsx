@@ -1,6 +1,8 @@
 "use client";
 
 import Image from "next/image";
+import { DestinationConsultation } from "./destination-consultation";
+import consultationStyles from "./destination-consultation.module.css";
 import { DestinationCollage } from "./destination-collage";
 import { destinationCollages } from "@/lib/destination-collages";
 import Link from "next/link";
@@ -119,7 +121,7 @@ export function DestinationPage({ destination: d, locale }: { destination: Desti
       </div>
     </section>
 
-    <section className={`${styles.container} ${styles.cta}`}><div><p className={styles.eyebrow}>JAHAN ACADEMY</p><h2>{t("مقصد را شناختید؛ حالا مسیر خودتان را بسازید", "You know the destination. Let’s plan your journey.")}</h2><p>{t("شرایط و هدف خود را با ما در میان بگذارید تا قدم بعدی روشن‌تر شود.", "Share your background and goals with us to clarify your next step.")}</p></div><Link href={consultation}>{t("درخواست مشاوره", "Request a consultation")} <span aria-hidden="true">{t("←", "→")}</span></Link></section>
+
 
     <section aria-labelledby="more-destinations-title" className={`${styles.container} ${styles.section} ${styles.more}`}>
       <p className={styles.moreEyebrow}>{t("مقصدهای تحصیلی", "STUDY DESTINATIONS")}</p>
@@ -128,6 +130,16 @@ export function DestinationPage({ destination: d, locale }: { destination: Desti
         <Image src={`/destinations/word-flags/${item.slug}.svg`} alt="" width={28} height={22} />
         <span>{t(`تحصیل در ${item.name.fa}`, `Study in ${item.slug === "united-kingdom" || item.slug === "netherlands" ? "the " : ""}${item.name.en}`)}</span>
       </Link>)}</div>
+    </section>
+    <section id="destination-consultation" aria-labelledby="destination-consultation-title" className={`${styles.container} ${consultationStyles.section}`}>
+      <header className={consultationStyles.heading}>
+        <h2 id="destination-consultation-title">{t("مقصد را شناختید؛ حالا مسیر خودتان را بسازید", "You know the destination. Let’s plan your journey.")}</h2>
+        <p>{t("شرایط و هدف خود را با ما در میان بگذارید تا قدم بعدی روشن‌تر شود.", "Share your background and goals with us to clarify your next step.")}</p>
+      </header>
+      <div className={consultationStyles.layout}>
+        <div className={consultationStyles.photo}><Image src="/journey/profile-assessment.png" alt={t("مشاوره درباره مسیر تحصیلی", "Study pathway consultation")} fill sizes="(max-width: 800px) 100vw, 50vw" /></div>
+        <DestinationConsultation key={`${locale}-${d.slug}`} destination={d} locale={locale} />
+      </div>
     </section>
   </main></SiteShell>;
 }
