@@ -1,6 +1,8 @@
 "use client";
 
 import Login from "./login";
+import { startLiveRefresh } from "../../lib/admin-live";
+import { leadCell, newLeadIds } from "../../lib/admin-leads";
 
 import {
   useCallback,
@@ -11,6 +13,7 @@ import {
 } from "react";
 import {
   acceptAdminSession,
+  AdminError,
   adminRequest,
   clearAdminSession,
   restoreAdminSession,
@@ -306,7 +309,7 @@ function Dashboard({ navigate }: { navigate: (key: string) => void }) {
         <section className="adm-card adm-wide">
           <h3>عملکرد مشاوران</h3>
           <div className="adm-table-wrap">
-            <table>
+            <table aria-label="جدول درخواست‌های مشاوره و ارزیابی">
               <thead>
                 <tr>
                   <th>مشاور</th>
@@ -585,7 +588,7 @@ function Editor({
                       .map(([key, value]) => (
                         <div key={key}>
                           <dt>{labels[key] ?? key}</dt>
-                          <dd>{displayValue(value)}</dd>
+                          <dd className="adm-lead-value">{displayValue(leadCell(source, key) == null ? null : labels[String(leadCell(source, key))] ?? leadCell(source, key))}</dd>
                         </div>
                       ))}
                   </dl>
@@ -888,50 +891,68 @@ function ResourceList({ resource }: { resource: Resource }) {
   useEffect(() => {
     listSessions.set(resource.id, { query, status, syncStatus, page, filters });
   }, [resource.id, query, status, syncStatus, page, filters]);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [newIds, setNewIds] = useState<string[]>([]);
+  const [announcement, setAnnouncement] = useState("");
   useEffect(() => {
-    const controller = new AbortController();
-    const timer = setTimeout(async () => {
-      setBusy(true);
-      setError("");
-      setData({});
-      const params = new URLSearchParams({
-        page: String(page),
-        limit: "20",
-        ...Object.fromEntries(Object.entries(filters).filter(([, v]) => v)),
+    let previousRows: RecordData[] | null = null;
+    setBusy(true);
+    setError("");
+    setData({});
+    setLastUpdated(null);
+    setNewIds([]);
+    setAnnouncement("");
+    const params = new URLSearchParams({
+      page: String(page), limit: "20",
+      ...Object.fromEntries(Object.entries(filters).filter(([, v]) => v)),
+    });
+    if (resource.id === "leads") params.set("sort", "created_desc");
+    if (query.trim().length >= 2)
+      params.set(resource.id === "audit" ? "action" : "q", query.trim());
+    if (status) params.set("status", status);
+    if (syncStatus) params.set("syncStatus", syncStatus);
+    let live: ReturnType<typeof startLiveRefresh<RecordData>> | undefined;
+    const timer = setTimeout(() => {
+      live = startLiveRefresh({
+        load: (signal) => adminRequest(`${resource.path}?${params}`, "GET", undefined, undefined, signal),
+        active: () => document.visibilityState !== "hidden" && navigator.onLine,
+        interval: resource.id === "leads" ? 2000 : 30000,
+        onData: (result) => {
+          const nextRows = rowsOf(result);
+          const added = newLeadIds(previousRows, nextRows);
+          if (added.length) {
+            setNewIds(added);
+            setAnnouncement(`${added.length.toLocaleString("fa-IR")} درخواست به جدول اضافه شد.`);
+          }
+          previousRows = nextRows;
+          setData(result);
+          setError("");
+          setBusy(false);
+          setLastUpdated(new Date());
+        },
+        onError: (err) => {
+          if (err instanceof AdminError && [401, 403].includes(err.status)) setData({});
+          setError(describe(err) + " دریافت خودکار دوباره تلاش می‌کند؛ اطلاعات قبلی ممکن است به‌روز نباشد.");
+          setBusy(false);
+        },
       });
-      if (query.trim().length >= 2)
-        params.set(resource.id === "audit" ? "action" : "q", query.trim());
-      if (status) params.set("status", status);
-      if (syncStatus) params.set("syncStatus", syncStatus);
-      try {
-        const result = await adminRequest(
-          `${resource.path}?${params}`,
-          "GET",
-          undefined,
-          undefined,
-          controller.signal,
-        );
-        if (!controller.signal.aborted) setData(result);
-      } catch (err) {
-        if (!controller.signal.aborted) setError(describe(err));
-      } finally {
-        if (!controller.signal.aborted) setBusy(false);
-      }
     }, 250);
+    const resume = () => { void live?.refresh(); };
+    const offline = () => { setError("اتصال اینترنت قطع است؛ پس از اتصال، جدول خودکار به‌روز می‌شود."); setBusy(false); };
+    if (!navigator.onLine) offline();
+    document.addEventListener("visibilitychange", resume);
+    window.addEventListener("focus", resume);
+    window.addEventListener("online", resume);
+    window.addEventListener("offline", offline);
     return () => {
       clearTimeout(timer);
-      controller.abort();
+      live?.stop();
+      document.removeEventListener("visibilitychange", resume);
+      window.removeEventListener("focus", resume);
+      window.removeEventListener("online", resume);
+      window.removeEventListener("offline", offline);
     };
-  }, [
-    resource.path,
-    resource.id,
-    page,
-    query,
-    status,
-    syncStatus,
-    refresh,
-    filters,
-  ]);
+  }, [resource.path, resource.id, page, query, status, syncStatus, refresh, filters]);
   const rows = rowsOf(data);
   const total = totalOf(data);
   return (
@@ -940,7 +961,9 @@ function ResourceList({ resource }: { resource: Resource }) {
         <div>
           <h2>{resource.title}</h2>
           <p>
-            {resource.id === "programs"
+            {resource.id === "leads"
+              ? "همهٔ درخواست‌های مشاوره و فرم ارزیابی، از جدیدترین به قدیمی‌ترین"
+              : resource.id === "programs"
               ? "اطلاعات رشته‌ها صرفاً مرجع داخلی تیم است و نمایش عمومی ندارد."
               : resource.readOnly
                 ? "رخدادها فقط خواندنی هستند و قابل تغییر نیستند."
@@ -960,11 +983,21 @@ function ResourceList({ resource }: { resource: Resource }) {
         <MediaUpload onSaved={() => setRefresh((value) => value + 1)} />
       )}
       <section className="adm-card">
+        <div className="adm-live-status" role="status">
+          <span className={error ? "adm-live-dot is-stale" : "adm-live-dot"} />
+          <span>{error ? "نیاز به اتصال مجدد" : busy ? "در حال اتصال…" : "به‌روزرسانی خودکار هر ۲ ثانیه"}</span>
+          {lastUpdated && <small>آخرین دریافت: {lastUpdated.toLocaleTimeString("fa-IR")}</small>}
+        </div>
+        <p className="adm-live-announcement" role="status" aria-live="polite">{announcement}</p>
+        {(page > 1 || query || status || syncStatus || Object.values(filters).some(Boolean)) && (
+          <p className="adm-list-hint">برای دیدن همهٔ درخواست‌های تازه، فیلترها را پاک کنید و به صفحهٔ اول بروید.</p>
+        )}
         <div className="adm-toolbar">
           <label className="adm-search">
             {resource.id === "audit" ? "نام عملیات" : "جست‌وجو"}
             <input
               placeholder="حداقل دو حرف…"
+              maxLength={100}
               value={query}
               onChange={(e) => {
                 setQuery(e.target.value);
@@ -988,6 +1021,18 @@ function ResourceList({ resource }: { resource: Resource }) {
                     {labels[value] ?? value}
                   </option>
                 ))}
+              </select>
+            </label>
+          )}
+          {resource.id === "leads" && (
+            <label>
+              نمایش درخواست‌ها
+              <select value={filters.archive ?? "active"} onChange={(e) => {
+                setFilters({ ...filters, archive: e.target.value }); setPage(1);
+              }}>
+                <option value="active">فعال</option>
+                <option value="archived">بایگانی‌شده</option>
+                <option value="all">همه</option>
               </select>
             </label>
           )}
@@ -1092,22 +1137,22 @@ function ResourceList({ resource }: { resource: Resource }) {
               <thead>
                 <tr>
                   {resource.columns.map((column) => (
-                    <th key={column}>{labels[column] ?? column}</th>
+                    <th scope="col" key={column}>{labels[column] ?? column}</th>
                   ))}
-                  <th>عملیات</th>
+                  <th scope="col">عملیات</th>
                 </tr>
               </thead>
               <tbody>
                 {rows.map((row) => (
-                  <tr key={String(row.id)}>
+                  <tr key={String(row.id)} className={newIds.includes(String(row.id)) ? "adm-new-lead" : undefined}>
                     {resource.columns.map((column) => (
-                      <td key={column}>
+                      <td key={column} dir={["mobile", "email", "reference"].includes(column) ? "ltr" : undefined}>
                         {["status", "syncStatus", "uploadStatus"].includes(
                           column,
                         ) ? (
                           <Badge value={row[column]} />
                         ) : (
-                          displayValue(row[column])
+                          displayValue(resource.id === "leads" ? leadCell(row, column) : row[column])
                         )}
                       </td>
                     ))}
@@ -1128,7 +1173,7 @@ function ResourceList({ resource }: { resource: Resource }) {
           !error && (
             <div className="adm-empty">
               <strong>رکوردی پیدا نشد</strong>
-              <p>فیلترها را تغییر دهید یا یک رکورد جدید اضافه کنید.</p>
+              <p>درخواست‌های ثبت‌شده از فرم مشاوره و ارزیابی اینجا نمایش داده می‌شوند. اگر فیلتری فعال است، آن را پاک کنید.</p>
             </div>
           )
         )}
@@ -1170,7 +1215,7 @@ function ResourceList({ resource }: { resource: Resource }) {
 export default function AdminPanel() {
   const [user, setUser] = useState<RecordData | null>(null);
   const [checking, setChecking] = useState(true);
-  const [section, setSection] = useState("dashboard");
+  const [section, setSection] = useState("leads");
   const [mobileMenu, setMobileMenu] = useState(false);
   const [logoutError, setLogoutError] = useState("");
   useEffect(() => {
@@ -1223,29 +1268,9 @@ export default function AdminPanel() {
           </span>
         </div>
         <nav aria-label="بخش‌های مدیریت">
-          <button
-            className={section === "dashboard" ? "selected" : ""}
-            onClick={() => navigate("dashboard")}
-          >
-            ◫ <span>نمای کلی</span>
+          <button className="selected" onClick={() => navigate("leads")}>
+            <span className="adm-nav-dot" /> درخواست‌های مشاوره
           </button>
-          {[...new Set(resources.map((item) => item.group))].map((group) => (
-            <div key={group}>
-              <small>{group}</small>
-              {resources
-                .filter((item) => item.group === group)
-                .map((item) => (
-                  <button
-                    key={item.id}
-                    className={section === item.id ? "selected" : ""}
-                    onClick={() => navigate(item.id)}
-                  >
-                    <span className="adm-nav-dot" />
-                    {item.title}
-                  </button>
-                ))}
-            </div>
-          ))}
         </nav>
         <div className="adm-sidebar-note">
           <b>همراه مسیرهای تازه</b>
@@ -1299,7 +1324,7 @@ export default function AdminPanel() {
           )}
         </main>
         <footer className="adm-page-footer">
-          جهان آکادمی · مدیریت درخواست‌ها و محتوای آموزشی
+          جهان آکادمی · مدیریت درخواست‌های مشاوره و ارزیابی
         </footer>
       </div>
     </div>

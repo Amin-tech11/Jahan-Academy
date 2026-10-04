@@ -745,3 +745,14 @@
     scroll-behavior: auto !important;
   }
 }
+
+.adm-live-status { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; color: #216853; font-size: 13px; padding-bottom: 12px; }
+.adm-live-status small { color: #667b77; margin-right: auto; }
+.adm-live-dot { width: 8px; height: 8px; border-radius: 50%; background: #238b65; box-shadow: 0 0 0 4px #238b6515; }
+.adm-live-dot.is-stale { background: #bd7023; }
+.adm-live-announcement:empty { display: none; }
+.adm-live-announcement { color: #16634d; font-size: 13px; }
+.adm-list-hint { color: #687c78; font-size: 12px; }
+.adm-new-lead { background: #edf9f3; }
+.adm-lead-value { white-space: pre-wrap; overflow-wrap: anywhere; }
+.adm-table-wrap td[dir="ltr"] { text-align: right; unicode-bidi: isolate; }
