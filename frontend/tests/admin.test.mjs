@@ -22,6 +22,13 @@ afterEach(() => {
 });
 const resource = (id) => resources.find((item) => item.id === id);
 
+test("consultation columns follow the requested RTL order", () => {
+  assert.deepEqual(resource("leads").columns, [
+    "reference", "fullName", "mobile", "email", "age", "occupation", "gender",
+    "education", "maritalStatus", "investmentBudget", "englishProficiency",
+  ]);
+});
+
 test("own panel access is fetched through the authenticated no-store proxy", async () => {
   acceptAdminSession({ accessToken: "test-access" });
   globalThis.fetch = async (url, options) => {

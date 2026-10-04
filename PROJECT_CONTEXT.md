@@ -986,6 +986,8 @@ The owner approved per-user admin section access, enforced by the API and persis
 
 ## 18. Pending Tasks
 
+Admin table presentation approved on 2026-10-04: consultation requests use eleven right-to-left columns in this order: tracking code, full name, phone, email, age, occupation, gender, education, marital status, investment budget, English proficiency. The tracking code opens request details. Missing answers remain empty (shown as an em dash); existing submitted assessment answers must be displayed without inference.
+
 ### 18.1 Product and Content Inputs
 
 - Define the initial country list.

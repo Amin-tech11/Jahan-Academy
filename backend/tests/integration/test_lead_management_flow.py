@@ -83,6 +83,11 @@ def _public_payload(mobile: str, country: str) -> dict[str, Any]:
         "lastName": "Ahmadi",
         "mobile": mobile,
         "email": "mina@example.com",
+        "age": 29,
+        "gender": "female",
+        "occupation": "Engineer",
+        "maritalStatus": "single",
+        "message": "تحصیلات: لیسانس\nسرمایه مهاجرت: ۱ الی ۲ میلیارد\nمهارت زبان انگلیسی: متوسط",
         "desiredCountryText": country,
         "intakeTerm": "fall",
         "startYear": datetime.now(UTC).year + 1,
@@ -139,6 +144,12 @@ def test_lead_list_detail_edit_archive_and_assigned_scope() -> None:
             assert listing.status_code == 200, listing.text
             assert listing.json()["meta"]["total"] == 1
             assert listing.json()["data"][0]["reference"] == reference
+            summary = listing.json()["data"][0]
+            assert summary["age"] == 29
+            assert summary["gender"] == "female"
+            assert summary["occupation"] == "Engineer"
+            assert summary["maritalStatus"] == "single"
+            assert "تحصیلات: لیسانس" in summary["message"]
 
             detail = client.get(f"/api/v1/admin/leads/{lead_id}")
             assert detail.status_code == 200
@@ -154,6 +165,8 @@ def test_lead_list_detail_edit_archive_and_assigned_scope() -> None:
             assert updated.json()["data"]["occupation"] == "Software Engineer"
             assert updated.json()["data"]["email"] == "new@example.com"
             assert updated.headers["etag"] == '"2"'
+            refreshed = client.get("/api/v1/admin/leads", params={"q": reference})
+            assert refreshed.json()["data"][0]["occupation"] == "Software Engineer"
 
             stale = client.patch(
                 f"/api/v1/admin/leads/{lead_id}",

@@ -59,6 +59,7 @@ export const leadStatuses = [
 ];
 export const labels: Record<string, string> = {
   fullName: "نام و نام خانوادگی",
+  education: "تحصیلات", investmentBudget: "میزان سرمایه", englishProficiency: "مهارت زبان انگلیسی",
   intakeTerm: "ترم شروع", startYear: "سال شروع", desiredCountryText: "مقصد اعلام‌شده",
   sourceUrl: "صفحهٔ ثبت درخواست", locale: "زبان", age: "سن", gender: "جنسیت",
   occupation: "شغل", maritalStatus: "وضعیت تأهل", message: "اطلاعات تکمیلی / ارزیابی",
@@ -148,8 +149,8 @@ export const resources: Resource[] = [
     method: "PATCH",
     statuses: leadStatuses,
     columns: [
-      "reference", "fullName", "mobile", "email", "desiredCountryName",
-      "status", "assignee", "createdAt", "syncStatus",
+      "reference", "fullName", "mobile", "email", "age", "occupation", "gender",
+      "education", "maritalStatus", "investmentBudget", "englishProficiency",
     ],
     fields: [
       f("firstName", "نام", "text", true),

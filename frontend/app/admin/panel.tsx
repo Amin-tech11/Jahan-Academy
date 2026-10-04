@@ -1133,23 +1133,26 @@ function ResourceList({ resource }: { resource: Resource }) {
           <div className="adm-empty" role="status">
             در حال دریافت اطلاعات…
           </div>
-        ) : rows.length ? (
+        ) : rows.length || resource.id === "leads" ? (
           <div className="adm-table-wrap">
-            <table>
+            <table dir="rtl">
               <thead>
                 <tr>
                   {resource.columns.map((column) => (
                     <th scope="col" key={column}>{labels[column] ?? column}</th>
                   ))}
-                  <th scope="col">عملیات</th>
+                  {resource.id !== "leads" && <th scope="col">عملیات</th>}
                 </tr>
               </thead>
               <tbody>
+                {!rows.length && <tr><td colSpan={resource.columns.length}><div className="adm-empty">درخواستی مطابق فیلترهای فعلی پیدا نشد.</div></td></tr>}
                 {rows.map((row) => (
                   <tr key={String(row.id)} className={newIds.includes(String(row.id)) ? "adm-new-lead" : undefined}>
                     {resource.columns.map((column) => (
                       <td key={column} dir={["mobile", "email", "reference"].includes(column) ? "ltr" : undefined}>
-                        {["status", "syncStatus", "uploadStatus"].includes(
+                        {resource.id === "leads" && column === "reference" ? (
+                          <button className="adm-link" onClick={() => setEditor({ item: row })} aria-label={`مشاهده درخواست ${row.reference}`}>{displayValue(row.reference)}</button>
+                        ) : ["status", "syncStatus", "uploadStatus"].includes(
                           column,
                         ) ? (
                           <Badge value={row[column]} />
@@ -1158,14 +1161,14 @@ function ResourceList({ resource }: { resource: Resource }) {
                         )}
                       </td>
                     ))}
-                    <td>
+                    {resource.id !== "leads" && <td>
                       <button
                         className="adm-link"
                         onClick={() => setEditor({ item: row })}
                       >
                         مشاهده ←
                       </button>
-                    </td>
+                    </td>}
                   </tr>
                 ))}
               </tbody>
