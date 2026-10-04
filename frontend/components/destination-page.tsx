@@ -121,6 +121,13 @@ export function DestinationPage({ destination: d, locale }: { destination: Desti
 
     <section className={`${styles.container} ${styles.cta}`}><div><p className={styles.eyebrow}>JAHAN ACADEMY</p><h2>{t("مقصد را شناختید؛ حالا مسیر خودتان را بسازید", "You know the destination. Let’s plan your journey.")}</h2><p>{t("شرایط و هدف خود را با ما در میان بگذارید تا قدم بعدی روشن‌تر شود.", "Share your background and goals with us to clarify your next step.")}</p></div><Link href={consultation}>{t("درخواست مشاوره", "Request a consultation")} <span aria-hidden="true">{t("←", "→")}</span></Link></section>
 
-    <section className={`${styles.container} ${styles.section} ${styles.more}`}><h2>{t("مقصدهای دیگر را کشف کنید", "Explore more destinations")}</h2><div>{destinations.filter((item) => item.slug !== d.slug).map((item) => <Link key={item.slug} href={`/${locale}/countries/${item.slug}`}><Image src={`/destinations/flags/${item.slug}.svg`} alt="" width={26} height={20} />{item.name[locale]}<span aria-hidden="true">{t("←", "→")}</span></Link>)}</div></section>
+    <section aria-labelledby="more-destinations-title" className={`${styles.container} ${styles.section} ${styles.more}`}>
+      <p className={styles.moreEyebrow}>{t("مقصدهای تحصیلی", "STUDY DESTINATIONS")}</p>
+      <h2 id="more-destinations-title">{t("مقصدهای دیگر را کشف کنید", "More Study Destinations to Explore")}</h2>
+      <div>{destinations.filter((item) => item.slug !== d.slug).map((item) => <Link key={item.slug} href={`/${locale}/countries/${item.slug}`}>
+        <Image src={`/destinations/word-flags/${item.slug}.svg`} alt="" width={28} height={22} />
+        <span>{t(`تحصیل در ${item.name.fa}`, `Study in ${item.slug === "united-kingdom" || item.slug === "netherlands" ? "the " : ""}${item.name.en}`)}</span>
+      </Link>)}</div>
+    </section>
   </main></SiteShell>;
 }
