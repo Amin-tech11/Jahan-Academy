@@ -1,0 +1,18 @@
+# CI-only override. CI sets a unique COMPOSE_PROJECT_NAME and image tag per run.
+# Random loopback ports avoid every existing development stack on this computer.
+services:
+  minio-init: &ci-backend
+    image: ${BACKEND_IMAGE:?CI must set BACKEND_IMAGE}
+  migrate: *ci-backend
+  backend: *ci-backend
+  mock-noura: *ci-backend
+  worker-integration: *ci-backend
+  beat: *ci-backend
+  frontend:
+    image: jahan-ci-frontend:${CI_RUN_ID:?CI must set CI_RUN_ID}
+  nginx:
+    ports: !override
+      - "127.0.0.1::80"
+  minio:
+    ports: !override
+      - "127.0.0.1::5000"
