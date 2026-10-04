@@ -2,7 +2,7 @@
 
 import Login from "./login";
 import DateFilter from "./date-filter";
-import { dateRangeParams } from "../../lib/admin-calendar";
+import { dateRangeParams, type Calendar } from "../../lib/admin-calendar";
 import AccessManager from "./access-manager";
 import { visibleSections, type PanelAccess } from "../../lib/admin-access";
 import { startLiveRefresh } from "../../lib/admin-live";
@@ -873,6 +873,7 @@ const listSessions = new Map<
     status: string;
     page: number;
     filters: Record<string, string>;
+    calendar: Calendar;
     fromDate: string;
     toDate: string;
   }
@@ -881,6 +882,7 @@ function ResourceList({ resource }: { resource: Resource }) {
   const previous = listSessions.get(resource.id);
   const [query, setQuery] = useState(previous?.query ?? "");
   const [status, setStatus] = useState(previous?.status ?? "");
+  const [calendar, setCalendar] = useState<Calendar>(previous?.calendar ?? "persian");
   const [fromDate, setFromDate] = useState(previous?.fromDate ?? "");
   const [toDate, setToDate] = useState(previous?.toDate ?? "");
   const [page, setPage] = useState(previous?.page ?? 1);
@@ -895,8 +897,8 @@ function ResourceList({ resource }: { resource: Resource }) {
     resource.id === "leads" ? {} : previous?.filters ?? {},
   );
   useEffect(() => {
-    listSessions.set(resource.id, { query, status, page, filters, fromDate, toDate });
-  }, [resource.id, query, status, page, filters, fromDate, toDate]);
+    listSessions.set(resource.id, { query, status, page, filters, fromDate, toDate, calendar });
+  }, [resource.id, query, status, page, filters, fromDate, toDate, calendar]);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [newIds, setNewIds] = useState<string[]>([]);
   const [announcement, setAnnouncement] = useState("");
@@ -1030,8 +1032,8 @@ function ResourceList({ resource }: { resource: Resource }) {
             </label>
           )}
           {resource.id === "leads" && <>
-            <DateFilter label="از تاریخ" value={fromDate} max={toDate} onChange={(date) => { setFromDate(date); setPage(1); }} />
-            <DateFilter label="تا تاریخ" value={toDate} min={fromDate} onChange={(date) => { setToDate(date); setPage(1); }} />
+            <DateFilter calendar={calendar} onCalendarChange={setCalendar} label="از تاریخ" value={fromDate} max={toDate} onChange={(date) => { setFromDate(date); setPage(1); }} />
+            <DateFilter calendar={calendar} onCalendarChange={setCalendar} label="تا تاریخ" value={toDate} min={fromDate} onChange={(date) => { setToDate(date); setPage(1); }} />
           </>}
           <button onClick={() => setRefresh((value) => value + 1)}>
             تازه‌سازی

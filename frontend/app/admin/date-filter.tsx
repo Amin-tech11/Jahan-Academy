@@ -3,7 +3,8 @@
 import { useEffect, useId, useLayoutEffect, useRef, useState, type KeyboardEvent } from "react";
 import { addDays, calendarLabel, calendarParts, dateKey, fromKey, monthDays, monthStart, todayKey, type Calendar } from "../../lib/admin-calendar";
 
-export default function DateFilter({ label, value, onChange, min, max }: {
+export default function DateFilter({ label, value, onChange, min, max, calendar, onCalendarChange }: {
+  calendar: Calendar; onCalendarChange: (calendar: Calendar) => void;
   label: string; value: string; onChange: (value: string) => void; min?: string; max?: string;
 }) {
   const id = useId();
@@ -11,7 +12,6 @@ export default function DateFilter({ label, value, onChange, min, max }: {
   const trigger = useRef<HTMLButtonElement>(null);
   const popup = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
-  const [calendar, setCalendar] = useState<Calendar>("persian");
   const [view, setView] = useState<"days" | "months" | "years">("days");
   const [cursor, setCursor] = useState("2026-01-01");
   const [focusDay, setFocusDay] = useState("");
@@ -86,7 +86,7 @@ export default function DateFilter({ label, value, onChange, min, max }: {
     {open && <div ref={popup} className="adm-calendar" style={position} id={`${id}-dialog`} role="dialog" aria-label={`انتخاب ${label}`}>
       <div className="adm-calendar-tabs" role="group" aria-label="نوع تقویم">
         {(["persian", "gregory"] as const).map((mode) => <button type="button" key={mode} aria-pressed={calendar === mode} onClick={() => {
-          setCalendar(mode); setView("days"); setFocusDay(cursor);
+          onCalendarChange(mode); setView("days"); setFocusDay(cursor);
         }}>{mode === "persian" ? "شمسی" : "میلادی"}</button>)}
       </div>
       <div className="adm-calendar-heading" dir="ltr">
