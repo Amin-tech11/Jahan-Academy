@@ -454,7 +454,7 @@ export const resources: Resource[] = [
   })),
   {
     id: "staff",
-    title: "کاربران و دسترسی‌ها",
+    title: "کاربران سازمان",
     group: "مدیریت",
     path: "/admin/staff",
     method: "PATCH",

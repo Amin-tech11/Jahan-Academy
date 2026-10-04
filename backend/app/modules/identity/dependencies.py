@@ -19,6 +19,8 @@ from app.modules.identity.authorization import (
     validate_permission_codes,
 )
 from app.modules.identity.mailer import SmtpAuthMailer
+from app.modules.identity.panel_access import section_for_path
+from app.modules.identity.panel_service import PanelAccessService
 from app.modules.identity.repository import AuthRepository
 from app.modules.identity.schemas import UserView
 from app.modules.identity.security import AccessClaims, AuthSecurity
@@ -28,6 +30,12 @@ from app.modules.identity.staff_service import StaffManagementService
 from app.shared.exceptions import ApplicationError
 
 bearer = HTTPBearer(auto_error=False)
+
+
+def panel_access_service(
+    session: Annotated[AsyncSession, Depends(database_session)],
+) -> PanelAccessService:
+    return PanelAccessService(StaffRepository(session))
 
 
 @dataclass(frozen=True, slots=True)
@@ -113,8 +121,20 @@ def require_permissions(
     validate_permission_codes(required)
 
     async def dependency(
+        request: Request,
         context: Annotated[AuthorizationContext, Depends(authorization_context)],
     ) -> AuthorizationContext:
+        section = section_for_path(request.url.path)
+        if (
+            context.panel_sections is not None
+            and section is not None
+            and section not in context.panel_sections
+        ):
+            raise ApplicationError(
+                code="PANEL_ACCESS_DENIED",
+                message="This panel section is not enabled for your account.",
+                status_code=403,
+            )
         AuthorizationService.require(context, required, mode=mode)
         return context
 

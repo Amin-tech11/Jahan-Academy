@@ -2,6 +2,20 @@
 
 Source of truth: `Project_Context.md`, especially sections 4, 6.3–6.10 and 16.
 
+## Per-user section access — 2026-10-04
+
+Supersedes the consultation-only navigation restriction below. Global super administrators see all implemented sections and a dedicated access-management screen. Other staff default to consultations; super administrators use per-user checkboxes and an explicit Save action to grant or revoke the other sections. Staff administration, access management and audit logs remain super-admin-only. An explicitly empty selection means no panel access.
+
+The API loads access from `staff_panel_access` on every request, checks the specific section as well as operation permissions, and preserves assigned-lead scoping for consultants. Changes use the staff row version / `If-Match`, a row lock and an audit event. The frontend fetches its own access after login and refreshes it every ten seconds and on focus; failure closes the protected view. No permission decisions are stored in browser storage.
+
+Endpoints: `GET /users/me/panel-access`; super-admin-only `GET` and `PUT /admin/staff/{id}/panel-access`. The latter accepts `{ "sections": [...] }` and requires `If-Match`. Unknown, duplicate and reserved sections are rejected. Super-admin section access cannot be edited, including by the same account.
+
+Migration: `024_panel_access`, based on `023_admin_dashboard_reporting`. The existing shared local database also has the sibling `024_public_experience_cms` revision from `origin/codex/public-experience-cms`. Local startup used both authentic migration files in a temporary Alembic directory and `upgrade heads`, preserving both heads and all CMS tables. Future integration of that CMS branch must include an Alembic merge revision before deploying a single-head migration graph.
+
+The admin-only local API runs in `jahan-admin-access-api` at `127.0.0.1:18080`, using the existing local database and infrastructure on the application and edge Docker networks. The ignored `frontend/.env.local` points `ADMIN_API_URL` there; the panel stays on `localhost:3500`. The API at port 8080 also received the updated identity module (with a local backup) and was restarted to enforce section restrictions across both entry points; its other modules retain their existing version. The admin container mounts this checkout's backend source read-only; restart it after backend edits. These container changes are local development configuration and must be included in a normal image deployment before recreating the shared container. This is not a production deployment.
+
+Validation: 122 backend tests including real-session grant/revoke integration against an isolated migrated PostgreSQL database; migration downgrade/re-upgrade; Ruff formatting/lint and mypy; frontend unit tests, TypeScript and production build. The actual `Amin` session was refreshed on port 3500 and showed all 19 sections and the access-management screen, including protected full super-admin access. Existing missing domain features listed below are not claimed as completed by this permission feature.
+
 ## Workspace and startup
 
 - Chat: `admin:3500`; branch: `admin`; port: `3500`.
