@@ -25,12 +25,20 @@ def _setup() -> tuple[ConsultationService, Mock, ConsultationCreate]:
     limiter = Mock(spec=ConsultationRateLimiter)
     limiter.allow.return_value = True
     service = ConsultationService(repository, limiter, Settings())
-    payload = ConsultationCreate.model_validate({
-        "firstName": "Test", "lastName": "Reference", "mobile": "+12025550149",
-        "desiredCountryText": "Undecided", "intakeTerm": "unknown",
-        "startYear": datetime.now(UTC).year, "locale": "fa",
-        "source": {"pageUrl": "/fa"}, "privacyConsent": True, "contactConsent": True,
-    })
+    payload = ConsultationCreate.model_validate(
+        {
+            "firstName": "Test",
+            "lastName": "Reference",
+            "mobile": "+12025550149",
+            "desiredCountryText": "Undecided",
+            "intakeTerm": "unknown",
+            "startYear": datetime.now(UTC).year,
+            "locale": "fa",
+            "source": {"pageUrl": "/fa"},
+            "privacyConsent": True,
+            "contactConsent": True,
+        }
+    )
     return service, repository, payload
 
 
@@ -102,9 +110,14 @@ async def test_idempotent_retry_preserves_existing_long_reference() -> None:
     service, repository, payload = _setup()
     legacy_reference = "JA-ABCDEFGHIJKLMNOP"
     repository.get_idempotency.return_value = IdempotencyRecord(
-        request_hash=service._request_hash(payload, payload.mobile), response_status=201,
-        response_body={"reference": legacy_reference, "duplicate": False,
-                       "receivedAt": datetime.now(UTC).isoformat(), "message": "Received"},
+        request_hash=service._request_hash(payload, payload.mobile),
+        response_status=201,
+        response_body={
+            "reference": legacy_reference,
+            "duplicate": False,
+            "receivedAt": datetime.now(UTC).isoformat(),
+            "message": "Received",
+        },
     )
     result = await service.submit(
         payload, idempotency_key="existing-request-key", client_ip="127.0.0.1", user_agent=""
