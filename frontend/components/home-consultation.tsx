@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { ConsultationSuccess } from "./consultation-success";
 import { useId, useRef, useState, type FormEvent } from "react";
 import { apiRequest, ApiError, type ApiEnvelope } from "@/lib/api-client";
 import { normalizeMobile } from "@/lib/consultation";
@@ -38,7 +39,7 @@ export function HomeConsultation({ locale, sourcePage }: { locale: Locale; sourc
       setStatus("error");
     }
   }
-  if (status === "success") return <div className="home-closing__card" role="status"><h3>{t("درخواست شما ثبت شد", "Your request has been received")}</h3><p>{t("تیم جهان آکادمی برای هماهنگی مشاوره با شما تماس می‌گیرد.", "Jahan Academy will contact you to arrange your consultation.")}</p><strong>{t("کد پیگیری: ", "Reference: ")}{reference}</strong></div>;
+  if (status === "success") return <div className="home-closing__card"><ConsultationSuccess locale={locale} reference={reference} /></div>;
   return <form className="home-closing__card home-consultation__form" onSubmit={submit} aria-label={t("درخواست مشاوره تخصصی رایگان", "Request a free consultation")}>
     <h3>{t("درخواست مشاوره تخصصی رایگان", "Request a free consultation")}</h3>
     <p>{t("اطلاعات کوتاه زیر را بنویسید تا برای هماهنگی مشاوره با شما تماس بگیریم.", "Share a few details so we can contact you to arrange a consultation.")}</p>

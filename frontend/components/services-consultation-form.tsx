@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { ConsultationSuccess } from "./consultation-success";
 import { type FormEvent, useId, useRef, useState } from "react";
 import { apiRequest, type ApiEnvelope } from "@/lib/api-client";
 import { normalizeMobile } from "@/lib/consultation";
@@ -48,12 +49,7 @@ export function ServicesConsultationForm({ locale }: { locale: Locale }) {
     } finally { setBusy(false); }
   }
 
-  if (receipt) return <div className="services-request__receipt" role="status" aria-live="polite">
-    <span aria-hidden="true">✓</span>
-    <h3>{t("درخواست شما به دست ما رسید!", "We've received your request!")}</h3>
-    <p>{receipt.duplicate ? t("این درخواست قبلاً ثبت شده است. با همین کد می‌توانید پیگیری کنید.", "This request was already received. Use this reference to follow up.") : t("تیم جهان آکادمی برای هماهنگی مشاوره با شما در تماس خواهد بود.", "The Jahan Academy team will contact you to arrange your consultation.")}</p>
-    <p>{t("کد پیگیری", "Reference")} <strong dir="ltr">{receipt.reference}</strong></p>
-  </div>;
+  if (receipt) return <ConsultationSuccess locale={locale} reference={receipt.reference} duplicate={receipt.duplicate} />;
 
   return <form className="services-request" onSubmit={submit} aria-label={t("درخواست مشاوره تخصصی رایگان", "Request a free expert consultation")}>
     <h3>{fa ? <>درخواست مشاوره تخصصی <strong className="services-request__free">رایگان</strong></> : <>Request a <strong className="services-request__free">free</strong> expert consultation</>}</h3>
