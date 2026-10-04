@@ -51,7 +51,7 @@ export function UniversityInfoPage({ university: u, locale }: { university: Univ
     <div className={styles.contentGrid}>
       <UniversityTabs locale={locale} overview={overview} features={features} location={location} />
       <aside className={styles.sidebar} aria-label={fa ? "مشخصات دانشگاه" : "Institution details"}>
-        <section className={styles.factCard}><p className={styles.eyebrow}>{fa ? "در یک نگاه" : "AT A GLANCE"}</p><h2>{fa ? "مشخصات دانشگاه" : "Institution details"}</h2><dl>{facts.map((fact) => <div key={fact.label}><dt>{fact.label}</dt><dd dir="auto">{fact.value}</dd></div>)}</dl>{website && <a href={website} target="_blank" rel="noopener noreferrer" className={styles.domain}>{new URL(website).hostname} ↗</a>}</section>
+        <section className={styles.factCard}><p className={styles.eyebrow}>{fa ? "در یک نگاه" : "AT A GLANCE"}</p><h2>{fa ? "مشخصات دانشگاه" : "Institution details"}</h2><dl>{facts.map((fact) => <div key={fact.label}><dt>{fact.label}</dt><dd dir="auto">{fact.value}</dd></div>)}</dl></section>
         <section className={styles.locationAside}><Pin /><h3>{fa ? "موقعیت دانشگاه" : "Campus location"}</h3><p dir="auto">{u.location[locale]}</p><a href={mapUrl} target="_blank" rel="noopener noreferrer">{fa ? "دیدن موقعیت روی نقشه" : "View location on map"} ↗</a></section>
       </aside>
     </div>
