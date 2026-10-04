@@ -83,7 +83,7 @@ class ConsultationRepository:
         )
         return LeadRecord(**row) if row else None
 
-    async def create_lead(self, values: dict[str, Any]) -> LeadRecord:
+    async def create_lead(self, values: dict[str, Any]) -> LeadRecord | None:
         row = (
             (
                 await self.session.execute(
@@ -102,15 +102,16 @@ class ConsultationRepository:
                         ":occupation, :marital_status_code, :investment_range_code, "
                         ":investment_currency, :message, :locale, :source_url, "
                         ":source_university_id, :source_program_id, :deduplication_key"
-                        ") RETURNING id, public_reference, created_at"
+                        ") ON CONFLICT (public_reference) DO NOTHING "
+                        "RETURNING id, public_reference, created_at"
                     ),
                     values,
                 )
             )
             .mappings()
-            .one()
+            .one_or_none()
         )
-        return LeadRecord(**row)
+        return LeadRecord(**row) if row else None
 
     async def record_consent(
         self,
