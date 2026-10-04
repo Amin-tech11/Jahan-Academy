@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { SiteShell } from "@/components/site-shell";
 import { destinations, destinationConsultationHref, type Destination } from "@/lib/destination-content";
@@ -11,7 +10,6 @@ import type { Locale } from "@/lib/site-content";
 import styles from "./destination-page.module.css";
 
 export function DestinationPage({ destination: d, locale }: { destination: Destination; locale: Locale }) {
-  const router = useRouter();
   const t = (fa: string, en: string) => locale === "fa" ? fa : en;
   const [active, setActive] = useState("academics");
   const universities = homeUniversities.filter((university) => university.country === d.slug);
@@ -32,10 +30,9 @@ export function DestinationPage({ destination: d, locale }: { destination: Desti
     return () => observer.disconnect();
   }, [d.slug]);
 
-  return <SiteShell locale={locale}><main className={styles.page}>
+  return <SiteShell locale={locale}><main className={styles.page} data-destination={d.slug}>
     <div className={styles.topline}><div className={styles.container}>
       <nav aria-label={t("مسیر صفحه", "Breadcrumb")} className={styles.breadcrumb}><Link href={`/${locale}`}>{t("خانه", "Home")}</Link><span>/</span><Link href={`/${locale}/countries`}>{t("مقصدهای تحصیلی", "Study destinations")}</Link><span>/</span><span aria-current="page">{d.name[locale]}</span></nav>
-      <label className={styles.selector}><select aria-label={t("انتخاب کشور مقصد", "Choose a destination")} value={d.slug} onChange={(event) => router.push(`/${locale}/countries/${event.target.value}`)}>{destinations.map((item) => <option key={item.slug} value={item.slug}>{item.name[locale]}</option>)}</select></label>
     </div></div>
 
     <section className={styles.hero}><div className={`${styles.container} ${styles.heroGrid}`}>
