@@ -37,6 +37,14 @@ export function leadCell(row: RecordData, column: string): unknown {
   if (column === "mobile" && typeof row.mobile === "string") {
     return row.mobile.replace(/^(\+98)(\d{3})(\d{3})(\d{4})$/, "$1 $2 $3 $4");
   }
+  if (column === "requestCreatedAt") return leadDate(row.createdAt);
+  if (column === "requestType") {
+    // Legacy assessment submissions store these three required, labeled answers.
+    const isAssessment = typeof row.message === "string"
+      && row.message.trim().split(/\r?\n/).length === 3
+      && Object.keys(assessmentLabels).every((key) => assessmentValue(row.message, key));
+    return isAssessment ? "ارزیابی" : "مشاوره";
+  }
   if (column === "fullName") return [row.firstName, row.lastName].filter(Boolean).join(" ");
   if (column === "desiredCountryName") return row.desiredCountryName || row.desiredCountryText;
   if (column === "gender" || column === "maritalStatus") {

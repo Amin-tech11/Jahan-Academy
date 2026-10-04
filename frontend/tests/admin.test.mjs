@@ -26,6 +26,7 @@ test("consultation columns follow the requested RTL order", () => {
   assert.deepEqual(resource("leads").columns, [
     "reference", "fullName", "mobile", "email", "age", "occupation", "gender",
     "education", "maritalStatus", "investmentBudget", "englishProficiency",
+    "requestCreatedAt", "requestType", "status",
   ]);
 });
 

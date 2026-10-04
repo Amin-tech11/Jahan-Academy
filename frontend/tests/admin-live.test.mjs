@@ -96,3 +96,20 @@ test("demographics are localized and structured budgets retain their currency", 
   assert.equal(leadCell({ investmentRangeCode: "10k_20k", investmentCurrency: "EUR", message: "سرمایه مهاجرت: قدیمی" }, "investmentBudget"), "۱۰٬۰۰۰ تا ۲۰٬۰۰۰ · EUR");
   assert.equal(leadCell({ investmentRangeCode: "custom-range" }, "investmentBudget"), "custom-range");
 });
+
+
+test("request types distinguish both assessment locales from consultation messages", () => {
+  for (const message of [
+    "تحصیلات: لیسانس\r\nسرمایه مهاجرت: ۱ الی ۲ میلیارد\r\nمهارت زبان انگلیسی: متوسط",
+    "Education: Bachelor's degree\nMigration budget: 1–2 billion toman\nEnglish proficiency: Intermediate",
+  ]) {
+    assert.equal(leadCell({ message }, "requestType"), "ارزیابی");
+  }
+  for (const message of [null, "", "درباره تحصیلات سؤال دارم", "Education: degree", "Education: degree\nMigration budget: \nEnglish proficiency: Intermediate"]) {
+    assert.equal(leadCell({ message }, "requestType"), "مشاوره");
+  }
+  const createdAt = "2026-10-04T09:00:00Z";
+  assert.equal(leadCell({ createdAt }, "requestCreatedAt"), leadCell({ createdAt }, "createdAt"));
+  assert.equal(leadCell({}, "requestCreatedAt"), "—");
+  assert.equal(leadCell({ status: "closed" }, "status"), "closed");
+});

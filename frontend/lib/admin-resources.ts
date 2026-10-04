@@ -88,6 +88,8 @@ export const labels: Record<string, string> = {
   desiredCountryName: "کشور مقصد",
   assignee: "مشاور",
   createdAt: "تاریخ ثبت",
+  requestCreatedAt: "تاریخ ثبت درخواست",
+  requestType: "نوع درخواست",
   updatedAt: "آخرین تغییر",
   country: "کشور",
   university: "دانشگاه",
@@ -151,6 +153,7 @@ export const resources: Resource[] = [
     columns: [
       "reference", "fullName", "mobile", "email", "age", "occupation", "gender",
       "education", "maritalStatus", "investmentBudget", "englishProficiency",
+      "requestCreatedAt", "requestType", "status",
     ],
     fields: [
       f("firstName", "نام", "text", true),

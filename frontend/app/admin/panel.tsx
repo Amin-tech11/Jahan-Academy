@@ -869,7 +869,6 @@ const listSessions = new Map<
   {
     query: string;
     status: string;
-    syncStatus: string;
     page: number;
     filters: Record<string, string>;
   }
@@ -878,7 +877,6 @@ function ResourceList({ resource }: { resource: Resource }) {
   const previous = listSessions.get(resource.id);
   const [query, setQuery] = useState(previous?.query ?? "");
   const [status, setStatus] = useState(previous?.status ?? "");
-  const [syncStatus, setSyncStatus] = useState(previous?.syncStatus ?? "");
   const [page, setPage] = useState(previous?.page ?? 1);
   const [data, setData] = useState<RecordData>({});
   const [error, setError] = useState("");
@@ -888,11 +886,11 @@ function ResourceList({ resource }: { resource: Resource }) {
   );
   const [refresh, setRefresh] = useState(0);
   const [filters, setFilters] = useState<Record<string, string>>(
-    previous?.filters ?? {},
+    resource.id === "leads" ? {} : previous?.filters ?? {},
   );
   useEffect(() => {
-    listSessions.set(resource.id, { query, status, syncStatus, page, filters });
-  }, [resource.id, query, status, syncStatus, page, filters]);
+    listSessions.set(resource.id, { query, status, page, filters });
+  }, [resource.id, query, status, page, filters]);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [newIds, setNewIds] = useState<string[]>([]);
   const [announcement, setAnnouncement] = useState("");
@@ -906,13 +904,12 @@ function ResourceList({ resource }: { resource: Resource }) {
     setAnnouncement("");
     const params = new URLSearchParams({
       page: String(page), limit: "20",
-      ...Object.fromEntries(Object.entries(filters).filter(([, v]) => v)),
+      ...(resource.id === "leads" ? {} : Object.fromEntries(Object.entries(filters).filter(([, v]) => v))),
     });
     if (resource.id === "leads") params.set("sort", "created_desc");
     if (query.trim().length >= 2)
       params.set(resource.id === "audit" ? "action" : "q", query.trim());
     if (status) params.set("status", status);
-    if (syncStatus) params.set("syncStatus", syncStatus);
     let live: ReturnType<typeof startLiveRefresh<RecordData>> | undefined;
     const timer = setTimeout(() => {
       live = startLiveRefresh({
@@ -954,7 +951,7 @@ function ResourceList({ resource }: { resource: Resource }) {
       window.removeEventListener("online", resume);
       window.removeEventListener("offline", offline);
     };
-  }, [resource.path, resource.id, page, query, status, syncStatus, refresh, filters]);
+  }, [resource.path, resource.id, page, query, status, refresh, filters]);
   const rows = rowsOf(data);
   const total = totalOf(data);
   return (
@@ -991,7 +988,7 @@ function ResourceList({ resource }: { resource: Resource }) {
           {lastUpdated && <small>آخرین دریافت: {lastUpdated.toLocaleTimeString("fa-IR")}</small>}
         </div>
         <p className="adm-live-announcement" role="status" aria-live="polite">{announcement}</p>
-        {(page > 1 || query || status || syncStatus || Object.values(filters).some(Boolean)) && (
+        {(page > 1 || query || status || Object.values(filters).some(Boolean)) && (
           <p className="adm-list-hint">برای دیدن همهٔ درخواست‌های تازه، فیلترها را پاک کنید و به صفحهٔ اول بروید.</p>
         )}
         <div className="adm-toolbar">
@@ -1026,37 +1023,6 @@ function ResourceList({ resource }: { resource: Resource }) {
               </select>
             </label>
           )}
-          {resource.id === "leads" && (
-            <label>
-              نمایش درخواست‌ها
-              <select value={filters.archive ?? "active"} onChange={(e) => {
-                setFilters({ ...filters, archive: e.target.value }); setPage(1);
-              }}>
-                <option value="active">فعال</option>
-                <option value="archived">بایگانی‌شده</option>
-                <option value="all">همه</option>
-              </select>
-            </label>
-          )}
-          {resource.id === "leads" && (
-            <label>
-              همگام‌سازی
-              <select
-                value={syncStatus}
-                onChange={(e) => {
-                  setSyncStatus(e.target.value);
-                  setPage(1);
-                }}
-              >
-                <option value="">همه</option>
-                {["pending", "synced", "failed"].map((value) => (
-                  <option key={value} value={value}>
-                    {labels[value]}
-                  </option>
-                ))}
-              </select>
-            </label>
-          )}
           <button onClick={() => setRefresh((value) => value + 1)}>
             تازه‌سازی
           </button>
@@ -1065,7 +1031,6 @@ function ResourceList({ resource }: { resource: Resource }) {
             onClick={() => {
               setQuery("");
               setStatus("");
-              setSyncStatus("");
               setFilters({});
               setPage(1);
             }}
@@ -1073,7 +1038,7 @@ function ResourceList({ resource }: { resource: Resource }) {
             پاک کردن فیلترها
           </button>
         </div>
-        {["programs", "leads", "audit"].includes(resource.id) && (
+        {["programs", "audit"].includes(resource.id) && (
           <details>
             <summary>فیلترهای بیشتر</summary>
             <div className="adm-fields">
@@ -1085,17 +1050,10 @@ function ResourceList({ resource }: { resource: Resource }) {
                     ["intakeId", "شناسه ورودی"],
                     ["currency", "کد ارز"],
                   ]
-                : resource.id === "leads"
-                  ? [
-                      ["assigneeId", "شناسه مشاور"],
-                      ["countryId", "شناسه کشور"],
-                      ["from", "از تاریخ ISO"],
-                      ["to", "تا تاریخ ISO"],
-                    ]
-                  : [
-                      ["actor_user_id", "شناسه کاربر"],
-                      ["entity_type", "نوع رکورد"],
-                    ]
+                : [
+                    ["actor_user_id", "شناسه کاربر"],
+                    ["entity_type", "نوع رکورد"],
+                  ]
               ).map(([key, title]) => (
                 <label key={key}>
                   {title}
