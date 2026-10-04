@@ -12,6 +12,7 @@ export type UniversityInfo = UniversityShowcase & {
   features: UniversityFeature[];
   address?: string;
   shortAddress?: string;
+  coordinates?: { latitude: number; longitude: number };
   dli?: string;
   sources: { label: string; url: string }[];
 };
@@ -51,6 +52,13 @@ export function safeUniversityUrl(value?: string): string | undefined {
 
 export function universityInfoPath(locale: Locale, slug: string) {
   return `/${locale}/universities/${encodeURIComponent(slug)}`;
+}
+
+export function universityMapEmbedUrl(university: UniversityInfo) {
+  const point = university.coordinates;
+  const validPoint = point && Number.isFinite(point.latitude) && Number.isFinite(point.longitude) && Math.abs(point.latitude) <= 90 && Math.abs(point.longitude) <= 180;
+  const query = encodeURIComponent(validPoint ? `${point.latitude},${point.longitude}` : `${university.englishName}, ${university.address || university.location.en}`);
+  return `https://maps.google.com/maps?q=${query}&t=m&z=16&hl=en&output=embed`;
 }
 
 export function fromCatalog(university: HomeUniversity, country: Record<Locale, string>): UniversityInfo {
@@ -98,6 +106,8 @@ export const westernUniversity: UniversityInfo = {
   dli: "O19375892122",
   address: "1151 Richmond Street, London, Ontario, Canada",
   shortAddress: "1151 Richmond Street, London",
+  // Verified against the Western University place marker in Google Maps.
+  coordinates: { latitude: 43.0095971, longitude: -81.2737336 },
   websiteUrl: "https://www.uwo.ca/",
   logo: "/university-info/western-logo.png",
   summary: {

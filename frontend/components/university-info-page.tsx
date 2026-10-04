@@ -3,7 +3,7 @@ import Link from "next/link";
 import { SiteShell } from "@/components/site-shell";
 import { UniversityGallery, UniversityTabs } from "@/components/university-info-interactive";
 import type { Locale } from "@/lib/site-content";
-import { safeUniversityUrl, universityIdentityLocation, type UniversityInfo } from "@/lib/university-info-model";
+import { safeUniversityUrl, universityIdentityLocation, universityMapEmbedUrl, type UniversityInfo } from "@/lib/university-info-model";
 import styles from "./university-info.module.css";
 
 function Pin() {
@@ -14,7 +14,8 @@ export function UniversityInfoPage({ university: u, locale }: { university: Univ
   const fa = locale === "fa";
   const website = safeUniversityUrl(u.websiteUrl);
   const identityLocation = universityIdentityLocation(u);
-  const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${u.englishName}, ${u.address || u.location.en}`)}`;
+  const mapQuery = encodeURIComponent(`${u.englishName}, ${u.address || u.location.en}`);
+  const mapUrl = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
   const facts = [
     { label: fa ? "کشور" : "Country", value: u.country[locale] },
     ...(u.city ? [{ label: fa ? "شهر" : "City", value: u.city[locale] }] : []),
@@ -22,12 +23,17 @@ export function UniversityInfoPage({ university: u, locale }: { university: Univ
     ...(u.foundedYear ? [{ label: fa ? "سال تأسیس" : "Founded", value: String(u.foundedYear) }] : []),
     ...(u.dli ? [{ label: fa ? "شماره DLI" : "DLI number", value: u.dli }] : []),
   ];
-  const location = <>
-    <p className={styles.eyebrow}>{fa ? "دانشگاه روی نقشه" : "FIND YOUR CAMPUS"}</p>
-    <h2>{fa ? "اینجا را بهتر بشناسید" : "Get to know the location"}</h2>
-    <div className={styles.locationCard}><span className={styles.pinBadge}><Pin /></span><div><h3>{u.location[locale]}</h3><p dir="ltr">{u.address || u.location.en}</p></div></div>
-    <a className={styles.secondaryButton} href={mapUrl} target="_blank" rel="noopener noreferrer">{fa ? "مشاهده در Google Maps" : "Open in Google Maps"}<span aria-hidden="true">↗</span></a>
-  </>;
+  const location = <section className={styles.campusLocation} aria-label={fa ? `موقعیت ${u.name.fa}` : `Location for ${u.englishName}`}>
+    <h2>{fa ? `موقعیت ${u.name.fa}` : `Location for ${u.englishName}`}</h2>
+    <span className={styles.mapLabel}>{fa ? "نقشه" : "Map"}</span>
+    <figure className={styles.campusMap}>
+      <div className={styles.mapCanvas}>
+        <iframe src={universityMapEmbedUrl(u)} title={fa ? `نقشهٔ ${u.name.fa}` : `Map of ${u.englishName}`} loading="lazy" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen />
+        <div className={styles.mapInfo} dir="ltr" lang="en"><strong>{u.englishName}</strong><span>{u.address || u.location.en}</span></div>
+      </div>
+      <figcaption dir="ltr" lang="en">{u.address || u.location.en}</figcaption>
+    </figure>
+  </section>;
   const overview = <>
     <p className={styles.eyebrow}>{fa ? "یک نگاه نزدیک‌تر" : "A CLOSER LOOK"}</p>
     <h2>{fa ? `درباره ${u.name.fa}` : `About ${u.name.en}`}</h2>

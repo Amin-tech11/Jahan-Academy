@@ -3,7 +3,7 @@ import { existsSync } from "node:fs";
 import { test } from "node:test";
 import { homeUniversities } from "../lib/home-universities.ts";
 import { headerDestinations } from "../lib/site-content.ts";
-import { fromCatalog, fromPublicUniversity, safeUniversityUrl, universityIdentityLocation, universityInfoPath, westernUniversity } from "../lib/university-info-model.ts";
+import { fromCatalog, fromPublicUniversity, safeUniversityUrl, universityIdentityLocation, universityInfoPath, universityMapEmbedUrl, westernUniversity } from "../lib/university-info-model.ts";
 
 test("all 30 catalog cards resolve to their own university profile and photography", () => {
   for (const university of homeUniversities) {
@@ -73,4 +73,27 @@ test("unknown countries preserve their location without inventing a flag or addr
     const profile = fromPublicUniversity({ slug: "test", name: { fa: "دانشگاه", en: "University" }, summary: { fa: "", en: "" }, country: { fa: country, en: country } });
     assert.deepEqual(universityIdentityLocation(profile), { label: country, flag: undefined, address: undefined });
   }
+});
+
+test("campus map uses verified coordinates on the fixed Google Maps origin", () => {
+  const url = new URL(universityMapEmbedUrl(westernUniversity));
+  assert.equal(url.origin, "https://maps.google.com");
+  assert.equal(url.searchParams.get("q"), "43.0095971,-81.2737336");
+  assert.equal(url.searchParams.get("output"), "embed");
+  assert.equal(url.searchParams.get("t"), "m");
+  assert.equal(url.searchParams.has("layer"), false);
+});
+
+test("missing or invalid coordinates fall back to the actual university name and location", () => {
+  for (const coordinates of [undefined, { latitude: NaN, longitude: 10 }, { latitude: 91, longitude: 0 }, { latitude: 0, longitude: 181 }]) {
+    const url = new URL(universityMapEmbedUrl({ ...westernUniversity, coordinates, address: undefined }));
+    assert.equal(url.searchParams.get("q"), "Western University, London, Ontario, Canada");
+  }
+});
+
+test("map queries cannot inject iframe URL parameters", () => {
+  const url = new URL(universityMapEmbedUrl({ ...westernUniversity, coordinates: undefined, englishName: "University &output=evil#fragment", address: "Street ?x=1&y=2" }));
+  assert.equal(url.searchParams.get("q"), "University &output=evil#fragment, Street ?x=1&y=2");
+  assert.deepEqual(url.searchParams.getAll("output"), ["embed"]);
+  assert.equal(url.hash, "");
 });
