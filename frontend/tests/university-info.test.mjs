@@ -3,7 +3,7 @@ import { existsSync } from "node:fs";
 import { test } from "node:test";
 import { homeUniversities } from "../lib/home-universities.ts";
 import { headerDestinations } from "../lib/site-content.ts";
-import { fromCatalog, fromPublicUniversity, safeUniversityUrl, universityInfoPath, westernUniversity } from "../lib/university-info-model.ts";
+import { fromCatalog, fromPublicUniversity, safeUniversityUrl, universityIdentityLocation, universityInfoPath, universityMapEmbedUrl, westernUniversity } from "../lib/university-info-model.ts";
 
 test("all 30 catalog cards resolve to their own university profile and photography", () => {
   for (const university of homeUniversities) {
@@ -46,4 +46,54 @@ test("Western reference profile has complete local gallery assets and source lin
   }
   for (const source of westernUniversity.sources) assert.ok(safeUniversityUrl(source.url));
   assert.ok(westernUniversity.about.fa && westernUniversity.about.en);
+});
+
+test("identity uses the reference location and short address without changing the full campus address", () => {
+  assert.deepEqual(universityIdentityLocation(westernUniversity), {
+    label: "London, Ontario, CA",
+    flag: "/destinations/flags/canada.svg",
+    address: "1151 Richmond Street, London",
+  });
+  assert.equal(westernUniversity.address, "1151 Richmond Street, London, Ontario, Canada");
+});
+
+test("catalog identity flags exist and unpublished street addresses stay absent", () => {
+  for (const university of homeUniversities) {
+    const country = headerDestinations.find(({ slug }) => slug === university.country);
+    const identity = universityIdentityLocation(fromCatalog(university, country));
+    assert.ok(identity.flag);
+    assert.ok(existsSync(new URL(`../public${identity.flag}`, import.meta.url)));
+    assert.equal(identity.address, undefined);
+    assert.ok(identity.label.startsWith(university.location.split(",")[0]));
+  }
+});
+
+test("unknown countries preserve their location without inventing a flag or address", () => {
+  for (const country of ["Unknown country", "constructor", "__proto__"]) {
+    const profile = fromPublicUniversity({ slug: "test", name: { fa: "دانشگاه", en: "University" }, summary: { fa: "", en: "" }, country: { fa: country, en: country } });
+    assert.deepEqual(universityIdentityLocation(profile), { label: country, flag: undefined, address: undefined });
+  }
+});
+
+test("campus map uses verified coordinates on the fixed Google Maps origin", () => {
+  const url = new URL(universityMapEmbedUrl(westernUniversity));
+  assert.equal(url.origin, "https://maps.google.com");
+  assert.equal(url.searchParams.get("q"), "43.0095971,-81.2737336");
+  assert.equal(url.searchParams.get("output"), "embed");
+  assert.equal(url.searchParams.get("t"), "m");
+  assert.equal(url.searchParams.has("layer"), false);
+});
+
+test("missing or invalid coordinates fall back to the actual university name and location", () => {
+  for (const coordinates of [undefined, { latitude: NaN, longitude: 10 }, { latitude: 91, longitude: 0 }, { latitude: 0, longitude: 181 }]) {
+    const url = new URL(universityMapEmbedUrl({ ...westernUniversity, coordinates, address: undefined }));
+    assert.equal(url.searchParams.get("q"), "Western University, London, Ontario, Canada");
+  }
+});
+
+test("map queries cannot inject iframe URL parameters", () => {
+  const url = new URL(universityMapEmbedUrl({ ...westernUniversity, coordinates: undefined, englishName: "University &output=evil#fragment", address: "Street ?x=1&y=2" }));
+  assert.equal(url.searchParams.get("q"), "University &output=evil#fragment, Street ?x=1&y=2");
+  assert.deepEqual(url.searchParams.getAll("output"), ["embed"]);
+  assert.equal(url.hash, "");
 });
