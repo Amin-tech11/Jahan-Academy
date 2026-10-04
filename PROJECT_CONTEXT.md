@@ -986,6 +986,8 @@ The owner approved per-user admin section access, enforced by the API and persis
 
 ## 18. Pending Tasks
 
+Admin date filters approved on 2026-10-04: the consultation inbox includes «از تاریخ» and «تا تاریخ» with switchable Persian/Gregorian day, month and year selection. Filter stored creation timestamps with inclusive whole-day boundaries in Asia/Tehran, using the existing from/to API. Prevent inverted ranges, reset pagination on date changes and clear dates with Clear filters.
+
 Admin table presentation approved on 2026-10-04: consultation requests use fourteen right-to-left columns in this order: tracking code, full name, phone, email, age, occupation, gender, education, marital status, investment budget, English proficiency, request creation date, request type, status. The tracking code opens request details. Missing answers remain empty (shown as an em dash); existing submitted assessment answers must be displayed without inference.
 
 ### 18.1 Product and Content Inputs

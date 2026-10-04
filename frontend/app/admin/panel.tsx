@@ -1,6 +1,8 @@
 "use client";
 
 import Login from "./login";
+import DateFilter from "./date-filter";
+import { dateRangeParams } from "../../lib/admin-calendar";
 import AccessManager from "./access-manager";
 import { visibleSections, type PanelAccess } from "../../lib/admin-access";
 import { startLiveRefresh } from "../../lib/admin-live";
@@ -871,12 +873,16 @@ const listSessions = new Map<
     status: string;
     page: number;
     filters: Record<string, string>;
+    fromDate: string;
+    toDate: string;
   }
 >();
 function ResourceList({ resource }: { resource: Resource }) {
   const previous = listSessions.get(resource.id);
   const [query, setQuery] = useState(previous?.query ?? "");
   const [status, setStatus] = useState(previous?.status ?? "");
+  const [fromDate, setFromDate] = useState(previous?.fromDate ?? "");
+  const [toDate, setToDate] = useState(previous?.toDate ?? "");
   const [page, setPage] = useState(previous?.page ?? 1);
   const [data, setData] = useState<RecordData>({});
   const [error, setError] = useState("");
@@ -889,8 +895,8 @@ function ResourceList({ resource }: { resource: Resource }) {
     resource.id === "leads" ? {} : previous?.filters ?? {},
   );
   useEffect(() => {
-    listSessions.set(resource.id, { query, status, page, filters });
-  }, [resource.id, query, status, page, filters]);
+    listSessions.set(resource.id, { query, status, page, filters, fromDate, toDate });
+  }, [resource.id, query, status, page, filters, fromDate, toDate]);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [newIds, setNewIds] = useState<string[]>([]);
   const [announcement, setAnnouncement] = useState("");
@@ -904,7 +910,7 @@ function ResourceList({ resource }: { resource: Resource }) {
     setAnnouncement("");
     const params = new URLSearchParams({
       page: String(page), limit: "20",
-      ...(resource.id === "leads" ? {} : Object.fromEntries(Object.entries(filters).filter(([, v]) => v))),
+      ...(resource.id === "leads" ? dateRangeParams(fromDate, toDate) : Object.fromEntries(Object.entries(filters).filter(([, v]) => v))),
     });
     if (resource.id === "leads") params.set("sort", "created_desc");
     if (query.trim().length >= 2)
@@ -951,7 +957,7 @@ function ResourceList({ resource }: { resource: Resource }) {
       window.removeEventListener("online", resume);
       window.removeEventListener("offline", offline);
     };
-  }, [resource.path, resource.id, page, query, status, refresh, filters]);
+  }, [resource.path, resource.id, page, query, status, refresh, filters, fromDate, toDate]);
   const rows = rowsOf(data);
   const total = totalOf(data);
   return (
@@ -988,7 +994,7 @@ function ResourceList({ resource }: { resource: Resource }) {
           {lastUpdated && <small>آخرین دریافت: {lastUpdated.toLocaleTimeString("fa-IR")}</small>}
         </div>
         <p className="adm-live-announcement" role="status" aria-live="polite">{announcement}</p>
-        {(page > 1 || query || status || Object.values(filters).some(Boolean)) && (
+        {(page > 1 || query || status || fromDate || toDate || Object.values(filters).some(Boolean)) && (
           <p className="adm-list-hint">برای دیدن همهٔ درخواست‌های تازه، فیلترها را پاک کنید و به صفحهٔ اول بروید.</p>
         )}
         <div className="adm-toolbar">
@@ -1023,6 +1029,10 @@ function ResourceList({ resource }: { resource: Resource }) {
               </select>
             </label>
           )}
+          {resource.id === "leads" && <>
+            <DateFilter label="از تاریخ" value={fromDate} max={toDate} onChange={(date) => { setFromDate(date); setPage(1); }} />
+            <DateFilter label="تا تاریخ" value={toDate} min={fromDate} onChange={(date) => { setToDate(date); setPage(1); }} />
+          </>}
           <button onClick={() => setRefresh((value) => value + 1)}>
             تازه‌سازی
           </button>
@@ -1032,6 +1042,8 @@ function ResourceList({ resource }: { resource: Resource }) {
               setQuery("");
               setStatus("");
               setFilters({});
+              setFromDate("");
+              setToDate("");
               setPage(1);
             }}
           >
