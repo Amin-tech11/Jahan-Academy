@@ -1,6 +1,7 @@
 "use client";
 
 import { type FormEvent, type ReactNode, useId, useState } from "react";
+import { ConsultationSuccess } from "./consultation-success";
 import { ApiError, apiRequest, type ApiEnvelope } from "@/lib/api-client";
 import { type Locale, siteCopy } from "@/lib/site-content";
 
@@ -18,7 +19,7 @@ export function ConsultationForm({ locale, source }: { locale: Locale; source: s
     const payload = { firstName: form.get("firstName"), lastName: form.get("lastName"), mobile: form.get("mobile"), email: form.get("email") || null, desiredCountryText: form.get("country"), intakeTerm: form.get("intake"), startYear: Number(form.get("startYear")), age: form.get("age") ? Number(form.get("age")) : null, gender: form.get("gender") || null, occupation: form.get("occupation") || null, maritalStatus: form.get("maritalStatus") || null, message: form.get("message") || null, locale, source: { pageUrl: source }, privacyConsent: form.get("privacyConsent") === "on", contactConsent: form.get("contactConsent") === "on", website: "" };
     try { const body = await apiRequest<ApiEnvelope<{ reference: string; duplicate: boolean }>>("/consultation-requests", { method: "POST", headers: { "Idempotency-Key": crypto.randomUUID() }, body: payload }); setReceipt(body.data); setStatus("success"); } catch (error) { setMessage(error instanceof ApiError ? error.message : copy.formError); setStatus("error"); }
   }
-  if (status === "success" && receipt) return <section className="form-success" role="status"><span aria-hidden="true">✓</span><h2>{copy.thankYou}</h2><p>{receipt.duplicate ? copy.duplicate : copy.consultationText}</p><strong>{copy.trackingCode}: {receipt.reference}</strong></section>;
+  if (status === "success" && receipt) return <div className="consultation-form"><ConsultationSuccess locale={locale} reference={receipt.reference} duplicate={receipt.duplicate} /></div>;
   const year = new Date().getUTCFullYear(); const label = (fa: string, en: string) => locale === "fa" ? fa : en;
   return <form className="consultation-form" onSubmit={submit}><div className="form-grid">
     <Field id={`${id}-first`} label={label("نام", "First name")}><input id={`${id}-first`} name="firstName" required autoComplete="given-name" /></Field>

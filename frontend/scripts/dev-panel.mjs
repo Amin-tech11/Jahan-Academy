@@ -3,10 +3,15 @@ import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 
 const mapping = {
+  admin: 3500,
   "home-page": 3100,
+  destinationS: 3800,
   dashboard: 3101,
   users: 3102,
   orders: 3103,
+  "university-info": 3600,
+  "service-page": 3300,
+  "universities-page": 3400,
   develop: 5000,
 };
 
@@ -32,6 +37,7 @@ const nextBin = require.resolve("next/dist/bin/next");
 const child = spawn(process.execPath, [nextBin, "dev", "--port", String(mapping[panel])], {
   cwd: frontendRoot,
   stdio: "inherit",
+  env: { ...process.env, JAHAN_PANEL: panel },
 });
 
 child.on("error", (error) => {

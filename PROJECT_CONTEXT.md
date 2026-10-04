@@ -974,6 +974,16 @@ required CI gate for the current feature is green.
 | RISK-010 | Numeric KPI targets are not established. | Capture baseline operational metrics after launch, then approve targets in this document. |
 | RISK-011 | The exact identity-verification requirement for public applicants is undecided. | Keep verification outside MVP; decide before Application submission and document which documents/assurance level are required. |
 
+## 17.1 Approved admin section access — 2026-10-04
+
+The owner approved per-user admin section access, enforced by the API and persisted in PostgreSQL. This supersedes the consultation-only navigation restriction for super administrators and the broad default content-editor navigation.
+
+- Global super administrators see every implemented admin section, including staff administration, access management and audit logs. These three sections cannot be delegated; full super-admin access cannot be removed through section settings.
+- Other global staff accounts default to the consultation inbox only. A super administrator can replace their enabled sections individually, including removing all sections. Ordinary public accounts receive no admin section access.
+- Section access is checked on each protected API request independently of shared permission names. Granting universities does not also grant programs; granting one reference-data or content section does not expose neighboring sections.
+- Existing consultation data scope remains authoritative: consultants see only assigned leads; support staff retain their existing all-lead operations when the leads section is enabled.
+- Changes require the current staff version, lock the account row, increment that version and write an audit record. Existing sessions receive grants/revocations on their next request; the menu refreshes within ten seconds or on focus.
+
 ## 18. Pending Tasks
 
 ### 18.1 Product and Content Inputs

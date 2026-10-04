@@ -29,6 +29,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
     if (item.href === "/countries") {
       const destinations = [...headerDestinations].sort((a, b) => a[locale].localeCompare(b[locale], locale));
       const options = <div className="nav-destinations-list" dir={locale === "fa" ? "rtl" : "ltr"}>
+        <Link href={href} onClick={() => setOpen(false)}>{locale === "fa" ? "همه مقصدها" : "All destinations"}</Link>
         {destinations.map((destination) => <Link key={destination.slug} href={`/${locale}/countries/${destination.slug}`} onClick={() => setOpen(false)}><span className="nav-destination-flag" aria-hidden="true"><Image src={`/destinations/flags/${destination.slug}.svg`} alt="" width={28} height={28} /></span><span>{destination[locale]}</span></Link>)}
       </div>;
       if (desktop) return <div className="nav-destinations nav-destinations--desktop" key={href}>
@@ -45,7 +46,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
 
   return <header className="site-header"><div className="shell header-inner">
     <Link className="brand" href={`/${locale}`} aria-label={locale === "fa" ? "جهان آکادمی، صفحه اصلی" : "Jahan Academy, home"}>
-      <span className="brand-image"><Image src="/jahan-logo.png" alt="" fill sizes="104px" priority /></span>
+      <span className="brand-image"><Image src="/brand/jahan-academy-official.png" alt="" fill sizes="(max-width: 600px) 180px, (max-width: 900px) 240px, 150px" preload /></span>
     </Link>
     <nav className="main-nav" aria-label={locale === "fa" ? "ناوبری اصلی" : "Main navigation"}>{links(true)}</nav>
     <div className="header-actions">

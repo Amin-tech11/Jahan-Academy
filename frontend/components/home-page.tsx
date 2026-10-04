@@ -1,10 +1,14 @@
 import Image from "next/image";
+import { HomeHeroChat } from "@/components/home-hero-chat";
+import { HomeMotion } from "@/components/home-motion";
+import { HomeConsultation } from "@/components/home-consultation";
+import { HomeFaq } from "@/components/home-faq";
 import { HomeNewsTicker } from "@/components/home-news-ticker";
 import { HomeJourneyProgress } from "@/components/home-journey-progress";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
-import { ConsultationButton, localPath, SiteShell } from "@/components/site-shell";
+import { localPath, SiteShell } from "@/components/site-shell";
 import { brandContent } from "@/lib/brand-content";
 import { getHomeContent } from "@/lib/home-content";
 import { HomeUniversityShowcase } from "@/components/home-university-showcase";
@@ -56,25 +60,42 @@ function ServiceGlyph({ id }: { id: (typeof homeServices)[number]["id"] }) {
   return <svg width="58" height="58" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[id]}</svg>;
 }
 
+function TrustGlyph({ number }: { number: string }) {
+  return <svg className="home-trust__icon" width="52" height="52" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    {Number(number) === 1 ? <><path d="M16 3 26 7v8c0 6-4.5 10.5-10 14C10.5 25.5 6 21 6 15V7l10-4Z" /><path d="m11.5 15.5 3 3 6-6" /></>
+      : Number(number) === 2 ? <path d="M16 27 5 16C-3 7 8-1 16 8 24-1 35 7 27 16L16 27Z" />
+      : <><circle cx="16" cy="9" r="4" /><circle cx="6" cy="12" r="2.5" /><circle cx="26" cy="12" r="2.5" /><path d="M9 26v-3a7 7 0 0 1 14 0v3a22 22 0 0 1-14 0ZM9 17a5 5 0 0 0-7 4v2h4M23 17a5 5 0 0 1 7 4v2h-4" /></>}
+  </svg>;
+}
 export async function HomePage({ locale }: { locale: Locale }) {
   const copy = siteCopy[locale];
   const content = getHomeContent(locale);
   const brand = brandContent[locale];
   const visibleArticles = [...articles].sort((a, b) => b.date.localeCompare(a.date));
 
-  return <SiteShell locale={locale}><main className="home-page">
-    <div className={`home-hero home-hero--${locale}`} aria-hidden="true">
+  return <SiteShell locale={locale}><HomeMotion>
+    <div className={`home-hero home-hero--${locale}`}>
       <Image src="/home-hero-campus-v2.png" alt="" fill sizes="100vw" preload className="home-hero__image" />
-      <div className="home-hero__shade" />
+      <div className="home-hero__shade" aria-hidden="true" />
+      <HomeHeroChat locale={locale} />
     </div>
 
-    <section className="home-start shell" aria-labelledby="home-start-title">
-      <div className="home-start__lead"><p className="home-eyebrow">START HERE</p><h2 id="home-start-title">{content.startTitle}</h2><p>{content.startText}</p></div>
-      <ol className="home-start__steps">{content.steps.map((step) => <li key={step.number}><span>{step.number}</span><div><strong>{step.title}</strong><p>{step.text}</p></div></li>)}</ol>
+    <section className="home-start shell" aria-label={locale === "fa" ? "شروع مسیر با جهان آکادمی" : "Start your journey with Jahan Academy"}>
+      <ul className="home-start__features">
+        {[
+          { path: "M4 15a8 8 0 1 1 4 4l-5 2 1-6Z M8 11h.01 M12 11h.01 M16 11h.01", fa: ["مشاوره تخصصی", "بررسی اهداف و شرایط شما در گفت‌وگو با مشاور"], en: ["Expert consultation", "Discuss your goals and circumstances with an advisor"] },
+          { path: "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z M16 8l-2 6-6 2 2-6 6-2Z", fa: ["بررسی مسیر تحصیلی", "انتخاب دانشگاه و رشته متناسب با شرایط شما"], en: ["Your study pathway", "Explore universities and programs suited to your profile"] },
+          { path: "M6 3h8l4 4v14H6V3Z M14 3v4h4 M9 11h6 M9 15h6 M9 18h4", fa: ["راهنمای مدارک", "چک‌لیست، نگارش و بررسی مدارک پذیرش و ویزا"], en: ["Document guidance", "Checklists, writing and review for admission and visa documents"] },
+          { path: "M12 4a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z M6 21v-2a6 6 0 0 1 12 0v2H6Z M5 6a2.5 2.5 0 0 0 0 5 M19 6a2.5 2.5 0 0 1 0 5 M2 18v-1a5 5 0 0 1 4-5 M22 18v-1a5 5 0 0 0-4-5", fa: ["همراهی تا دریافت نتیجه", "پیگیری پرونده در مراحل پذیرش و درخواست ویزا"], en: ["Support through the outcome", "Follow-up throughout admission and the visa application"] },
+        ].map((feature) => <li key={feature.en[0]}>
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.65" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={feature.path} /></svg>
+          <h2>{feature[locale][0]}</h2><p>{feature[locale][1]}</p>
+        </li>)}
+      </ul>
     </section>
 
     <section className="home-section home-section--soft" aria-labelledby="home-destinations-title"><div className="shell">
-      <h2 id="home-destinations-title" className="home-destinations__title" dir={locale === "fa" ? "rtl" : "ltr"}><Link href={localPath(locale, "/countries")}>{copy.destinationsTitle}<span className="home-destinations__title-arrow" aria-hidden="true">{locale === "fa" ? "←" : "→"}</span></Link></h2>
+      <h2 id="home-destinations-title" className="home-destinations__title" dir={locale === "fa" ? "rtl" : "ltr"}><Link href={localPath(locale, "/countries")}>{copy.destinationsTitle}<svg className="home-destinations__title-arrow" aria-hidden="true" width="14" height="16" viewBox="0 0 14 16" fill="currentColor"><path d="M1 8 12 1v14L1 8Z" /></svg></Link></h2>
       <div className="home-destinations">{destinationSlugs.map((slug, index) => {
         const destination = headerDestinations.find((entry) => entry.slug === slug);
         if (!destination) return null;
@@ -86,25 +107,39 @@ export async function HomePage({ locale }: { locale: Locale }) {
     </div></section>
 
     <section className="home-section" aria-labelledby="home-services-title"><div className="shell">
-      <h2 id="home-services-title" className="home-destinations__title" dir={locale === "fa" ? "rtl" : "ltr"}><Link href={localPath(locale, "/services")}>{locale === "fa" ? "خدمات موسسه ما" : "Our institute’s services"}<span className="home-destinations__title-arrow" aria-hidden="true">{locale === "fa" ? "←" : "→"}</span></Link></h2>
-      <div className="home-services" dir={locale === "fa" ? "rtl" : "ltr"}>{homeServices.map((service) => <article key={service.id} className="home-service-card">
+      <h2 id="home-services-title" className="home-destinations__title" dir={locale === "fa" ? "rtl" : "ltr"}><Link href={localPath(locale, "/services")}>{locale === "fa" ? "خدمات موسسه ما" : "Our institute’s services"}<svg className="home-destinations__title-arrow" aria-hidden="true" width="14" height="16" viewBox="0 0 14 16" fill="currentColor"><path d="M1 8 12 1v14L1 8Z" /></svg></Link></h2>
+      <div className="home-services" dir={locale === "fa" ? "rtl" : "ltr"}>{homeServices.map((service) => <Link key={service.id} className="home-service-card" href={localPath(locale, `/services#${service.id}`)}>
         <span className="home-service-card__icon"><ServiceGlyph id={service.id} /></span><h3>{service.title[locale]}</h3><p>{service.description[locale]}</p>
-      </article>)}</div>
+      </Link>)}</div>
     </div></section>
 
     <section className="home-section home-section--tinted" aria-labelledby="home-universities-title"><div className="shell">
-      <h2 id="home-universities-title" className="home-destinations__title" dir={locale === "fa" ? "rtl" : "ltr"}><Link href={localPath(locale, "/universities")}>{copy.universitiesTitle}<span className="home-destinations__title-arrow" aria-hidden="true">{locale === "fa" ? "←" : "→"}</span></Link></h2>
+      <h2 id="home-universities-title" className="home-destinations__title" dir={locale === "fa" ? "rtl" : "ltr"}><Link href={localPath(locale, "/universities")}>{copy.universitiesTitle}<svg className="home-destinations__title-arrow" aria-hidden="true" width="14" height="16" viewBox="0 0 14 16" fill="currentColor"><path d="M1 8 12 1v14L1 8Z" /></svg></Link></h2>
       <HomeUniversityShowcase locale={locale} />
       <p className="home-universities__note">{content.universityNote}</p>
     </div></section>
 
     <section className="home-section home-trust" aria-labelledby="home-trust-title"><div className="shell home-trust__inner">
       <div className="home-trust__header">
-        <div className="home-trust__intro"><h2 id="home-trust-title">{brand.whyTitle}</h2><p>{brand.whyText}</p></div>
-        <ConsultationButton locale={locale} source="home-trust" />
+        <div className="home-trust__intro" dir={locale === "fa" ? "rtl" : "ltr"}>
+          <h2 id="home-trust-title">{brand.whyTitle}</h2>
+          <p className="home-trust__subtitle">{content.trustSubtitle}</p>
+          <p className="home-trust__description">{content.trustText}</p>
+          <Link className="home-trust__cta" href={localPath(locale, "/consultation?source=home-trust")}>
+            {content.trustCta}<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M19 12H5m6-6-6 6 6 6" /></svg>
+          </Link>
+        </div>
+        <div className="home-trust__media">
+          <Image src="/home-trust-consultation.png" alt={locale === "fa" ? "گفت‌وگوی مشاور با دو متقاضی درباره مسیر تحصیلی" : "An advisor discussing study plans with two applicants"} fill sizes="(max-width: 760px) 100vw, 50vw" />
+          <div className="home-trust__caption" dir={locale === "fa" ? "rtl" : "ltr"}>
+            <p>{content.trustImageCaption}</p>
+            {locale === "fa" && <p className="home-trust__caption-en" lang="en" dir="ltr">A Brighter<br />Tomorrow<br />Together</p>}
+          </div>
+        </div>
       </div>
       <ul className="home-trust__values">{content.trustValues.map((value) => <li className="home-trust__value" key={value.number}>
-        <span className="home-trust__number" aria-hidden="true">{value.number}</span><h3>{value.title}</h3><p>{value.text}</p>
+        <span className="home-trust__number" aria-hidden="true">{Number(value.number)}</span>
+        <TrustGlyph number={value.number} /><h3>{value.title}</h3><p>{value.text}</p>
       </li>)}</ul>
     </div></section>
 
@@ -118,15 +153,23 @@ export async function HomePage({ locale }: { locale: Locale }) {
     </div></section>
 
     <section className="home-section" aria-labelledby="home-articles-title"><div className="shell">
-      <h2 id="home-articles-title" className="home-destinations__title" dir={locale === "fa" ? "rtl" : "ltr"}><Link href={localPath(locale, "/articles")}>{locale === "fa" ? "خبر ها" : "News"}<span className="home-destinations__title-arrow" aria-hidden="true">{locale === "fa" ? "←" : "→"}</span></Link></h2>
+      <h2 id="home-articles-title" className="home-destinations__title" dir={locale === "fa" ? "rtl" : "ltr"}><Link href={localPath(locale, "/articles")}>{locale === "fa" ? "خبر ها" : "News"}<svg className="home-destinations__title-arrow" aria-hidden="true" width="14" height="16" viewBox="0 0 14 16" fill="currentColor"><path d="M1 8 12 1v14L1 8Z" /></svg></Link></h2>
       <HomeNewsTicker items={visibleArticles} locale={locale} />
     </div></section>
 
     <section className="home-section home-section--soft" aria-labelledby="home-faq-title"><div className="shell home-faq__grid">
       <div className="home-faq__intro"><h2 id="home-faq-title">{locale === "fa" ? "سوالات متداول" : "Frequently Asked Questions"}</h2></div>
-      <div className="home-faq__list">{brand.faqs.slice(0, 5).map((item) => <details name="home-faq" key={item.question}><summary><span className="home-faq__question-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M20 11.5a8 8 0 0 1-8 8H5l-3 2v-10a10 10 0 0 1 2-6 8 8 0 0 1 16 6Z" /><path d="M9.5 8.5a2.5 2.5 0 0 1 5 .5c0 1.5-2.5 1.7-2.5 3" /><path d="M12 15.5h.01" /></svg></span><span className="home-faq__question-text">{item.question}</span><svg className="home-faq__chevron" aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="m3 6 5 5 5-5" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" /></svg></summary><p>{item.answer}</p></details>)}</div>
+      <HomeFaq items={brand.faqs.slice(0, 5)} />
     </div></section>
 
-    <section className="home-closing"><div className="shell home-closing__inner"><div><p className="home-eyebrow">JAHAN ACADEMY</p><h2>{content.closingTitle}</h2><p>{content.closingText}</p></div><ConsultationButton locale={locale} source="home-footer" /></div></section>
-  </main></SiteShell>;
+    <section className="home-closing" id="home-consultation" aria-labelledby="home-closing-title">
+      <div className="shell">
+        <header className="home-closing__heading"><h2 id="home-closing-title">{content.closingTitle}</h2><p>{content.closingText.replaceAll("هٔ", "ه")}</p></header>
+        <div className="home-closing__layout">
+          <div className="home-closing__image"><Image src="/journey/profile-assessment.png" alt={locale === "fa" ? "مشاوره درباره مسیر تحصیلی" : "Study pathway consultation"} fill sizes="(max-width: 800px) 100vw, 50vw" /></div>
+          <HomeConsultation locale={locale} />
+        </div>
+      </div>
+    </section>
+  </HomeMotion></SiteShell>;
 }
