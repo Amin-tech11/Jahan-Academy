@@ -56,7 +56,8 @@
 .fact+.fact{border-inline-start:1px solid var(--line)}
 .fact dt{display:flex;flex-direction:column;align-items:center;gap:14px;font-size:19px;line-height:1.6;font-weight:800;color:var(--text)}
 .factIcon{width:36px;height:36px;flex-shrink:0;color:var(--brand)}
-.fact dd{margin:8px 0 0;font-size:13px;line-height:2;color:var(--muted);overflow-wrap:anywhere}
+.fact dd{margin:8px 0 0;font-size:18px;font-weight:500;line-height:1.9;color:var(--muted);overflow-wrap:anywhere}
+.currencyValue{display:inline-flex;align-items:baseline;gap:8px;unicode-bidi:isolate}
 .page .navigationTitle{margin-block:0 12px;text-align:center;font-size:clamp(23px,2.5vw,32px);line-height:1.7;font-weight:500;color:var(--brand)}
 .navigation{position:sticky;top:78px;z-index:5;background:var(--canvas);margin-top:40px;padding-block:8px 12px}
 .navigation nav{display:flex;gap:6px;overflow-x:auto;padding:7px;background:var(--content);border:1px solid var(--line);border-radius:999px;box-shadow:0 3px 10px rgb(32 40 51 / 6%);scrollbar-width:thin}
@@ -132,7 +133,7 @@
 .fact:nth-child(odd){border-inline-start:0}
 .fact:nth-child(n+3){border-top:1px solid var(--line)}
 .fact dt{font-size:16px;gap:12px}
-.fact dd{font-size:12px}
+.fact dd{font-size:16px}
 .navigation{top:70px;margin-top:30px}
 .page .navigationTitle{font-size:23px}
 .navigation nav{padding:6px;border-radius:28px}
