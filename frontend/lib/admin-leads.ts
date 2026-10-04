@@ -64,3 +64,50 @@ export function newLeadIds(previous: RecordData[] | null, next: RecordData[]): s
   const known = new Set(previous.map((row) => String(row.id)));
   return next.filter((row) => !known.has(String(row.id))).map((row) => String(row.id));
 }
+
+const editAnswers: Record<string, string> = {
+  education: "education", assessmentBudget: "investmentBudget", englishProficiency: "englishProficiency",
+};
+
+export function leadEditData(row: RecordData): RecordData {
+  const data = { ...row };
+  for (const [field, column] of Object.entries(editAnswers)) data[field] = assessmentValue(row.message, column) ?? "";
+  return data;
+}
+
+export function leadEditPayload(data: RecordData, original: RecordData, payload: RecordData): RecordData {
+  const result = { ...payload };
+  if ("gender" in data && data.gender !== "self_described") delete result.genderSelfDescription;
+  let message = typeof original.message === "string" ? original.message : "";
+  let messageChanged = false;
+  const newline = message.includes("\r\n") ? "\r\n" : "\n";
+  for (const [field, column] of Object.entries(editAnswers)) {
+    delete result[field];
+    if (!(field in data)) continue;
+    const next = String(data[field] ?? "").trim();
+    if (/[\r\n]/.test(next)) throw new Error("پاسخ‌های ارزیابی باید در یک خط وارد شوند.");
+    if (next === (assessmentValue(original.message, column) ?? "")) continue;
+    messageChanged = true;
+    let found = false;
+    const lines = message ? message.split(/\r?\n/) : [];
+    message = lines.map((line) => {
+      const separator = line.indexOf(":");
+      if (separator < 0 || !assessmentLabels[column].includes(line.slice(0, separator).trim())) return line;
+      found = true;
+      return `${line.slice(0, separator)}: ${next}`;
+    }).join(newline);
+    if (!found && next) message += `${message ? newline : ""}${assessmentLabels[column][original.locale === "en" ? 1 : 0]}: ${next}`;
+  }
+  // Unrelated edits never rewrite or erase the original free-form message.
+  delete result.message;
+  if (messageChanged) {
+    if (message.length > 2000) throw new Error("مجموع پاسخ‌ها نباید بیش از ۲۰۰۰ نویسه باشد.");
+    result.message = message || null;
+  }
+  delete result.investmentRangeCode;
+  delete result.investmentCurrency;
+  if ("investmentRangeCode" in data && (data.investmentRangeCode !== original.investmentRangeCode || data.investmentCurrency !== original.investmentCurrency)) {
+    result.investmentBudget = { rangeCode: data.investmentRangeCode, currency: data.investmentCurrency };
+  }
+  return result;
+}

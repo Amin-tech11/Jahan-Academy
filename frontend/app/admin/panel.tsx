@@ -6,7 +6,7 @@ import { dateRangeParams, type Calendar } from "../../lib/admin-calendar";
 import AccessManager from "./access-manager";
 import { visibleSections, type PanelAccess } from "../../lib/admin-access";
 import { startLiveRefresh } from "../../lib/admin-live";
-import { leadCell, newLeadIds } from "../../lib/admin-leads";
+import { leadCell, leadEditData, leadEditPayload, newLeadIds } from "../../lib/admin-leads";
 
 import {
   useCallback,
@@ -30,7 +30,6 @@ import {
   formData,
   getValue,
   labels,
-  leadStatuses,
   resources,
   setValue,
   normalizeRecord,
@@ -360,7 +359,6 @@ function Editor({
   const [busy, setBusy] = useState(Boolean(item));
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
-  const [history, setHistory] = useState<RecordData | null>(null);
   const dialog = useRef<HTMLDialogElement>(null);
   const creating = !item;
   const [loaded, setLoaded] = useState(false);
@@ -390,7 +388,14 @@ function Editor({
             ],
           },
         ]
-      : resource.fields;
+      : resource.id === "leads" ? resource.fields.flatMap((field): Field[] => {
+          if (field.key === "assessmentBudget" && source.investmentRangeCode) return [
+            { key: "investmentRangeCode", label: "بازه میزان سرمایه", required: true },
+            { key: "investmentCurrency", label: "ارز سرمایه", required: true },
+          ];
+          if (field.key === "gender" && (data.gender ?? source.gender) === "self_described") return [field, { key: "genderSelfDescription", label: "توضیح جنسیت", required: true }];
+          return [field];
+        }) : resource.fields;
   useEffect(() => {
     dialog.current?.showModal();
     let alive = true;
@@ -401,9 +406,18 @@ function Editor({
           next = (await adminRequest(`${resource.path}/${item.id}`))
             .data as RecordData;
         if (!alive) return;
-        const normalized = normalizeRecord(next);
+        const normalized = normalizeRecord(resource.id === "leads" ? leadEditData(next) : next);
         setSource(next);
-        setData(formData(fields, normalized));
+        setData({
+          ...formData(fields, normalized),
+          ...(resource.id === "leads" && next.investmentRangeCode ? {
+            investmentRangeCode: next.investmentRangeCode,
+            investmentCurrency: next.investmentCurrency,
+          } : {}),
+          ...(resource.id === "leads" && next.gender === "self_described" ? {
+            genderSelfDescription: next.genderSelfDescription,
+          } : {}),
+        });
         setLoaded(true);
       } catch (err) {
         if (alive) setError(describe(err));
@@ -435,7 +449,8 @@ function Editor({
     setError("");
     setBusy(true);
     try {
-      const body = writePayload(resource, data, source, creating);
+      const rawBody = writePayload(resource, data, source, creating);
+      const body = resource.id === "leads" ? leadEditPayload(data, source, rawBody) : rawBody;
 
       await adminRequest(
         `${resource.path}${item ? `/${item.id}` : ""}`,
@@ -547,7 +562,7 @@ function Editor({
               </footer>
             </fieldset>
           </form>
-          {item && loaded && (
+          {item && loaded && resource.id !== "leads" && (
             <section className="adm-actions">
               <h3>عملیات رکورد</h3>
               <small>
@@ -582,57 +597,6 @@ function Editor({
                   </button>
                 </>
               )}
-              {resource.id === "leads" && (
-                <>
-                  <dl className="adm-details">
-                    {Object.entries(source)
-                      .filter(
-                        ([key]) => !fields.some((field) => field.key === key),
-                      )
-                      .map(([key, value]) => (
-                        <div key={key}>
-                          <dt>{labels[key] ?? key}</dt>
-                          <dd className="adm-lead-value">{displayValue(leadCell(source, key) == null ? null : labels[String(leadCell(source, key))] ?? leadCell(source, key))}</dd>
-                        </div>
-                      ))}
-                  </dl>
-                  <LeadActions busy={busy} onAction={action} source={source} />
-                  <button
-                    disabled={busy}
-                    onClick={async () => {
-                      try {
-                        setHistory(
-                          (
-                            await adminRequest(
-                              `${resource.path}/${item.id}/history`,
-                            )
-                          ).data as RecordData,
-                        );
-                      } catch (err) {
-                        setError(describe(err));
-                      }
-                    }}
-                  >
-                    تاریخچه وضعیت و ارجاع
-                  </button>
-                  {history && (
-                    <div className="adm-history">
-                      {[
-                        ...((history.statuses ?? []) as RecordData[]),
-                        ...((history.assignments ?? []) as RecordData[]),
-                      ].map((entry, index) => (
-                        <article key={index}>
-                          <Badge value={entry.newStatus ?? "assigned"} />
-                          <p>{displayValue(entry.reason)}</p>
-                          <small>
-                            {displayValue(entry.createdAt ?? entry.assignedAt)}
-                          </small>
-                        </article>
-                      ))}
-                    </div>
-                  )}
-                </>
-              )}
               {resource.id === "staff" && (
                 <StaffActions busy={busy} onAction={action} source={source} />
               )}
@@ -644,88 +608,6 @@ function Editor({
   );
 }
 
-function LeadActions({
-  busy,
-  source,
-  onAction,
-}: {
-  busy: boolean;
-  source: RecordData;
-  onAction: (
-    suffix: string,
-    payload: RecordData,
-    method?: string,
-  ) => Promise<void>;
-}) {
-  const [status, setStatus] = useState(String(source.status));
-  const [reason, setReason] = useState("");
-  const [consultant, setConsultant] = useState("");
-  return (
-    <div className="adm-operation-grid">
-      <label>
-        وضعیت جدید
-        <select value={status} onChange={(e) => setStatus(e.target.value)}>
-          {leadStatuses.map((value) => (
-            <option key={value} value={value}>
-              {labels[value]}
-            </option>
-          ))}
-        </select>
-      </label>
-      <label>
-        دلیل عملیات
-        <input value={reason} onChange={(e) => setReason(e.target.value)} />
-      </label>
-      <button
-        disabled={busy || status === source.status}
-        onClick={() =>
-          onAction("status-transitions", {
-            toStatus: status,
-            ...(reason ? { reason } : {}),
-          })
-        }
-      >
-        ثبت وضعیت
-      </button>
-      <label>
-        شناسه مشاور
-        <input
-          dir="ltr"
-          value={consultant}
-          onChange={(e) => setConsultant(e.target.value)}
-        />
-      </label>
-      <button
-        disabled={busy || !consultant}
-        onClick={() =>
-          onAction("assignments", {
-            consultantId: consultant,
-            ...(reason ? { reason } : {}),
-          })
-        }
-      >
-        ثبت ارجاع
-      </button>
-      <button
-        disabled={busy || source.syncStatus !== "failed"}
-        onClick={() =>
-          onAction("noura-retry", { ...(reason ? { note: reason } : {}) })
-        }
-      >
-        تلاش مجدد نورا
-      </button>
-      <button
-        disabled={busy || reason.trim().length < 3 || Boolean(source.archived)}
-        onClick={() => {
-          if (window.confirm("درخواست بایگانی شود؟"))
-            void onAction("archive", { reason });
-        }}
-      >
-        بایگانی درخواست
-      </button>
-    </div>
-  );
-}
 function StaffActions({
   busy,
   source,

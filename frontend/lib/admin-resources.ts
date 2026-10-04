@@ -162,7 +162,11 @@ export const resources: Resource[] = [
       f("email", "ایمیل"),
       f("age", "سن", "number"),
       f("occupation", "شغل"),
-      f("message", "اطلاعات تکمیلی / ارزیابی", "textarea"),
+      f("gender", "جنسیت", "select", false, ["female", "male", "non_binary", "self_described", "prefer_not_to_say"]),
+      f("education", "تحصیلات"),
+      f("maritalStatus", "وضعیت تأهل", "select", false, ["single", "married", "divorced", "widowed"]),
+      f("assessmentBudget", "میزان سرمایه"),
+      f("englishProficiency", "مهارت زبان انگلیسی"),
     ],
   },
   {

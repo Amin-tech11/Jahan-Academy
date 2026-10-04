@@ -2,6 +2,10 @@
 
 Source of truth: `Project_Context.md`, especially sections 4, 6.3–6.10 and 16.
 
+## Consultation record editor — 2026-10-04
+
+The consultation editor replaces the combined assessment-message textarea with individual education, investment and English-proficiency fields, alongside gender and marital status. Existing structured budgets keep their range/currency representation. Changes to assessment answers update only their exact Persian/English labeled lines in the existing message, preserving unrelated lines and omitting message entirely on unrelated edits. Virtual form fields are never sent as unknown API fields. The record-operations section, technical detail dump, assignment/status/archive/Noura controls and history are removed only from the consultation editor; other resources retain their operations. No backend, schema or permission changes. Regression tests cover answer edits, language, clearing, notes preservation, newline/length validation and structured budgets. Existing API permissions and version checks still apply.
+
 ## Consultation date filters — 2026-10-04
 
 The inbox toolbar now includes «از تاریخ» and «تا تاریخ» with Persian/Gregorian calendar switching, clickable month/year grids, 12-year navigation, selected/today states and independent clearing. Calendar popovers fit the viewport, close on Escape/outside click, and support keyboard day navigation. Both inputs share one calendar mode: switching either input changes both immediately, including previously selected date labels. The shared mode persists across section changes. Both modes retain the same Gregorian civil-day value; switching modes does not change the API range. End dates before the start and start dates after the end are disabled. Changing either date returns to page one; the session retains the range across section changes and Clear filters resets it.
