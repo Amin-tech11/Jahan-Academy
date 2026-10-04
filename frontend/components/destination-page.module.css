@@ -68,11 +68,14 @@
 .fact dt{display:flex;flex-direction:column;align-items:center;gap:14px;font-size:19px;line-height:1.6;font-weight:800;color:var(--text)}
 .factIcon{width:36px;height:36px;flex-shrink:0;color:var(--brand)}
 .fact dd{margin:8px 0 0;font-size:13px;line-height:2;color:var(--muted);overflow-wrap:anywhere}
-.navigation{position:sticky;top:78px;z-index:5;background:var(--content);backdrop-filter:blur(12px);}
-.navigation nav{display:flex;justify-content:space-between;gap:8px;overflow-x:auto}
-.navigation a{white-space:nowrap;font-size:13px;padding:20px 12px;border-bottom:3px solid transparent;display:flex;gap:10px;align-items:center;font-weight:650}
-.navigation a>span{font-size:10px;color:var(--muted)}
-.navigation a.selectedTab{border-color:var(--brand);color:var(--brand)}
+.page .navigationTitle{margin-block:40px 12px;text-align:center;font-size:clamp(23px,2.5vw,32px);line-height:1.7;font-weight:500;color:var(--brand)}
+.navigation{position:sticky;top:78px;z-index:5;background:var(--canvas);padding-block:8px 12px}
+.navigation nav{display:flex;gap:6px;overflow-x:auto;padding:7px;background:var(--content);border:1px solid var(--line);border-radius:999px;box-shadow:0 3px 10px rgb(32 40 51 / 6%);scrollbar-width:thin}
+.navigation a{flex:1;display:flex;align-items:center;justify-content:center;white-space:nowrap;font-size:14px;padding:9px 18px;min-height:40px;border-radius:999px;font-weight:750;color:var(--text);transition:background .2s,color .2s}
+.navigation a:hover{background:var(--canvas);color:var(--brand)}
+.navigation a.selectedTab{background:var(--brand);color:var(--content)}
+.page .navigation a:focus-visible{outline-offset:-3px}
+.page .navigation a.selectedTab:focus-visible{outline-color:var(--silver)}
 .section{padding-block:78px;scroll-margin-top:175px}
 .section h2,.cta h2{font-size:clamp(24px,2.4vw,34px);font-weight:800;line-height:1.65;margin:0 0 19px;letter-spacing:-.5px}
 .section p{font-size:14px;color:var(--muted);line-height:2.1}
@@ -158,9 +161,9 @@
 .fact dt{font-size:16px;gap:12px}
 .fact dd{font-size:12px}
 .navigation{top:70px}
-.navigation nav{width:100%;padding-inline:16px}
-.navigation a{font-size:12px;padding:14px 10px}
-.navigation a>span{display:none}
+.page .navigationTitle{margin-top:30px;font-size:23px}
+.navigation nav{padding:6px;border-radius:28px}
+.navigation a{flex:0 0 auto;min-width:132px;font-size:12px;padding:9px 16px}
 .section{padding-block:48px;scroll-margin-top:155px}
 .editorial .academicPhotos{order:2}
 .campusPhoto{height:250px}
@@ -185,8 +188,6 @@
 .page .eyebrow { color: var(--muted) !important; }
 .page :is(a, button, input, select):focus-visible { outline: 3px solid var(--brand); outline-offset: 4px; }
 .page :is(.primary, .cta > a):hover { box-shadow: inset 0 0 0 2px var(--silver); }
-.page .navigation { margin-top: 24px; }
-.page .selectedTab { background: var(--canvas); border-bottom-color: var(--brand); }
 .page :is(.editorial, .visa) { background: var(--content); border-radius: 16px; padding: 40px; margin-block: 56px; }
 .page .universityCard:hover { border-color: var(--silver); }
 .page .cityNote { background: var(--canvas); }
@@ -203,5 +204,4 @@
 :global(.site):has(> .page) :global(.site-header) :global(.ui-button--primary):focus-visible { color: var(--color-surface); background: var(--color-brand-900); box-shadow: inset 0 0 0 2px var(--color-accent); }
 @media(max-width:760px) {
   .page :is(.editorial, .visa) { padding: 26px 20px; margin-block: 32px; }
-  .page .navigation { margin-top: 18px; }
 }

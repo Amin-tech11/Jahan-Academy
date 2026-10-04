@@ -60,7 +60,8 @@ export function DestinationPage({ destination: d, locale }: { destination: Desti
       </div>)}
     </dl>
 
-    <div className={styles.navigation}><nav className={styles.container} aria-label={t("بخش‌های راهنمای مقصد", "Destination guide sections")}>{tabs.map(([id, title], index) => <a key={id} className={active === id ? styles.selectedTab : ""} aria-current={active === id ? "location" : undefined} href={`#${id}`} onClick={() => setActive(id)}><span aria-hidden="true">0{index + 1}</span>{title}</a>)}</nav></div>
+    <h2 id="destination-guide-title" className={`${styles.container} ${styles.navigationTitle}`}>{t(`۵ دلیل شگفت‌انگیز برای تحصیل در ${d.name.fa}`, `5 Incredible Reasons to Study in ${d.name.en}`)}</h2>
+    <div className={styles.navigation}><nav className={styles.container} aria-labelledby="destination-guide-title">{tabs.map(([id, title]) => <a key={id} className={active === id ? styles.selectedTab : ""} aria-current={active === id ? "location" : undefined} href={`#${id}`} onClick={() => setActive(id)}>{title}</a>)}</nav></div>
 
     <section id="academics" data-destination-section className={`${styles.container} ${styles.section} ${styles.editorial}`}>
       <div className={styles.academicPhotos}><Image className={styles.campusPhoto} src={universities[0]?.image || d.image} alt={universities[0]?.name || d.imageLabel[locale]} width={620} height={430} sizes="(max-width: 760px) 100vw, 45vw" /><div className={styles.logoStrip}>{universities.map((university) => <Image key={university.slug} src={university.logo} alt={university.name} width={58} height={58} />)}<span>{t("نگاهی به دانشگاه‌های این مقصد", "Meet your next campus")}</span></div></div>
