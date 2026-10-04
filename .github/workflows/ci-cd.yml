@@ -20,6 +20,7 @@ concurrency:
 env:
   UV_VERSION: "0.12.17"
   PYTHON_VERSION: "3.12"
+  UV_PYTHON_INSTALL_MIRROR: https://github.com/astral-sh/python-build-standalone/releases/download
   NODE_VERSION: "24"
   PNPM_VERSION: "12.5.1"
   CI_RUN_ID: ${{ github.run_id }}-${{ github.run_attempt }}
