@@ -62,11 +62,12 @@
 .heroVisual figcaption div>span{display:block;font-size:11px;opacity:1}
 .compass{margin-inline-start:auto;border:1px solid var(--silver);border-radius:50%;width:40px;height:40px;display:grid;place-items:center;font-size:22px}
 .photoLabel{position:absolute;top:24px;left:24px;color:var(--content);font-size:10px;letter-spacing:.2em;border:1px solid var(--silver);border-radius:20px;padding:5px 12px;background:var(--brand)}
-.facts{display:grid;grid-template-columns:1.2fr .6fr 1.3fr 1fr;padding:26px 0;}
-.facts>div{padding-inline:25px;border-inline-start:1px solid var(--line);display:flex;flex-direction:column;gap:5px}
-.facts>div:first-child{border:0;padding-inline-start:0}
-.facts span{font-size:11px;color:var(--muted)}
-.facts strong{font-size:13px;font-weight:650}
+.facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin-block:0;padding:24px 16px;background:var(--content);border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 26px rgb(32 40 51 / 6%)}
+.fact{min-width:0;min-height:140px;padding:6px 20px;text-align:center}
+.fact+.fact{border-inline-start:1px solid var(--line)}
+.fact dt{display:flex;flex-direction:column;align-items:center;gap:14px;font-size:19px;line-height:1.6;font-weight:800;color:var(--text)}
+.factIcon{width:36px;height:36px;flex-shrink:0;color:var(--brand)}
+.fact dd{margin:8px 0 0;font-size:13px;line-height:2;color:var(--muted);overflow-wrap:anywhere}
 .navigation{position:sticky;top:78px;z-index:5;background:var(--content);backdrop-filter:blur(12px);}
 .navigation nav{display:flex;justify-content:space-between;gap:8px;overflow-x:auto}
 .navigation a{white-space:nowrap;font-size:13px;padding:20px 12px;border-bottom:3px solid transparent;display:flex;gap:10px;align-items:center;font-weight:650}
@@ -131,7 +132,8 @@
 .heroVisual{height:420px}
 .hero h1{font-size:39px}
 .editorial{gap:35px}
-.facts>div{padding-inline:14px}
+.fact{padding-inline:12px}
+.fact dt{font-size:17px}
 .visa{gap:40px}
 .navigation{top:78px}
 .universityGrid{gap:14px}
@@ -149,9 +151,12 @@
 .tagline{font-size:16px}
 .intro{font-size:13px}
 .actions{margin-top:20px}
-.facts{grid-template-columns:1fr 1fr;gap:22px;padding-block:25px}
-.facts>div{padding:0;border:0}
-.facts strong{font-size:12px}
+.facts{grid-template-columns:repeat(2,minmax(0,1fr));padding:16px 12px}
+.fact{padding:18px 10px;min-height:156px}
+.fact:nth-child(odd){border-inline-start:0}
+.fact:nth-child(n+3){border-top:1px solid var(--line)}
+.fact dt{font-size:16px;gap:12px}
+.fact dd{font-size:12px}
 .navigation{top:70px}
 .navigation nav{width:100%;padding-inline:16px}
 .navigation a{font-size:12px;padding:14px 10px}
@@ -180,7 +185,6 @@
 .page .eyebrow { color: var(--muted) !important; }
 .page :is(a, button, input, select):focus-visible { outline: 3px solid var(--brand); outline-offset: 4px; }
 .page :is(.primary, .cta > a):hover { box-shadow: inset 0 0 0 2px var(--silver); }
-.page .facts { background: var(--content); padding: 26px; border-radius: 12px; }
 .page .navigation { margin-top: 24px; }
 .page .selectedTab { background: var(--canvas); border-bottom-color: var(--brand); }
 .page :is(.editorial, .visa) { background: var(--content); border-radius: 16px; padding: 40px; margin-block: 56px; }
@@ -198,7 +202,6 @@
 :global(.site):has(> .page) :global(.site-header) :global(.ui-button--primary):hover,
 :global(.site):has(> .page) :global(.site-header) :global(.ui-button--primary):focus-visible { color: var(--color-surface); background: var(--color-brand-900); box-shadow: inset 0 0 0 2px var(--color-accent); }
 @media(max-width:760px) {
-  .page .facts { padding: 22px 18px; }
   .page :is(.editorial, .visa) { padding: 26px 20px; margin-block: 32px; }
   .page .navigation { margin-top: 18px; }
 }

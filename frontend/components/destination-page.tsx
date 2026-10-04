@@ -48,9 +48,17 @@ export function DestinationPage({ destination: d, locale }: { destination: Desti
       <figure className={styles.heroVisual}><Image src={d.image} alt={d.imageLabel[locale]} fill sizes="(max-width: 760px) 100vw, 50vw" preload /><div className={styles.imageShade} /><figcaption><Image src={`/destinations/flags/${d.slug}.svg`} alt="" width={42} height={30} /><div><strong>{d.name[locale]}</strong><span>{d.imageLabel[locale]}</span></div><span className={styles.compass} aria-hidden="true">↗</span></figcaption><span className={styles.photoLabel}>YOUR NEXT CHAPTER</span></figure>
     </div></section>
 
-    <div className={`${styles.container} ${styles.facts}`}>
-      {[[t("زبان تحصیل", "Study language"), d.language[locale]], [t("واحد پول", "Currency"), d.currency], [t("شهرهای قابل بررسی", "Cities to explore"), d.cities[locale]], [t("مسیرهای تحصیلی", "Study pathways"), t("کارشناسی · ارشد · دکتری", "Bachelor’s · Master’s · PhD")]].map(([label, value]) => <div key={label}><span>{label}</span><strong>{value}</strong></div>)}
-    </div>
+    <dl className={`${styles.container} ${styles.facts}`} aria-label={t("اطلاعات مقصد", "Destination facts")}>
+      {[
+        { label: t("زبان تحصیل", "Study language"), value: d.language[locale], icon: <><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z" /><path d="M8 11h.01M12 11h.01M16 11h.01" /></> },
+        { label: t("واحد پول", "Currency"), value: d.currency, icon: <><circle cx="12" cy="12" r="9" /><path d="M15 8.5h-4.5a2 2 0 0 0 0 4H13a2 2 0 0 1 0 4H8.5M12 6v12" /></> },
+        { label: t("شهرهای قابل بررسی", "Cities to explore"), value: d.cities[locale], icon: <><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z" /><circle cx="12" cy="10" r="2.5" /></> },
+        { label: t("مسیرهای تحصیلی", "Study pathways"), value: t("کارشناسی · ارشد · دکتری", "Bachelor’s · Master’s · PhD"), icon: <><path d="m2 9 10-5 10 5-10 5L2 9ZM6 11v6c4 3 8 3 12 0v-6M22 9v7" /></> },
+      ].map(({ label, value, icon }) => <div key={label} className={styles.fact}>
+        <dt><svg className={styles.factIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">{icon}</svg><span>{label}</span></dt>
+        <dd>{value}</dd>
+      </div>)}
+    </dl>
 
     <div className={styles.navigation}><nav className={styles.container} aria-label={t("بخش‌های راهنمای مقصد", "Destination guide sections")}>{tabs.map(([id, title], index) => <a key={id} className={active === id ? styles.selectedTab : ""} aria-current={active === id ? "location" : undefined} href={`#${id}`} onClick={() => setActive(id)}><span aria-hidden="true">0{index + 1}</span>{title}</a>)}</nav></div>
 
