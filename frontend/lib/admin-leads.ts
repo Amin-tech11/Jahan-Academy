@@ -34,6 +34,9 @@ export function leadDate(value: unknown): string {
 }
 
 export function leadCell(row: RecordData, column: string): unknown {
+  if (column === "mobile" && typeof row.mobile === "string") {
+    return row.mobile.replace(/^(\+98)(\d{3})(\d{3})(\d{4})$/, "$1 $2 $3 $4");
+  }
   if (column === "fullName") return [row.firstName, row.lastName].filter(Boolean).join(" ");
   if (column === "desiredCountryName") return row.desiredCountryName || row.desiredCountryText;
   if (column === "gender" || column === "maritalStatus") {
