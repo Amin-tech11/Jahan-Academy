@@ -81,7 +81,10 @@ export function DestinationPage({ destination: d, locale }: { destination: Desti
       </article>)}</div>
     </div></section>
 
-    <section id="life" data-destination-section className={`${styles.container} ${styles.section} ${styles.editorial} ${styles.life}`}><div><p className={styles.eyebrow}>{t("فراتر از کلاس درس", "BEYOND THE CLASSROOM")}</p><h2>{t(`زندگی در ${d.name.fa}، تجربه‌ای تازه`, `Make a life in ${d.name.en}`)}</h2><p>{d.life[locale]}</p><div className={styles.cityNote}><span aria-hidden="true">◎</span><div><strong>{t("از این شهرها شروع کنید", "Start with these cities")}</strong><p>{d.cities[locale]}</p></div></div></div><figure className={styles.lifePhoto}><Image src={universities[2]?.image || d.image} alt={universities[2]?.name || d.imageLabel[locale]} width={620} height={400} sizes="(max-width: 760px) 100vw, 45vw" /><figcaption>{universities[2]?.name || d.name[locale]}</figcaption></figure></section>
+    <section id="life" data-destination-section className={`${styles.container} ${styles.section} ${styles.editorial} ${styles.life}`}>
+      <div><h2>{t(`زندگی در ${d.name.fa}، تجربه‌ای تازه`, `Make a life in ${d.name.en}`)}</h2><p>{d.life[locale]}</p></div>
+      <figure className={styles.lifePhoto}><Image src={universities[2]?.image || d.image} alt={universities[2]?.name || d.imageLabel[locale]} width={620} height={400} sizes="(max-width: 760px) 100vw, 45vw" /></figure>
+    </section>
 
     <section id="planning" data-destination-section className={`${styles.container} ${styles.section} ${styles.planning}`}><p className={styles.eyebrow}>{t("با یک برنامه روشن شروع کنید", "START WITH A CLEAR PLAN")}</p><h2>{t("هزینه‌ها را با تصویر کامل ببینید", "Plan for the whole experience")}</h2><p>{t(`بودجه تحصیل در ${d.name.fa} به شهر، دانشگاه و سبک زندگی بستگی دارد. این سه بخش را با واحد ${d.currency} کنار هم قرار دهید.`, `Your study budget in ${d.name.en} depends on the city, institution and lifestyle. Plan these three areas in ${d.currency}.`)}</p><div className={styles.planGrid}>{[
       ["01", t("شهریه و هزینه‌های آموزشی", "Tuition & study costs"), t("شهریه دوره، منابع درسی و هزینه‌های اعلام‌شده دانشگاه را بررسی کنید.", "Check tuition, study materials and the institution’s listed fees.")],
