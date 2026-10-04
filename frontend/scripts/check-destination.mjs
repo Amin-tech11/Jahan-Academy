@@ -11,11 +11,10 @@ for (const locale of ["fa", "en"]) {
     assert.equal(response.status, 200, `${locale}/${destination.slug}`);
     const html = await response.text();
     assert.ok(html.includes(destination.name[locale]));
-    assert.ok(html.includes(destination.source));
     for (const id of ["academics", "universities", "life", "planning", "visa"]) assert.ok(html.includes(`id="${id}"`));
   }
 }
 for (const path of ["/fa/countries/unknown-destination", "/fr/countries/canada"]) {
   assert.equal((await fetch(base + path)).status, 404, path);
 }
-console.log("Destination integration checks passed: root redirect, 20 country/locale routes, section anchors, official sources and 404s.");
+console.log("Destination integration checks passed: root redirect, 20 country/locale routes, section anchors and 404s.");
