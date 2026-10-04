@@ -12,7 +12,7 @@ export function DestinationCollage({ photos, locale, layout, className = "" }: {
   className?: string;
 }) {
   return <div className={`${styles.collage} ${styles[layout]} ${className}`} data-collage={layout}>
-    {photos.map((photo, index) => <div className={styles.tile} key={`${photo.src}-${index}`}>
+    {photos.map((photo, index) => <div data-destination-motion={layout === "hero" && index === 0 ? "zoom" : "up"} data-destination-delay={index * 60} className={styles.tile} key={`${photo.src}-${index}`}>
       <Image src={photo.src} alt={photo.alt[locale]} fill
         sizes={index === 0 ? "(max-width: 760px) 80vw, 32vw" : "(max-width: 760px) 40vw, 18vw"}
         preload={layout === "hero" && index === 0} />

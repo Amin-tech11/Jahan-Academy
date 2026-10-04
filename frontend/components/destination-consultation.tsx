@@ -47,7 +47,7 @@ export function DestinationConsultation({ locale, destination }: { locale: Local
     } finally { sending.current = false; }
   }
   if (status === "success") return <div className={styles.card} role="status" dir={locale === "fa" ? "rtl" : "ltr"}><h3>{t("درخواست شما ثبت شد", "Your request has been received")}</h3><p>{t("تیم جهان آکادمی برای هماهنگی مشاوره با شما تماس می‌گیرد.", "Jahan Academy will contact you to arrange your consultation.")}</p><strong>{t("کد پیگیری: ", "Reference: ")}{reference}</strong></div>;
-  return <form className={styles.card} onSubmit={submit} dir={locale === "fa" ? "rtl" : "ltr"} aria-label={t("درخواست مشاوره تخصصی رایگان", "Request a free consultation")}>
+  return <form data-destination-motion="side" data-destination-delay="60" className={styles.card} onSubmit={submit} dir={locale === "fa" ? "rtl" : "ltr"} aria-label={t("درخواست مشاوره تخصصی رایگان", "Request a free consultation")}>
     <h3>{t("درخواست مشاوره تخصصی رایگان", "Request a free consultation")}</h3>
     <p>{t("اطلاعات کوتاه زیر را بنویسید تا برای هماهنگی مشاوره با شما تماس بگیریم.", "Share a few details so we can contact you to arrange a consultation.")}</p>
     <div className={styles.fields}>
