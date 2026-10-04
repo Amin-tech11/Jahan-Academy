@@ -51,15 +51,6 @@
 .primary{display:inline-flex;align-items:center;justify-content:center;gap:20px;padding:13px 20px;border-radius:8px;font-size:13px;font-weight:700}
 .primary{background:var(--brand);color:var(--content);box-shadow:0 7px 20px rgb(18 59 120 / 12%)}
 .primary:hover{background:var(--brand)}
-.heroVisual{height:460px;position:relative;overflow:hidden;margin:0;border-radius:18px 70px 18px 18px;box-shadow:0 20px 50px rgb(32 40 51 / 10%)}
-.heroVisual>img{object-fit:cover;object-position:43% center}
-.imageShade{position:absolute;inset:40% 0 0;background:linear-gradient(transparent,var(--brand))}
-.heroVisual figcaption{position:absolute;inset:auto 25px 25px;display:flex;align-items:center;gap:12px;color:var(--content)}
-.heroVisual figcaption img{border-radius:4px}
-.heroVisual figcaption strong{font-size:23px;display:block}
-.heroVisual figcaption div>span{display:block;font-size:11px;opacity:1}
-.compass{margin-inline-start:auto;border:1px solid var(--silver);border-radius:50%;width:40px;height:40px;display:grid;place-items:center;font-size:22px}
-.photoLabel{position:absolute;top:24px;left:24px;color:var(--content);font-size:10px;letter-spacing:.2em;border:1px solid var(--silver);border-radius:20px;padding:5px 12px;background:var(--brand)}
 .facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin-block:0;padding:24px 16px;background:var(--content);border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 26px rgb(32 40 51 / 6%)}
 .fact{min-width:0;min-height:140px;padding:6px 20px;text-align:center}
 .fact+.fact{border-inline-start:1px solid var(--line)}
@@ -78,7 +69,6 @@
 .section h2,.cta h2{font-size:clamp(24px,2.4vw,34px);font-weight:800;line-height:1.65;margin:0 0 19px;letter-spacing:-.5px}
 .section p{font-size:14px;color:var(--muted);line-height:2.1}
 .editorial{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:72px}
-.campusPhoto{width:100%;height:290px;object-fit:cover;border-radius:16px}
 .checklist{list-style:none;padding:0;margin:22px 0;font-size:13px}
 .checklist li{margin:10px 0;display:flex;align-items:center;gap:10px}
 .checklist li:before{content:'✓';display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--canvas);color:var(--brand);font-size:11px}
@@ -88,7 +78,6 @@
 .universityGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:23px}
 .universityCard{background:var(--content);border:1px solid var(--line);border-radius:13px;overflow:hidden;box-shadow:0 5px 16px rgb(32 40 51 / 3%);display:flex;flex-direction:column}
 .cardPhoto{position:relative;height:192px}
-.cardPhoto>img{object-fit:cover}
 .cardBody{position:relative;padding:0 22px;flex:1;display:flex;flex-direction:column}
 .schoolIdentity{display:flex;flex-direction:column;align-items:flex-start;text-align:start}
 .schoolLogo{position:relative;margin-top:-26px;margin-bottom:14px;background:var(--content);border:1px solid var(--line);padding:8px;border-radius:10px;width:65px;height:65px}
@@ -96,10 +85,7 @@
 .location{font-size:11px!important;margin:0 0 14px!important;line-height:1.7!important}
 .cardBody h3{font-size:18px;line-height:1.4;margin:0 0 6px;font-family:Arial,sans-serif;font-weight:750}
 .cardBody>p{font-size:12px;line-height:2;margin:0 0 24px}
-.lifePhoto{margin:0;position:relative}
-.lifePhoto img{width:100%;height:340px;object-fit:cover;border-radius:14px}
 .planningPhoto{margin:0}
-.planningPhoto img{height:360px}
 .detailList{margin-bottom:16px}
 .detailList li{align-items:flex-start;margin:15px 0;line-height:1.8}
 .detailList li:before{flex-shrink:0;margin-top:3px}
@@ -108,7 +94,6 @@
 .page .planningNote{font-size:11px;line-height:1.8;margin:0}
 .visa{display:grid;grid-template-columns:1fr 1fr;grid-template-areas:'photo copy';direction:ltr;gap:60px;align-items:center}
 .visaPhoto{grid-area:photo;margin:0}
-.visaPhoto img{height:360px}
 .visaCopy{grid-area:copy;min-width:0}
 .cta{background:var(--content);border:1px solid var(--line);border-inline-start:4px solid var(--brand);border-radius:16px;color:var(--text);padding:42px 45px;display:flex;justify-content:space-between;gap:35px;align-items:center;position:relative;isolation:isolate;overflow:hidden}
 .cta .eyebrow{color:var(--brand)!important}
@@ -120,10 +105,9 @@
 .more a{display:flex;gap:13px;align-items:center;padding:10px 15px;border:1px solid var(--line);border-radius:8px;font-size:12px;transition:background .2s}
 .more a:hover{background:var(--canvas)}
 .more img{object-fit:contain}
-@media(min-width:1450px){.heroVisual{height:490px}
+@media(min-width:1450px){
 .hero{padding-block:62px}}
 @media(max-width:1000px){.heroGrid{gap:28px}
-.heroVisual{height:420px}
 .hero h1{font-size:39px}
 .editorial{gap:35px}
 .fact{padding-inline:12px}
@@ -139,7 +123,6 @@
 .hero{padding:30px 0}
 .heroGrid,.editorial,.visa{grid-template-columns:1fr;gap:28px}
 .hero h1{font-size:40px;line-height:1.45}
-.heroVisual{height:310px;border-radius:14px 45px 14px 14px}
 .tagline{font-size:16px}
 .intro{font-size:13px}
 .actions{margin-top:20px}
@@ -155,15 +138,11 @@
 .navigation a{flex:0 0 auto;min-width:132px;font-size:12px;padding:9px 16px}
 .section{padding-block:48px;scroll-margin-top:300px}
 .editorial .academicPhotos{order:2}
-.campusPhoto{height:250px}
 .universityGrid{grid-template-columns:1fr}
 .cardPhoto{height:220px}
 .cardBody>p{font-size:13px}
-.lifePhoto img{height:270px}
 .planningPhoto{order:2}
-.planningPhoto img{height:250px}
 .visa{gap:30px;grid-template-areas:'copy' 'photo'}
-.visaPhoto img{height:250px}
 .cta{flex-direction:column;align-items:start;padding:28px 23px}
 .cta h2{font-size:23px}
 .cta>a{width:100%;justify-content:space-between}

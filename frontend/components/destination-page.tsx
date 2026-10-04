@@ -1,6 +1,8 @@
 "use client";
 
 import Image from "next/image";
+import { DestinationCollage } from "./destination-collage";
+import { destinationCollages, studentScenes } from "@/lib/destination-collages";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { SiteShell } from "@/components/site-shell";
@@ -16,6 +18,7 @@ export function DestinationPage({ destination: d, locale }: { destination: Desti
   const pageRef = useRef<HTMLElement>(null);
   const navigationRef = useRef<HTMLDivElement>(null);
   const universities = homeUniversities.filter((university) => university.country === d.slug);
+  const collages = destinationCollages(d, universities);
   const consultation = destinationConsultationHref(locale, d.slug);
   const tabs = [
     ["academics", t("تحصیل و آموزش", "Academics")],
@@ -41,7 +44,7 @@ export function DestinationPage({ destination: d, locale }: { destination: Desti
         <p className={styles.intro}>{t(`از شناخت دانشگاه‌ها تا آشنایی با زندگی در ${d.name.fa}؛ اینجا نقطه شروع مسیر تحصیلی شماست. با آگاهی انتخاب کنید و قدم بعدی را همراه ما بردارید.`, `From exploring universities to discovering life in ${d.name.en}, your study journey starts here. Get to know your options and take the next step with us.`)}</p>
         <div className={styles.actions}><Link className={styles.primary} href={consultation}>{t("شروع مسیر با مشاوره", "Plan my study journey")} <span aria-hidden="true">{t("←", "→")}</span></Link></div>
       </div>
-      <figure className={styles.heroVisual}><Image src={d.image} alt={d.imageLabel[locale]} fill sizes="(max-width: 760px) 100vw, 50vw" preload /><div className={styles.imageShade} /><figcaption><Image src={`/destinations/flags/${d.slug}.svg`} alt="" width={42} height={30} /><div><strong>{d.name[locale]}</strong><span>{d.imageLabel[locale]}</span></div><span className={styles.compass} aria-hidden="true">↗</span></figcaption><span className={styles.photoLabel}>YOUR NEXT CHAPTER</span></figure>
+      <DestinationCollage photos={collages.hero} locale={locale} layout="hero" />
     </div></section>
 
     <dl className={`${styles.container} ${styles.facts}`} aria-label={t("اطلاعات مقصد", "Destination facts")}>
@@ -62,14 +65,14 @@ export function DestinationPage({ destination: d, locale }: { destination: Desti
     </div>
 
     <section id="academics" data-destination-section className={`${styles.container} ${styles.section} ${styles.editorial}`}>
-      <div className={styles.academicPhotos}><Image className={styles.campusPhoto} src={universities[0]?.image || d.image} alt={universities[0]?.name || d.imageLabel[locale]} width={620} height={430} sizes="(max-width: 760px) 100vw, 45vw" /></div>
+      <DestinationCollage photos={collages.academics} locale={locale} layout="academics" className={styles.academicPhotos} />
       <div><h2>{t("جایی برای رشد ایده‌های شما", "Give your ideas room to grow")}</h2><p>{d.academics[locale]}</p><ul className={styles.checklist}><li>{t("انتخاب دانشگاه متناسب با هدف تحصیلی", "Choose a university that fits your goals")}</li><li>{t("بررسی زبان، پیش‌نیازها و محتوای دوره", "Review language, prerequisites and course content")}</li><li>{t("آماده‌سازی یک مسیر شخصی برای اپلای", "Build an application plan around your background")}</li></ul></div>
     </section>
 
     <section id="universities" data-destination-section className={`${styles.section} ${styles.universitySection}`}><div className={styles.container}>
       <div className={styles.sectionHeading}><div><h2>{t(`دانشگاه‌های ${d.name.fa} را بشناسید`, `Discover universities in ${d.name.en}`)}</h2></div></div>
-      <div className={styles.universityGrid}>{universities.map((university) => <article className={styles.universityCard} key={university.slug}>
-        <div className={styles.cardPhoto}><Image src={university.image} alt={university.name} fill sizes="(max-width: 760px) 100vw, 33vw" /></div>
+      <div className={styles.universityGrid}>{universities.map((university, index) => <article className={styles.universityCard} key={university.slug}>
+        <div className={styles.cardPhoto}><DestinationCollage layout="university" locale={locale} photos={[{ src: university.image, alt: { fa: university.name, en: university.name } }, [studentScenes.study, studentScenes.life, studentScenes.graduate][index % 3]]} /></div>
         <div className={styles.cardBody}>
           <div className={styles.schoolIdentity} dir="ltr">
             <div className={styles.schoolLogo}><Image src={university.logo} alt="" width={48} height={48} /></div>
@@ -83,11 +86,11 @@ export function DestinationPage({ destination: d, locale }: { destination: Desti
 
     <section id="life" data-destination-section className={`${styles.container} ${styles.section} ${styles.editorial} ${styles.life}`}>
       <div><h2>{t(`زندگی در ${d.name.fa}، تجربه‌ای تازه`, `Make a life in ${d.name.en}`)}</h2><p>{d.life[locale]}</p></div>
-      <figure className={styles.lifePhoto}><Image src={universities[2]?.image || d.image} alt={universities[2]?.name || d.imageLabel[locale]} width={620} height={400} sizes="(max-width: 760px) 100vw, 45vw" /></figure>
+      <DestinationCollage photos={collages.life} locale={locale} layout="life" />
     </section>
 
     <section id="planning" data-destination-section className={`${styles.container} ${styles.section} ${styles.editorial} ${styles.planning}`}>
-      <figure className={styles.planningPhoto}><Image className={styles.campusPhoto} src={universities[1]?.image || d.image} alt={universities[1]?.name || d.imageLabel[locale]} width={620} height={430} sizes="(max-width: 760px) 100vw, 45vw" /></figure>
+      <DestinationCollage photos={collages.planning} locale={locale} layout="planning" className={styles.planningPhoto} />
       <div>
         <h2>{t("هزینه‌ها را با تصویر کامل ببینید", "Plan for the whole experience")}</h2>
         <p>{d.planning.summary[locale]}</p>
@@ -102,7 +105,7 @@ export function DestinationPage({ destination: d, locale }: { destination: Desti
     </section>
 
     <section id="visa" data-destination-section className={`${styles.container} ${styles.section} ${styles.visa}`}>
-      <figure className={styles.visaPhoto}><Image className={styles.campusPhoto} src={d.image} alt={d.imageLabel[locale]} width={620} height={430} sizes="(max-width: 760px) 100vw, 45vw" /></figure>
+      <DestinationCollage photos={collages.visa} locale={locale} layout="visa" className={styles.visaPhoto} />
       <div className={styles.visaCopy} dir={locale === "fa" ? "rtl" : "ltr"}>
         <h2>{t(`پذیرش و ویزای تحصیلی ${d.name.fa}`, `Admission & student visas for ${d.name.en}`)}</h2>
         <p>{d.visa.summary[locale]}</p>
