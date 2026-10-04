@@ -300,8 +300,10 @@ jobs:
         run: >-
           docker run --rm
           --volume /var/run/docker.sock:/var/run/docker.sock
+          --volume jahan-ci-trivy-cache:/root/.cache/trivy
           aquasec/trivy:0.68.2
-          image --exit-code 1 --ignore-unfixed
+          image --db-repository ghcr.io/aquasecurity/trivy-db:2
+          --exit-code 1 --ignore-unfixed
           --severity HIGH,CRITICAL "${BACKEND_IMAGE}"
 
       - name: Remove this run's scan image

@@ -12,6 +12,7 @@ The runner is registered as `jahan-local-wsl` and runs as a systemd service.
 ## Installed environment
 
 - Official GitHub Actions runner 2.337.0, Linux x64.
+- Docker Engine 29.1.3, Compose 2.40.3 and Buildx 0.30.1 are available in Ubuntu.
 - Archive SHA-256:
   `70920811a4f8ad4328818682bca5c6469c1c942fab52448868071d0063816613`.
 - Dedicated Linux account: `jahan-ci`, with home `/home/jahan-ci`, no sudo grant.
@@ -42,6 +43,9 @@ old workflow from its original commit; test the new commit instead.
   `docker system prune`, shared project shutdown or database reset is used.
 - Checkout does not persist Git credentials; registry login is removed after
   publishing. Fork PRs do not run on this workstation.
+- uv, managed Python and Trivy's vulnerability database are downloaded from their
+  official GitHub distributions, avoiding mirrors unavailable on this network.
+  Trivy caches its database in the dedicated `jahan-ci-trivy-cache` Docker volume.
 
 Existing publish/deploy conditions remain in force. This only changes their
 runner routing; it does not enable deployment or change deployment secrets.
