@@ -3,7 +3,7 @@ import Link from "next/link";
 import { SiteShell } from "@/components/site-shell";
 import { UniversityGallery, UniversityTabs } from "@/components/university-info-interactive";
 import type { Locale } from "@/lib/site-content";
-import { safeUniversityUrl, type UniversityInfo } from "@/lib/university-info-model";
+import { safeUniversityUrl, universityIdentityLocation, type UniversityInfo } from "@/lib/university-info-model";
 import styles from "./university-info.module.css";
 
 function Pin() {
@@ -13,6 +13,7 @@ function Pin() {
 export function UniversityInfoPage({ university: u, locale }: { university: UniversityInfo; locale: Locale }) {
   const fa = locale === "fa";
   const website = safeUniversityUrl(u.websiteUrl);
+  const identityLocation = universityIdentityLocation(u);
   const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${u.englishName}, ${u.address || u.location.en}`)}`;
   const facts = [
     { label: fa ? "کشور" : "Country", value: u.country[locale] },
@@ -41,10 +42,13 @@ export function UniversityInfoPage({ university: u, locale }: { university: Univ
   return <div className={styles.panel}><SiteShell locale={locale}><main className={styles.main}>
     <nav className={styles.breadcrumb} aria-label={fa ? "مسیر صفحه" : "Breadcrumb"}><Link href={`/${locale}`}>{fa ? "صفحه اصلی" : "Home"}</Link><span aria-hidden="true">/</span><Link href={`/${locale}/universities`}>{fa ? "دانشگاه‌ها" : "Universities"}</Link><span aria-hidden="true">/</span><span aria-current="page">{u.name[locale]}</span></nav>
     <header className={styles.identity} dir="ltr" lang="en">
-      <div className={styles.logo}>{u.logo ? <Image src={u.logo} alt={`${u.englishName} logo`} width={68} height={68} /> : <span aria-hidden="true">{u.englishName.split(" ").slice(0, 2).map((word) => word[0]).join("")}</span>}</div>
+      <div className={styles.logo}>{u.logo ? <Image src={u.logo} alt={`${u.englishName} logo`} width={64} height={64} /> : <span aria-hidden="true">{u.englishName.split(" ").slice(0, 2).map((word) => word[0]).join("")}</span>}</div>
       <div className={styles.identityText}>
         <h1>{website ? <a className={styles.nameLink} href={website} target="_blank" rel="noopener noreferrer">{u.englishName}</a> : u.englishName}</h1>
-        <div className={styles.location}><Pin /><span>{u.location.en}</span>{u.institutionType && <span className={styles.tag}>{u.institutionType.en}</span>}</div>
+        <div className={styles.location}>
+          <span className={styles.cityLocation}>{identityLocation.flag && <Image src={identityLocation.flag} alt={u.country.en} width={24} height={24} />}<span>{identityLocation.label}</span></span>
+          {identityLocation.address && <span className={styles.streetAddress}><Pin /><span>{identityLocation.address}</span></span>}
+        </div>
       </div>
     </header>
     <UniversityGallery photos={u.photos} name={u.name[locale]} locale={locale} />

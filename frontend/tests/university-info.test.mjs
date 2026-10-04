@@ -3,7 +3,7 @@ import { existsSync } from "node:fs";
 import { test } from "node:test";
 import { homeUniversities } from "../lib/home-universities.ts";
 import { headerDestinations } from "../lib/site-content.ts";
-import { fromCatalog, fromPublicUniversity, safeUniversityUrl, universityInfoPath, westernUniversity } from "../lib/university-info-model.ts";
+import { fromCatalog, fromPublicUniversity, safeUniversityUrl, universityIdentityLocation, universityInfoPath, westernUniversity } from "../lib/university-info-model.ts";
 
 test("all 30 catalog cards resolve to their own university profile and photography", () => {
   for (const university of homeUniversities) {
@@ -46,4 +46,31 @@ test("Western reference profile has complete local gallery assets and source lin
   }
   for (const source of westernUniversity.sources) assert.ok(safeUniversityUrl(source.url));
   assert.ok(westernUniversity.about.fa && westernUniversity.about.en);
+});
+
+test("identity uses the reference location and short address without changing the full campus address", () => {
+  assert.deepEqual(universityIdentityLocation(westernUniversity), {
+    label: "London, Ontario, CA",
+    flag: "/destinations/flags/canada.svg",
+    address: "1151 Richmond Street, London",
+  });
+  assert.equal(westernUniversity.address, "1151 Richmond Street, London, Ontario, Canada");
+});
+
+test("catalog identity flags exist and unpublished street addresses stay absent", () => {
+  for (const university of homeUniversities) {
+    const country = headerDestinations.find(({ slug }) => slug === university.country);
+    const identity = universityIdentityLocation(fromCatalog(university, country));
+    assert.ok(identity.flag);
+    assert.ok(existsSync(new URL(`../public${identity.flag}`, import.meta.url)));
+    assert.equal(identity.address, undefined);
+    assert.ok(identity.label.startsWith(university.location.split(",")[0]));
+  }
+});
+
+test("unknown countries preserve their location without inventing a flag or address", () => {
+  for (const country of ["Unknown country", "constructor", "__proto__"]) {
+    const profile = fromPublicUniversity({ slug: "test", name: { fa: "دانشگاه", en: "University" }, summary: { fa: "", en: "" }, country: { fa: country, en: country } });
+    assert.deepEqual(universityIdentityLocation(profile), { label: country, flag: undefined, address: undefined });
+  }
 });

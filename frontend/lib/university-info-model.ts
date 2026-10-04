@@ -11,9 +11,34 @@ export type UniversityInfo = UniversityShowcase & {
   about: Record<Locale, string>;
   features: UniversityFeature[];
   address?: string;
+  shortAddress?: string;
   dli?: string;
   sources: { label: string; url: string }[];
 };
+
+const identityCountries: Record<string, { code: string; flag: string }> = {
+  Canada: { code: "CA", flag: "canada" },
+  Australia: { code: "AU", flag: "australia" },
+  "United Kingdom": { code: "GB", flag: "united-kingdom" },
+  Germany: { code: "DE", flag: "germany" },
+  Italy: { code: "IT", flag: "italy" },
+  Denmark: { code: "DK", flag: "denmark" },
+  Sweden: { code: "SE", flag: "sweden" },
+  Finland: { code: "FI", flag: "finland" },
+  "New Zealand": { code: "NZ", flag: "new-zealand" },
+  Netherlands: { code: "NL", flag: "netherlands" },
+};
+
+export function universityIdentityLocation(university: UniversityInfo) {
+  const country = Object.hasOwn(identityCountries, university.country.en) ? identityCountries[university.country.en] : undefined;
+  const segments = university.location.en.split(",").map((part) => part.trim());
+  if (country && segments.at(-1) === university.country.en) segments[segments.length - 1] = country.code;
+  return {
+    label: segments.join(", "),
+    flag: country ? `/destinations/flags/${country.flag}.svg` : undefined,
+    address: university.shortAddress || university.address,
+  };
+}
 
 // Public content URLs must never become executable links.
 export function safeUniversityUrl(value?: string): string | undefined {
@@ -72,6 +97,7 @@ export const westernUniversity: UniversityInfo = {
   foundedYear: 1878,
   dli: "O19375892122",
   address: "1151 Richmond Street, London, Ontario, Canada",
+  shortAddress: "1151 Richmond Street, London",
   websiteUrl: "https://www.uwo.ca/",
   logo: "/university-info/western-logo.png",
   summary: {
