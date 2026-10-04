@@ -72,7 +72,17 @@ export function DestinationPage({ destination: d, locale }: { destination: Desti
 
     <section id="universities" data-destination-section className={`${styles.section} ${styles.universitySection}`}><div className={styles.container}>
       <div className={styles.sectionHeading}><div><h2>{t(`دانشگاه‌های ${d.name.fa} را بشناسید`, `Discover universities in ${d.name.en}`)}</h2></div></div>
-      <div className={styles.universityGrid}>{universities.map((university) => <article className={styles.universityCard} key={university.slug}><div className={styles.cardPhoto}><Image src={university.image} alt={university.name} fill sizes="(max-width: 760px) 100vw, 33vw" /><span>{d.name[locale]}</span></div><div className={styles.cardBody}><div className={styles.schoolLogo}><Image src={university.logo} alt="" width={48} height={48} /></div><p className={styles.location} dir="ltr">{university.location}</p><h3 dir="ltr">{university.name}</h3><p>{university.summary[locale]}</p></div></article>)}</div>
+      <div className={styles.universityGrid}>{universities.map((university) => <article className={styles.universityCard} key={university.slug}>
+        <div className={styles.cardPhoto}><Image src={university.image} alt={university.name} fill sizes="(max-width: 760px) 100vw, 33vw" /></div>
+        <div className={styles.cardBody}>
+          <div className={styles.schoolIdentity} dir="ltr">
+            <div className={styles.schoolLogo}><Image src={university.logo} alt="" width={48} height={48} /></div>
+            <h3>{university.name}</h3>
+            <p className={styles.location}>{university.location}</p>
+          </div>
+          <p>{university.summary[locale]}</p>
+        </div>
+      </article>)}</div>
     </div></section>
 
     <section id="life" data-destination-section className={`${styles.container} ${styles.section} ${styles.editorial} ${styles.life}`}><div><p className={styles.eyebrow}>{t("فراتر از کلاس درس", "BEYOND THE CLASSROOM")}</p><h2>{t(`زندگی در ${d.name.fa}، تجربه‌ای تازه`, `Make a life in ${d.name.en}`)}</h2><p>{d.life[locale]}</p><div className={styles.cityNote}><span aria-hidden="true">◎</span><div><strong>{t("از این شهرها شروع کنید", "Start with these cities")}</strong><p>{d.cities[locale]}</p></div></div></div><figure className={styles.lifePhoto}><Image src={universities[2]?.image || d.image} alt={universities[2]?.name || d.imageLabel[locale]} width={620} height={400} sizes="(max-width: 760px) 100vw, 45vw" /><figcaption>{universities[2]?.name || d.name[locale]}</figcaption></figure></section>

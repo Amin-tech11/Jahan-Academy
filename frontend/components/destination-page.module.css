@@ -94,13 +94,13 @@
 .universityCard{background:var(--content);border:1px solid var(--line);border-radius:13px;overflow:hidden;box-shadow:0 5px 16px rgb(32 40 51 / 3%);display:flex;flex-direction:column}
 .cardPhoto{position:relative;height:192px}
 .cardPhoto>img{object-fit:cover}
-.cardPhoto>span{position:absolute;top:14px;inset-inline-start:14px;background:var(--content);padding:3px 13px;border-radius:5px;font-size:11px;font-weight:650}
-.cardBody{position:relative;padding:28px 22px 0;flex:1;display:flex;flex-direction:column}
-.schoolLogo{position:absolute;top:-26px;inset-inline-end:20px;background:var(--content);border:1px solid var(--line);padding:8px;border-radius:10px;width:65px;height:65px}
+.cardBody{position:relative;padding:0 22px;flex:1;display:flex;flex-direction:column}
+.schoolIdentity{display:flex;flex-direction:column;align-items:flex-start;text-align:start}
+.schoolLogo{position:relative;margin-top:-26px;margin-bottom:14px;background:var(--content);border:1px solid var(--line);padding:8px;border-radius:10px;width:65px;height:65px}
 .schoolLogo img{object-fit:contain;width:100%;height:100%}
-.location{font-size:10px!important;margin:16px 0 5px!important;text-align:start;line-height:1.7!important}
-.cardBody h3{font-size:18px;line-height:1.4;margin:8px 0;min-height:50px;font-family:Arial,sans-serif;text-align:start;font-weight:750}
-.cardBody>p:not(.location){font-size:12px;line-height:2;margin-bottom:24px}
+.location{font-size:11px!important;margin:0 0 14px!important;line-height:1.7!important}
+.cardBody h3{font-size:18px;line-height:1.4;margin:0 0 6px;font-family:Arial,sans-serif;font-weight:750}
+.cardBody>p{font-size:12px;line-height:2;margin:0 0 24px}
 .lifePhoto{margin:0;position:relative}
 .lifePhoto img{width:100%;height:340px;object-fit:cover;border-radius:14px}
 .lifePhoto figcaption{position:absolute;bottom:18px;inset-inline:20px;width:fit-content;max-width:calc(100% - 40px);background:var(--content);padding:7px 15px;border-radius:5px;font-size:11px;direction:ltr}
@@ -169,8 +169,7 @@
 .campusPhoto{height:250px}
 .universityGrid,.planGrid{grid-template-columns:1fr}
 .cardPhoto{height:220px}
-.cardBody h3{min-height:0}
-.cardBody>p:not(.location){font-size:13px}
+.cardBody>p{font-size:13px}
 .lifePhoto img{height:270px}
 .planGrid{gap:14px}
 .planGrid article{padding:22px}

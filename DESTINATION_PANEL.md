@@ -59,3 +59,9 @@ Data/API/permission design and new unit tests do not apply to this presentation-
 ## Sticky guide heading — 2026-10-04
 
 The localized guide heading now shares the sticky wrapper with the pill navigation, keeping both below the site header while scrolling. Section scroll margins account for the taller wrapper, including a wrapped mobile heading. This changes only destination JSX/CSS; data/API/permission design and new unit tests do not apply. Code review found no new data flows or dependencies. Validation passed: 36 existing frontend tests, production build/TypeScript and all 20 destination routes. Refreshed localhost:3700 desktop/mobile previews confirm a pinned heading and unobstructed university/visa section targets, with no page overflow.
+
+## University card information order — 2026-10-04
+
+University cards no longer display a country badge on their photos. Identity content follows the requested order: logo, university name, then location. The logo, name and location share left alignment for their original Latin text; localized summaries keep their own reading direction. The logo stays partially over the photo but participates in normal layout so names cannot overlap it.
+
+Data/API/permission design and new unit tests do not apply to this presentation-only change. Existing 36 frontend tests, production build/TypeScript and all 20 destination-route smoke checks pass. Refreshed localhost:3700 desktop/mobile previews verify removed badges, logo/name/location ordering and no horizontal overflow. Code/security review found no shared changes, new dependencies or new data flows.
