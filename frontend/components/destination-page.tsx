@@ -63,7 +63,7 @@ export function DestinationPage({ destination: d, locale }: { destination: Desti
     </div>
 
     <section id="academics" data-destination-section className={`${styles.container} ${styles.section} ${styles.editorial}`}>
-      <div className={styles.academicPhotos}><Image className={styles.campusPhoto} src={universities[0]?.image || d.image} alt={universities[0]?.name || d.imageLabel[locale]} width={620} height={430} sizes="(max-width: 760px) 100vw, 45vw" /><div className={styles.logoStrip}>{universities.map((university) => <Image key={university.slug} src={university.logo} alt={university.name} width={58} height={58} />)}<span>{t("نگاهی به دانشگاه‌های این مقصد", "Meet your next campus")}</span></div></div>
+      <div className={styles.academicPhotos}><Image className={styles.campusPhoto} src={universities[0]?.image || d.image} alt={universities[0]?.name || d.imageLabel[locale]} width={620} height={430} sizes="(max-width: 760px) 100vw, 45vw" /></div>
       <div><h2>{t("جایی برای رشد ایده‌های شما", "Give your ideas room to grow")}</h2><p>{d.academics[locale]}</p><ul className={styles.checklist}><li>{t("انتخاب دانشگاه متناسب با هدف تحصیلی", "Choose a university that fits your goals")}</li><li>{t("بررسی زبان، پیش‌نیازها و محتوای دوره", "Review language, prerequisites and course content")}</li><li>{t("آماده‌سازی یک مسیر شخصی برای اپلای", "Build an application plan around your background")}</li></ul></div>
     </section>
 
