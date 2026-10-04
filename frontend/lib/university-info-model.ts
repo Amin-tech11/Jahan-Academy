@@ -3,6 +3,7 @@ import type { Locale, UniversityShowcase } from "./site-content";
 
 export type UniversityPhoto = { src: string; caption: Record<Locale, string> };
 export type UniversityFeature = { title: Record<Locale, string>; text: Record<Locale, string>; url: string };
+export type UniversityDiscipline = { name: Record<Locale, string>; percentage: number };
 export type UniversityInfo = UniversityShowcase & {
   englishName: string;
   location: Record<Locale, string>;
@@ -14,6 +15,7 @@ export type UniversityInfo = UniversityShowcase & {
   shortAddress?: string;
   coordinates?: { latitude: number; longitude: number };
   dli?: string;
+  topDisciplines?: UniversityDiscipline[];
   sources: { label: string; url: string }[];
 };
 
@@ -104,6 +106,13 @@ export const westernUniversity: UniversityInfo = {
   institutionType: { fa: "دانشگاه دولتی", en: "Public university" },
   foundedYear: 1878,
   dli: "O19375892122",
+  // Percentages supplied in the user's Western reference image; retain their rounding.
+  topDisciplines: [
+    { name: { fa: "علوم", en: "Sciences" }, percentage: 34 },
+    { name: { fa: "هنر", en: "Arts" }, percentage: 25 },
+    { name: { fa: "مهندسی و فناوری", en: "Engineering and Technology" }, percentage: 14 },
+    { name: { fa: "سایر", en: "Other" }, percentage: 26 },
+  ],
   address: "1151 Richmond Street, London, Ontario, Canada",
   shortAddress: "1151 Richmond Street, London",
   // Verified against the Western University place marker in Google Maps.

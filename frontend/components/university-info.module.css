@@ -59,10 +59,16 @@
 .factCard dl > div { display:flex; justify-content:space-between; gap:12px; padding-block:14px; border-top:1px solid #edf0f4; font-size:12px; }
 .factCard dt { color:var(--muted); flex-shrink:0; }
 .factCard dd { text-align:end; margin:0; font-weight:650; overflow-wrap:anywhere; }
-.locationAside { background:#edf2f8; border-radius:14px; padding:23px; color:var(--navy); }
-.locationAside h3 { font-size:15px; margin:10px 0 8px; }
-.locationAside p { font-size:12px; margin:0 0 14px; color:var(--muted); }
-.locationAside a { font-size:12px; font-weight:700; }
+.disciplinesCard { padding:20px 16px 30px; background:#fff; border:1px solid #d4d9eb; border-radius:16px; color:#303c50; }
+.disciplinesCard h3 { margin:0; padding-bottom:18px; border-bottom:1px solid #d4d9eb; font-size:20px; font-weight:600; line-height:1.4; }
+.disciplineList { display:grid; gap:24px; margin:24px 0 0; padding:0; list-style:none; }
+.disciplineLabel { display:flex; justify-content:space-between; align-items:baseline; gap:12px; font-size:16px; line-height:1.4; }
+.disciplineLabel > span:last-child { flex-shrink:0; }
+.disciplineList meter { display:block; width:100%; height:4px; margin-top:8px; border:0; border-radius:0; appearance:none; background:#d6d9e9; }
+.disciplineList meter::-webkit-meter-bar { height:4px; border:0; border-radius:0; background:#d6d9e9; }
+.disciplineList meter::-webkit-meter-optimum-value { border-radius:0; background:#0c55df; }
+.disciplineList meter::-moz-meter-bar { border-radius:0; background:#0c55df; }
+.disciplinesEmpty { margin:20px 0 0; color:var(--muted); font-size:13px; line-height:1.9; }
 .campusLocation h2 { font-size:22px; font-weight:600; line-height:1.5; margin-bottom:14px; }
 .mapLabel { display:inline-block; padding:7px 14px; border-radius:7px; color:#fff; background:#0c55df; font-size:14px; font-weight:700; line-height:1.5; margin-bottom:16px; }
 .campusMap { margin:0; }

@@ -14,8 +14,6 @@ export function UniversityInfoPage({ university: u, locale }: { university: Univ
   const fa = locale === "fa";
   const website = safeUniversityUrl(u.websiteUrl);
   const identityLocation = universityIdentityLocation(u);
-  const mapQuery = encodeURIComponent(`${u.englishName}, ${u.address || u.location.en}`);
-  const mapUrl = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
   const facts = [
     { label: fa ? "کشور" : "Country", value: u.country[locale] },
     ...(u.city ? [{ label: fa ? "شهر" : "City", value: u.city[locale] }] : []),
@@ -62,7 +60,13 @@ export function UniversityInfoPage({ university: u, locale }: { university: Univ
       <UniversityTabs locale={locale} overview={overview} features={features} location={location} />
       <aside className={styles.sidebar} aria-label={fa ? "مشخصات دانشگاه" : "Institution details"}>
         <section className={styles.factCard}><p className={styles.eyebrow}>{fa ? "در یک نگاه" : "AT A GLANCE"}</p><h2>{fa ? "مشخصات دانشگاه" : "Institution details"}</h2><dl>{facts.map((fact) => <div key={fact.label}><dt>{fact.label}</dt><dd dir="auto">{fact.value}</dd></div>)}</dl></section>
-        <section className={styles.locationAside}><Pin /><h3>{fa ? "موقعیت دانشگاه" : "Campus location"}</h3><p dir="auto">{u.location[locale]}</p><a href={mapUrl} target="_blank" rel="noopener noreferrer">{fa ? "دیدن موقعیت روی نقشه" : "View location on map"} ↗</a></section>
+        <section className={styles.disciplinesCard} aria-labelledby="top-disciplines-title">
+          <h3 id="top-disciplines-title">{fa ? "رشته‌های برتر" : "Top Disciplines"}</h3>
+          {u.topDisciplines?.length ? <ul className={styles.disciplineList}>{u.topDisciplines.map((discipline) => <li key={discipline.name.en}>
+            <div className={styles.disciplineLabel}><span>{discipline.name[locale]}</span><span>{discipline.percentage.toLocaleString(locale)}{fa ? "٪" : "%"}</span></div>
+            <meter min={0} max={100} value={discipline.percentage} aria-label={discipline.name[locale]}>{discipline.percentage}%</meter>
+          </li>)}</ul> : <p className={styles.disciplinesEmpty}>{fa ? "اطلاعات رشته‌های برتر این دانشگاه هنوز منتشر نشده است." : "Top discipline information has not yet been published for this university."}</p>}
+        </section>
       </aside>
     </div>
     <div className={styles.returnBar}><span>{fa ? "هر دانشگاه، یک دنیای تازه" : "Every university, a new perspective"}</span><Link href={`/${locale}/universities`}>{fa ? "بازگشت به دانشگاه‌ها" : "Back to universities"}<span aria-hidden="true">{fa ? "←" : "→"}</span></Link></div>
