@@ -40,10 +40,12 @@ export function UniversityInfoPage({ university: u, locale }: { university: Univ
   </>;
   return <div className={styles.panel}><SiteShell locale={locale}><main className={styles.main}>
     <nav className={styles.breadcrumb} aria-label={fa ? "مسیر صفحه" : "Breadcrumb"}><Link href={`/${locale}`}>{fa ? "صفحه اصلی" : "Home"}</Link><span aria-hidden="true">/</span><Link href={`/${locale}/universities`}>{fa ? "دانشگاه‌ها" : "Universities"}</Link><span aria-hidden="true">/</span><span aria-current="page">{u.name[locale]}</span></nav>
-    <header className={styles.identity}>
-      <div className={styles.logo}>{u.logo ? <Image src={u.logo} alt={fa ? `نشان ${u.name.fa}` : `${u.name.en} logo`} width={68} height={68} /> : <span aria-hidden="true">{u.englishName.split(" ").slice(0, 2).map((word) => word[0]).join("")}</span>}</div>
-      <div className={styles.identityText}><p className={styles.eyebrow}>{fa ? "دانشگاه‌های جهان، افق‌های تازه" : "UNIVERSITIES. NEW PERSPECTIVES."}</p><h1>{u.name[locale]}</h1>{fa && u.name.fa !== u.englishName && <p className={styles.englishName} dir="ltr">{u.englishName}</p>}<div className={styles.location}><Pin /><span dir="auto">{u.location[locale]}</span>{u.institutionType && <span className={styles.tag}>{u.institutionType[locale]}</span>}</div></div>
-      {website && <a className={styles.websiteLink} href={website} target="_blank" rel="noopener noreferrer">{fa ? "وب‌سایت رسمی دانشگاه" : "Official university website"}<span aria-hidden="true">↗</span></a>}
+    <header className={styles.identity} dir="ltr" lang="en">
+      <div className={styles.logo}>{u.logo ? <Image src={u.logo} alt={`${u.englishName} logo`} width={68} height={68} /> : <span aria-hidden="true">{u.englishName.split(" ").slice(0, 2).map((word) => word[0]).join("")}</span>}</div>
+      <div className={styles.identityText}>
+        <h1>{website ? <a className={styles.nameLink} href={website} target="_blank" rel="noopener noreferrer">{u.englishName}</a> : u.englishName}</h1>
+        <div className={styles.location}><Pin /><span>{u.location.en}</span>{u.institutionType && <span className={styles.tag}>{u.institutionType.en}</span>}</div>
+      </div>
     </header>
     <UniversityGallery photos={u.photos} name={u.name[locale]} locale={locale} />
     <div className={styles.contentGrid}>
