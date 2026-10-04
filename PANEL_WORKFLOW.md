@@ -3,6 +3,7 @@
 | Panel | Chat title | Branch | Local URL | Command from that branch's `frontend` directory |
 |---|---|---|---|---|
 | Home Page | `home-page:3100` | `home-page` | `http://localhost:3100` | `pnpm dev:home` |
+| Admin | `admin:3500` | `admin` | `http://localhost:3500` | `pnpm dev:admin` |
 | Destinations overview | `destinationS:3800` | `destinationS` | `http://localhost:3800/fa/countries` | `pnpm dev:destinations` |
 | Destination | `destination:3700` | `destination` | `http://localhost:3700` | `pnpm dev:destination` |
 | Blog | `blog:3900` | `blog` | `http://localhost:3900/fa/articles` | `node scripts/dev-blog.mjs` |

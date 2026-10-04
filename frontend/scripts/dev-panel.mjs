@@ -3,6 +3,7 @@ import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 
 const mapping = {
+  admin: 3500,
   "home-page": 3100,
   destinationS: 3800,
   dashboard: 3101,
