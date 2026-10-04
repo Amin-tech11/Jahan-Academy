@@ -14,6 +14,9 @@ test("every destination exposed in navigation has a unique bilingual guide", () 
       for (const locale of ["fa", "en"]) assert.ok(destination[field][locale].trim(), `${destination.slug}.${field}.${locale}`);
     }
     assert.equal(new URL(destination.source).protocol, "https:");
+    for (const field of ["summary", "tuition", "living", "arrival", "funding"]) {
+      for (const locale of ["fa", "en"]) assert.ok(destination.planning[field][locale].trim(), `${destination.slug}.planning.${field}.${locale}`);
+    }
   }
 });
 

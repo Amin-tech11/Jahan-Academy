@@ -86,11 +86,20 @@ export function DestinationPage({ destination: d, locale }: { destination: Desti
       <figure className={styles.lifePhoto}><Image src={universities[2]?.image || d.image} alt={universities[2]?.name || d.imageLabel[locale]} width={620} height={400} sizes="(max-width: 760px) 100vw, 45vw" /></figure>
     </section>
 
-    <section id="planning" data-destination-section className={`${styles.container} ${styles.section} ${styles.planning}`}><p className={styles.eyebrow}>{t("با یک برنامه روشن شروع کنید", "START WITH A CLEAR PLAN")}</p><h2>{t("هزینه‌ها را با تصویر کامل ببینید", "Plan for the whole experience")}</h2><p>{t(`بودجه تحصیل در ${d.name.fa} به شهر، دانشگاه و سبک زندگی بستگی دارد. این سه بخش را با واحد ${d.currency} کنار هم قرار دهید.`, `Your study budget in ${d.name.en} depends on the city, institution and lifestyle. Plan these three areas in ${d.currency}.`)}</p><div className={styles.planGrid}>{[
-      ["01", t("شهریه و هزینه‌های آموزشی", "Tuition & study costs"), t("شهریه دوره، منابع درسی و هزینه‌های اعلام‌شده دانشگاه را بررسی کنید.", "Check tuition, study materials and the institution’s listed fees.")],
-      ["02", t("مسکن و زندگی روزمره", "Housing & everyday life"), t("اجاره، خوراک، بیمه و رفت‌وآمد را متناسب با شهر انتخابی برآورد کنید.", "Estimate rent, food, insurance and transport for your chosen city.")],
-      ["03", t("آمادگی پیش از سفر", "Before you travel"), t("هزینه ترجمه مدارک، آزمون زبان و سفر را در برنامه خود بگنجانید.", "Include document translations, language tests and travel in your plan.")],
-    ].map(([number, title, body]) => <article key={number}><span>{number}</span><h3>{title}</h3><p>{body}</p></article>)}</div></section>
+    <section id="planning" data-destination-section className={`${styles.container} ${styles.section} ${styles.editorial} ${styles.planning}`}>
+      <figure className={styles.planningPhoto}><Image className={styles.campusPhoto} src={universities[1]?.image || d.image} alt={universities[1]?.name || d.imageLabel[locale]} width={620} height={430} sizes="(max-width: 760px) 100vw, 45vw" /></figure>
+      <div>
+        <h2>{t("هزینه‌ها را با تصویر کامل ببینید", "Plan for the whole experience")}</h2>
+        <p>{d.planning.summary[locale]}</p>
+        <ul className={`${styles.checklist} ${styles.planningList}`}>{([
+          ["tuition", t("شهریه و آموزش", "Tuition & study")],
+          ["living", t("بودجه زندگی", "Everyday budget")],
+          ["arrival", t("هزینه‌های شروع", "Getting started")],
+          ["funding", t("تأمین و مدیریت بودجه", "Funding & budgeting")],
+        ] as const).map(([key, title]) => <li key={key}><div><strong>{title}</strong><p>{d.planning[key][locale]}</p></div></li>)}</ul>
+        <p className={styles.planningNote}>{t("ارقام، برآورد منابع رسمی‌اند؛ مبلغ به‌روز را از دانشگاه و محل اقامت بگیرید.", "Figures are estimates from official guides; confirm current amounts with your institution and accommodation provider.")}</p>
+      </div>
+    </section>
 
     <section id="visa" data-destination-section className={`${styles.container} ${styles.section} ${styles.visa}`}><div><p className={styles.eyebrow}>{t("قدم بعدی، با اطلاعات معتبر", "YOUR NEXT STEP, WELL INFORMED")}</p><h2>{t(`آمادهٔ مسیر تحصیل در ${d.name.fa} شوید`, `Prepare for your journey to ${d.name.en}`)}</h2><p>{t("ابتدا شرایط پذیرش دانشگاه را بررسی کنید؛ سپس راهنمای رسمی ویزا و اقامت متناسب با تابعیت و وضعیت خود را بخوانید. الزامات و هزینه‌ها ممکن است تغییر کنند.", "Start with your university’s admission requirements, then check official visa and residence guidance for your nationality and circumstances. Requirements and fees can change.")}</p></div><ol className={styles.steps}>{[t("هدف، رشته و مقطع را مشخص کنید", "Define your subject and study level"), t("شرایط دانشگاه و مدارک را بررسی کنید", "Check entry requirements and documents"), t("زمان‌بندی و بودجه خود را آماده کنید", "Prepare your timeline and budget"), t("الزامات ویزا را از مرجع رسمی بخوانید", "Read official visa guidance")].map((item, i) => <li key={item}><span>{(i + 1).toLocaleString(locale)}</span>{item}</li>)}</ol></section>
 
