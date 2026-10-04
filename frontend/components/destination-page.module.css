@@ -176,7 +176,7 @@
 
 /* White islands group content; saturated color is reserved for decisions. */
 .page :is(h1, h2, h3, strong) { color: inherit; }
-/* Country-name accents follow flag colors; Italy uses a readable deep green. */
+/* Solid flag-color fallback for browsers without text clipping. */
 .page[data-destination="canada"],
 .page[data-destination="denmark"] { --country-accent: #D80027; }
 .page[data-destination="germany"] { --country-accent: #333333; }
@@ -187,7 +187,30 @@
 .page[data-destination="new-zealand"],
 .page[data-destination="sweden"],
 .page[data-destination="finland"] { --country-accent: #0052B4; }
-.page h1 > span { color: var(--country-accent); }
+.page .countryName { color: var(--country-accent); background-size: 0; }
+@supports (background-clip: text) or (-webkit-background-clip: text) {
+  .page .countryName {
+    display: inline-block;
+    line-height: 1.15;
+    background-color: var(--country-accent);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke: .5px #202833;
+  }
+}
+@media (forced-colors: active) {
+  .page .countryName {
+    background: none !important;
+    color: CanvasText;
+    -webkit-text-fill-color: CanvasText;
+    -webkit-text-stroke: 0;
+  }
+}
 .page .eyebrow { color: var(--muted) !important; }
 .page :is(a, button, input, select):focus-visible { outline: 3px solid var(--brand); outline-offset: 4px; }
 .page :is(.primary, .cta > a):hover { box-shadow: inset 0 0 0 2px var(--silver); }

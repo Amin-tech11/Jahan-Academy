@@ -36,7 +36,7 @@ export function DestinationPage({ destination: d, locale }: { destination: Desti
 
     <section className={styles.hero}><div className={`${styles.container} ${styles.heroGrid}`}>
       <div className={styles.heroCopy}>
-        <h1>{t("آینده‌ات را در", "Find your future in")}<br /><span>{d.name[locale]}</span> {t("بساز", "")}</h1>
+        <h1>{t("آینده‌ات را در", "Find your future in")}<br /><span className={styles.countryName} style={{ backgroundImage: `url(/destinations/word-flags/${d.slug}.svg)` }}>{d.name[locale]}</span> {t("بساز", "")}</h1>
         <p className={styles.tagline}>{d.tagline[locale]}</p>
         <p className={styles.intro}>{t(`از شناخت دانشگاه‌ها تا آشنایی با زندگی در ${d.name.fa}؛ اینجا نقطه شروع مسیر تحصیلی شماست. با آگاهی انتخاب کنید و قدم بعدی را همراه ما بردارید.`, `From exploring universities to discovering life in ${d.name.en}, your study journey starts here. Get to know your options and take the next step with us.`)}</p>
         <div className={styles.actions}><Link className={styles.primary} href={consultation}>{t("شروع مسیر با مشاوره", "Plan my study journey")} <span aria-hidden="true">{t("←", "→")}</span></Link></div>

@@ -21,7 +21,7 @@ test("each destination has its own available photography, flag and matching univ
   for (const destination of destinations) {
     const universities = homeUniversities.filter(({ country }) => country === destination.slug);
     assert.ok(universities.length >= 1, `No universities for ${destination.slug}`);
-    for (const asset of [destination.image, `/destinations/flags/${destination.slug}.svg`, ...universities.flatMap(({ image, logo }) => [image, logo])]) {
+    for (const asset of [destination.image, `/destinations/flags/${destination.slug}.svg`, `/destinations/word-flags/${destination.slug}.svg`, ...universities.flatMap(({ image, logo }) => [image, logo])]) {
       assert.ok(existsSync(new URL(`../public${asset}`, import.meta.url)), `Missing asset ${asset}`);
     }
   }
