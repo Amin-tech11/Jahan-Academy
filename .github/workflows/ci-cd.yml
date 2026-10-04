@@ -47,6 +47,7 @@ jobs:
         uses: astral-sh/setup-uv@v10.2.0
         with:
           version: ${{ env.UV_VERSION }}
+          download-from-astral-mirror: false
           enable-cache: true
           cache-dependency-glob: backend/uv.lock
 
@@ -111,6 +112,7 @@ jobs:
         uses: astral-sh/setup-uv@v10.2.0
         with:
           version: ${{ env.UV_VERSION }}
+          download-from-astral-mirror: false
           enable-cache: true
           cache-dependency-glob: backend/uv.lock
 
@@ -164,6 +166,7 @@ jobs:
         uses: astral-sh/setup-uv@v10.2.0
         with:
           version: ${{ env.UV_VERSION }}
+          download-from-astral-mirror: false
           enable-cache: true
           cache-dependency-glob: backend/uv.lock
 
@@ -264,6 +267,7 @@ jobs:
         uses: astral-sh/setup-uv@v10.2.0
         with:
           version: ${{ env.UV_VERSION }}
+          download-from-astral-mirror: false
           enable-cache: true
           cache-dependency-glob: backend/uv.lock
 
