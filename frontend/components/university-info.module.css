@@ -4,7 +4,7 @@
 .breadcrumb { display:flex; align-items:center; flex-wrap:wrap; gap:12px; padding-block:25px 18px; font-size:12px; color:var(--muted); }
 .breadcrumb a:hover { color:var(--navy); text-decoration:underline; }
 .breadcrumb [aria-current] { color:var(--ink); }
-.identity { display:flex; align-items:center; gap:12px; padding:12px 8px; margin-block:6px 24px; background:#fff; text-align:left; font-family:"Segoe UI",Arial,sans-serif; }
+.identity { display:flex; align-items:center; gap:12px; padding:12px 8px; margin-block:6px 24px; border-radius:16px; background:#fff; text-align:left; font-family:"Segoe UI",Arial,sans-serif; }
 .logo { width:64px; height:64px; flex:0 0 64px; display:grid; place-items:center; }
 .logo img { width:64px; height:64px; object-fit:contain; }
 .logo > span { font-size:28px; font-family:Georgia,serif; color:var(--navy); }
