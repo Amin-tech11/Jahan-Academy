@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { DestinationCollage } from "./destination-collage";
-import { destinationCollages, studentScenes } from "@/lib/destination-collages";
+import { destinationCollages } from "@/lib/destination-collages";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { SiteShell } from "@/components/site-shell";
@@ -71,8 +71,8 @@ export function DestinationPage({ destination: d, locale }: { destination: Desti
 
     <section id="universities" data-destination-section className={`${styles.section} ${styles.universitySection}`}><div className={styles.container}>
       <div className={styles.sectionHeading}><div><h2>{t(`دانشگاه‌های ${d.name.fa} را بشناسید`, `Discover universities in ${d.name.en}`)}</h2></div></div>
-      <div className={styles.universityGrid}>{universities.map((university, index) => <article className={styles.universityCard} key={university.slug}>
-        <div className={styles.cardPhoto}><DestinationCollage layout="university" locale={locale} photos={[{ src: university.image, alt: { fa: university.name, en: university.name } }, [studentScenes.study, studentScenes.life, studentScenes.graduate][index % 3]]} /></div>
+      <div className={styles.universityGrid}>{universities.map((university) => <article className={styles.universityCard} key={university.slug}>
+        <div className={styles.cardPhoto}><Image src={university.image} alt={university.name} fill sizes="(max-width: 760px) 100vw, 33vw" /></div>
         <div className={styles.cardBody}>
           <div className={styles.schoolIdentity} dir="ltr">
             <div className={styles.schoolLogo}><Image src={university.logo} alt="" width={48} height={48} /></div>

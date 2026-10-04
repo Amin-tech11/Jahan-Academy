@@ -78,6 +78,7 @@
 .universityGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:23px}
 .universityCard{background:var(--content);border:1px solid var(--line);border-radius:13px;overflow:hidden;box-shadow:0 5px 16px rgb(32 40 51 / 3%);display:flex;flex-direction:column}
 .cardPhoto{position:relative;height:192px}
+.cardPhoto>img{object-fit:cover}
 .cardBody{position:relative;padding:0 22px;flex:1;display:flex;flex-direction:column}
 .schoolIdentity{display:flex;flex-direction:column;align-items:flex-start;text-align:start}
 .schoolLogo{position:relative;margin-top:-26px;margin-bottom:14px;background:var(--content);border:1px solid var(--line);padding:8px;border-radius:10px;width:65px;height:65px}

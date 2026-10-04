@@ -22,7 +22,5 @@
 .visa .tile:first-child img{object-position:57% center}
 .visa .tile:nth-child(2){grid-column:1;grid-row:1;margin-top:24px}
 .visa .tile:nth-child(3){grid-column:1;grid-row:2;margin-bottom:24px}
-.university{aspect-ratio:auto;height:100%;grid-template-columns:1.65fr 1fr;gap:6px;padding:8px}
-.university .tile{border-radius:10px}
-@media(max-width:760px){.collage{gap:8px}.tile{border-radius:14px}.hero{aspect-ratio:1.12}.life .tile:first-child{margin-right:16px}.life .tile:nth-child(2){margin-left:12px}.planning .tile:first-child{margin-left:16px}.planning .tile:nth-child(3){margin-right:12px}.university{gap:6px}}
+@media(max-width:760px){.collage{gap:8px}.tile{border-radius:14px}.hero{aspect-ratio:1.12}.life .tile:first-child{margin-right:16px}.life .tile:nth-child(2){margin-left:12px}.planning .tile:first-child{margin-left:16px}.planning .tile:nth-child(3){margin-right:12px}}
 

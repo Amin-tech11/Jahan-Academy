@@ -3,7 +3,7 @@ import type { CollagePhoto } from "@/lib/destination-collages";
 import type { Locale } from "@/lib/site-content";
 import styles from "./destination-collage.module.css";
 
-type Layout = "hero" | "academics" | "life" | "planning" | "visa" | "university";
+type Layout = "hero" | "academics" | "life" | "planning" | "visa";
 
 export function DestinationCollage({ photos, locale, layout, className = "" }: {
   photos: readonly CollagePhoto[];
@@ -14,7 +14,7 @@ export function DestinationCollage({ photos, locale, layout, className = "" }: {
   return <div className={`${styles.collage} ${styles[layout]} ${className}`} data-collage={layout}>
     {photos.map((photo, index) => <div className={styles.tile} key={`${photo.src}-${index}`}>
       <Image src={photo.src} alt={photo.alt[locale]} fill
-        sizes={layout === "university" ? "(max-width: 760px) 75vw, 25vw" : index === 0 ? "(max-width: 760px) 80vw, 32vw" : "(max-width: 760px) 40vw, 18vw"}
+        sizes={index === 0 ? "(max-width: 760px) 80vw, 32vw" : "(max-width: 760px) 40vw, 18vw"}
         preload={layout === "hero" && index === 0} />
     </div>)}
   </div>;
