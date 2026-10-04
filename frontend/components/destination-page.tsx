@@ -2,16 +2,19 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SiteShell } from "@/components/site-shell";
 import { destinations, destinationConsultationHref, type Destination } from "@/lib/destination-content";
 import { homeUniversities } from "@/lib/home-universities";
+import { trackDestinationSections } from "@/lib/destination-section-tracker";
 import type { Locale } from "@/lib/site-content";
 import styles from "./destination-page.module.css";
 
 export function DestinationPage({ destination: d, locale }: { destination: Destination; locale: Locale }) {
   const t = (fa: string, en: string) => locale === "fa" ? fa : en;
-  const [active, setActive] = useState("academics");
+  const [active, setActive] = useState<string | null>(null);
+  const pageRef = useRef<HTMLElement>(null);
+  const navigationRef = useRef<HTMLDivElement>(null);
   const universities = homeUniversities.filter((university) => university.country === d.slug);
   const consultation = destinationConsultationHref(locale, d.slug);
   const tabs = [
@@ -22,15 +25,11 @@ export function DestinationPage({ destination: d, locale }: { destination: Desti
     ["visa", t("پذیرش و ویزا", "Admission & visa")],
   ];
   useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      const entry = entries.find((item) => item.isIntersecting);
-      if (entry) setActive(entry.target.id);
-    }, { rootMargin: "-18% 0px -60% 0px" });
-    document.querySelectorAll("[data-destination-section]").forEach((section) => observer.observe(section));
-    return () => observer.disconnect();
-  }, [d.slug]);
+    if (!pageRef.current || !navigationRef.current) return;
+    return trackDestinationSections(pageRef.current, navigationRef.current, setActive);
+  }, [d.slug, locale]);
 
-  return <SiteShell locale={locale}><main className={styles.page} data-destination={d.slug}>
+  return <SiteShell locale={locale}><main ref={pageRef} className={styles.page} data-destination={d.slug}>
     <div className={styles.topline}><div className={styles.container}>
       <nav aria-label={t("مسیر صفحه", "Breadcrumb")} className={styles.breadcrumb}><Link href={`/${locale}`}>{t("خانه", "Home")}</Link><span>/</span><Link href={`/${locale}/countries`}>{t("مقصدهای تحصیلی", "Study destinations")}</Link><span>/</span><span aria-current="page">{d.name[locale]}</span></nav>
     </div></div>
@@ -57,9 +56,9 @@ export function DestinationPage({ destination: d, locale }: { destination: Desti
       </div>)}
     </dl>
 
-    <div className={styles.navigation}>
+    <div ref={navigationRef} className={styles.navigation}>
       <h2 id="destination-guide-title" className={`${styles.container} ${styles.navigationTitle}`}>{t(`۵ دلیل شگفت‌انگیز برای تحصیل در ${d.name.fa}`, `5 Incredible Reasons to Study in ${d.name.en}`)}</h2>
-      <nav className={styles.container} aria-labelledby="destination-guide-title">{tabs.map(([id, title]) => <a key={id} className={active === id ? styles.selectedTab : ""} aria-current={active === id ? "location" : undefined} href={`#${id}`} onClick={() => setActive(id)}>{title}</a>)}</nav>
+      <nav className={styles.container} aria-labelledby="destination-guide-title">{tabs.map(([id, title]) => <a key={id} className={active === id ? styles.selectedTab : ""} aria-current={active === id ? "location" : undefined} href={`#${id}`}>{title}</a>)}</nav>
     </div>
 
     <section id="academics" data-destination-section className={`${styles.container} ${styles.section} ${styles.editorial}`}>
