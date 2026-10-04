@@ -22,6 +22,28 @@ afterEach(() => {
 });
 const resource = (id) => resources.find((item) => item.id === id);
 
+test("own panel access is fetched through the authenticated no-store proxy", async () => {
+  acceptAdminSession({ accessToken: "test-access" });
+  globalThis.fetch = async (url, options) => {
+    assert.equal(url, "/admin/api/users/me/panel-access");
+    assert.equal(options.headers.Authorization, "Bearer test-access");
+    assert.equal(options.cache, "no-store");
+    return Response.json({ data: { sections: [], isSuperAdmin: false } });
+  };
+  assert.deepEqual((await adminRequest("/users/me/panel-access")).data.sections, []);
+});
+
+test("section access replacement sends an empty list and version for revocation", async () => {
+  globalThis.fetch = async (url, options) => {
+    assert.equal(url, "/admin/api/admin/staff/test-id/panel-access");
+    assert.equal(options.method, "PUT");
+    assert.equal(options.headers["If-Match"], '"7"');
+    assert.deepEqual(JSON.parse(options.body), { sections: [] });
+    return Response.json({ data: { sections: [], version: 8 } });
+  };
+  await adminRequest("/admin/staff/test-id/panel-access", "PUT", { sections: [] }, 7);
+});
+
 test("admin update carries bearer and optimistic concurrency without persisting credentials", async () => {
   acceptAdminSession({ accessToken: "test-only-token" });
   globalThis.fetch = async (url, options) => {

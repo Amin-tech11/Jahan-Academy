@@ -13,6 +13,7 @@ async function proxy(
   const allowed =
     relative.startsWith("admin/") ||
     relative === "users/me" ||
+    relative === "users/me/panel-access" ||
     relative === "reporting/dashboard" ||
     /^auth\/(login|refresh|logout|password-reset-requests|password-resets)$/.test(
       relative,

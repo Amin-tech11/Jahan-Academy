@@ -10,18 +10,24 @@ from app.modules.identity.authorization import AuthorizationContext
 from app.modules.identity.dependencies import (
     CurrentUser,
     auth_service,
+    authorization_context,
     csrf_protection,
     current_user,
+    panel_access_service,
     require_permissions,
     staff_management_service,
 )
 from app.modules.identity.domain import StaffRoleCode
+from app.modules.identity.panel_service import PanelAccessService
 from app.modules.identity.schemas import (
     Acknowledgement,
     AcknowledgementEnvelope,
     EmailRequest,
     EmailVerificationRequest,
     LoginRequest,
+    PanelAccessEnvelope,
+    PanelAccessUpdate,
+    PanelAccessView,
     PasswordResetConfirmRequest,
     RegisterRequest,
     RegistrationEnvelope,
@@ -333,6 +339,46 @@ def _parse_if_match(value: str | None) -> int:
             status_code=400,
         )
     return int(normalized)
+
+
+@users_router.get("/me/panel-access", response_model=PanelAccessEnvelope)
+async def own_panel_access(
+    actor: Annotated[AuthorizationContext, Depends(authorization_context)],
+) -> PanelAccessEnvelope:
+    return PanelAccessEnvelope(
+        data=PanelAccessView(
+            sections=sorted(actor.panel_sections or ()),
+            is_super_admin=actor.is_super_admin,
+        )
+    )
+
+
+@staff_router.get("/{staff_id}/panel-access", response_model=PanelAccessEnvelope)
+async def get_staff_panel_access(
+    staff_id: UUID,
+    actor: Annotated[AuthorizationContext, Depends(require_permissions("role.manage"))],
+    service: Annotated[PanelAccessService, Depends(panel_access_service)],
+) -> PanelAccessEnvelope:
+    return PanelAccessEnvelope(data=await service.get(actor, staff_id))
+
+
+@staff_router.put("/{staff_id}/panel-access", response_model=PanelAccessEnvelope)
+async def replace_staff_panel_access(
+    staff_id: UUID,
+    payload: PanelAccessUpdate,
+    response: Response,
+    actor: Annotated[AuthorizationContext, Depends(require_permissions("role.manage"))],
+    service: Annotated[PanelAccessService, Depends(panel_access_service)],
+    if_match: Annotated[str | None, Header(alias="If-Match")] = None,
+) -> PanelAccessEnvelope:
+    view = await service.replace(
+        actor,
+        staff_id,
+        payload.sections,
+        _parse_if_match(if_match),
+    )
+    response.headers["ETag"] = _etag(view.version or 1)
+    return PanelAccessEnvelope(data=view)
 
 
 router.include_router(auth_router)

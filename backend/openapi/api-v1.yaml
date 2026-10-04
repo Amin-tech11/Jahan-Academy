@@ -21,6 +21,72 @@ tags:
   - name: SEO
   - name: Reporting
 paths:
+  /users/me/panel-access:
+    get:
+      tags: [Staff Administration]
+      operationId: getOwnPanelAccess
+      x-phase: MVP
+      security: [{ StaffSession: [] }]
+      responses:
+        '200':
+          description: Effective enabled sections and global super-admin status, loaded on every request
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PanelAccessEnvelope' }
+        '401': { description: Authentication required }
+  /admin/staff/{staffId}/panel-access:
+    parameters:
+      - { name: staffId, in: path, required: true, schema: { type: string, format: uuid } }
+    get:
+      tags: [Staff Administration]
+      operationId: getStaffPanelAccess
+      x-phase: MVP
+      x-permissions: [role.manage]
+      security: [{ StaffSession: [] }]
+      responses:
+        '200':
+          description: Section selection and current staff version; global super-admin only
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PanelAccessEnvelope' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { description: Staff account not found }
+    put:
+      tags: [Staff Administration]
+      operationId: replaceStaffPanelAccess
+      x-phase: MVP
+      x-permissions: [role.manage]
+      security: [{ StaffSession: [] }]
+      parameters:
+        - { name: If-Match, in: header, required: true, schema: { type: string } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [sections]
+              properties:
+                sections:
+                  type: array
+                  uniqueItems: true
+                  maxItems: 16
+                  items:
+                    type: string
+                    enum: [dashboard, leads, universities, programs, articles, faqs, categories, tags, authors, media, countries, cities, academic-levels, fields-of-study, intakes, currencies]
+      responses:
+        '200':
+          description: Saved sections with incremented staff version and audit event
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PanelAccessEnvelope' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { description: Staff account not found }
+        '409': { description: Super-admin access cannot be changed }
+        '412': { description: Staff version changed; reload before saving }
+        '422': { $ref: '#/components/responses/ValidationError' }
+        '428': { description: If-Match required }
   /reporting/dashboard:
     get:
       tags: [Reporting]
@@ -1353,6 +1419,19 @@ components:
       description: Authoritative local persistence is unavailable
       content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   schemas:
+    PanelAccessEnvelope:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: object
+          required: [sections, isSuperAdmin]
+          properties:
+            sections:
+              type: array
+              items: { type: string }
+            isSuperAdmin: { type: boolean }
+            version: { type: [integer, 'null'], minimum: 1 }
     StaffRoleCode:
       type: string
       enum: [super_admin, support, consultant, content_editor]

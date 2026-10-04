@@ -35,7 +35,7 @@ export async function adminRequest(
   retried = false,
 ): Promise<RecordData> {
   if (
-    !/^\/(admin\/|auth\/|users\/me$|reporting\/dashboard)/.test(path) ||
+    !/^\/(admin\/|auth\/|users\/me(?:\/panel-access)?$|reporting\/dashboard)/.test(path) ||
     path.includes("..")
   )
     throw new Error("Invalid admin endpoint");

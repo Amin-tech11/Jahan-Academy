@@ -1,6 +1,8 @@
 "use client";
 
 import Login from "./login";
+import AccessManager from "./access-manager";
+import { visibleSections, type PanelAccess } from "../../lib/admin-access";
 import { startLiveRefresh } from "../../lib/admin-live";
 import { leadCell, newLeadIds } from "../../lib/admin-leads";
 
@@ -1173,7 +1175,7 @@ function ResourceList({ resource }: { resource: Resource }) {
           !error && (
             <div className="adm-empty">
               <strong>رکوردی پیدا نشد</strong>
-              <p>درخواست‌های ثبت‌شده از فرم مشاوره و ارزیابی اینجا نمایش داده می‌شوند. اگر فیلتری فعال است، آن را پاک کنید.</p>
+              <p>{resource.id === "leads" ? "درخواست‌های ثبت‌شده از فرم مشاوره و ارزیابی اینجا نمایش داده می‌شوند. اگر فیلتری فعال است، آن را پاک کنید." : "در این بخش رکوردی مطابق فیلترهای فعلی وجود ندارد."}</p>
             </div>
           )
         )}
@@ -1218,6 +1220,42 @@ export default function AdminPanel() {
   const [section, setSection] = useState("leads");
   const [mobileMenu, setMobileMenu] = useState(false);
   const [logoutError, setLogoutError] = useState("");
+  const [access, setAccess] = useState<PanelAccess | null>(null);
+  const [accessError, setAccessError] = useState("");
+  const [accessRetry, setAccessRetry] = useState(0);
+  useEffect(() => {
+    setAccess(null);
+    setAccessError("");
+    if (!user) return;
+    const controller = new AbortController();
+    let pending = false;
+    const load = async () => {
+      if (pending) return;
+      pending = true;
+      try {
+        const result = await adminRequest("/users/me/panel-access", "GET", undefined, undefined, controller.signal);
+        if (!controller.signal.aborted) {
+          const next = result.data as PanelAccess;
+          setAccess(next);
+          setAccessError("");
+          const allowed = visibleSections(next);
+          setSection(current => allowed.some(item => item.id === current) ? current : (allowed[0]?.id ?? ""));
+        }
+      } catch (err) {
+        if (!controller.signal.aborted) { setAccess(null); setAccessError(describe(err)); }
+      } finally { pending = false; }
+    };
+    void load();
+    const timer = window.setInterval(() => { if (!document.hidden) void load(); }, 10000);
+    window.addEventListener("focus", load);
+    window.addEventListener("admin-access-changed", load);
+    return () => {
+      controller.abort();
+      window.clearInterval(timer);
+      window.removeEventListener("focus", load);
+      window.removeEventListener("admin-access-changed", load);
+    };
+  }, [user, accessRetry]);
   useEffect(() => {
     let alive = true;
     restoreAdminSession()
@@ -1247,6 +1285,7 @@ export default function AdminPanel() {
     return () => window.removeEventListener("admin-session-expired", expire);
   }, []);
   function navigate(key: string) {
+    if (!visibleSections(access).some(item => item.id === key)) return;
     setSection(key);
     setMobileMenu(false);
   }
@@ -1268,9 +1307,9 @@ export default function AdminPanel() {
           </span>
         </div>
         <nav aria-label="بخش‌های مدیریت">
-          <button className="selected" onClick={() => navigate("leads")}>
-            <span className="adm-nav-dot" /> درخواست‌های مشاوره
-          </button>
+          {visibleSections(access).map(item => <button key={item.id} className={section === item.id ? "selected" : ""} onClick={() => navigate(item.id)}>
+            <span className="adm-nav-dot" /> {item.title}
+          </button>)}
         </nav>
         <div className="adm-sidebar-note">
           <b>همراه مسیرهای تازه</b>
@@ -1288,7 +1327,7 @@ export default function AdminPanel() {
           </button>
           <div>
             <small>فضای مدیریت /</small>
-            <b>{resource?.title ?? "نمای کلی"}</b>
+            <b>{section === "access" ? "مدیریت دسترسی" : resource?.title ?? "نمای کلی"}</b>
           </div>
           <div className="adm-account">
             <span className="adm-avatar">
@@ -1317,7 +1356,7 @@ export default function AdminPanel() {
         </header>
         <main className="adm-content">
           <ErrorBox message={logoutError} />
-          {resource ? (
+          {accessError ? <><ErrorBox message={accessError} /><button onClick={() => setAccessRetry(value => value + 1)}>بررسی دوبارهٔ دسترسی</button></> : !access ? <p role="status">در حال بررسی دسترسی‌ها…</p> : !visibleSections(access).some(item => item.id === section) ? <p className="adm-empty">در حال حاضر دسترسی به بخشی از پنل برای شما فعال نیست. با مدیر سازمان تماس بگیرید.</p> : section === "access" && access.isSuperAdmin ? <AccessManager /> : resource ? (
             <ResourceList key={resource.id} resource={resource} />
           ) : (
             <Dashboard navigate={navigate} />

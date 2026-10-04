@@ -2,7 +2,12 @@
 
 This repository uses the fixed chat, panel, branch, and port mapping in `PANEL_WORKFLOW.md`. User instructions take precedence over older branch conventions in `GIT_WORKFLOW.md`.
 
-## Reference chat
+## Reference chats
+
+- The user also designated `admin:3500`, chat ID `01a10146-df69-7da0-93d7-36a7aaf147c2`, as a reference chat on 2026-10-04, with the same cross-project authority as `Develop:5000`.
+- In `admin:3500`, implement user-requested changes anywhere in the project, including other panels and shared authentication, permissions, database, and infrastructure code when required. Do not request separate permission solely because a requested change crosses panel boundaries.
+- Its default checkout remains `F:/Jahan Academy/.worktrees/admin`, branch `admin`, and preview `http://localhost:3500`. Identify each target branch and working-tree state before editing; use existing dedicated checkouts and preserve each panel's assigned port. Intentional work in another panel is not a mismatch.
+- These reference-chat exceptions apply to both named chat IDs and override panel-only restrictions below. They do not authorize unsolicited changes, destructive operations, or merging/rebasing into `develop` without an explicit user instruction.
 
 - The reference chat is `Develop:5000`, chat ID `01a100e5-1085-7373-a431-f45b9b201125`, designated by the user on 2026-10-03.
 - This chat may inspect and work on every repository branch and may edit and commit changes for any panel, including shared code required by the task. It is not limited to the `develop` branch or one panel.

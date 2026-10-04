@@ -525,6 +525,26 @@
   background: #20283366;
   backdrop-filter: blur(3px);
 }
+.adm-access-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 12px;
+  margin: 22px 0;
+}
+.admin-app .adm-access-grid label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--adm-line);
+  border-radius: 12px;
+  cursor: pointer;
+}
+.adm-access-grid label:has(input:checked) { background: var(--adm-page); border-color: var(--adm-silver); }
+.admin-app .adm-access-grid input { width: 18px; height: 18px; min-height: 18px; margin: 0; accent-color: var(--adm-brand); }
+.adm-access-grid small { display: block; color: var(--adm-muted); margin-top: 4px; }
+.adm-access-grid label:has(input:disabled) { cursor: default; }
 .adm-dialog-heading {
   display: flex;
   justify-content: space-between;
