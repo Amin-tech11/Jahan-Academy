@@ -45,13 +45,22 @@
 .tabContent h2 { font-size:24px; margin:0 0 18px; line-height:1.6; }
 .prose { color:#596777; font-size:15px; line-height:2.15; margin:0; }
 .subheading { font-size:18px; margin:30px 0 18px; }
+.reasonList { margin:0; padding-inline-start:21px; list-style:disc; color:#596777; font-size:15px; line-height:2; }
+.reasonList li + li { margin-top:12px; }
+.reasonList li::marker { color:#2456a0; }
+.reasonList strong { color:#303c50; font-weight:650; }
+.notesBox { margin-top:28px; padding:20px 22px; border:1px solid #dce5f2; border-inline-start:3px solid #315b98; border-radius:12px; background:#f6f8fc; }
+.notesBox h3 { margin:0 0 12px; color:#233d62; font-size:16px; }
+.notesBox p { margin:0; color:#596777; font-size:13px; line-height:2; }
+.notesBox p + p { margin-top:10px; }
+.notesBox strong { color:#303c50; }
+.lifeSection { margin-top:32px; padding-top:4px; border-top:1px solid #e8edf4; }
+.lifeSection .subheading { margin-top:24px; }
+.lifeCard { min-width:0; padding:20px; border:1px solid #e0e7f0; border-radius:14px; background:linear-gradient(145deg,#f5f8fc,#fff); }
+.lifeIcon { display:inline-grid; place-items:center; width:44px; height:44px; border:1px solid #d7e3f2; border-radius:12px; color:#2456a0; background:#edf3fb; }
 .highlights { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; }
-.highlights > div { border-top:1px solid #dce3eb; padding-top:18px; }
-.highlights > div > span { font:15px Georgia,serif; color:#8394ac; }
-.highlights h4 { font-size:13px; line-height:1.8; margin:9px 0; }
-.highlights p { color:var(--muted); font-size:12px; line-height:1.95; margin:0; }
-.sources { display:flex; flex-wrap:wrap; gap:16px; border-top:1px solid var(--line); padding-top:20px; margin-top:28px; font-size:11px; color:var(--muted); }
-.sources a { color:var(--navy); }
+.highlights h4 { color:#233d62; font-size:15px; line-height:1.7; margin:16px 0 8px; }
+.highlights p { color:#596777; font-size:13px; line-height:1.95; margin:0; }
 .sidebar { display:grid; gap:16px; }
 .factCard { padding:25px; background:white; border:1px solid var(--line); border-radius:16px; }
 .factCard h2 { font-size:20px; margin:0 0 22px; }
@@ -92,6 +101,6 @@
 .lightboxImage img { object-fit:contain; }
 .lightboxControls { display:flex; justify-content:center; gap:20px; padding-top:18px; }
 .lightboxControls button { background:#293953; color:white; padding:10px 18px; border:1px solid #4a5c79; border-radius:8px; cursor:pointer; }
-@media (max-width:1000px) { .main { width:calc(100% - 40px); } .contentGrid { grid-template-columns:minmax(0,1fr) 280px; gap:18px; } .highlights { grid-template-columns:1fr; } .highlights > div { padding-top:12px; } .tabContent { padding:24px; } .tabs { gap:18px; padding-inline:20px; } }
+@media (max-width:1000px) { .main { width:calc(100% - 40px); } .contentGrid { grid-template-columns:minmax(0,1fr) 280px; gap:18px; } .highlights { grid-template-columns:1fr; } .tabContent { padding:24px; } .tabs { gap:18px; padding-inline:20px; } }
 @media (max-width:760px) { .main { width:calc(100% - 32px); } .breadcrumb { gap:8px; font-size:10px; } .identity { align-items:flex-start; gap:10px; padding:12px 0; } .logo { width:54px; height:54px; flex-basis:54px; } .logo img { width:54px; height:54px; } .identityText { flex:1; } .identity h1 { font-size:26px; } .location { font-size:16px; margin-top:5px; gap:8px; } .cityLocation,.streetAddress { width:100%; align-items:flex-start; gap:6px; } .cityLocation img,.location svg { width:20px; height:20px; } .streetAddress { border-left:0; padding-left:0; } .gallery { grid-template-columns:repeat(3,1fr); grid-template-rows:240px 95px; gap:6px; border-radius:14px; } .photo:first-child { grid-column:1 / 4; grid-row:1; } .photo:nth-child(2) { grid-column:1; grid-row:2; } .photo:nth-child(3) { grid-column:2; grid-row:2; } .photo:nth-child(4) { grid-column:3; grid-row:2; } .singlePhoto { grid-template-rows:260px; } .contentGrid { grid-template-columns:1fr; margin-top:20px; } .tabs { gap:0; justify-content:space-between; padding-inline:16px; } .tabs button { font-size:12px; padding-block:18px 15px; } .tabContent { padding:24px 20px; min-height:300px; } .tabContent h2 { font-size:21px; } .prose { font-size:14px; } .sidebar { grid-template-columns:1fr; } .lightbox { padding:12px; } .lightboxImage { height:55dvh; } }
 @media (prefers-reduced-motion:reduce) { .photo img { transition:none; } }

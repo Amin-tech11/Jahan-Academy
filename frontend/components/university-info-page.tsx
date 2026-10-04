@@ -10,6 +10,15 @@ function Pin() {
   return <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z" stroke="currentColor" strokeWidth="1.6" /><circle cx="12" cy="10" r="2.3" stroke="currentColor" strokeWidth="1.6" /></svg>;
 }
 
+function CampusLifeIcon({ index }: { index: number }) {
+  const paths = [
+    <path key="campus" d="M5 19c0-7 5-12 14-14 0 9-5 14-12 14M5 19l8-8M4 20l1-1" />,
+    <path key="residence" d="m3 10 9-7 9 7M5 9v12h14V9M9 21v-8h6v8" />,
+    <path key="library" d="M12 6c-3-2-6-2-9-1v15c3-1 6-1 9 1 3-2 6-2 9-1V5c-3-1-6-1-9 1Zm0 0v15" />,
+  ];
+  return <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">{paths[index % paths.length]}</svg>;
+}
+
 export function UniversityInfoPage({ university: u, locale }: { university: UniversityInfo; locale: Locale }) {
   const fa = locale === "fa";
   const website = safeUniversityUrl(u.websiteUrl);
@@ -33,11 +42,22 @@ export function UniversityInfoPage({ university: u, locale }: { university: Univ
     </figure>
   </section>;
   const overview = <>
-    <p className={styles.eyebrow}>{fa ? "یک نگاه نزدیک‌تر" : "A CLOSER LOOK"}</p>
     <h2>{fa ? `درباره ${u.name.fa}` : `About ${u.name.en}`}</h2>
     <p className={styles.prose}>{u.about[locale] || (fa ? "معرفی دانشگاه هنوز منتشر نشده است." : "An introduction has not yet been published.")}</p>
-    {!!u.features.length && <><h3 className={styles.subheading}>{fa ? "زندگی در این دانشگاه" : "Life at this university"}</h3><div className={styles.highlights}>{u.features.map((feature, index) => <div key={feature.url}><span>{String(index + 1).padStart(2, "0")}</span><h4>{feature.title[locale]}</h4><p>{feature.text[locale]}</p></div>)}</div></>}
-    {!!u.sources.length && <div className={styles.sources}><span>{fa ? "منابع اطلاعات" : "Information sources"}</span>{u.sources.map((source) => safeUniversityUrl(source.url) && <a key={source.url} href={source.url} target="_blank" rel="noopener noreferrer">{source.label} ↗</a>)}</div>}
+    {!!u.whyChoose?.length && <section>
+      <h3 className={styles.subheading}>{fa ? `چرا ${u.name.fa}؟` : `Why ${u.englishName}?`}</h3>
+      <ul className={styles.reasonList}>{u.whyChoose.map((reason) => <li key={reason.title.en}><strong>{reason.title[locale]}:</strong> {reason.text[locale]}</li>)}</ul>
+    </section>}
+    {!!u.notes?.length && <section className={styles.notesBox} aria-labelledby="university-notes-title">
+      <h3 id="university-notes-title">{fa ? "نکات مهم" : "Important notes"}</h3>
+      {u.notes.map((note) => <p key={note.title.en}><strong>{note.title[locale]}:</strong> {note.text[locale]}</p>)}
+    </section>}
+    {!!u.features.length && <section className={styles.lifeSection}>
+      <h3 className={styles.subheading}>{fa ? "زندگی در این دانشگاه" : "Life at this university"}</h3>
+      <div className={styles.highlights}>{u.features.map((feature, index) => <article className={styles.lifeCard} key={feature.url}>
+        <span className={styles.lifeIcon}><CampusLifeIcon index={index} /></span><h4>{feature.title[locale]}</h4><p>{feature.text[locale]}</p>
+      </article>)}</div>
+    </section>}
   </>;
   const features = <>
     <p className={styles.eyebrow}>{fa ? "در فضای دانشگاه" : "ON CAMPUS"}</p><h2>{fa ? "ویژگی‌های دانشگاه" : "Campus features"}</h2>
@@ -59,7 +79,7 @@ export function UniversityInfoPage({ university: u, locale }: { university: Univ
     <div className={styles.contentGrid}>
       <UniversityTabs locale={locale} overview={overview} features={features} location={location} />
       <aside className={styles.sidebar} aria-label={fa ? "مشخصات دانشگاه" : "Institution details"}>
-        <section className={styles.factCard}><p className={styles.eyebrow}>{fa ? "در یک نگاه" : "AT A GLANCE"}</p><h2>{fa ? "مشخصات دانشگاه" : "Institution details"}</h2><dl>{facts.map((fact) => <div key={fact.label}><dt>{fact.label}</dt><dd dir="auto">{fact.value}</dd></div>)}</dl></section>
+        <section className={styles.factCard}><h2>{fa ? "مشخصات دانشگاه" : "Institution details"}</h2><dl>{facts.map((fact) => <div key={fact.label}><dt>{fact.label}</dt><dd dir="auto">{fact.value}</dd></div>)}</dl></section>
         <section className={styles.disciplinesCard} aria-labelledby="top-disciplines-title">
           <h3 id="top-disciplines-title">{fa ? "رشته‌های برتر" : "Top Disciplines"}</h3>
           {u.topDisciplines?.length ? <ul className={styles.disciplineList}>{u.topDisciplines.map((discipline) => <li key={discipline.name.en}>

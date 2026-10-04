@@ -4,6 +4,7 @@ import type { Locale, UniversityShowcase } from "./site-content";
 export type UniversityPhoto = { src: string; caption: Record<Locale, string> };
 export type UniversityFeature = { title: Record<Locale, string>; text: Record<Locale, string>; url: string };
 export type UniversityDiscipline = { name: Record<Locale, string>; percentage: number };
+export type UniversityOverviewPoint = { title: Record<Locale, string>; text: Record<Locale, string>; sourceUrl: string };
 export type UniversityInfo = UniversityShowcase & {
   englishName: string;
   location: Record<Locale, string>;
@@ -16,6 +17,8 @@ export type UniversityInfo = UniversityShowcase & {
   coordinates?: { latitude: number; longitude: number };
   dli?: string;
   topDisciplines?: UniversityDiscipline[];
+  whyChoose?: UniversityOverviewPoint[];
+  notes?: UniversityOverviewPoint[];
   sources: { label: string; url: string }[];
 };
 
@@ -119,6 +122,16 @@ export const westernUniversity: UniversityInfo = {
   coordinates: { latitude: 43.0095971, longitude: -81.2737336 },
   websiteUrl: "https://www.uwo.ca/",
   logo: "/university-info/western-logo.png",
+  whyChoose: [
+    { title: { fa: "پردیسی برای یادگیری و زندگی", en: "A campus for learning and living" }, text: { fa: "فضاهای سبز و ترکیب معماری تاریخی و مدرن، در کنار کتابخانه‌ها و ساختمان‌های آموزشی، محیط متنوعی برای روزهای دانشجویی فراهم می‌کنند.", en: "Green spaces, historic and modern architecture, libraries and teaching buildings create a varied setting for everyday student life." }, sourceUrl: "https://www.uwo.ca/about/visit/index.html" },
+    { title: { fa: "زندگی در جامعهٔ خوابگاهی", en: "A residential community" }, text: { fa: "اقامتگاه‌های داخل پردیس با چیدمان‌های مختلف، فرصت آشنایی با دانشجویان دیگر و مشارکت در فعالیت‌های جمعی را فراهم می‌کنند.", en: "On-campus residences offer different layouts and opportunities to meet other students and take part in community activities." }, sourceUrl: "https://residence.uwo.ca/buildings" },
+    { title: { fa: "تنوع زمینه‌های تحصیل", en: "A range of academic interests" }, text: { fa: "حوزه‌هایی مانند علوم، مهندسی، هنر و علوم اجتماعی امکان بررسی مسیرهای تحصیلی متناسب با علاقه و پیشینهٔ شما را فراهم می‌کنند.", en: "Fields including science, engineering, arts and social sciences offer academic paths to explore around your interests and background." }, sourceUrl: "https://welcome.uwo.ca/what-can-i-study/undergraduate-programs/index.html" },
+    { title: { fa: "پیوند یادگیری با تجربه", en: "Learning through experience" }, text: { fa: "بسته به رشته، فرصت‌هایی مانند کارآموزی، کوآپ و تجربه‌های عملی به دانشجویان کمک می‌کنند آموخته‌های خود را در محیط واقعی به کار بگیرند.", en: "Depending on the field of study, internships, co-op and practical placements help students apply their learning in real settings." }, sourceUrl: "https://experience.uwo.ca/students/workexperience.html" },
+  ],
+  notes: [
+    { title: { fa: "شرایط پذیرش و مدارک", en: "Admission requirements and documents" }, text: { fa: "شرایط پذیرش به سابقهٔ تحصیلی و رشتهٔ انتخابی بستگی دارد. پیش‌نیازها، الزامات زبان انگلیسی و مدارک تکمیلی را برای مسیر درخواست خود بررسی کنید.", en: "Admission requirements depend on your educational background and chosen field. Check the prerequisites, English-language requirements and supplementary documents for your application route." }, sourceUrl: "https://welcome.uwo.ca/next-steps/requirements/index.html" },
+    { title: { fa: "مهلت‌ها و درخواست خوابگاه", en: "Residence applications and deadlines" }, text: { fa: "درخواست خوابگاه مراحل و مهلت‌های جداگانه دارد. تضمین اقامت سال اول به احراز شرایط و انجام مراحل در موعد مقرر وابسته است.", en: "Residence has its own application steps and deadlines. The first-year residence guarantee depends on meeting the eligibility criteria and completing the required steps on time." }, sourceUrl: "https://residence.uwo.ca/applying/key_steps" },
+  ],
   summary: {
     fa: "آموزش و پژوهش در قلب یک پردیس سرسبز؛ آشنایی با دانشگاه وسترن در شهر لندنِ کانادا.",
     en: "Discover Western: a research university set in a green campus in London, Ontario.",
