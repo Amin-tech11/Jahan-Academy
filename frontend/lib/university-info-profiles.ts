@@ -1,8 +1,37 @@
 import type { UniversityInfo, UniversityOffering } from "./university-info-model";
 import type { Locale } from "./site-content";
+import factsData from "./university-info-facts.json" with { type: "json" };
+import statisticsData from "./university-info-statistics.json" with { type: "json" };
 
 type Copy = Record<Locale, string>;
 const copy = (fa: string, en: string): Copy => ({ fa, en });
+type Facts = { foundedYear: number; city: Copy; address: string; kind: string; dli?: string };
+type Statistics = { year: string; source: string; basis: Copy; rows: (string | number)[][]; total?: number; method?: string; supportingSources?: string[] };
+const facts: Record<string, Facts> = factsData;
+const statistics: Record<string, Statistics> = statisticsData;
+const institutionTypes: Record<string, Copy> = {
+  public: copy("دانشگاه عمومی", "Public university"),
+  private: copy("دانشگاه خصوصی", "Private university"),
+  foundation: copy("دانشگاه با ادارهٔ بنیاد مستقل", "Independent foundation university"),
+};
+
+// Shares describe the source population, not academic quality or admission odds.
+// Keep three largest named fields and aggregate the remainder without re-ranking Other.
+export function universityDisciplineData(slug: string): Pick<UniversityInfo, "topDisciplines" | "disciplineSource"> {
+  const data = Object.hasOwn(statistics, slug) ? statistics[slug] : undefined;
+  if (!data) return {};
+  const rows = data.rows.map(([fa, en, count]) => ({ name: copy(String(fa), String(en)), count: Number(count) }));
+  const total = data.total ?? rows.reduce((sum, row) => sum + row.count, 0);
+  if (!(total > 0) || rows.some((row) => !Number.isFinite(row.count) || row.count < 0)) return {};
+  const ranked = rows.filter((row) => row.name.en !== "Other").sort((a, b) => b.count - a.count);
+  const selected = ranked.slice(0, 3);
+  const other = rows.filter((row) => !selected.includes(row)).reduce((sum, row) => sum + row.count, 0);
+  if (other > 0) selected.push({ name: copy("سایر", "Other"), count: other });
+  return {
+    topDisciplines: selected.map((row) => ({ name: row.name, percentage: Math.round(row.count / total * 1000) / 10 })),
+    disciplineSource: { year: data.year, basis: data.basis, url: data.source, supportingUrls: data.supportingSources },
+  };
+}
 const fields = {
   science: copy("علوم طبیعی", "Natural sciences"), engineering: copy("مهندسی و فناوری", "Engineering and technology"),
   arts: copy("هنر و علوم انسانی", "Arts and humanities"), health: copy("پزشکی و علوم سلامت", "Medicine and health sciences"),
@@ -22,8 +51,8 @@ type Profile = {
   photo?: Copy;
 };
 
-// Panel-owned editorial content. Sources reviewed 2026-10-04. These are fields of
-// study, not rankings or enrolment shares. Do not infer eligibility from a slug.
+// Panel-owned editorial content. Sources reviewed 2026-10-04.
+// Statistical populations and years are recorded separately; never infer eligibility from a slug.
 export const universityProfiles: Record<string, Profile> = {
   "dalhousie-university": {
     name: "دانشگاه دالهاوزی", website: "https://www.dal.ca/", source: "https://www.dal.ca/about/campus-locations.html",
@@ -238,9 +267,19 @@ const countryGuidance: Record<string, string> = {
   Sweden: "https://www.migrationsverket.se/en/you-want-to-apply/study/higher-education.html",
 };
 
+const historyNotes: Record<string, Copy> = {
+  "adelaide-university": copy("دانشگاه جدید آدلاید در ۲۰۲۴ تأسیس شد و فعالیت آموزشی آن در ژانویهٔ ۲۰۲۶ آغاز شد. آمار دانشگاه آدلاید قدیم و دانشگاه استرالیای جنوبی، آمار این مؤسسهٔ جدید محسوب نمی‌شود.", "The new Adelaide University was established in 2024 and began teaching in January 2026. Statistics for the former University of Adelaide and University of South Australia do not describe this new institution."),
+  "curtin-university": copy("سال ۱۹۶۶ به تأسیس مؤسسهٔ فناوری استرالیای غربی (WAIT) اشاره دارد؛ این مؤسسه در ۱۹۸۷ به دانشگاه کرتین تبدیل شد.", "The 1966 foundation date refers to the Western Australian Institute of Technology (WAIT); it became Curtin University in 1987."),
+  "charite-universitatsmedizin-berlin": copy("ریشهٔ شاریته به بیمارستان تأسیس‌شده در ۱۷۱۰ می‌رسد. ساختار مشترک کنونی پزشکی دانشگاه آزاد برلین و هومبولت در ۲۰۰۳ شکل گرفت.", "Charité traces its origins to the hospital founded in 1710. Its current joint medical-faculty structure for Freie Universität Berlin and Humboldt-Universität dates to 2003."),
+  "massey-university": copy("ریشهٔ مؤسسه به کالج کشاورزی مسی در ۱۹۲۷ می‌رسد؛ مسی در ۱۹۶۴ به دانشگاه تبدیل شد.", "The institution traces its roots to Massey Agricultural College in 1927; Massey became a university in 1964."),
+  "erasmus-university-rotterdam": copy("سال ۱۹۱۳ به تأسیس مدرسهٔ بازرگانی پیشین اشاره دارد؛ دانشگاه اراسموس با ساختار کنونی در ۱۹۷۳ شکل گرفت.", "The 1913 date marks the founding of its predecessor business school; Erasmus University in its present form dates to 1973."),
+  "tampere-university": copy("دانشگاه کنونی تامپره در ۲۰۱۹ از ادغام دانشگاه تامپره و دانشگاه فناوری تامپره ایجاد شد.", "The current Tampere University was formed in 2019 through the merger of the University of Tampere and Tampere University of Technology."),
+};
+
 export function enrichUniversityInfo(base: UniversityInfo): UniversityInfo {
   const profile = Object.hasOwn(universityProfiles, base.slug) ? universityProfiles[base.slug] : undefined;
   if (!profile) return base;
+  const details = facts[base.slug];
   const guidance = Object.hasOwn(countryGuidance, base.country.en) ? countryGuidance[base.country.en] : undefined;
   const admission = copy("پیش‌نیازها، زبان آموزش و مدارک لازم را در صفحهٔ پذیرش رشتهٔ انتخابی بررسی کنید. هر شرطی که در نامهٔ پذیرش درج شده باید در مهلت تعیین‌شده تکمیل شود.", "Check prerequisites, teaching language and required documents on the admissions page for your chosen field. Any conditions stated in an offer must be met by the specified deadline.");
   const housing = copy("محل کلاس‌ها را پیش از انتخاب محل اقامت مشخص کنید. گزینه‌های مسکن، ظرفیت، شرایط درخواست و مهلت‌ها را از راهنمای رسمی دانشگاه بررسی کنید؛ پذیرش تحصیلی به‌تنهایی تضمین محل اقامت نیست.", "Confirm your teaching location before choosing where to live. Check the university's official guidance for housing options, capacity, application requirements and deadlines; academic admission alone does not guarantee accommodation.");
@@ -262,14 +301,19 @@ export function enrichUniversityInfo(base: UniversityInfo): UniversityInfo {
     } : {}),
     summary: profile.campus,
     about: copy(`${profile.campus.fa} ${profile.focus.fa}`, `${profile.campus.en} ${profile.focus.en}`),
-    city: base.city ?? copy(base.location.en.split(",")[0], base.location.en.split(",")[0]),
-    address: profile.address ?? base.address,
+    city: details.city,
+    address: details.address,
+    foundedYear: details.foundedYear,
+    institutionType: institutionTypes[details.kind],
+    dli: details.dli,
+    ...universityDisciplineData(base.slug),
     academicFields: profile.fields.map((field) => fields[field]),
     whyChoose: [
       { title: copy("محیط دانشگاه", "University setting"), text: profile.campus, sourceUrl: profile.source },
       { title: copy("هویت علمی", "Academic identity"), text: profile.focus, sourceUrl: profile.website },
     ],
     notes: [
+      ...(historyNotes[base.slug] ? [{ title: copy("پیشینهٔ مؤسسه", "Institutional history"), text: historyNotes[base.slug], sourceUrl: profile.website }] : []),
       { title: copy("پذیرش و زبان آموزش", "Admissions and teaching language"), text: admission, sourceUrl: profile.website },
       { title: copy("انتخاب محل اقامت", "Choosing accommodation"), text: housing, sourceUrl: profile.source },
     ],
