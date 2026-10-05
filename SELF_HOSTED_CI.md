@@ -97,9 +97,11 @@ The production-image probe allows 180 startup attempts, with bounded connection
 and response timeouts. This accommodates first imports under workstation disk
 load; a failure still fails the gate and prints container logs.
 
-Both local and CI integration PostgreSQL data use a disposable 512 MiB tmpfs
+Local, CI integration and CI Compose PostgreSQL data use a disposable 512 MiB tmpfs
 mount, avoiding slow initdb/fsync on the virtual disk. This affects test services
 only; development and production PostgreSQL storage and durability are unchanged.
+The CI Compose override replaces the legacy `/var/lib/postgresql/data` volume
+mount with the PostgreSQL 18 parent directory `/var/lib/postgresql`.
 
 The wrapper runs as `jahan-ci` without starting an interactive systemd user
 session. Each checkout gets a separate locked environment and test/tool caches
