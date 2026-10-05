@@ -1,7 +1,7 @@
 .free-consultation-page { min-height: 100vh; padding: clamp(3rem, 6vw, 5.5rem) 0 clamp(4rem, 7vw, 7rem); background: #f7f8fa; }
 .free-consultation-page__intro { max-width: 48rem; margin: 0 auto clamp(2rem, 4vw, 3.25rem); text-align: center; }
 .free-consultation-page__eyebrow { color: var(--color-brand-900); font-size: .8rem; font-weight: 800; }
-.free-consultation-page__intro h1 { margin: .65rem 0 .8rem; color: var(--color-brand-900); font-size: clamp(2rem, 4vw, 3.1rem); line-height: 1.4; }
+.free-consultation-page__intro h1 { margin: .65rem 0 .8rem; color: #202833; font-size: clamp(2rem, 4vw, 3.1rem); line-height: 1.4; }
 .free-consultation-page__intro p { margin: 0; color: var(--color-muted); line-height: 1.9; }
 .free-consultation-page__layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); align-items: stretch; gap: 1.4rem; direction: ltr; }
 .free-consultation-page__media { position: relative; min-height: 38rem; overflow: hidden; border-radius: 1.25rem; background: #dce5ee; }
@@ -11,7 +11,7 @@
 .free-consultation-page__media-caption strong { font-size: 1.05rem; }
 .free-consultation-page__media-caption span { font-size: .85rem; line-height: 1.7; }
 .free-consultation-page .home-closing__card { width: 100%; margin: 0; align-self: stretch; padding: clamp(1.5rem, 3vw, 2.5rem); border-radius: 1.25rem; box-shadow: 0 18px 45px rgb(32 40 51 / 7%); }
-.free-consultation-page .home-consultation__form > h3 { font-size: 1.4rem; }
+.free-consultation-page .consultation-form-heading h3 { font-size: 1.4rem; }
 @media (max-width: 800px) {
   .free-consultation-page__layout { grid-template-columns: 1fr; }
   .free-consultation-page__media { min-height: 18rem; }

@@ -18,7 +18,8 @@
 .actions { display: flex; flex-wrap: wrap; gap: 23px; align-items: center; margin-top: 29px; }
 .primary { display: inline-flex; align-items: center; justify-content: center; gap: 24px; min-height: 49px; padding: 12px 21px; background: #173f48; border: 1px solid #173f48; border-radius: 7px; color: white; font-size: 13px; font-weight: 650; transition: background .2s, transform .2s; }
 .primary:hover { background: #28606a; transform: translateY(-2px); }
-.primary > span { font-size: 21px; }
+.primary > span:last-child { font-size: 21px; }
+.primary :global(.consultation-free-word) { color: #f1c671; }
 .storyLink { display: inline-flex; gap: 12px; align-items: center; font-size: 12px; border-bottom: 1px solid #b3c0b9; padding-block: 8px; }
 .heroFoot { display: flex; gap: 9px; align-items: center; margin-top: 35px; color: #73827c; font-size: 11px; }
 .heroFoot > span { color: #aa8049; font-size: 25px; }

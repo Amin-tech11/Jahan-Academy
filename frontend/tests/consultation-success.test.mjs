@@ -56,6 +56,7 @@ for (const [file, exportName, state, wrapper] of [
     react: { useState: () => [state[cursor++], () => {}], useRef: () => ({ current: null }), useId: () => "test", useEffect: () => {} },
     "next/link": { default: "a" },
     "./consultation-success": { ConsultationSuccess: Receipt },
+    "./consultation-form-heading": { ConsultationFormHeading: () => null },
     "@/components/ui": {},
     "@/lib/api-client": {},
     "@/lib/consultation": { sourcePageUrl: () => "/fa/contact" },

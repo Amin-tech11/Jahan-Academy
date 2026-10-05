@@ -19,6 +19,7 @@ function setup(mobile, fail = false, sourcePage) {
       if (name === "react/jsx-runtime") return { jsx: (type, props) => ({ type, props }), jsxs: (type, props) => ({ type, props }) };
       if (name === "next/link") return { default: () => null };
       if (name === "./consultation-success") return { ConsultationSuccess: () => null };
+      if (name === "./consultation-form-heading") return { ConsultationFormHeading: () => null };
       if (name === "@/lib/consultation") return { normalizeMobile: (value) => value === "09120000000" ? "+989120000000" : null };
       if (name === "@/lib/api-client") return { ApiError, apiRequest: async (path, options) => { calls.push({ path, options }); if (fail) throw new Error("network"); return { data: { reference: "R1" } }; } };
       throw new Error(name);

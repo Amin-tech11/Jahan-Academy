@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { ConsultationSuccess } from "./consultation-success";
+import { ConsultationFormHeading } from "./consultation-form-heading";
 import { useId, useRef, useState, type FormEvent } from "react";
 import { apiRequest, ApiError, type ApiEnvelope } from "@/lib/api-client";
 import { normalizeMobile } from "@/lib/consultation";
@@ -41,8 +42,7 @@ export function HomeConsultation({ locale, sourcePage }: { locale: Locale; sourc
   }
   if (status === "success") return <div className="home-closing__card"><ConsultationSuccess locale={locale} reference={reference} /></div>;
   return <form className="home-closing__card home-consultation__form" onSubmit={submit} aria-label={t("درخواست مشاوره تخصصی رایگان", "Request a free consultation")}>
-    <h3>{t("درخواست مشاوره تخصصی رایگان", "Request a free consultation")}</h3>
-    <p>{t("اطلاعات کوتاه زیر را بنویسید تا برای هماهنگی مشاوره با شما تماس بگیریم.", "Share a few details so we can contact you to arrange a consultation.")}</p>
+    <ConsultationFormHeading locale={locale} />
     <div className="home-consultation__fields">
       <label htmlFor={id + "-first"}>{t("نام *", "First name *")}<input id={id + "-first"} name="firstName" required maxLength={100} autoComplete="given-name" /></label>
       <label htmlFor={id + "-last"}>{t("نام خانوادگی *", "Last name *")}<input id={id + "-last"} name="lastName" required maxLength={100} autoComplete="family-name" /></label>

@@ -35,9 +35,8 @@
 .services-cta__photo img { object-fit: cover; object-position: 64% center; }
 .services-cta__card { position: relative; margin-inline-start: -3rem; padding: 2.25rem; border: 1px solid var(--services-border); border-radius: 24px; background: var(--services-surface); box-shadow: 0 18px 60px rgba(32, 40, 51, .08); direction: ltr; }
 [dir="rtl"] .services-cta__card { direction: rtl; }
-.services-request h3 { margin: 0; color: var(--services-text); font-size: 1.35rem; line-height: 1.6; }
-.services-request__free { color: var(--services-brand); font-weight: 900; }
-.services-request .services-request__hint { margin: .5rem 0 1.5rem; color: var(--services-muted); font-size: .9rem; line-height: 1.9; }
+.services-request .consultation-form-heading h3 { margin: 0; color: var(--services-text); font-size: 1.35rem; line-height: 1.6; text-align: center; }
+.services-request .consultation-form-heading p { margin: .5rem auto 1.5rem; color: var(--services-muted); font-size: .9rem; line-height: 1.9; text-align: center; }
 .services-request__fields { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 .services-request__fields label { display: grid; gap: .45rem; color: var(--services-text); font-size: .85rem; font-weight: 650; }
 .services-request__fields input, .services-request__fields select { min-width: 0; width: 100%; min-height: 48px; padding: .65rem .8rem; border: 1px solid var(--services-border); border-radius: 10px; background: var(--services-background); color: var(--services-text); font: inherit; font-weight: 400; }

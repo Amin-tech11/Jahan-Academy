@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { ConsultationSuccess } from "./consultation-success";
+import { ConsultationFormHeading } from "./consultation-form-heading";
 import { type FormEvent, useId, useRef, useState } from "react";
 import { apiRequest, type ApiEnvelope } from "@/lib/api-client";
 import { normalizeMobile } from "@/lib/consultation";
@@ -52,8 +53,7 @@ export function ServicesConsultationForm({ locale }: { locale: Locale }) {
   if (receipt) return <ConsultationSuccess locale={locale} reference={receipt.reference} duplicate={receipt.duplicate} />;
 
   return <form className="services-request" onSubmit={submit} aria-label={t("درخواست مشاوره تخصصی رایگان", "Request a free expert consultation")}>
-    <h3>{fa ? <>درخواست مشاوره تخصصی <strong className="services-request__free">رایگان</strong></> : <>Request a <strong className="services-request__free">free</strong> expert consultation</>}</h3>
-    <p className="services-request__hint">{t("اطلاعات کوتاه زیر را بنویسید تا برای هماهنگی مشاوره با شما تماس بگیریم.", "Share a few details so we can contact you to arrange your consultation.")}</p>
+    <ConsultationFormHeading locale={locale} />
     <div className="services-request__fields">
       <label htmlFor={`${id}-first`}>{t("نام", "First name")} *<input id={`${id}-first`} name="firstName" autoComplete="given-name" required maxLength={100} /></label>
       <label htmlFor={`${id}-last`}>{t("نام خانوادگی", "Last name")} *<input id={`${id}-last`} name="lastName" autoComplete="family-name" required maxLength={100} /></label>

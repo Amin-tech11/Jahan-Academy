@@ -2,6 +2,7 @@ import Image from "next/image";
 import { HomeHeroChat } from "@/components/home-hero-chat";
 import { HomeMotion } from "@/components/home-motion";
 import { HomeConsultation } from "@/components/home-consultation";
+import { ConsultationFreeText } from "@/components/consultation-form-heading";
 import { HomeFaq } from "@/components/home-faq";
 import { HomeNewsTicker } from "@/components/home-news-ticker";
 import { HomeJourneyProgress } from "@/components/home-journey-progress";
@@ -126,7 +127,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
           <p className="home-trust__subtitle">{content.trustSubtitle}</p>
           <p className="home-trust__description">{content.trustText}</p>
           <Link className="home-trust__cta" href={localPath(locale, "/free-consultation?source=home-trust")}>
-            {content.trustCta}<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M19 12H5m6-6-6 6 6 6" /></svg>
+            <ConsultationFreeText text={content.trustCta} locale={locale} /><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M19 12H5m6-6-6 6 6 6" /></svg>
           </Link>
         </div>
         <div className="home-trust__media">

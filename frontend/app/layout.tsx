@@ -8,6 +8,7 @@ import "./foundation.css";
 import "./consultation.css";
 import "./free-consultation.css";
 import "./home.css";
+import "./consultation-heading.css";
 
 export const metadata: Metadata = {
   title: "Jahan Academy",
