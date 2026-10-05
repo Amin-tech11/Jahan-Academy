@@ -72,4 +72,30 @@ Keep the computer awake and Ubuntu running while jobs run. Shutdown or sleep
 interrupts jobs. Disk usage should be monitored because
 tool caches and Docker build cache persist; clear only identified CI-owned data.
 
+## Run backend checks from Windows
+
+Use the installed Linux toolchain rather than the Windows Store `python` alias:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test-backend-local.ps1 -Lint -Integration -BuildBackend
+```
+
+The execution-policy override applies only to that PowerShell process. Without
+flags, the script runs unit, architecture and contract tests. `-Integration`
+creates disposable PostgreSQL 18 and Redis 8 containers with random loopback
+ports, applies migrations, tests rollback/re-upgrade, and removes only its own
+containers. `-BuildBackend` builds the production image and checks its live
+health endpoint as the unprivileged application user.
+
+The wrapper runs as `jahan-ci` without starting an interactive systemd user
+session. Each checkout gets a separate locked environment and test/tool caches
+under `/home/jahan-ci/local-tests`, outside GitHub's active workspace. Ubuntu's
+disk is stored at `F:\DevData\WSL\Ubuntu-24.04`; these operations do not create
+Python environments or caches on C. An installed uv runner tool cache is required.
+
+The backend image assigns source ownership with `COPY --chown` and changes only
+the `/app` directory owner after dependency installation. Avoid recursive
+ownership changes over `.venv`: OverlayFS can copy files from previous layers
+when metadata changes, causing substantial disk I/O during Build.
+
 GitHub reference: https://docs.github.com/en/actions/reference/runners/self-hosted-runners
