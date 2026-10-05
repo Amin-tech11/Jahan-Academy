@@ -8,10 +8,10 @@ import styles from "./destinations-overview.module.css";
 
 const copy = {
   fa: {
-    home: "صفحه اصلی", destinations: "مقصدهای تحصیلی", eyebrow: "جهان، کلاس درس شماست",
+    destinations: "مقصدهای تحصیلی", eyebrow: "جهان، کلاس درس شماست",
     title: "آینده‌ات را", accent: "کجای جهان می‌بینی؟",
     intro: "هر مقصد، دنیایی از تجربه‌های تازه است. کشورها را بشناسید، اولویت‌هایتان را روشن کنید و اولین قدم را برای مسیر تحصیلی خود بردارید.",
-    explore: "کشف مقصدها", consultation: "راهنمایی برای انتخاب مقصد", photoTitle: "یک مقصد تازه، یک شروع تازه", photoCaption: "مسیر تو از یک انتخاب آگاهانه آغاز می‌شود.",
+    explore: "کشف مقصدها", consultation: "راهنمایی برای انتخاب مقصد",
     guide: "راهنمای انتخاب مقصد", guideTitle: "انتخابی فراتر از نام یک کشور", guideText: "مقصد مناسب، جایی است که با هدف تحصیلی، امکانات و سبک زندگی شما هماهنگ باشد.",
     criteria: [
       { icon: "study", title: "هدف و مسیر تحصیلی", text: "رشتهٔ موردعلاقه، مقطع بعدی و زبان تحصیل را مشخص کنید؛ سپس گزینه‌ها را با پیشینهٔ خود بسنجید." },
@@ -35,10 +35,10 @@ const copy = {
     ctaEyebrow: "قدم بعدی، یک گفت‌وگوست", ctaTitle: "هنوز مقصدتان را انتخاب نکرده‌اید؟", ctaText: "با هم شرایط و اولویت‌های شما را مرور می‌کنیم تا انتخاب بعدی‌تان روشن‌تر باشد.", ctaButton: "شروع ارزیابی شرایط", top: "بازگشت به بالای صفحه",
   },
   en: {
-    home: "Home", destinations: "Study destinations", eyebrow: "THE WORLD IS YOUR CLASSROOM",
+    destinations: "Study destinations", eyebrow: "THE WORLD IS YOUR CLASSROOM",
     title: "Where in the world", accent: "do you see your future?",
     intro: "Every destination opens up new experiences. Get to know the countries, define your priorities and take the first step on your academic journey.",
-    explore: "Explore destinations", consultation: "Help me choose", photoTitle: "A new destination. A new beginning.", photoCaption: "Your journey starts with a considered choice.",
+    explore: "Explore destinations", consultation: "Help me choose",
     guide: "A GUIDE TO YOUR NEXT CHAPTER", guideTitle: "More than choosing a country", guideText: "The right destination should fit your academic goals, resources and way of life.",
     criteria: [
       { icon: "study", title: "Your academic direction", text: "Define your interests, next qualification and study language, then consider how each option fits your background." },
@@ -74,23 +74,18 @@ export function DestinationsOverview({ locale }: { locale: Locale }) {
   const fa = locale === "fa";
   const consultation = `/${locale}/consultation?source=destinations-overview`;
   return <SiteShell locale={locale}><main className={styles.page} id="destinations-top">
-    <section className={styles.hero} aria-labelledby="destination-title">
-      <div className={styles.wrap}>
-        <nav className={styles.breadcrumb} aria-label={fa ? "مسیر صفحه" : "Breadcrumb"}><Link href={`/${locale}`}>{c.home}</Link><span aria-hidden="true">/</span><span aria-current="page">{c.destinations}</span></nav>
-        <div className={styles.heroGrid}>
-          <div className={styles.heroCopy}>
-            <p className={styles.heroEyebrow}><span />{c.eyebrow}</p>
-            <h1 id="destination-title">{c.title}<br /><em>{c.accent}</em></h1>
-            <p className={styles.heroIntro}>{c.intro}</p>
-            <div className={styles.heroActions}><a className={styles.primary} href="#explore">{c.explore}<span aria-hidden="true">↓</span></a><Link className={styles.secondary} href={consultation}>{c.consultation}<span aria-hidden="true">{fa ? "←" : "→"}</span></Link></div>
-            <div className={styles.heroFootnote}><span className={styles.miniFlags}>{["canada", "germany", "italy"].map((slug) => <Image key={slug} src={`/destinations/flags/${slug}.svg`} width={30} height={30} alt="" />)}</span><span>{fa ? "۱۰ مقصد، فرصت‌های تازه برای فردای شما" : "10 destinations. A world of possibilities."}</span></div>
-          </div>
-          <div className={styles.heroVisual}>
-            <div className={styles.heroImage}><Image src="/destinations/united-kingdom.png" alt={fa ? "چشم‌انداز شهری انگلستان" : "An English cityscape"} fill sizes="(max-width: 760px) 100vw, 45vw" preload /><div className={styles.photoLabel}><span>{fa ? "فصل تازهٔ زندگی شما" : "YOUR NEXT CHAPTER"}</span><strong>{c.photoTitle}</strong></div></div>
-            <div className={styles.photoNote}><GuideIcon icon="world" /><div><strong>{c.destinations}</strong><span>{c.photoCaption}</span></div><span className={styles.noteArrow} aria-hidden="true">{fa ? "↖" : "↗"}</span></div>
-            <span className={styles.visualIndex} aria-hidden="true">EXPLORE / 01</span>
-          </div>
-        </div>
+    <section className={styles.hero} aria-label={fa ? "جهان آکادمی" : "Jahan Academy"}>
+      <Image className={styles.heroArtwork} src="/destinations/world-map-hero.png" alt={fa ? "نقشهٔ برجستهٔ جهان با نورهای طلایی" : "A raised world map illuminated in warm gold"} fill sizes="(max-width: 760px) 100vw, 65vw" preload />
+      <div className={styles.heroShade} aria-hidden="true" />
+      <p className={styles.heroBrand} lang="en">JAHAN ACADEMY</p>
+    </section>
+    <section className={styles.introSection} aria-labelledby="destination-title">
+      <div className={`${styles.wrap} ${styles.introCopy}`}>
+        <p className={styles.heroEyebrow}><span />{c.eyebrow}</p>
+        <h1 id="destination-title">{c.title}<br /><em>{c.accent}</em></h1>
+        <p className={styles.heroIntro}>{c.intro}</p>
+        <div className={styles.heroActions}><a className={styles.primary} href="#explore">{c.explore}<span aria-hidden="true">↓</span></a><Link className={styles.secondary} href={consultation}>{c.consultation}<span aria-hidden="true">{fa ? "←" : "→"}</span></Link></div>
+        <div className={styles.heroFootnote}><span className={styles.miniFlags}>{["canada", "germany", "italy"].map((slug) => <Image key={slug} src={`/destinations/flags/${slug}.svg`} width={30} height={30} alt="" />)}</span><span>{fa ? "۱۰ مقصد، فرصت‌های تازه برای فردای شما" : "10 destinations. A world of possibilities."}</span></div>
       </div>
     </section>
     <nav className={`${styles.wrap} ${styles.quickNav}`} aria-label={fa ? "بخش‌های راهنما" : "On this page"}>
