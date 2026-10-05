@@ -7,8 +7,7 @@
 .page :is(a, button, input, summary):focus-visible { outline: 3px solid #4d87c9; outline-offset: 4px; }
 .page section[id] { scroll-margin-top: 110px; }
 .hero { position: relative; isolation: isolate; display: grid; place-items: center; width: 100%; height: clamp(340px, 34vw, 560px); overflow: hidden; background: #091726; }
-.hero::before { content: ""; position: absolute; z-index: -1; inset: -20px; background: url("/destinations/world-map-hero.png") center / cover no-repeat; filter: blur(18px) brightness(.3); transform: scale(1.04); }
-.heroArtwork { z-index: 0; object-fit: contain; filter: brightness(.8); }
+.heroArtwork { z-index: 0; object-fit: cover; object-position: center; filter: brightness(.8); }
 .heroShade { position: absolute; z-index: 1; inset: 0; background: linear-gradient(90deg, #06101b88, #06101b2b 48%, #06101b88), linear-gradient(0deg, #030a14a8, #030a1433 55%, #030a1452); pointer-events: none; }
 .heroBrand { position: relative; z-index: 2; margin: 0; padding-inline: 16px; color: #fff; font-family: Arial, sans-serif; font-size: clamp(26px, 3.5vw, 54px); font-weight: 300; letter-spacing: .34em; text-indent: .34em; line-height: 1.2; text-align: center; white-space: nowrap; text-shadow: 0 2px 18px #0009; }
 .introSection { padding-block: 44px 38px; color: var(--text); background: #f6f7f9; text-align: center; }

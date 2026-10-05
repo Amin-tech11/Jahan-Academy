@@ -5,7 +5,7 @@ import { destinationOverviews, filterDestinations, normalizeDestinationSearch } 
 import { countryGuides, headerDestinations } from "../lib/site-content.ts";
 
 test("overview covers every navigation country and points to existing guides and local imagery", () => {
-  assert.ok(existsSync(new URL("../public/destinations/world-map-hero.png", import.meta.url)));
+  assert.ok(existsSync(new URL("../public/destinations/world-map-hero-wide.png", import.meta.url)));
   assert.equal(destinationOverviews.length, 10);
   assert.equal(new Set(destinationOverviews.map(({ slug }) => slug)).size, 10);
   assert.deepEqual(new Set(destinationOverviews.map(({ slug }) => slug)), new Set(headerDestinations.map(({ slug }) => slug)));

@@ -75,7 +75,7 @@ export function DestinationsOverview({ locale }: { locale: Locale }) {
   const consultation = `/${locale}/consultation?source=destinations-overview`;
   return <SiteShell locale={locale}><main className={styles.page} id="destinations-top">
     <section className={styles.hero} aria-label={fa ? "جهان آکادمی" : "Jahan Academy"}>
-      <Image className={styles.heroArtwork} src="/destinations/world-map-hero.png" alt={fa ? "نقشهٔ برجستهٔ جهان با نورهای طلایی" : "A raised world map illuminated in warm gold"} fill sizes="(max-width: 760px) 100vw, 65vw" preload />
+      <Image className={styles.heroArtwork} src="/destinations/world-map-hero-wide.png" alt={fa ? "نقشهٔ برجستهٔ جهان با نورهای طلایی" : "A raised world map illuminated in warm gold"} fill sizes="100vw" preload />
       <div className={styles.heroShade} aria-hidden="true" />
       <p className={styles.heroBrand} lang="en">JAHAN ACADEMY</p>
     </section>
