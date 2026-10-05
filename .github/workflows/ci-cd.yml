@@ -49,7 +49,7 @@ jobs:
         with:
           version: ${{ env.UV_VERSION }}
           download-from-astral-mirror: false
-          enable-cache: true
+          enable-cache: false
           cache-dependency-glob: backend/uv.lock
 
       - name: Install Python
@@ -76,8 +76,6 @@ jobs:
         uses: actions/setup-node@v7.0.0
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: pnpm
-          cache-dependency-path: frontend/pnpm-lock.yaml
 
       - name: Install locked frontend dependencies
         working-directory: frontend
@@ -114,7 +112,7 @@ jobs:
         with:
           version: ${{ env.UV_VERSION }}
           download-from-astral-mirror: false
-          enable-cache: true
+          enable-cache: false
           cache-dependency-glob: backend/uv.lock
 
       - name: Install Python
@@ -141,6 +139,7 @@ jobs:
         ports:
           - 127.0.0.1::5432
         options: >-
+          --tmpfs /var/lib/postgresql:rw,size=512m
           --health-cmd "pg_isready -U jahan -d jahan_academy"
           --health-interval 2s
           --health-timeout 3s
@@ -168,7 +167,7 @@ jobs:
         with:
           version: ${{ env.UV_VERSION }}
           download-from-astral-mirror: false
-          enable-cache: true
+          enable-cache: false
           cache-dependency-glob: backend/uv.lock
 
       - name: Install Python
@@ -269,7 +268,7 @@ jobs:
         with:
           version: ${{ env.UV_VERSION }}
           download-from-astral-mirror: false
-          enable-cache: true
+          enable-cache: false
           cache-dependency-glob: backend/uv.lock
 
       - name: Install Python

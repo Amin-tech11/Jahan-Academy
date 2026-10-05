@@ -46,6 +46,9 @@ old workflow from its original commit; test the new commit instead.
 - uv, managed Python and Trivy's vulnerability database are downloaded from their
   official GitHub distributions, avoiding mirrors unavailable on this network.
   Trivy caches its database in the dedicated `jahan-ci-trivy-cache` Docker volume.
+- uv and pnpm reuse their existing persistent local caches. GitHub cache archive
+  restore/upload is disabled on this workstation to avoid redundant downloads,
+  extraction and disk I/O on each job. Locked installs and every CI gate remain.
 
 Existing publish/deploy conditions remain in force. This only changes their
 runner routing; it does not enable deployment or change deployment secrets.
@@ -86,6 +89,10 @@ creates disposable PostgreSQL 18 and Redis 8 containers with random loopback
 ports, applies migrations, tests rollback/re-upgrade, and removes only its own
 containers. `-BuildBackend` builds the production image and checks its live
 health endpoint as the unprivileged application user.
+
+Both local and CI integration PostgreSQL data use a disposable 512 MiB tmpfs
+mount, avoiding slow initdb/fsync on the virtual disk. This affects test services
+only; development and production PostgreSQL storage and durability are unchanged.
 
 The wrapper runs as `jahan-ci` without starting an interactive systemd user
 session. Each checkout gets a separate locked environment and test/tool caches

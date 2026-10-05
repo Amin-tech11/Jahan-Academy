@@ -47,8 +47,11 @@ cleanup() {
   fi
 }
 trap cleanup EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
 if ((integration)); then
   docker run -d --name "$id-postgres" -p 127.0.0.1::5432 \
+    --tmpfs /var/lib/postgresql:rw,size=512m \
     -e POSTGRES_DB=jahan_test -e POSTGRES_USER=jahan -e POSTGRES_PASSWORD=local_test_only \
     postgres:18-alpine >/dev/null
   docker run -d --name "$id-redis" -p 127.0.0.1::6379 redis:8-alpine >/dev/null
@@ -60,7 +63,12 @@ if ((integration)); then
     fi
     sleep 1
   done
-  ((ready)) || { echo 'Isolated test services failed to start.' >&2; exit 1; }
+  if ((!ready)); then
+    docker logs "$id-postgres"
+    docker logs "$id-redis"
+    echo 'Isolated test services failed to start.' >&2
+    exit 1
+  fi
   pgport=$(docker port "$id-postgres" 5432/tcp | cut -d: -f2)
   redisport=$(docker port "$id-redis" 6379/tcp | cut -d: -f2)
   export DATABASE_URL="postgresql+psycopg://jahan:local_test_only@127.0.0.1:$pgport/jahan_test"
