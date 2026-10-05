@@ -9,6 +9,7 @@ import "./consultation.css";
 import "./free-consultation.css";
 import "./home.css";
 import "./consultation-heading.css";
+import "./dropdowns.css";
 
 export const metadata: Metadata = {
   title: "Jahan Academy",

@@ -2,15 +2,28 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { canChangeLeadStatus, saveLeadChanges } from "../lib/admin-lead-status.ts";
 import { adminRequest, AdminError } from "../lib/admin-api.ts";
+import { leadStatuses, resources, labels } from "../lib/admin-resources.ts";
 
 const lead = { id: "example", status: "assigned", version: 3, assignee: { id: "consultant" } };
+
+test("assigned is absent from consultation choices while legacy records remain readable and editable", async () => {
+  assert.equal(leadStatuses.includes("assigned"), false);
+  assert.equal(resources.find((item) => item.id === "leads").statuses.includes("assigned"), false);
+  assert.equal(labels.assigned, "ارجاع‌شده");
+  const calls = [];
+  await saveLeadChanges(async (...args) => { calls.push(args); return {}; }, lead, undefined, "contacted", () => assert.fail());
+  assert.equal(calls[0][2].toStatus, "contacted");
+});
 
 test("workflow choices respect assignment, terminal states and archive", () => {
   assert.equal(canChangeLeadStatus({ status: "new" }, "assigned"), false);
   assert.equal(canChangeLeadStatus({ status: "new" }, "closed"), true);
   assert.equal(canChangeLeadStatus(lead, "contacted"), true);
   assert.equal(canChangeLeadStatus(lead, "converted"), false);
-  assert.equal(canChangeLeadStatus({ ...lead, status: "closed" }, "new"), false);
+  assert.equal(canChangeLeadStatus({ ...lead, status: "closed" }, "new"), true);
+  assert.equal(canChangeLeadStatus({ ...lead, status: "closed" }, "contacted"), true);
+  assert.equal(canChangeLeadStatus({ ...lead, status: "closed" }, "closed"), false);
+  assert.equal(canChangeLeadStatus({ status: "closed" }, "new"), true);
   assert.equal(canChangeLeadStatus({ ...lead, archived: true }, "closed"), false);
 });
 

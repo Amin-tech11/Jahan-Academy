@@ -568,10 +568,11 @@ function Editor({
                     وضعیت
                     <select
                       value={leadStatus}
-                      disabled={Boolean(source.archived) || source.status === "closed"}
+                      disabled={Boolean(source.archived)}
                       aria-describedby="lead-status-help"
                       onChange={(event) => setLeadStatus(event.target.value)}
                     >
+                      {source.status === "assigned" && <option value="assigned" disabled>انتخاب وضعیت جدید</option>}
                       {leadStatuses.map((status) => (
                         <option key={status} value={status} disabled={status !== source.status && !canChangeLeadStatus(source, status)}>
                           {labels[status] ?? status}
@@ -580,8 +581,9 @@ function Editor({
                     </select>
                   </label>
                   <p id="lead-status-help" className="adm-wide">
+                    {source.status === "assigned" && "این رکورد قبلاً ارجاع شده است. "}
                     {source.archived ? "وضعیت درخواست بایگانی‌شده قابل تغییر نیست." : source.status === "closed"
-                      ? "این درخواست بسته شده و وضعیت دیگری برای آن قابل انتخاب نیست."
+                      ? "این درخواست بسته شده است؛ برای پیگیری دوباره، یکی از وضعیت‌های مجاز را انتخاب کنید."
                       : !source.assignee
                         ? "برای وضعیت‌های پیگیری، ابتدا باید مسئول درخواست تعیین شده باشد؛ در حال حاضر فقط بستن درخواست مجاز است."
                         : "وضعیت‌های قابل انتخاب بر اساس مرحلهٔ فعلی درخواست نمایش داده می‌شوند."}
@@ -804,7 +806,7 @@ const listSessions = new Map<
 function ResourceList({ resource }: { resource: Resource }) {
   const previous = listSessions.get(resource.id);
   const [query, setQuery] = useState(previous?.query ?? "");
-  const [status, setStatus] = useState(previous?.status ?? "");
+  const [status, setStatus] = useState(previous?.status && resource.statuses?.includes(previous.status) ? previous.status : "");
   const [calendar, setCalendar] = useState<Calendar>(previous?.calendar ?? "persian");
   const [fromDate, setFromDate] = useState(previous?.fromDate ?? "");
   const [toDate, setToDate] = useState(previous?.toDate ?? "");

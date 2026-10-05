@@ -2,6 +2,14 @@
 
 Source of truth: `Project_Context.md`, especially sections 4, 6.3–6.10 and 16.
 
+## Shared dropdown arrows and consultation choices — 2026-10-05
+
+Single-choice select controls throughout the application use the reference's filled gray 10×6 triangle with a 16px inset, on the left for RTL and the right for LTR. The shared root stylesheet covers public forms, destination/blog controls and every admin resource; header controls, multi-selects and listboxes are excluded. Forced-colors mode restores the native arrow. No header/accordion/calendar icons change. This is delivered on admin for PR integration; other running branch checkouts receive it when the owner integrates the shared change.
+
+Assigned is removed from consultation filter/edit choices. Existing assigned records remain intact with a disabled neutral placeholder in the editor and retain allowed next transitions. Stale saved filter choices fall back to all statuses. Backend workflow, assignment, authorization and stored statuses are unchanged; no schema/API/migration changes apply.
+
+Validation: 109 frontend tests and production build/TypeScript pass. Refreshed localhost:3500 confirms removal in filter and editor, 10×6 SVG arrows with 16px inset and 44px text clearance, and shared styling across all five assessment selectors in both Persian and English. No real records were modified. Header source is unchanged and excluded by the shared selector.
+
 ## Consultation status selector — 2026-10-04
 
 The detail editor includes a localized status selector saved with «ذخیره تغییرات». Current workflow transitions and assignee requirements constrain choices; closed/archived records cannot transition. Status-only edits call the existing versioned status-transitions endpoint without PATCH. Combined edits save fields first and use the returned version for the transition. If the transition fails, the editor retains the saved fields/version, explains partial success, and allows retrying only the pending status. Unsaved status changes participate in close/reload warnings; the table refreshes after successful save. The removed record-operations panel remains absent. No backend, schema or permission changes are needed. Tests cover transport, versions, transitions, partial failure/retry and permission/stale errors; backend workflow integration coverage is unchanged.
@@ -107,3 +115,7 @@ Current owner-approved scope exposes only consultation requests after login. Oth
 Admin-only CSS now uses the current home-page palette from frontend/app/home.css: brand blue #123B78, silver #AEB7C2, canvas #F7F8FA, text #202833 and muted text #66717F. Scoped tokens cover navigation, tables, controls, dialogs, live-update indicators and login. Success/warning/error colors retain their semantic meaning; the existing login artwork is preserved.
 
 Validation: production build (including TypeScript), browser refresh on localhost:3500, visual inspection of the request table/sidebar/login, and contrast calculations for body, muted, primary, selected and semantic text (all at least 4.5:1). No new unit tests, API/permission design, migrations or data integration tests apply because this update changes CSS colors only. Existing behavior is covered by CI.
+
+## Reopening closed consultation requests — 2026-10-05
+
+Authorized staff can transition a closed request back into an active workflow status through the existing versioned status-transition API. The status selector stays enabled for closed, non-archived records and applies existing assignee requirements to the selected target status. Reopening is recorded in the existing status history. Archived requests remain immutable. No schema, migration, permission grant or new endpoint is required.

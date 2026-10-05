@@ -50,7 +50,6 @@ const active = { ...f("active", "فعال", "checkbox"), initial: true };
 const states = ["draft", "published", "archived"];
 export const leadStatuses = [
   "new",
-  "assigned",
   "contacted",
   "qualified",
   "not_qualified",
