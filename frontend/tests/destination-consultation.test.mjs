@@ -71,4 +71,3 @@ test("destination form prevents concurrent duplicate submissions", async () => {
   const app = setup({ pending: true }); const first = app.submit(); await app.submit();
   assert.equal(app.calls.length, 1); app.release(); await first;
 });
-

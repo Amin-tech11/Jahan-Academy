@@ -15,4 +15,3 @@ The five WebP photographs in this directory were generated with OpenAI image gen
 Each country's hero, academics, student-life, planning and visa composition combines relevant student scenes with that country's existing destination/campus assets. University cards use only their own campus photograph, outside the collage component. Existing campus image licenses and credits are in [../../universities/SOURCES.md](../../universities/SOURCES.md).
 
 The user's ApplyBoard screenshots were used as layout references only; no screenshot pixels, text, logos or embedded photographs were extracted. The responsive collage layouts use real independent image elements rather than flattening the page design into an image. There are no runtime third-party image requests.
-

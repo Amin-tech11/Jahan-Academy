@@ -21,4 +21,3 @@
 .submit:disabled{opacity:.65;cursor:wait}
 @media(max-width:800px){.layout{grid-template-columns:1fr}.photo{min-height:0;height:288px;border-radius:20px 20px 0 0}.card{margin-left:0;margin-top:-16px;padding:24px}.section{padding-block:24px 48px}.heading{margin-bottom:28px}}
 @media(max-width:480px){.fields{grid-template-columns:1fr}.section .heading h2{font-size:25px}.heading p{font-size:14px}}
-
