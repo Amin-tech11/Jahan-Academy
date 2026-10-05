@@ -106,6 +106,10 @@ GitHub integration services allow a 120-second health-check start period followe
 by 30 checks at five-second intervals. A cold PostgreSQL start on this workstation
 previously reached readiness after the old 40-second failure budget had expired.
 The same startup budget applies to Redis; unhealthy services still fail the job.
+The CI Compose override also grants a three-minute start period and 30 health
+checks at ten-second intervals to the application and storage services. The
+original readiness commands remain in effect. This prevents cold Python imports
+from exhausting the mock integration API's former one-minute startup budget.
 
 The wrapper runs as `jahan-ci` without starting an interactive systemd user
 session. Each checkout gets a separate locked environment and test/tool caches
