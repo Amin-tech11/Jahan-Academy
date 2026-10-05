@@ -128,10 +128,10 @@ jobs:
         options: >-
           --tmpfs /var/lib/postgresql:rw,size=512m
           --health-cmd "pg_isready -U jahan -d jahan_academy"
-          --health-interval 2s
-          --health-timeout 5s
-          --health-retries 60
           --health-start-period 120s
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 30
       redis:
         image: redis:8-alpine
         ports:
