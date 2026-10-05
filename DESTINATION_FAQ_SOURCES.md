@@ -1,18 +1,20 @@
 # Destination FAQ sources
 
-Reviewed **2026-10-05**. Each of the ten destination pages has five original question/answer pairs in Persian and English, stored in `frontend/lib/destination-faqs.ts`. Every answer links directly to its official supporting guidance. Source links appear inside the expanded answer. This is a static editorial snapshot; linked authorities provide the current requirements.
+Reviewed **2026-10-05**. Replaces the previous official-guidance FAQ set at the user's request. The 46 Persian/English entries in `frontend/lib/destination-faqs.ts` are concise original paraphrases of selected topics actually present in the GO2TR study-page FAQ sections. They are not a verbatim copy or a complete reproduction of the source pages. The English version translates the same editorial summaries. Every expanded answer links its country-specific GO2TR page.
 
-| Destination | Official guidance used |
-| --- | --- |
-| Canada | [University admission and language](https://www.educanada.ca/study-plan-etudes/university-universite.aspx?lang=eng), [application steps](https://www.educanada.ca/start-commencez/step-3-etape.aspx?lang=eng), [study-permit documents](https://www.canada.ca/en/immigration-refugees-citizenship/services/study-canada/study-permit/get-documents.html) |
-| Germany | [Entry qualifications, languages and application routes](https://www.make-it-in-germany.com/en/study-vocational-training/studies-in-germany/requirements), [study visa and funding](https://www.make-it-in-germany.com/en/visa-residence/types/studying) |
-| United Kingdom | [Student visa](https://www.gov.uk/student-visa), [course and CAS](https://www.gov.uk/student-visa/course), [English evidence](https://www.gov.uk/student-visa/knowledge-of-english) |
-| Italy | [Universitaly first steps](https://www.universitaly.it/it/first-steps) |
-| Netherlands | [Admission requirements](https://www.studyinnl.org/plan-your-stay/admission-requirements), [IND student residence route](https://ind.nl/en/residence-permits/study/student-residence-permit-for-university-or-higher-professional-education) |
-| Australia | [Visa application steps](https://www.studyaustralia.gov.au/en/plan-your-move/visa-application-process), [OSHC](https://www.studyaustralia.gov.au/en/plan-your-move/overseas-student-health-cover-oshc.html) |
-| Sweden | [Entry requirements](https://www.universityadmissions.se/en/entry-requirements/), [higher-education residence](https://www.migrationsverket.se/en/you-want-to-apply/study/higher-education.html) |
-| Finland | [Admissions](https://www.studyinfinland.fi/admissions), [funding](https://www.studyinfinland.fi/funding-your-studies) |
-| Denmark | [Language requirements](https://studyindenmark.dk/study-options/how-to-apply/language-requirements), [SIRI higher-education residence](https://www.nyidanmark.dk/en-GB/You-want-to-apply/Study/Higher-education) |
-| New Zealand | [Fee Paying Student Visa](https://www.immigration.govt.nz/visas/fee-paying-student-visa/), [student visa application overview](https://www.immigration.govt.nz/study/study-visas/visas-for-studying-in-new-zealand/) |
+| Panel destination | GO2TR study-page FAQ | Entries |
+| --- | --- | --- |
+| Canada | [GO2TR](https://go2tr.com/canada/study) | 5 |
+| Germany | [GO2TR](https://go2tr.com/germany/study) | 5 |
+| United Kingdom | [GO2TR](https://go2tr.com/uk/study) | 5 |
+| Italy | [GO2TR](https://go2tr.com/italy/study) | 5 |
+| Netherlands | [GO2TR](https://go2tr.com/netherland/study) | 5 |
+| Australia | [GO2TR](https://go2tr.com/australia/study) | 5 |
+| Sweden | [GO2TR](https://go2tr.com/sweden/study) | 3 |
+| Finland | [GO2TR](https://go2tr.com/finland/study) | 5 |
+| Denmark | [GO2TR](https://go2tr.com/denmark/study) | 3 |
+| New Zealand | [GO2TR](https://go2tr.com/newzealand/study) | 5 |
 
-The summaries omit fixed fees, language-score thresholds, funding amounts and processing-time promises. They preserve relevant distinctions such as conditional admission versus final visa approval, programme-specific entry requirements and insurance exceptions. They do not promise admission, work permission or residence approval.
+Sweden and Denmark each had only three FAQs in the study-page FAQ section reviewed. Other countries use five selected non-duplicated topics. No generic filler, user comment threads or GO2TR promotional claims about its own services were included. GO2TR is a commercial editorial source, so the accordion link label is “Source”, not “Official source”. Its fee/score ranges are attributed estimates, not guaranteed prices or universal admission thresholds.
+
+One substantive source correction is explicit: GO2TR's Danish work FAQ says 20 hours weekly. [SIRI's current higher-education guidance](https://www.nyidanmark.dk/en-GB/You-want-to-apply/Study/Higher-education) instead specifies 90 hours per calendar month September–May and full-time June–August for state-approved programmes. Permission depends on the residence conditions; non-state-approved programmes have different restrictions. That answer links both GO2TR (topic provenance) and SIRI (current rule). No obsolete visa-processing, automatic-residency or medical-entry-test claims were selected.

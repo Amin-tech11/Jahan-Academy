@@ -6,13 +6,13 @@ import vm from "node:vm";
 import { destinations } from "../lib/destination-content.ts";
 import { destinationFaqs } from "../lib/destination-faqs.ts";
 
-test("all ten destination guides have five distinct bilingual questions with official sources", () => {
+test("all ten destination guides use country-matched bilingual GO2TR FAQs", () => {
   assert.deepEqual(Object.keys(destinationFaqs).sort(), destinations.map(({ slug }) => slug).sort());
-  const hosts = new Set(["www.educanada.ca", "www.canada.ca", "www.make-it-in-germany.com", "www.gov.uk", "www.universitaly.it", "www.studyinnl.org", "ind.nl", "www.studyaustralia.gov.au", "www.universityadmissions.se", "www.migrationsverket.se", "www.studyinfinland.fi", "studyindenmark.dk", "www.nyidanmark.dk", "www.immigration.govt.nz"]);
+  const paths = { "united-kingdom": "uk", netherlands: "netherland", "new-zealand": "newzealand" };
   for (const [slug, items] of Object.entries(destinationFaqs)) {
-    assert.equal(items.length, 5, slug);
+    assert.equal(items.length, ["sweden", "denmark"].includes(slug) ? 3 : 5, slug);
     for (const locale of ["fa", "en"]) {
-      assert.equal(new Set(items.map((item) => item.question[locale])).size, 5, slug);
+      assert.equal(new Set(items.map((item) => item.question[locale])).size, items.length, slug);
       for (const item of items) {
         assert.ok(item.question[locale].trim() && item.answer[locale].trim(), `${slug}.${locale}`);
         assert.notEqual(item.question.fa, item.question.en);
@@ -22,10 +22,18 @@ test("all ten destination guides have five distinct bilingual questions with off
     for (const { source } of items) {
       const url = new URL(source.url);
       assert.equal(url.protocol, "https:");
-      assert.ok(hosts.has(url.hostname), `Unexpected source ${source.url}`);
-      assert.ok(source.name.trim());
+      assert.equal(url.hostname, "go2tr.com");
+      assert.equal(url.pathname, `/${paths[slug] || slug}/study`);
+      assert.equal(source.name, "GO2TR");
     }
   }
+});
+
+test("Danish work FAQ links the current SIRI correction instead of the outdated weekly limit", () => {
+  const item = destinationFaqs.denmark[0];
+  assert.equal(new URL(item.verification.url).hostname, "www.nyidanmark.dk");
+  assert.match(item.answer.en, /90 hours monthly/);
+  assert.match(item.answer.fa, /۹۰ ساعت در ماه/);
 });
 
 const require = createRequire(import.meta.url);
@@ -44,7 +52,7 @@ for (const locale of ["fa", "en"]) test(`destination FAQ supports one open answe
     },
   });
   const items = destinationFaqs.canada;
-  const render = () => module.exports.DestinationFaq({ items, locale }).props.children;
+  const render = (entries = items) => module.exports.DestinationFaq({ items: entries, locale }).props.children;
   const button = (row) => row.props.children[0].props.children.props;
   const answer = (row) => row.props.children[1].props;
   let rows = render();
@@ -66,4 +74,10 @@ for (const locale of ["fa", "en"]) test(`destination FAQ supports one open answe
   assert.equal(answer(rows[1])["aria-hidden"], false);
   button(rows[1]).onClick();
   assert.ok(render().every((row) => answer(row).inert));
+  const danishRows = render(destinationFaqs.denmark);
+  button(danishRows[0]).onClick();
+  const corrected = answer(render(destinationFaqs.denmark)[0]).children.props.children.props.children;
+  assert.equal(corrected[1].props.href, destinationFaqs.denmark[0].source.url);
+  assert.equal(corrected[2].props.href, destinationFaqs.denmark[0].verification.url);
+  assert.equal(corrected[2].props.rel, "noopener noreferrer");
 });

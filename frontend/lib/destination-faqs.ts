@@ -5,104 +5,81 @@ export type DestinationFaqItem = {
   question: Localized;
   answer: Localized;
   source: { name: string; url: string };
+  verification?: { name: string; url: string };
 };
-const source = (name: string, url: string) => ({ name, url });
-const faq = (qFa: string, qEn: string, aFa: string, aEn: string, reference: DestinationFaqItem["source"]): DestinationFaqItem => ({
-  question: { fa: qFa, en: qEn }, answer: { fa: aFa, en: aEn }, source: reference,
+const faq = (country: string, qFa: string, qEn: string, aFa: string, aEn: string): DestinationFaqItem => ({
+  question: { fa: qFa, en: qEn }, answer: { fa: aFa, en: aEn },
+  source: { name: "GO2TR", url: `https://go2tr.com/${country}/study` },
 });
-const canadaAdmission = source("EduCanada", "https://www.educanada.ca/study-plan-etudes/university-universite.aspx?lang=eng");
-const canadaApplication = source("EduCanada", "https://www.educanada.ca/start-commencez/step-3-etape.aspx?lang=eng");
-const canadaPermit = source("IRCC", "https://www.canada.ca/en/immigration-refugees-citizenship/services/study-canada/study-permit/get-documents.html");
-const germanyAdmission = source("Make it in Germany", "https://www.make-it-in-germany.com/en/study-vocational-training/studies-in-germany/requirements");
-const germanyVisa = source("Make it in Germany", "https://www.make-it-in-germany.com/en/visa-residence/types/studying");
-const ukVisa = source("GOV.UK", "https://www.gov.uk/student-visa");
-const ukCourse = source("GOV.UK", "https://www.gov.uk/student-visa/course");
-const ukLanguage = source("GOV.UK", "https://www.gov.uk/student-visa/knowledge-of-english");
-const italy = source("Universitaly", "https://www.universitaly.it/it/first-steps");
-const netherlandsAdmission = source("Study in NL", "https://www.studyinnl.org/plan-your-stay/admission-requirements");
-const netherlandsPermit = source("IND", "https://ind.nl/en/residence-permits/study/student-residence-permit-for-university-or-higher-professional-education");
-const australia = source("Study Australia", "https://www.studyaustralia.gov.au/en/plan-your-move/visa-application-process");
-const australiaHealth = source("Study Australia", "https://www.studyaustralia.gov.au/en/plan-your-move/overseas-student-health-cover-oshc.html");
-const swedenAdmission = source("University Admissions", "https://www.universityadmissions.se/en/entry-requirements/");
-const swedenPermit = source("Migrationsverket", "https://www.migrationsverket.se/en/you-want-to-apply/study/higher-education.html");
-const finlandAdmission = source("Study in Finland", "https://www.studyinfinland.fi/admissions");
-const finlandFunding = source("Study in Finland", "https://www.studyinfinland.fi/funding-your-studies");
-const denmarkLanguage = source("Study in Denmark", "https://studyindenmark.dk/study-options/how-to-apply/language-requirements");
-const denmarkPermit = source("SIRI · New to Denmark", "https://www.nyidanmark.dk/en-GB/You-want-to-apply/Study/Higher-education");
-const newZealand = source("Immigration New Zealand", "https://www.immigration.govt.nz/visas/fee-paying-student-visa/");
-const newZealandApplication = source("Immigration New Zealand", "https://www.immigration.govt.nz/study/study-visas/visas-for-studying-in-new-zealand/");
 
-// Original bilingual summaries of the linked official guidance, reviewed 2026-10-05.
-// Avoid fixed fees, processing promises and universal requirements where exceptions apply.
+// Selected topics from GO2TR study-page FAQs, reviewed 2026-10-05.
+// Original concise paraphrases and English translations, not verbatim reproduction.
+// Estimates are attributed to GO2TR; individual programme conditions still apply.
 export const destinationFaqs: Record<string, readonly DestinationFaqItem[]> = {
-  canada: [
-    faq("برای تحصیل در کانادا چه زبان‌هایی پذیرفته می‌شوند؟", "Which study languages are available in Canada?", "دوره‌ها می‌توانند انگلیسی یا فرانسوی باشند؛ دانشگاه، مدرک زبان و شرایط پذیرش همان دوره را تعیین می‌کند.", "Courses may use English or French. Each university sets its programme’s language evidence and admission requirements.", canadaAdmission),
-    faq("آیا همه دانشگاه‌ها مهلت اپلای یکسانی دارند؟", "Do universities share an application deadline?", "خیر؛ مهلت و مدارک هر دانشگاه متفاوت است. پیش از ارسال درخواست، صفحه پذیرش دوره را بررسی کنید.", "No. Deadlines and documents vary by institution. Check your programme’s admissions page before applying.", canadaApplication),
-    faq("نامه پذیرش، همان مجوز تحصیل است؟", "Is an acceptance letter a study permit?", "خیر؛ نامه پذیرش دانشگاه یکی از مدارک درخواست مجوز تحصیل است و به‌تنهایی اجازه تحصیل نمی‌دهد.", "No. The institution’s acceptance letter supports a study-permit application; it does not itself authorise study.", canadaPermit),
-    faq("آیا PAL یا TAL برای همه لازم است؟", "Does everyone need a PAL or TAL?", "بیشتر متقاضیان به تأییدیه استانی یا قلمرویی نیاز دارند، اما استثنا وجود دارد؛ برای کبک، الزامات CAQ را هم بررسی کنید.", "Most applicants need provincial or territorial attestation, with exceptions. For Quebec, also check the CAQ requirements.", canadaPermit),
-    faq("علاوه بر پذیرش، چه مدارکی آماده کنم؟", "What should I prepare besides acceptance?", "مدارک هویتی و تمکن مالی لازم‌اند؛ معاینه پزشکی، گواهی پلیس یا مدارک تکمیلی ممکن است بسته به پرونده درخواست شوند.", "Prepare identity and financial evidence. Medical exams, police certificates or additional documents may be required depending on your case.", canadaPermit),
+  "canada": [
+    faq("canada", "آیا بورسیه می‌تواند هزینه تحصیل کانادا را پوشش دهد؟", "Can scholarships cover Canadian study costs?", "آموزش کاملاً رایگان عمومی نیست؛ بورسیه و فاند می‌توانند هزینه‌ها را کاهش دهند.", "Universal free study is unavailable; scholarships and funding can reduce costs."),
+    faq("canada", "دانشجو در کانادا امکان اشتغال دارد؟", "Can students take jobs in Canada?", "کار پاره‌وقت ممکن است؛ باید شرایط مجوز تحصیل و کار خود را رعایت کنید.", "Part-time employment is possible, subject to your study and work permissions."),
+    faq("canada", "کانادا چه فرصت‌هایی برای دانشجو فراهم می‌کند؟", "What opportunities does Canada offer students?", "آموزش معتبر، کار دانشجویی و مسیرهای پس از فارغ‌التحصیلی از مزیت‌های مطرح‌شده‌اند.", "Highlighted benefits include quality education, student employment and post-graduation pathways."),
+    faq("canada", "بورسیه کانادایی ممکن است مشمول مالیات شود؟", "Could Canadian scholarships be taxable?", "بله؛ GO2TR وضعیت مالیاتی را وابسته به استان و مبلغ کمک‌هزینه می‌داند.", "Possibly. GO2TR relates taxation to the province and funding amount."),
+    faq("canada", "برای پذیرش کانادا چه معدلی مناسب است؟", "What grades support admission in Canada?", "GO2TR معدل ۱۴ تا ۱۵ را معمول می‌داند؛ دانشگاه و رشته ممکن است نمره بالاتری بخواهند.", "GO2TR suggests 14–15/20 as common; institutions and programmes may require more."),
   ],
-  germany: [
-    faq("آیا حتماً باید اشتودیِن‌کولگ بگذرانم؟", "Will I need a Studienkolleg?", "به اعتبار مدرک قبلی بستگی دارد؛ برخی متقاضیان پیش از ورود به دانشگاه به دوره آمادگی و ارزیابی نیاز دارند.", "It depends on your previous qualification. Some applicants need a preparatory course and assessment before university entry.", germanyAdmission),
-    faq("تحصیل به انگلیسی در آلمان ممکن است؟", "Can I study in English in Germany?", "بله؛ برای دوره انگلیسی معمولاً اثبات زبان آلمانی لازم نیست، اما شرایط زبان همان دانشگاه ملاک است.", "Yes. English-taught programmes generally do not require German evidence; the institution’s own language requirements apply.", germanyAdmission),
-    faq("درخواست را به دانشگاه بدهم یا uni-assist؟", "Should I apply directly or through uni-assist?", "دانشگاه مسیر درخواست را مشخص می‌کند؛ برخی از uni-assist استفاده می‌کنند و برخی درخواست مستقیم می‌پذیرند.", "Follow the university’s application route: some use uni-assist, while others accept direct applications.", germanyAdmission),
-    faq("تمکن مالی فقط با حساب مسدودشده ممکن است؟", "Is a blocked account the only funding proof?", "خیر؛ بورسیه یا تعهدنامه رسمی حمایت مالی هم می‌تواند پذیرفته شود؛ شرایط و مبلغ جاری را بررسی کنید.", "No. A scholarship or formal declaration of commitment may also qualify. Check current conditions and amounts.", germanyVisa),
-    faq("پذیرش دانشگاه برای ویزای تحصیلی کافی است؟", "Is university admission enough for a study visa?", "خیر؛ علاوه بر پذیرش، تأمین هزینه زندگی و شرایط زبان مطرح‌اند. نیاز به ویزا به تابعیت شما بستگی دارد.", "No. Funding and language conditions also apply. Whether you need an entry visa depends on your nationality.", germanyVisa),
+  "germany": [
+    faq("germany", "معدل مورد انتظار دانشگاه‌های آلمان چقدر است؟", "What grades do German universities expect?", "GO2TR حدود ۱۴ تا ۱۵ و برای دانشگاه‌های رقابتی ۱۶ به بالا را مطرح می‌کند؛ معیار ثابت نیست.", "GO2TR mentions roughly 14–15/20, or 16+ for competitive institutions; requirements vary."),
+    faq("germany", "کدام شهرهای آلمان برای دانشجو محبوب‌اند؟", "Which German cities are popular with students?", "برلین، مونیخ، هامبورگ و کلن به‌دلیل دانشگاه‌ها و فرصت‌های شغلی معرفی شده‌اند.", "Berlin, Munich, Hamburg and Cologne are highlighted for universities and employment opportunities."),
+    faq("germany", "سن بالاتر مانع ورود به کارشناسی آلمان است؟", "Does older age prevent German undergraduate admission?", "سقف سنی رسمی مشخصی ذکر نشده؛ مسیر تحصیلی منطقی و هدف روشن اهمیت دارند.", "No fixed official upper age is stated; a coherent study plan matters."),
+    faq("germany", "مدرک دانشگاه آزاد برای آلمان قابل استفاده است؟", "Are Azad University degrees accepted?", "بله، پس از ارزیابی و تأیید مدرک می‌توان اقدام کرد.", "Yes, if assessed and recognised."),
+    faq("germany", "با نمرات پایین چگونه شانس پذیرش آلمان را بهتر کنم؟", "How can lower grades be offset in Germany?", "انتخاب دانشگاه مناسب، تقویت رزومه و دوره‌های آمادگی از راهکارهای پیشنهادی GO2TR هستند.", "GO2TR suggests suitable institutions, stronger credentials and preparatory study."),
   ],
   "united-kingdom": [
-    faq("CAS چیست و چه کسی آن را صادر می‌کند؟", "What is a CAS and who issues it?", "مؤسسه دارای مجوز اسپانسر، تأییدیه پذیرش تحصیلی CAS را صادر می‌کند؛ شماره آن برای درخواست ویزای Student لازم است.", "A licensed student sponsor issues a Confirmation of Acceptance for Studies. Its reference is needed for a Student visa application.", ukCourse),
-    faq("آیا اثبات زبان فقط با یک آزمون ممکن است؟", "Is a language test the only proof route?", "خیر؛ روش اثبات انگلیسی به شرایط شما بستگی دارد و در برخی دوره‌های دانشگاهی، خود مؤسسه می‌تواند زبان را ارزیابی کند.", "No. Evidence routes depend on your circumstances; eligible degree-level sponsors may assess your English themselves.", ukLanguage),
-    faq("برای ویزا چه هزینه‌هایی را در نظر بگیرم؟", "Which costs should I plan for the visa?", "علاوه بر شهریه و زندگی، هزینه درخواست و معمولاً هزینه خدمات سلامت را در بودجه لحاظ کنید؛ مبالغ جاری را بررسی کنید.", "Budget for tuition, living costs, the application fee and usually the healthcare surcharge. Check current amounts.", ukVisa),
-    faq("آیا می‌توانم حین تحصیل کار کنم؟", "Can I work while studying?", "امکان و محدودیت کار به دوره و شرایط ویزا بستگی دارد؛ پیش از شروع کار، مجوزهای ثبت‌شده برای خودتان را بررسی کنید.", "Work permission and limits depend on your course and visa conditions. Check your own permission before starting work.", ukVisa),
-    faq("آیا پذیرش از هر مؤسسه‌ای قابل استفاده است؟", "Can admission from any institution support a Student visa?", "برای مسیر Student، باید پیشنهاد دوره از مؤسسه دارای مجوز اسپانسر داشته باشید و سایر شرایط ویزا را هم احراز کنید.", "The Student route requires an offer from a licensed sponsor, alongside the other visa requirements.", ukVisa),
+    faq("uk", "ارشد در انگلستان معمولاً چند سال طول می‌کشد؟", "How long does a UK master's usually take?", "GO2TR طول دوره را یک تا دو سال ذکر می‌کند.", "GO2TR gives a typical duration of one to two years."),
+    faq("uk", "بدون دیپلم بین‌المللی چه مسیری برای ورود به دانشگاه هست؟", "What entry routes exist without an international diploma?", "مسیرهایی مانند GCSE، سپس A-level یا دوره فاندیشن در منبع مطرح شده‌اند.", "The source discusses routes involving GCSEs, followed by A-levels or foundation study."),
+    faq("uk", "برای اپلای انگلستان از چه مرحله‌ای شروع کنم؟", "How should I begin a UK study application?", "دانشگاه را انتخاب کنید؛ مدارک، پذیرش، ویزا، بودجه و برنامه سفر را به‌ترتیب آماده کنید.", "Choose an institution, then arrange documents, admission, visa, funding and travel."),
+    faq("uk", "لندن چه مزیتی برای ادامه تحصیل دارد؟", "What makes London attractive for study?", "دانشگاه‌های شناخته‌شده، شبکه‌سازی حرفه‌ای و فضای چندفرهنگی از مزیت‌های آن هستند.", "Recognised universities, professional networking and a multicultural environment are highlighted."),
+    faq("uk", "بورسیه کامل در انگلستان امکان‌پذیر است؟", "Is full funding possible in the UK?", "بله؛ بورسیه‌های فول‌فاند می‌توانند هزینه تحصیل را پوشش دهند، در صورت احراز شرایط.", "Yes. Fully funded scholarships can cover study costs when eligibility conditions are met."),
   ],
-  italy: [
-    faq("می‌توانم در ایتالیا به انگلیسی تحصیل کنم؟", "Can I study in English in Italy?", "بله؛ زبان و مدرک موردنیاز را در صفحه دوره بررسی کنید.", "Yes. Check the programme’s language and evidence requirements.", italy),
-    faq("آیا آزمون ورودی لازم است؟", "Will I need an entrance test?", "به دوره بستگی دارد؛ دانشگاه ممکن است مدرک، نمرات، آزمون یا مصاحبه را ارزیابی کند.", "It depends on the course. Institutions may assess qualifications, grades, tests or interviews.", italy),
-    faq("پیش‌ثبت‌نام Universitaly را از کجا شروع کنم؟", "How do I start Universitaly pre-enrolment?", "ابتدا با دانشگاه هماهنگ کنید؛ سپس درخواست و مدارک تعیین‌شده را در Universitaly ثبت کنید.", "Contact your university first, then submit its specified application and documents through Universitaly.", italy),
-    faq("تأیید پیش‌ثبت‌نام، ویزا را تضمین می‌کند؟", "Does validated pre-enrolment guarantee a visa?", "خیر؛ بررسی و صدور ویزا بر عهده نمایندگی کنسولی است و تصمیمی جداگانه دارد.", "No. The consular authority makes a separate visa decision.", italy),
-    faq("بعد از ورود چه کاری باقی می‌ماند؟", "What remains after arrival?", "در صورت نیاز، برای مجوز اقامت اقدام کنید و ثبت‌نام نهایی دانشگاه را طبق راهنمای آن تکمیل کنید.", "Where required, apply for a residence permit and complete the university’s final enrolment steps.", italy),
+  "italy": [
+    faq("italy", "درخواست تحصیل در ایتالیا را چگونه شروع کنم؟", "How do I start an Italian study application?", "دوره مناسب انتخاب کنید و سوابق نمرات و مدرک زبان را برای دانشگاه بفرستید.", "Choose a suitable course and submit academic records and language evidence."),
+    faq("italy", "چرا ایتالیا بین متقاضیان تحصیل محبوب است؟", "Why do applicants choose Italy?", "هزینه مناسب، اعتبار علمی، بورسیه‌های متنوع و عضویت در شنگن از دلایل معرفی‌شده‌اند.", "Highlighted reasons include affordability, academic reputation, scholarships and Schengen membership."),
+    faq("italy", "دانشجوی غیراروپایی می‌تواند هزینه تحصیل را با بورسیه پوشش دهد؟", "Can non-European students fund study through scholarships?", "بله؛ دریافت بورسیه مناسب می‌تواند هزینه تحصیل را پوشش دهد.", "Yes. A suitable scholarship can cover study costs."),
+    faq("italy", "کار پاره‌وقت دانشجویی در ایتالیا چه سقفی دارد؟", "What is Italy's student part-time work limit?", "GO2TR حداکثر ۲۰ ساعت در هفته را برای کار دانشجویی ذکر می‌کند.", "GO2TR states a student employment limit of 20 hours weekly."),
+    faq("italy", "بورسیه‌های ایتالیا بر چه اساسی اعطا می‌شوند؟", "How are Italian scholarships awarded?", "ارزیابی می‌تواند بر پایه شایستگی تحصیلی یا نیاز مالی متقاضی باشد.", "Assessment may depend on academic merit or the applicant's financial need."),
   ],
-  netherlands: [
-    faq("معادل‌بودن مدرک من را چه کسی بررسی می‌کند؟", "Who assesses my previous qualification?", "مؤسسه شرایط پذیرش را تعیین می‌کند و می‌تواند از ارزیابی Nuffic کمک بگیرد؛ تصمیم نهایی با مؤسسه است.", "The institution sets admission requirements and may use Nuffic’s assessment. It makes the final admission decision.", netherlandsAdmission),
-    faq("چه نمره زبانی برای هلند لازم است؟", "What language score do I need in the Netherlands?", "نمره و آزمون قابل قبول را دانشگاه و دوره مشخص می‌کنند؛ یک حدنصاب مشترک برای همه دوره‌ها وجود ندارد.", "Accepted tests and scores are programme-specific. Check your institution rather than assuming a universal threshold.", netherlandsAdmission),
-    faq("اگر هنوز شرایط پذیرش را نداشته باشم چه؟", "What if I do not meet entry requirements yet?", "ممکن است دوره آمادگی به شما پیشنهاد شود؛ امکان و شرایط آن را از دانشگاه بپرسید.", "A preparatory programme may be an option. Ask the institution about availability and eligibility.", netherlandsAdmission),
-    faq("درخواست اقامت تحصیلی را چه کسی ارسال می‌کند؟", "Who submits the student residence application?", "در این مسیر، مؤسسه آموزشیِ اسپانسر شناخته‌شده درخواست را برای شما به IND ارائه می‌کند.", "For this route, the recognised sponsoring institution submits your application to IND.", netherlandsPermit),
-    faq("برای اقامت، هر نوع دوره‌ای پذیرفته می‌شود؟", "Does any course qualify for this residence route?", "این مسیر به تحصیل تمام‌وقت در دوره معتبر و مؤسسه اسپانسر شناخته‌شده نیاز دارد؛ تمکن مالی هم بررسی می‌شود.", "This route requires full-time accredited study with a recognised sponsor, alongside sufficient financial resources.", netherlandsPermit),
+  "netherlands": [
+    faq("netherland", "GO2TR شهریه دانشگاه‌های هلند را چقدر برآورد می‌کند؟", "What Dutch tuition estimates does GO2TR give?", "سالانه برای کارشناسی ۶ تا ۱۵ هزار یورو و ارشد ۸ تا ۲۰ هزار یورو؛ مبلغ دانشگاه را بررسی کنید.", "Annual estimates: €6,000–15,000 for bachelor's and €8,000–20,000 for master's; check actual tuition."),
+    faq("netherland", "برای ورود به دانشگاه هلند آزمون سراسری لازم است؟", "Is a national entrance exam required in the Netherlands?", "معمولاً خیر؛ بعضی رشته‌ها مصاحبه یا نمونه‌کار می‌خواهند.", "Usually not; some programmes request interviews or portfolios."),
+    faq("netherland", "یادگیری و انتخاب واحد در دانشگاه‌های هلند چگونه است؟", "How do learning and electives work in Dutch universities?", "آموزش فعال و پروژه‌محور است؛ در کنار دروس الزامی، واحدهای انتخابی هم ارائه می‌شوند.", "Active, project-based learning combines required courses with elective options."),
+    faq("netherland", "دوره انگلیسی‌زبان در هلند پیدا می‌شود؟", "Are English-taught courses available in the Netherlands?", "بله؛ به‌ویژه در مقاطع ارشد و دکتری، برنامه‌های انگلیسی متعددی وجود دارند.", "Yes; numerous English-taught programmes are available, particularly at master's and doctoral levels."),
+    faq("netherland", "آیا دانشگاه‌های هلند سقف سنی مشخصی دارند؟", "Is there an upper age limit?", "سقف عمومی مشخصی ذکر نشده؛ برای تحصیلات تکمیلی، سوابق بررسی می‌شوند.", "No general limit is stated; postgraduate applications consider previous experience."),
   ],
-  australia: [
-    faq("نامه پیشنهاد همان CoE است؟", "Is an offer letter the same as a CoE?", "خیر؛ پس از پذیرش پیشنهاد و پرداخت ودیعه، مؤسسه تأیید ثبت‌نام CoE را صادر می‌کند.", "No. After accepting the offer and paying the deposit, the provider issues a Confirmation of Enrolment.", australia),
-    faq("آیا مدرک زبان برای ویزا لازم است؟", "Is language evidence needed for the visa?", "ممکن است نتیجه آزمون انگلیسی تأییدشده لازم باشد؛ الزامات پرونده خود را بررسی کنید.", "An approved English-test result may be required. Check the evidence requirements for your case.", australia),
-    faq("معیار Genuine Student درباره چیست؟", "What does Genuine Student assess?", "درباره پیشینه، انتخاب دوره و استرالیا، و فایده تحصیل برای آینده خود توضیح می‌دهید.", "You explain your background, course and country choices, and how studying supports your future.", australia),
-    faq("OSHC چه نقشی دارد؟", "What is OSHC for?", "بیمه سلامت دانشجویان خارجی است و طبق الزامات ویزا باید پوشش مناسب دوران اقامت داشته باشید.", "It is overseas student health cover. Arrange coverage for your stay under the visa requirements.", australiaHealth),
-    faq("تمکن مالی چه هزینه‌هایی را پوشش می‌دهد؟", "What should my funding cover?", "شهریه، زندگی و سفر را لحاظ کنید؛ هزینه واقعی می‌تواند از حداقل تعیین‌شده بیشتر باشد.", "Include tuition, living and travel costs. Actual expenses may exceed the official minimum.", australia),
+  "australia": [
+    faq("australia", "برآورد شهریه سالانه استرالیا در GO2TR چقدر است؟", "What annual Australian tuition range does GO2TR report?", "بسته به رشته، حدود ۲۴ هزار تا ۹۴٬۰۱۶ دلار استرالیا؛ شهریه دقیق را از دانشگاه بگیرید.", "Approximately AUD 24,000–94,016 depending on the subject; obtain exact tuition from the institution."),
+    faq("australia", "برای پذیرش استرالیا چگونه زبانم را اثبات کنم؟", "How can I demonstrate English?", "آیلتس و تافل از آزمون‌های مطرح‌شده‌اند.", "IELTS and TOEFL are mentioned."),
+    faq("australia", "وقفه تحصیلی در پرونده استرالیا یعنی چه؟", "What does a study gap mean in an Australian application?", "فاصله آخرین تحصیل تا درخواست جدید است؛ ممکن است توضیح و مدارک کاری بخواهند.", "It is the interval since previous study; explanations and employment evidence may be requested."),
+    faq("australia", "GO2TR چه نمره آیلتسی را برای استرالیا مطرح می‌کند؟", "What IELTS scores does GO2TR suggest for Australia?", "معمولاً ۶٫۵ و برای بعضی دوره‌های ارشد یا دکتری ۷؛ شرط واقعی هر دوره متفاوت است.", "Typically 6.5, or 7 for some postgraduate courses; actual programme requirements vary."),
+    faq("australia", "دانشگاه‌های استرالیا چه مزیت‌هایی دارند؟", "What benefits do Australian universities offer?", "اعتبار بین‌المللی، امکانات پژوهشی و فرصت‌های شغلی پس از تحصیل از مزیت‌های معرفی‌شده‌اند.", "International recognition, research facilities and post-study employment opportunities are highlighted."),
   ],
-  sweden: [
-    faq("پذیرش سوئد چه نوع شرایطی دارد؟", "What admission requirements apply in Sweden?", "هم شرایط عمومی مقطع و هم پیش‌نیازهای اختصاصی دوره را باید احراز کنید؛ صفحه همان دوره را بخوانید.", "Meet both the study level’s general requirements and the programme’s specific prerequisites.", swedenAdmission),
-    faq("دوره انگلیسی هم اثبات زبان می‌خواهد؟", "Do English-taught courses require English evidence?", "بله؛ شرایط اثبات انگلیسی برای دوره‌های انگلیسی‌زبان اعمال می‌شود و روش قابل قبول را باید بررسی کنید.", "Yes. English-taught programmes have English requirements; check which evidence is accepted.", swedenAdmission),
-    faq("شهریه را قبل از درخواست اقامت بپردازم؟", "Must I pay tuition before applying for residence?", "اگر مشمول شهریه هستید، پرداخت موردنیاز پیش از درخواست اقامت لازم است تا پذیرش شما نهایی محسوب شود.", "If tuition applies, the required payment must precede your residence application for admission to count as final.", swedenPermit),
-    faq("تمکن مالی برای چه مدتی لازم است؟", "How long must my maintenance funds cover?", "برای کل دوره‌ای که مجوز اقامت درخواست می‌کنید؛ همراهان نیز باید تأمین مالی کافی داشته باشند.", "For the entire requested permit period. Accompanying family members also need sufficient maintenance.", swedenPermit),
-    faq("بیمه برای دوره کوتاه‌تر از یک سال چطور است؟", "What insurance is needed for studies under one year?", "بیمه جامع سلامت لازم است؛ اگر دانشگاه پوشش نمی‌دهد، برای بیمه شخصی مطابق الزامات اقدام کنید.", "Comprehensive health insurance is required. Arrange compliant personal coverage if your institution does not provide it.", swedenPermit),
+  "sweden": [
+    faq("sweden", "دانشگاه‌های سوئد به چه زبان‌هایی آموزش می‌دهند؟", "Which teaching languages are available in Sweden?", "دوره‌ها به انگلیسی یا سوئدی ارائه می‌شوند.", "Courses are offered in English or Swedish."),
+    faq("sweden", "GO2TR هزینه دانشگاه در سوئد را چقدر اعلام می‌کند؟", "What Swedish tuition estimates does GO2TR report?", "۸۰ هزار تا ۲۹۵ هزار کرون، بسته به دوره و دانشگاه؛ دکتری بدون شهریه معرفی شده است.", "SEK 80,000–295,000 depending on programme and institution; doctoral study is described as tuition-free."),
+    faq("sweden", "پس از فارغ‌التحصیلی سوئد می‌توان برای یافتن شغل ماند؟", "Can graduates stay in Sweden to seek work?", "GO2TR فرصت ۱۲ماهه جست‌وجوی کار و سپس تغییر اقامت در صورت احراز شرایط را مطرح می‌کند.", "GO2TR describes a 12-month job-search opportunity, followed by a residence change if eligible."),
   ],
-  finland: [
-    faq("درخواست پذیرش فنلاند را کجا ثبت کنم؟", "Where do I apply to study in Finland?", "درگاه رسمی Studyinfo مسیر درخواست مشترک یا جداگانه دوره‌ها را نشان می‌دهد؛ دستورالعمل همان دوره را دنبال کنید.", "The official Studyinfo portal lists joint and separate application routes. Follow your programme’s instructions.", finlandAdmission),
-    faq("همه دوره‌ها زمان درخواست یکسان دارند؟", "Do all programmes have the same application dates?", "خیر؛ بازه درخواست و مراحل پذیرش به دوره و نوع درخواست بستگی دارد؛ تاریخ‌های Studyinfo را بررسی کنید.", "No. Dates and procedures vary by programme and application route. Check the Studyinfo listing.", finlandAdmission),
-    faq("آیا تحصیل انگلیسی رایگان است؟", "Is English-taught study free?", "دانشجویان خارج از EU، EEA و سوئیس معمولاً برای کارشناسی و ارشد انگلیسی شهریه می‌پردازند؛ استثناها را بررسی کنید.", "Students outside the EU, EEA and Switzerland generally pay tuition for English-taught bachelor’s and master’s programmes; check exemptions.", finlandFunding),
-    faq("بورسیه دانشگاه هزینه زندگی را هم می‌دهد؟", "Does a university scholarship cover living costs?", "معمولاً بورسیه‌ها برای شهریه‌اند و رقابتی هستند؛ هزینه زندگی را جداگانه تأمین کنید.", "University scholarships usually target tuition and are competitive. Plan separate funding for living expenses.", finlandFunding),
-    faq("چه زمانی برای اقامت تحصیلی اقدام کنم؟", "When should I apply for student residence?", "برای متقاضیان مشمول، پس از پذیرش رسمی نوبت درخواست اقامت است؛ بیمه و محل زندگی را هم برنامه‌ریزی کنید.", "Where required, apply after official admission. Also plan your insurance and accommodation.", finlandAdmission),
+  "finland": [
+    faq("finland", "چه مدارکی برای پرونده تحصیلی فنلاند آماده کنم؟", "Which documents should I prepare for Finnish study?", "ترجمه سوابق تحصیلی، مدرک زبان، گذرنامه، انگیزه‌نامه و مدارک مالی در منبع ذکر شده‌اند.", "The source lists translated academic records, language evidence, passport, motivation letter and financial documents."),
+    faq("finland", "طول کارشناسی در فنلاند چقدر است؟", "How long is a Finnish bachelor's programme?", "GO2TR مدت سه‌ونیم تا چهارونیم سال را ذکر می‌کند؛ دوره انتخابی را بررسی کنید.", "GO2TR gives 3.5–4.5 years; check your chosen programme."),
+    faq("finland", "شهریه سالانه فنلاند طبق GO2TR چقدر است؟", "What annual Finnish tuition does GO2TR estimate?", "حدود ۹ تا ۲۰ هزار یورو؛ مبلغ نهایی به دانشگاه و دوره بستگی دارد.", "Approximately €9,000–20,000; the final amount depends on the institution and course."),
+    faq("finland", "برای دوره انگلیسی فنلاند چه نمره زبانی مطرح است؟", "What English scores are suggested for Finnish courses?", "GO2TR آیلتس ۶ تا ۶٫۵ یا تافل ۸۰ تا ۹۰ را ذکر می‌کند؛ بعضی دانشگاه‌ها معافیت دارند.", "GO2TR mentions IELTS 6–6.5 or TOEFL 80–90; some institutions offer exemptions."),
+    faq("finland", "چه حوزه‌هایی در فنلاند برای تحصیل پیشنهاد شده‌اند؟", "Which fields are highlighted?", "فناوری اطلاعات، مهندسی، علم داده، مدیریت، آموزش و محیط‌زیست.", "IT, engineering, data science, management, education and environment."),
   ],
-  denmark: [
-    faq("حدنصاب زبان انگلیسی در دانمارک یکسان است؟", "Is the English threshold the same everywhere in Denmark?", "خیر؛ سطح و نمره معادل را مؤسسه مشخص می‌کند و بعضی دوره‌ها سطح بالاتری می‌خواهند.", "No. Institutions set equivalent scores, and some programmes require a higher level.", denmarkLanguage),
-    faq("هر دوره‌ای برای اقامت تحصیلی مناسب است؟", "Does every programme qualify for student residence?", "شرایط مسیر اقامت را با نوع دوره و وضعیت تأیید مؤسسه تطبیق دهید؛ صرف ثبت‌نام کافی نیست.", "Check the residence route against the programme and institution’s approval status. Enrolment alone is insufficient.", denmarkPermit),
-    faq("فرم ST1 را چه کسی شروع می‌کند؟", "Who starts the ST1 application?", "در درخواست آنلاین، مؤسسه بخش اول را تکمیل می‌کند و سپس شما بخش مربوط به خود را ادامه می‌دهید.", "For an online application, the institution completes its part first, then you complete yours.", denmarkPermit),
-    faq("آیا صورت‌حساب والدین برای تمکن کافی است؟", "Is a parent’s bank statement enough for maintenance?", "برای اثبات تمکن از دارایی شخصی، حساب باید به نام خودتان و پول قابل دسترس باشد؛ استثناهای مسیر را بررسی کنید.", "For personal-funds evidence, money must be accessible in your own account. Check the route’s exemptions.", denmarkPermit),
-    faq("آیا اطلاعات بیومتریک هم لازم است؟", "Are biometrics required?", "برای پرونده اقامت، اطلاعات بیومتریک ثبت می‌شود؛ محل و مهلت مراجعه را در راهنمای درخواست بررسی کنید.", "Residence applications require biometrics. Check the application guidance for where and when to attend.", denmarkPermit),
+  "denmark": [
+    { ...faq("denmark", "اجازه کار دانشجویی دانمارک چگونه تعیین می‌شود؟", "How is Danish student work permission determined?", "کار به شرایط مجوز اقامت بستگی دارد؛ برای دوره‌های دولتیِ تأییدشده، سقف معمول ۹۰ ساعت در ماه از سپتامبر تا مه و تمام‌وقت در تابستان است.", "Permission depends on residence conditions. State-approved programmes normally allow 90 hours monthly September–May and full-time summer work."), verification: { name: "SIRI", url: "https://www.nyidanmark.dk/en-GB/You-want-to-apply/Study/Higher-education" } },
+    faq("denmark", "GO2TR کدام دانشگاه‌های دانمارک را پیشنهاد می‌کند؟", "Which Danish universities does GO2TR highlight?", "کپنهاگ، آلبورگ و آرهوس از دانشگاه‌های معرفی‌شده هستند.", "Copenhagen, Aalborg and Aarhus are among the highlighted universities."),
+    faq("denmark", "برآورد ماهانه هزینه زندگی دانشجو در دانمارک چیست؟", "What monthly Danish student living costs are estimated?", "GO2TR حدود ۵٬۵۹۳ تا ۸٬۹۴۹ کرون را ذکر می‌کند؛ هزینه واقعی به شهر و شیوه زندگی وابسته است.", "GO2TR estimates DKK 5,593–8,949; actual costs depend on city and lifestyle."),
   ],
   "new-zealand": [
-    faq("با پذیرش مشروط می‌توانم درخواست بدهم؟", "Can I apply with a conditional offer?", "از خارج نیوزیلند ممکن است بررسی اولیه انجام شود؛ تأیید نهایی ویزا به پیشنهاد بدون شرط نیاز دارد.", "Offshore applications may receive approval in principle; final visa approval requires an unconditional offer.", newZealand),
-    faq("چه کسی آمادگی زبان و تحصیل را بررسی می‌کند؟", "Who checks academic and English readiness?", "مؤسسه آموزشی تأیید می‌کند که توان علمی و انگلیسی لازم برای دوره را دارید.", "Your education provider confirms that your academic and English skills suit the course.", newZealand),
-    faq("تمکن مالی شامل چه مواردی است؟", "What funding must I demonstrate?", "شهریه، هزینه زندگی و امکان خروج از کشور را پوشش دهید؛ مدارک جاری را بررسی کنید.", "Show funding for tuition, living costs and leaving the country. Check current evidence requirements.", newZealand),
-    faq("بیمه درمان و سفر لازم است؟", "Do I need health and travel insurance?", "معمولاً پوشش مورد قبول مؤسسه لازم است؛ دانشجویان دکتری استثنا دارند. شرایط پرونده را بررسی کنید.", "Provider-approved cover is normally required, with a PhD exception. Check your specific conditions.", newZealand),
-    faq("درخواست ویزای Fee Paying Student را کجا بدهم؟", "Where do I apply for a Fee Paying Student Visa?", "درخواست از طریق درگاه آنلاین Immigration New Zealand ثبت می‌شود؛ مدارک را پیش از شروع آماده کنید.", "Apply through Immigration New Zealand’s online portal. Prepare the required evidence before starting.", newZealandApplication),
+    faq("newzealand", "پس از تحصیل نیوزلند چه مسیر کاری وجود دارد؟", "What work route is available after New Zealand study?", "برای واجدان شرایط، ویزای کار پس از تحصیل یک تا سه ساله مطرح است؛ اقامت دائم خودکار نیست.", "Eligible graduates may obtain one-to-three-year post-study work visas; permanent residence is not automatic."),
+    faq("newzealand", "دانشجوی نیوزلند در طول ترم چقدر می‌تواند کار کند؟", "How much can New Zealand students work during term?", "واجدان شرایط تا ۲۵ ساعت هفتگی؛ بعضی تعطیلات تمام‌وقت و برای دکتری معمولاً بدون سقف ساعتی.", "Eligible students: up to 25 hours weekly, full-time in some holidays; doctoral students generally have no hourly limit."),
+    faq("newzealand", "خانواده دانشجو می‌تواند به نیوزلند همراه او بیاید؟", "Can family accompany students?", "همسر و فرزندان زیر ۱۸ سال، در صورت احراز شرایط.", "Partners and under-18 children, if eligible."),
+    faq("newzealand", "کدام مقطع نیوزلند فرصت بورسیه بیشتری دارد؟", "Which level offers more scholarships?", "فرصت‌های مختلفی وجود دارد؛ GO2TR دکتری را مناسب‌تر می‌داند.", "GO2TR highlights doctoral study among available funding opportunities."),
+    faq("newzealand", "چه زمانی درخواست ویزای تحصیلی نیوزلند را آماده کنم؟", "When should I prepare a New Zealand student visa application?", "پیشنهاد GO2TR اقدام دست‌کم سه ماه پیش از شروع دوره است.", "Apply at least three months before study."),
   ],
 };
