@@ -7,6 +7,7 @@ import "./globals.css";
 import "./foundation.css";
 import "./consultation.css";
 import "./home.css";
+import "./dropdowns.css";
 
 export const metadata: Metadata = {
   title: "Jahan Academy",
