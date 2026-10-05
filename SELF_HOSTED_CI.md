@@ -89,6 +89,10 @@ creates disposable PostgreSQL 18 and Redis 8 containers with random loopback
 ports, applies migrations, tests rollback/re-upgrade, and removes only its own
 containers. `-BuildBackend` builds the production image and checks its live
 health endpoint as the unprivileged application user.
+For builds, the script stages only the Dockerfile's production inputs on Linux
+storage. Windows/DrvFS cache folders are not traversed, avoiding extended-attribute
+permission errors and excessive context transfer. The staging directory is removed
+after the run.
 
 Both local and CI integration PostgreSQL data use a disposable 512 MiB tmpfs
 mount, avoiding slow initdb/fsync on the virtual disk. This affects test services

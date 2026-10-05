@@ -37,6 +37,7 @@ if ((lint)); then
 fi
 "$uv" run --frozen pytest -o "cache_dir=$state/pytest-cache" tests/unit tests/architecture tests/contract -q
 id="jahan-local-test-$key-$$"
+context=""
 cleanup() {
   if ((integration)); then
     docker rm -fv "$id-postgres" "$id-redis" >/dev/null 2>&1 || true
@@ -44,6 +45,9 @@ cleanup() {
   if ((build)); then
     docker rm -f "$id-smoke" >/dev/null 2>&1 || true
     docker image rm "$id:backend" >/dev/null 2>&1 || true
+    if [[ -n "$context" && "$context" == "$state"/build-context.* ]]; then
+      rm -rf -- "$context"
+    fi
   fi
 }
 trap cleanup EXIT
@@ -83,7 +87,14 @@ if ((integration)); then
 fi
 if ((build)); then
   cd "$repo"
-  docker build --progress=plain -f backend/Dockerfile -t "$id:backend" .
+  # DrvFS cache folders can deny extended-attribute reads even when ignored by
+  # Docker. Stage only the production Dockerfile's inputs on Linux storage.
+  context=$(mktemp -d "$state/build-context.XXXXXX")
+  tar --exclude='__pycache__' --exclude='*.pyc' -cf - \
+    .dockerignore backend/Dockerfile backend/pyproject.toml backend/uv.lock \
+    backend/app backend/alembic backend/alembic.ini backend/migration_sql_runner.py \
+    database/sql | tar -C "$context" -xf -
+  docker build --progress=plain -f "$context/backend/Dockerfile" -t "$id:backend" "$context"
   docker run -d --name "$id-smoke" -p 127.0.0.1::8000 "$id:backend" >/dev/null
   address=$(docker port "$id-smoke" 8000/tcp)
   for ((attempt=0; attempt<30; attempt++)); do
