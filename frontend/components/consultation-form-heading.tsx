@@ -1,6 +1,6 @@
 import type { Locale } from "@/lib/site-content";
 
-export function ConsultationFreeText({ text, locale }: { text: string; locale: Locale }) {
+function ConsultationFreeText({ text, locale }: { text: string; locale: Locale }) {
   const word = locale === "fa" ? "رایگان" : "free";
   const index = text.indexOf(word);
   if (index < 0) return text;

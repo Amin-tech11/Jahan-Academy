@@ -3,7 +3,6 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 
 import { HomeConsultation } from "@/components/home-consultation";
-import { ConsultationFreeText } from "@/components/consultation-form-heading";
 import { SiteShell } from "@/components/site-shell";
 import { isLocale } from "@/lib/site-content";
 
@@ -34,7 +33,7 @@ export default async function FreeConsultationPage({ params, searchParams }: Pag
     <div className="shell">
       <header className="free-consultation-page__intro">
         <span className="free-consultation-page__eyebrow">{fa ? "گفت‌وگو از همین‌جا شروع می‌شود" : "Your conversation starts here"}</span>
-        <h1><ConsultationFreeText locale={locale} text={fa ? "درخواست مشاوره رایگان" : "Request a free consultation"} /></h1>
+        <h1>{fa ? "درخواست مشاوره رایگان" : "Request a free consultation"}</h1>
         <p>{fa
           ? "چند اطلاعات کوتاه از خودتان ثبت کنید. تیم جهان آکادمی برای هماهنگی زمان مشاوره با شما تماس می‌گیرد."
           : "Share a few details about yourself. The Jahan Academy team will contact you to arrange your consultation."}</p>

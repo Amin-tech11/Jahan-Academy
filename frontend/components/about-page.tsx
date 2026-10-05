@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ConsultationFreeText } from "./consultation-form-heading";
 import { SiteShell } from "@/components/site-shell";
 import { brandContent } from "@/lib/brand-content";
 import type { Locale } from "@/lib/site-content";
@@ -71,7 +70,7 @@ export function AboutPage({ locale }: { locale: Locale }) {
             <span className={styles.eyebrow}><span className={styles.dot} />{c.label}</span>
             <h1 id="about-title">{c.title}<br /><em>{c.accent}</em></h1>
             <p>{c.subtitle}</p>
-            <div className={styles.actions}><Link className={styles.primary} href={consultation}><span><ConsultationFreeText text={c.cta} locale={locale} /></span><span aria-hidden="true">{locale === "fa" ? "↖" : "↗"}</span></Link><a className={styles.storyLink} href="#story">{c.storyLink}<span aria-hidden="true">↓</span></a></div>
+            <div className={styles.actions}><Link className={styles.primary} href={consultation}><span>{c.cta}</span><span aria-hidden="true">{locale === "fa" ? "↖" : "↗"}</span></Link><a className={styles.storyLink} href="#story">{c.storyLink}<span aria-hidden="true">↓</span></a></div>
             <div className={styles.heroFoot}><span aria-hidden="true">✧</span>{c.eyebrow}</div>
           </div>
           <figure className={styles.heroImage}>
@@ -96,7 +95,7 @@ export function AboutPage({ locale }: { locale: Locale }) {
         </section>
         <section id="journey" className={styles.journey} aria-labelledby="journey-title"><span className={styles.eyebrow}>{c.journeyLabel}</span><h2 id="journey-title">{c.journeyTitle}</h2><p className={styles.journeyIntro}>{c.journeyIntro}</p><ol className={styles.steps}>{c.steps.map((step, i) => <li key={step.title}><span>{number(i + 1)}</span><h3>{step.title}</h3><p>{step.text}</p></li>)}</ol></section>
         <section id="questions" className={styles.faq} aria-labelledby="faq-title"><div><span className={styles.eyebrow}>{c.faqLabel}</span><h2 id="faq-title">{c.faqTitle}</h2><p>{brand.faqIntro}</p><Link href={`/${locale}/contact`} className={styles.inlineLink}>{c.contact}<span aria-hidden="true">{locale === "fa" ? "←" : "→"}</span></Link></div><div className={styles.questions}>{brand.faqs.map((faq) => <details key={faq.question}><summary>{faq.question}<span aria-hidden="true" className={styles.plus}>+</span></summary><p>{faq.answer}</p></details>)}</div></section>
-        <section className={styles.cta}><span className={styles.ctaMark} aria-hidden="true">✧</span><div><h2>{c.endTitle}</h2><p><ConsultationFreeText text={c.endText} locale={locale} /></p></div><div className={styles.ctaAction}><Link className={styles.primary} href={consultation}><span><ConsultationFreeText text={c.cta} locale={locale} /></span><span aria-hidden="true">{locale === "fa" ? "↖" : "↗"}</span></Link><small>{c.endNote}</small></div></section>
+        <section className={styles.cta}><span className={styles.ctaMark} aria-hidden="true">✧</span><div><h2>{c.endTitle}</h2><p>{c.endText}</p></div><div className={styles.ctaAction}><Link className={styles.primary} href={consultation}><span>{c.cta}</span><span aria-hidden="true">{locale === "fa" ? "↖" : "↗"}</span></Link><small>{c.endNote}</small></div></section>
       </div>
     </main>
   </SiteShell>;
