@@ -1970,6 +1970,14 @@ components:
         version: { type: integer, minimum: 1 }
         createdAt: { type: string, format: date-time }
         updatedAt: { type: string, format: date-time }
+        age: { type: [integer, 'null'], minimum: 18, maximum: 100 }
+        gender: { type: [string, 'null'], enum: [female, male, non_binary, self_described, prefer_not_to_say, null] }
+        genderSelfDescription: { type: [string, 'null'], maxLength: 100 }
+        occupation: { type: [string, 'null'] }
+        maritalStatus: { type: [string, 'null'], enum: [single, married, divorced, widowed, prefer_not_to_say, null] }
+        investmentRangeCode: { type: [string, 'null'] }
+        investmentCurrency: { type: [string, 'null'], pattern: '^[A-Z]{3}$' }
+        message: { type: [string, 'null'] }
     LeadDetail:
       allOf:
         - $ref: '#/components/schemas/LeadSummary'
@@ -1977,14 +1985,6 @@ components:
           required: [mobileRaw, locale, duplicateCount, syncAttemptCount]
           properties:
             mobileRaw: { type: string }
-            age: { type: [integer, 'null'], minimum: 18, maximum: 100 }
-            gender: { type: [string, 'null'], enum: [female, male, non_binary, self_described, prefer_not_to_say, null] }
-            genderSelfDescription: { type: [string, 'null'], maxLength: 100 }
-            occupation: { type: [string, 'null'] }
-            maritalStatus: { type: [string, 'null'], enum: [single, married, divorced, widowed, prefer_not_to_say, null] }
-            investmentRangeCode: { type: [string, 'null'] }
-            investmentCurrency: { type: [string, 'null'], pattern: '^[A-Z]{3}$' }
-            message: { type: [string, 'null'] }
             locale: { type: string, enum: [fa, en] }
             sourceUrl: { type: [string, 'null'] }
             sourceUniversityId: { oneOf: [{ $ref: '#/components/schemas/Uuid' }, { type: 'null' }] }

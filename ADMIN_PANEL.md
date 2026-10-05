@@ -2,6 +2,32 @@
 
 Source of truth: `Project_Context.md`, especially sections 4, 6.3–6.10 and 16.
 
+## Consultation status selector — 2026-10-04
+
+The detail editor includes a localized status selector saved with «ذخیره تغییرات». Current workflow transitions and assignee requirements constrain choices; closed/archived records cannot transition. Status-only edits call the existing versioned status-transitions endpoint without PATCH. Combined edits save fields first and use the returned version for the transition. If the transition fails, the editor retains the saved fields/version, explains partial success, and allows retrying only the pending status. Unsaved status changes participate in close/reload warnings; the table refreshes after successful save. The removed record-operations panel remains absent. No backend, schema or permission changes are needed. Tests cover transport, versions, transitions, partial failure/retry and permission/stale errors; backend workflow integration coverage is unchanged.
+
+## Consultation record editor — 2026-10-04
+
+The consultation editor replaces the combined assessment-message textarea with individual education, investment and English-proficiency fields, alongside gender and marital status. Existing structured budgets keep their range/currency representation. Changes to assessment answers update only their exact Persian/English labeled lines in the existing message, preserving unrelated lines and omitting message entirely on unrelated edits. Virtual form fields are never sent as unknown API fields. The record-operations section, technical detail dump, assignment/status/archive/Noura controls and history are removed only from the consultation editor; other resources retain their operations. No backend, schema or permission changes. Regression tests cover answer edits, language, clearing, notes preservation, newline/length validation and structured budgets. Existing API permissions and version checks still apply.
+
+## Consultation date filters — 2026-10-04
+
+The inbox toolbar now includes «از تاریخ» and «تا تاریخ» with Persian/Gregorian calendar switching, clickable month/year grids, 12-year navigation, selected/today states and independent clearing. Calendar popovers fit the viewport, close on Escape/outside click, and support keyboard day navigation. Both inputs share one calendar mode: switching either input changes both immediately, including previously selected date labels. The shared mode persists across section changes. Both modes retain the same Gregorian civil-day value; switching modes does not change the API range. End dates before the start and start dates after the end are disabled. Changing either date returns to page one; the session retains the range across section changes and Clear filters resets it.
+
+The existing authorized `GET /admin/leads` `from`/`to` parameters filter creation timestamps. Bounds include the entire selected Tehran civil day, including historical daylight-saving transitions; the inclusive upper bound retains PostgreSQL microsecond precision. No dependencies, API, database migration or permission changes. Other resources are unaffected. Validation: 97 frontend tests, TypeScript and production build; local browser integration verifies excluded dates return no rows and a same-day Persian/Gregorian range restores all four current requests, plus month/year selection and range constraints. Migration and new backend unit tests do not apply to this frontend-only integration.
+
+## Consultation table columns — 2026-10-04
+
+The consultation toolbar retains search and status alongside the date filters above; archive visibility, sync status and advanced filters are removed, including their query/session state. The API default active (unarchived) scope and two-second refresh remain. Other sections retain their own advanced filters. The final columns show the stored creation timestamp, request type (مشاوره / ارزیابی) and the localized workflow status. Legacy assessment type is derived from the complete three-line Persian/English assessment payload, not isolated keywords or the page URL; submissions without that signature are consultations. There is no dedicated stored request-type field, so edits to that message can change the derived label. No API, schema or permission changes are required; migration/backend integration tests do not apply. Frontend tests cover classification, dates and column order; refreshed localhost verification covers rendering and removed controls.
+
+Iranian phone values in the table use the display format `+98 912 345 6789`, left-to-right. Stored numbers and edit values retain their canonical form; other country codes are preserved. This presentation-only adjustment needs no API, permission, migration or new integration-test changes.
+
+The consultation inbox now has exactly fourteen data columns, ordered right-to-left: tracking code, full name, phone, email, age, occupation, gender, education, marital status, investment budget, English proficiency, request creation date, request type, status. Click the tracking code to open the existing detail/editor; no separate action column is added. Empty tables retain the headers and horizontal scrolling keeps all columns available on narrow screens.
+
+Lead list responses now include the existing stored demographic fields, budget range/currency and message, using the same authorized and assignee-scoped query as before. No additional per-row requests, database migration or permission changes are needed. Education, migration budget and English proficiency are read only from exact labeled lines generated by the Persian/English assessment form. Structured budget fields take priority and retain their currency. Missing answers display an em dash; free-form prose is not inferred as an answer.
+
+Validation: 91 frontend tests, 104 backend unit/architecture/contract tests, targeted lead submission/list/edit and access-control integration tests, Ruff, mypy, TypeScript and production build. Migration testing is not applicable to this read-response/UI change.
+
 ## Per-user section access — 2026-10-04
 
 Supersedes the consultation-only navigation restriction below. Global super administrators see all implemented sections and a dedicated access-management screen. Other staff default to consultations; super administrators use per-user checkboxes and an explicit Save action to grant or revoke the other sections. Staff administration, access management and audit logs remain super-admin-only. An explicitly empty selection means no panel access.

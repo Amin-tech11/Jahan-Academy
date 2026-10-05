@@ -73,3 +73,43 @@ test("table retains free-text destinations and distinguishes new records from up
   assert.deepEqual(newLeadIds([row], [{ ...row, version: 2 }, { id: "2" }]), ["2"]);
   assert.equal(leadCell({ createdAt: "invalid" }, "createdAt"), "—");
 });
+
+test("assessment columns read exact Persian and English form lines, without guessing missing values", () => {
+  const fa = { message: "تحصیلات: لیسانس\r\nسرمایه مهاجرت: ۱ الی ۲ میلیارد\r\nمهارت زبان انگلیسی: متوسط" };
+  assert.equal(leadCell(fa, "education"), "لیسانس");
+  assert.equal(leadCell(fa, "investmentBudget"), "۱ الی ۲ میلیارد");
+  assert.equal(leadCell(fa, "englishProficiency"), "متوسط");
+  const en = { message: "Education: Bachelor's degree\nMigration budget: 1–2 billion toman\nEnglish proficiency: Intermediate" };
+  assert.equal(leadCell(en, "education"), "Bachelor's degree");
+  assert.equal(leadCell(en, "investmentBudget"), "1–2 billion toman");
+  assert.equal(leadCell(en, "englishProficiency"), "Intermediate");
+  assert.equal(leadCell({ message: "I want to discuss Education: later" }, "education"), undefined);
+  assert.equal(leadCell({ message: null }, "englishProficiency"), undefined);
+  assert.equal(leadCell({ message: "تحصیلات: " }, "education"), undefined);
+});
+
+test("demographics are localized and structured budgets retain their currency", () => {
+  assert.equal(leadCell({ gender: "male" }, "gender"), "مرد");
+  assert.equal(leadCell({ maritalStatus: "married" }, "maritalStatus"), "متأهل");
+  assert.equal(leadCell({ gender: "prefer_not_to_say" }, "gender"), "تمایلی به پاسخ ندارم");
+  assert.equal(leadCell({ age: 29 }, "age"), 29);
+  assert.equal(leadCell({ investmentRangeCode: "10k_20k", investmentCurrency: "EUR", message: "سرمایه مهاجرت: قدیمی" }, "investmentBudget"), "۱۰٬۰۰۰ تا ۲۰٬۰۰۰ · EUR");
+  assert.equal(leadCell({ investmentRangeCode: "custom-range" }, "investmentBudget"), "custom-range");
+});
+
+
+test("request types distinguish both assessment locales from consultation messages", () => {
+  for (const message of [
+    "تحصیلات: لیسانس\r\nسرمایه مهاجرت: ۱ الی ۲ میلیارد\r\nمهارت زبان انگلیسی: متوسط",
+    "Education: Bachelor's degree\nMigration budget: 1–2 billion toman\nEnglish proficiency: Intermediate",
+  ]) {
+    assert.equal(leadCell({ message }, "requestType"), "ارزیابی");
+  }
+  for (const message of [null, "", "درباره تحصیلات سؤال دارم", "Education: degree", "Education: degree\nMigration budget: \nEnglish proficiency: Intermediate"]) {
+    assert.equal(leadCell({ message }, "requestType"), "مشاوره");
+  }
+  const createdAt = "2026-10-04T09:00:00Z";
+  assert.equal(leadCell({ createdAt }, "requestCreatedAt"), leadCell({ createdAt }, "createdAt"));
+  assert.equal(leadCell({}, "requestCreatedAt"), "—");
+  assert.equal(leadCell({ status: "closed" }, "status"), "closed");
+});

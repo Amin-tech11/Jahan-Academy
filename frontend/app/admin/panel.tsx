@@ -1,10 +1,13 @@
 "use client";
 
 import Login from "./login";
+import DateFilter from "./date-filter";
+import { dateRangeParams, type Calendar } from "../../lib/admin-calendar";
 import AccessManager from "./access-manager";
 import { visibleSections, type PanelAccess } from "../../lib/admin-access";
 import { startLiveRefresh } from "../../lib/admin-live";
-import { leadCell, newLeadIds } from "../../lib/admin-leads";
+import { leadCell, leadEditData, leadEditPayload, newLeadIds } from "../../lib/admin-leads";
+import { canChangeLeadStatus, saveLeadChanges } from "../../lib/admin-lead-status";
 
 import {
   useCallback,
@@ -355,10 +358,12 @@ function Editor({
   const [source, setSource] = useState<RecordData>(item ?? {});
   const [data, setData] = useState<RecordData>({});
   const [dirty, setDirty] = useState(false);
+  const [leadStatus, setLeadStatus] = useState(String(item?.status ?? ""));
+  const statusDirty = resource.id === "leads" && leadStatus !== String(source.status ?? "");
+  const hasChanges = dirty || statusDirty;
   const [busy, setBusy] = useState(Boolean(item));
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
-  const [history, setHistory] = useState<RecordData | null>(null);
   const dialog = useRef<HTMLDialogElement>(null);
   const creating = !item;
   const [loaded, setLoaded] = useState(false);
@@ -388,7 +393,14 @@ function Editor({
             ],
           },
         ]
-      : resource.fields;
+      : resource.id === "leads" ? resource.fields.flatMap((field): Field[] => {
+          if (field.key === "assessmentBudget" && source.investmentRangeCode) return [
+            { key: "investmentRangeCode", label: "بازه میزان سرمایه", required: true },
+            { key: "investmentCurrency", label: "ارز سرمایه", required: true },
+          ];
+          if (field.key === "gender" && (data.gender ?? source.gender) === "self_described") return [field, { key: "genderSelfDescription", label: "توضیح جنسیت", required: true }];
+          return [field];
+        }) : resource.fields;
   useEffect(() => {
     dialog.current?.showModal();
     let alive = true;
@@ -399,9 +411,19 @@ function Editor({
           next = (await adminRequest(`${resource.path}/${item.id}`))
             .data as RecordData;
         if (!alive) return;
-        const normalized = normalizeRecord(next);
+        const normalized = normalizeRecord(resource.id === "leads" ? leadEditData(next) : next);
         setSource(next);
-        setData(formData(fields, normalized));
+        setLeadStatus(String(next.status ?? ""));
+        setData({
+          ...formData(fields, normalized),
+          ...(resource.id === "leads" && next.investmentRangeCode ? {
+            investmentRangeCode: next.investmentRangeCode,
+            investmentCurrency: next.investmentCurrency,
+          } : {}),
+          ...(resource.id === "leads" && next.gender === "self_described" ? {
+            genderSelfDescription: next.genderSelfDescription,
+          } : {}),
+        });
         setLoaded(true);
       } catch (err) {
         if (alive) setError(describe(err));
@@ -416,14 +438,15 @@ function Editor({
   }, []); // Editor is remounted for each record.
   useEffect(() => {
     const handler = (event: BeforeUnloadEvent) => {
-      if (dirty) event.preventDefault();
+      if (hasChanges) event.preventDefault();
     };
     window.addEventListener("beforeunload", handler);
     return () => window.removeEventListener("beforeunload", handler);
-  }, [dirty]);
+  }, [hasChanges]);
   function close() {
+    if (busy) return;
     if (
-      !dirty ||
+      !hasChanges ||
       window.confirm("تغییرات ذخیره نشده‌اند. از فرم خارج می‌شوید؟")
     )
       onClose();
@@ -433,14 +456,22 @@ function Editor({
     setError("");
     setBusy(true);
     try {
-      const body = writePayload(resource, data, source, creating);
+      const rawBody = writePayload(resource, data, source, creating);
+      const body = resource.id === "leads" ? leadEditPayload(data, source, rawBody) : rawBody;
 
-      await adminRequest(
-        `${resource.path}${item ? `/${item.id}` : ""}`,
-        item ? (resource.method ?? "PUT") : "POST",
-        body,
-        Number(source.version) || undefined,
-      );
+      if (resource.id === "leads" && item) {
+        await saveLeadChanges(adminRequest, source, dirty ? body : undefined, leadStatus, (saved) => {
+          setSource(saved);
+          setDirty(false);
+        });
+      } else {
+        await adminRequest(
+          `${resource.path}${item ? `/${item.id}` : ""}`,
+          item ? (resource.method ?? "PUT") : "POST",
+          body,
+          Number(source.version) || undefined,
+        );
+      }
       setDirty(false);
       onSaved();
     } catch (err) {
@@ -531,11 +562,38 @@ function Editor({
                   setDirty(true);
                 }}
               />
+              {resource.id === "leads" && item && loaded && (
+                <div className="adm-fields">
+                  <label>
+                    وضعیت
+                    <select
+                      value={leadStatus}
+                      disabled={Boolean(source.archived) || source.status === "closed"}
+                      aria-describedby="lead-status-help"
+                      onChange={(event) => setLeadStatus(event.target.value)}
+                    >
+                      {leadStatuses.map((status) => (
+                        <option key={status} value={status} disabled={status !== source.status && !canChangeLeadStatus(source, status)}>
+                          {labels[status] ?? status}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <p id="lead-status-help" className="adm-wide">
+                    {source.archived ? "وضعیت درخواست بایگانی‌شده قابل تغییر نیست." : source.status === "closed"
+                      ? "این درخواست بسته شده و وضعیت دیگری برای آن قابل انتخاب نیست."
+                      : !source.assignee
+                        ? "برای وضعیت‌های پیگیری، ابتدا باید مسئول درخواست تعیین شده باشد؛ در حال حاضر فقط بستن درخواست مجاز است."
+                        : "وضعیت‌های قابل انتخاب بر اساس مرحلهٔ فعلی درخواست نمایش داده می‌شوند."}
+                    {" "}تغییر وضعیت با «ذخیره تغییرات» ثبت می‌شود.
+                  </p>
+                </div>
+              )}
               <footer className="adm-form-footer">
                 <button
                   type="submit"
                   className="adm-primary"
-                  disabled={busy || (!dirty && !creating)}
+                  disabled={busy || (!hasChanges && !creating)}
                 >
                   ذخیره تغییرات
                 </button>
@@ -545,7 +603,7 @@ function Editor({
               </footer>
             </fieldset>
           </form>
-          {item && loaded && (
+          {item && loaded && resource.id !== "leads" && (
             <section className="adm-actions">
               <h3>عملیات رکورد</h3>
               <small>
@@ -580,57 +638,6 @@ function Editor({
                   </button>
                 </>
               )}
-              {resource.id === "leads" && (
-                <>
-                  <dl className="adm-details">
-                    {Object.entries(source)
-                      .filter(
-                        ([key]) => !fields.some((field) => field.key === key),
-                      )
-                      .map(([key, value]) => (
-                        <div key={key}>
-                          <dt>{labels[key] ?? key}</dt>
-                          <dd className="adm-lead-value">{displayValue(leadCell(source, key) == null ? null : labels[String(leadCell(source, key))] ?? leadCell(source, key))}</dd>
-                        </div>
-                      ))}
-                  </dl>
-                  <LeadActions busy={busy} onAction={action} source={source} />
-                  <button
-                    disabled={busy}
-                    onClick={async () => {
-                      try {
-                        setHistory(
-                          (
-                            await adminRequest(
-                              `${resource.path}/${item.id}/history`,
-                            )
-                          ).data as RecordData,
-                        );
-                      } catch (err) {
-                        setError(describe(err));
-                      }
-                    }}
-                  >
-                    تاریخچه وضعیت و ارجاع
-                  </button>
-                  {history && (
-                    <div className="adm-history">
-                      {[
-                        ...((history.statuses ?? []) as RecordData[]),
-                        ...((history.assignments ?? []) as RecordData[]),
-                      ].map((entry, index) => (
-                        <article key={index}>
-                          <Badge value={entry.newStatus ?? "assigned"} />
-                          <p>{displayValue(entry.reason)}</p>
-                          <small>
-                            {displayValue(entry.createdAt ?? entry.assignedAt)}
-                          </small>
-                        </article>
-                      ))}
-                    </div>
-                  )}
-                </>
-              )}
               {resource.id === "staff" && (
                 <StaffActions busy={busy} onAction={action} source={source} />
               )}
@@ -642,88 +649,6 @@ function Editor({
   );
 }
 
-function LeadActions({
-  busy,
-  source,
-  onAction,
-}: {
-  busy: boolean;
-  source: RecordData;
-  onAction: (
-    suffix: string,
-    payload: RecordData,
-    method?: string,
-  ) => Promise<void>;
-}) {
-  const [status, setStatus] = useState(String(source.status));
-  const [reason, setReason] = useState("");
-  const [consultant, setConsultant] = useState("");
-  return (
-    <div className="adm-operation-grid">
-      <label>
-        وضعیت جدید
-        <select value={status} onChange={(e) => setStatus(e.target.value)}>
-          {leadStatuses.map((value) => (
-            <option key={value} value={value}>
-              {labels[value]}
-            </option>
-          ))}
-        </select>
-      </label>
-      <label>
-        دلیل عملیات
-        <input value={reason} onChange={(e) => setReason(e.target.value)} />
-      </label>
-      <button
-        disabled={busy || status === source.status}
-        onClick={() =>
-          onAction("status-transitions", {
-            toStatus: status,
-            ...(reason ? { reason } : {}),
-          })
-        }
-      >
-        ثبت وضعیت
-      </button>
-      <label>
-        شناسه مشاور
-        <input
-          dir="ltr"
-          value={consultant}
-          onChange={(e) => setConsultant(e.target.value)}
-        />
-      </label>
-      <button
-        disabled={busy || !consultant}
-        onClick={() =>
-          onAction("assignments", {
-            consultantId: consultant,
-            ...(reason ? { reason } : {}),
-          })
-        }
-      >
-        ثبت ارجاع
-      </button>
-      <button
-        disabled={busy || source.syncStatus !== "failed"}
-        onClick={() =>
-          onAction("noura-retry", { ...(reason ? { note: reason } : {}) })
-        }
-      >
-        تلاش مجدد نورا
-      </button>
-      <button
-        disabled={busy || reason.trim().length < 3 || Boolean(source.archived)}
-        onClick={() => {
-          if (window.confirm("درخواست بایگانی شود؟"))
-            void onAction("archive", { reason });
-        }}
-      >
-        بایگانی درخواست
-      </button>
-    </div>
-  );
-}
 function StaffActions({
   busy,
   source,
@@ -869,16 +794,20 @@ const listSessions = new Map<
   {
     query: string;
     status: string;
-    syncStatus: string;
     page: number;
     filters: Record<string, string>;
+    calendar: Calendar;
+    fromDate: string;
+    toDate: string;
   }
 >();
 function ResourceList({ resource }: { resource: Resource }) {
   const previous = listSessions.get(resource.id);
   const [query, setQuery] = useState(previous?.query ?? "");
   const [status, setStatus] = useState(previous?.status ?? "");
-  const [syncStatus, setSyncStatus] = useState(previous?.syncStatus ?? "");
+  const [calendar, setCalendar] = useState<Calendar>(previous?.calendar ?? "persian");
+  const [fromDate, setFromDate] = useState(previous?.fromDate ?? "");
+  const [toDate, setToDate] = useState(previous?.toDate ?? "");
   const [page, setPage] = useState(previous?.page ?? 1);
   const [data, setData] = useState<RecordData>({});
   const [error, setError] = useState("");
@@ -888,11 +817,11 @@ function ResourceList({ resource }: { resource: Resource }) {
   );
   const [refresh, setRefresh] = useState(0);
   const [filters, setFilters] = useState<Record<string, string>>(
-    previous?.filters ?? {},
+    resource.id === "leads" ? {} : previous?.filters ?? {},
   );
   useEffect(() => {
-    listSessions.set(resource.id, { query, status, syncStatus, page, filters });
-  }, [resource.id, query, status, syncStatus, page, filters]);
+    listSessions.set(resource.id, { query, status, page, filters, fromDate, toDate, calendar });
+  }, [resource.id, query, status, page, filters, fromDate, toDate, calendar]);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [newIds, setNewIds] = useState<string[]>([]);
   const [announcement, setAnnouncement] = useState("");
@@ -906,13 +835,12 @@ function ResourceList({ resource }: { resource: Resource }) {
     setAnnouncement("");
     const params = new URLSearchParams({
       page: String(page), limit: "20",
-      ...Object.fromEntries(Object.entries(filters).filter(([, v]) => v)),
+      ...(resource.id === "leads" ? dateRangeParams(fromDate, toDate) : Object.fromEntries(Object.entries(filters).filter(([, v]) => v))),
     });
     if (resource.id === "leads") params.set("sort", "created_desc");
     if (query.trim().length >= 2)
       params.set(resource.id === "audit" ? "action" : "q", query.trim());
     if (status) params.set("status", status);
-    if (syncStatus) params.set("syncStatus", syncStatus);
     let live: ReturnType<typeof startLiveRefresh<RecordData>> | undefined;
     const timer = setTimeout(() => {
       live = startLiveRefresh({
@@ -954,7 +882,7 @@ function ResourceList({ resource }: { resource: Resource }) {
       window.removeEventListener("online", resume);
       window.removeEventListener("offline", offline);
     };
-  }, [resource.path, resource.id, page, query, status, syncStatus, refresh, filters]);
+  }, [resource.path, resource.id, page, query, status, refresh, filters, fromDate, toDate]);
   const rows = rowsOf(data);
   const total = totalOf(data);
   return (
@@ -991,7 +919,7 @@ function ResourceList({ resource }: { resource: Resource }) {
           {lastUpdated && <small>آخرین دریافت: {lastUpdated.toLocaleTimeString("fa-IR")}</small>}
         </div>
         <p className="adm-live-announcement" role="status" aria-live="polite">{announcement}</p>
-        {(page > 1 || query || status || syncStatus || Object.values(filters).some(Boolean)) && (
+        {(page > 1 || query || status || fromDate || toDate || Object.values(filters).some(Boolean)) && (
           <p className="adm-list-hint">برای دیدن همهٔ درخواست‌های تازه، فیلترها را پاک کنید و به صفحهٔ اول بروید.</p>
         )}
         <div className="adm-toolbar">
@@ -1026,37 +954,10 @@ function ResourceList({ resource }: { resource: Resource }) {
               </select>
             </label>
           )}
-          {resource.id === "leads" && (
-            <label>
-              نمایش درخواست‌ها
-              <select value={filters.archive ?? "active"} onChange={(e) => {
-                setFilters({ ...filters, archive: e.target.value }); setPage(1);
-              }}>
-                <option value="active">فعال</option>
-                <option value="archived">بایگانی‌شده</option>
-                <option value="all">همه</option>
-              </select>
-            </label>
-          )}
-          {resource.id === "leads" && (
-            <label>
-              همگام‌سازی
-              <select
-                value={syncStatus}
-                onChange={(e) => {
-                  setSyncStatus(e.target.value);
-                  setPage(1);
-                }}
-              >
-                <option value="">همه</option>
-                {["pending", "synced", "failed"].map((value) => (
-                  <option key={value} value={value}>
-                    {labels[value]}
-                  </option>
-                ))}
-              </select>
-            </label>
-          )}
+          {resource.id === "leads" && <>
+            <DateFilter calendar={calendar} onCalendarChange={setCalendar} label="از تاریخ" value={fromDate} max={toDate} onChange={(date) => { setFromDate(date); setPage(1); }} />
+            <DateFilter calendar={calendar} onCalendarChange={setCalendar} label="تا تاریخ" value={toDate} min={fromDate} onChange={(date) => { setToDate(date); setPage(1); }} />
+          </>}
           <button onClick={() => setRefresh((value) => value + 1)}>
             تازه‌سازی
           </button>
@@ -1065,15 +966,16 @@ function ResourceList({ resource }: { resource: Resource }) {
             onClick={() => {
               setQuery("");
               setStatus("");
-              setSyncStatus("");
               setFilters({});
+              setFromDate("");
+              setToDate("");
               setPage(1);
             }}
           >
             پاک کردن فیلترها
           </button>
         </div>
-        {["programs", "leads", "audit"].includes(resource.id) && (
+        {["programs", "audit"].includes(resource.id) && (
           <details>
             <summary>فیلترهای بیشتر</summary>
             <div className="adm-fields">
@@ -1085,17 +987,10 @@ function ResourceList({ resource }: { resource: Resource }) {
                     ["intakeId", "شناسه ورودی"],
                     ["currency", "کد ارز"],
                   ]
-                : resource.id === "leads"
-                  ? [
-                      ["assigneeId", "شناسه مشاور"],
-                      ["countryId", "شناسه کشور"],
-                      ["from", "از تاریخ ISO"],
-                      ["to", "تا تاریخ ISO"],
-                    ]
-                  : [
-                      ["actor_user_id", "شناسه کاربر"],
-                      ["entity_type", "نوع رکورد"],
-                    ]
+                : [
+                    ["actor_user_id", "شناسه کاربر"],
+                    ["entity_type", "نوع رکورد"],
+                  ]
               ).map(([key, title]) => (
                 <label key={key}>
                   {title}
@@ -1133,23 +1028,26 @@ function ResourceList({ resource }: { resource: Resource }) {
           <div className="adm-empty" role="status">
             در حال دریافت اطلاعات…
           </div>
-        ) : rows.length ? (
+        ) : rows.length || resource.id === "leads" ? (
           <div className="adm-table-wrap">
-            <table>
+            <table dir="rtl">
               <thead>
                 <tr>
                   {resource.columns.map((column) => (
                     <th scope="col" key={column}>{labels[column] ?? column}</th>
                   ))}
-                  <th scope="col">عملیات</th>
+                  {resource.id !== "leads" && <th scope="col">عملیات</th>}
                 </tr>
               </thead>
               <tbody>
+                {!rows.length && !error && <tr><td colSpan={resource.columns.length}><div className="adm-empty">درخواستی مطابق فیلترهای فعلی پیدا نشد.</div></td></tr>}
                 {rows.map((row) => (
                   <tr key={String(row.id)} className={newIds.includes(String(row.id)) ? "adm-new-lead" : undefined}>
                     {resource.columns.map((column) => (
                       <td key={column} dir={["mobile", "email", "reference"].includes(column) ? "ltr" : undefined}>
-                        {["status", "syncStatus", "uploadStatus"].includes(
+                        {resource.id === "leads" && column === "reference" ? (
+                          <button className="adm-link" onClick={() => setEditor({ item: row })} aria-label={`مشاهده درخواست ${row.reference}`}>{displayValue(row.reference)}</button>
+                        ) : ["status", "syncStatus", "uploadStatus"].includes(
                           column,
                         ) ? (
                           <Badge value={row[column]} />
@@ -1158,14 +1056,14 @@ function ResourceList({ resource }: { resource: Resource }) {
                         )}
                       </td>
                     ))}
-                    <td>
+                    {resource.id !== "leads" && <td>
                       <button
                         className="adm-link"
                         onClick={() => setEditor({ item: row })}
                       >
                         مشاهده ←
                       </button>
-                    </td>
+                    </td>}
                   </tr>
                 ))}
               </tbody>

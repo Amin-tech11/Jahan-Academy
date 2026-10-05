@@ -59,6 +59,7 @@ export const leadStatuses = [
 ];
 export const labels: Record<string, string> = {
   fullName: "نام و نام خانوادگی",
+  education: "تحصیلات", investmentBudget: "میزان سرمایه", englishProficiency: "مهارت زبان انگلیسی",
   intakeTerm: "ترم شروع", startYear: "سال شروع", desiredCountryText: "مقصد اعلام‌شده",
   sourceUrl: "صفحهٔ ثبت درخواست", locale: "زبان", age: "سن", gender: "جنسیت",
   occupation: "شغل", maritalStatus: "وضعیت تأهل", message: "اطلاعات تکمیلی / ارزیابی",
@@ -87,6 +88,8 @@ export const labels: Record<string, string> = {
   desiredCountryName: "کشور مقصد",
   assignee: "مشاور",
   createdAt: "تاریخ ثبت",
+  requestCreatedAt: "تاریخ ثبت درخواست",
+  requestType: "نوع درخواست",
   updatedAt: "آخرین تغییر",
   country: "کشور",
   university: "دانشگاه",
@@ -148,8 +151,9 @@ export const resources: Resource[] = [
     method: "PATCH",
     statuses: leadStatuses,
     columns: [
-      "reference", "fullName", "mobile", "email", "desiredCountryName",
-      "status", "assignee", "createdAt", "syncStatus",
+      "reference", "fullName", "mobile", "email", "age", "occupation", "gender",
+      "education", "maritalStatus", "investmentBudget", "englishProficiency",
+      "requestCreatedAt", "requestType", "status",
     ],
     fields: [
       f("firstName", "نام", "text", true),
@@ -158,7 +162,11 @@ export const resources: Resource[] = [
       f("email", "ایمیل"),
       f("age", "سن", "number"),
       f("occupation", "شغل"),
-      f("message", "اطلاعات تکمیلی / ارزیابی", "textarea"),
+      f("gender", "جنسیت", "select", false, ["female", "male", "non_binary", "self_described", "prefer_not_to_say"]),
+      f("education", "تحصیلات"),
+      f("maritalStatus", "وضعیت تأهل", "select", false, ["single", "married", "divorced", "widowed"]),
+      f("assessmentBudget", "میزان سرمایه"),
+      f("englishProficiency", "مهارت زبان انگلیسی"),
     ],
   },
   {

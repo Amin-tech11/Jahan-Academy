@@ -799,3 +799,32 @@
 .admin-app input::placeholder, .admin-app textarea::placeholder { color: var(--adm-muted); opacity: 1; }
 .admin-app input:hover:not(:disabled), .admin-app select:hover:not(:disabled), .admin-app textarea:hover:not(:disabled) { border-color: var(--adm-silver); }
 .adm-new-lead:hover { background: var(--adm-tint) !important; }
+.adm-date-filter { position: relative; min-width: 185px; flex: 0 1 220px; }
+.adm-date-label { display: block; margin-bottom: 7px; font-size: 12px; }
+.admin-app .adm-date-trigger { width: 100%; min-height: 42px; display: flex; justify-content: space-between; align-items: center; gap: 10px; color: var(--adm-brand); text-align: right; }
+.adm-date-trigger svg { flex-shrink: 0; }
+.adm-calendar { position: fixed; max-height: calc(100dvh - 24px); overflow-y: auto; z-index: 25; width: 350px; max-width: calc(100vw - 40px); padding: 12px; border: 1px solid var(--adm-line); border-radius: 16px; background: var(--adm-surface); box-shadow: 0 12px 36px #123b7826; }
+.adm-calendar-tabs { display: flex; padding: 4px; gap: 4px; background: var(--adm-tint); border-radius: 12px; }
+.admin-app .adm-calendar-tabs button { flex: 1; border: 0; background: transparent; color: var(--adm-brand); }
+.adm-calendar-heading { display: flex; align-items: center; gap: 4px; margin: 12px 0; padding: 6px; background: var(--adm-brand); border-radius: 12px; color: white; }
+.admin-app .adm-calendar-heading button { border: 0; background: transparent; color: white; padding: 7px; flex: 1; }
+.admin-app .adm-calendar-heading button:first-child, .admin-app .adm-calendar-heading button:last-child { flex: 0 0 32px; font-size: 23px; line-height: 1; }
+.adm-calendar-heading strong { flex: 1; text-align: center; }
+.admin-app .adm-calendar-heading button:hover { background: #ffffff26; }
+.adm-calendar-week, .adm-calendar-days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; text-align: center; }
+.adm-calendar-week { color: var(--adm-brand); font-size: 11px; padding: 4px 0 9px; }
+.admin-app .adm-calendar-days button { min-height: 40px; padding: 5px 0; border: 1px solid transparent; background: transparent; }
+.admin-app .adm-calendar-days .is-other-month { color: var(--adm-silver); }
+.admin-app .adm-calendar-days button[aria-current="date"] { border-color: var(--adm-line); color: var(--adm-brand); }
+.adm-calendar-options { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; padding: 8px; background: var(--adm-page); border-radius: 12px; }
+.admin-app .adm-calendar-options button { min-height: 48px; padding: 6px; font-size: 12px; box-shadow: 0 2px 3px #123b780a; }
+.admin-app .adm-calendar button[aria-pressed="true"] { color: white; background: var(--adm-brand); box-shadow: 0 2px 4px #123b7833; }
+.admin-app .adm-calendar-days button:hover:not(:disabled):not([aria-pressed="true"]) { background: var(--adm-tint); }
+.adm-calendar-footer { display: flex; justify-content: space-between; border-top: 1px solid var(--adm-line); margin-top: 10px; padding-top: 8px; }
+.admin-app .adm-calendar-footer button { border: 0; color: var(--adm-muted); padding: 4px 8px; }
+.admin-app .adm-calendar button:focus-visible, .admin-app .adm-date-trigger:focus-visible { outline: 2px solid var(--adm-brand); outline-offset: 2px; }
+.admin-app .adm-calendar-heading button:focus-visible { outline-color: white; }
+@media (max-width: 600px) {
+  .adm-date-filter { flex: 1 1 100%; }
+  .adm-calendar { width: min(350px, calc(100vw - 64px)); }
+}
