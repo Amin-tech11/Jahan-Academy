@@ -12,6 +12,7 @@ from app.modules.consultations.domain import (
     STATUSES_REQUIRING_ASSIGNEE,
     GenderCode,
     LeadArchiveFilter,
+    LeadSearchField,
     LeadSort,
     LeadStatus,
     SyncStatus,
@@ -61,6 +62,7 @@ class LeadService:
         created_to: datetime | None,
         archive: LeadArchiveFilter,
         sort: LeadSort,
+        search_field: LeadSearchField | None = None,
     ) -> LeadPage:
         assigned_scope = self._assigned_scope(actor)
         rows, total = await self._repository.list(
@@ -68,6 +70,7 @@ class LeadService:
             page=page,
             limit=limit,
             query=query,
+            search_field=search_field,
             status=status,
             sync_status=sync_status,
             assignee_id=assignee_id,

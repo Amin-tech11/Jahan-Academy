@@ -119,3 +119,8 @@ Validation: production build (including TypeScript), browser refresh on localhos
 ## Reopening closed consultation requests — 2026-10-05
 
 Authorized staff can transition a closed request back into an active workflow status through the existing versioned status-transition API. The status selector stays enabled for closed, non-archived records and applies existing assignee requirements to the selected target status. Reopening is recorded in the existing status history. Archived requests remain immutable. No schema, migration, permission grant or new endpoint is required.
+
+## Consultation search by column — 2026-10-05
+
+The consultation toolbar offers tracking code (default), full name, and telephone. Search remains automatic after at least two characters; changing the selected column re-runs the same query and returns to page one. The selection is retained when navigating between sections. Clearing filters restores tracking-code search. API `searchField=reference|fullName|mobile` limits `q` to the chosen field across the full permission-scoped dataset before pagination. Omitting `searchField` preserves legacy broad API search. Telephone search accepts Persian/Arabic digits, formatted international numbers and Iranian domestic numbers. No schema, migration or permission changes apply.
+

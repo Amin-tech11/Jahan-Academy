@@ -8,6 +8,7 @@ import { visibleSections, type PanelAccess } from "../../lib/admin-access";
 import { startLiveRefresh } from "../../lib/admin-live";
 import { leadCell, leadEditData, leadEditPayload, newLeadIds } from "../../lib/admin-leads";
 import { canChangeLeadStatus, saveLeadChanges } from "../../lib/admin-lead-status";
+import { leadSearchFields, leadSearchParams, type LeadSearchField } from "../../lib/admin-lead-search";
 
 import {
   useCallback,
@@ -795,6 +796,7 @@ const listSessions = new Map<
   string,
   {
     query: string;
+    searchField: LeadSearchField;
     status: string;
     page: number;
     filters: Record<string, string>;
@@ -806,6 +808,7 @@ const listSessions = new Map<
 function ResourceList({ resource }: { resource: Resource }) {
   const previous = listSessions.get(resource.id);
   const [query, setQuery] = useState(previous?.query ?? "");
+  const [searchField, setSearchField] = useState<LeadSearchField>(previous?.searchField ?? "reference");
   const [status, setStatus] = useState(previous?.status && resource.statuses?.includes(previous.status) ? previous.status : "");
   const [calendar, setCalendar] = useState<Calendar>(previous?.calendar ?? "persian");
   const [fromDate, setFromDate] = useState(previous?.fromDate ?? "");
@@ -822,8 +825,8 @@ function ResourceList({ resource }: { resource: Resource }) {
     resource.id === "leads" ? {} : previous?.filters ?? {},
   );
   useEffect(() => {
-    listSessions.set(resource.id, { query, status, page, filters, fromDate, toDate, calendar });
-  }, [resource.id, query, status, page, filters, fromDate, toDate, calendar]);
+    listSessions.set(resource.id, { query, searchField, status, page, filters, fromDate, toDate, calendar });
+  }, [resource.id, query, searchField, status, page, filters, fromDate, toDate, calendar]);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [newIds, setNewIds] = useState<string[]>([]);
   const [announcement, setAnnouncement] = useState("");
@@ -839,8 +842,10 @@ function ResourceList({ resource }: { resource: Resource }) {
       page: String(page), limit: "20",
       ...(resource.id === "leads" ? dateRangeParams(fromDate, toDate) : Object.fromEntries(Object.entries(filters).filter(([, v]) => v))),
     });
-    if (resource.id === "leads") params.set("sort", "created_desc");
-    if (query.trim().length >= 2)
+    if (resource.id === "leads") {
+      params.set("sort", "created_desc");
+      for (const [key, value] of Object.entries(leadSearchParams(query, searchField))) params.set(key, value);
+    } else if (query.trim().length >= 2)
       params.set(resource.id === "audit" ? "action" : "q", query.trim());
     if (status) params.set("status", status);
     let live: ReturnType<typeof startLiveRefresh<RecordData>> | undefined;
@@ -884,7 +889,7 @@ function ResourceList({ resource }: { resource: Resource }) {
       window.removeEventListener("online", resume);
       window.removeEventListener("offline", offline);
     };
-  }, [resource.path, resource.id, page, query, status, refresh, filters, fromDate, toDate]);
+  }, [resource.path, resource.id, page, query, searchField, status, refresh, filters, fromDate, toDate]);
   const rows = rowsOf(data);
   const total = totalOf(data);
   return (
@@ -925,10 +930,22 @@ function ResourceList({ resource }: { resource: Resource }) {
           <p className="adm-list-hint">برای دیدن همهٔ درخواست‌های تازه، فیلترها را پاک کنید و به صفحهٔ اول بروید.</p>
         )}
         <div className="adm-toolbar">
+          {resource.id === "leads" && (
+            <label>
+              جست‌وجو بر اساس
+              <select value={searchField} onChange={(event) => {
+                setSearchField(event.target.value as LeadSearchField);
+                setPage(1);
+              }}>
+                {leadSearchFields.map((field) => <option key={field.value} value={field.value}>{field.label}</option>)}
+              </select>
+            </label>
+          )}
           <label className="adm-search">
             {resource.id === "audit" ? "نام عملیات" : "جست‌وجو"}
             <input
-              placeholder="حداقل دو حرف…"
+              placeholder={resource.id === "leads" ? leadSearchFields.find((field) => field.value === searchField)?.placeholder : "حداقل دو حرف…"}
+              dir={resource.id === "leads" && searchField !== "fullName" ? "ltr" : undefined}
               maxLength={100}
               value={query}
               onChange={(e) => {
@@ -967,6 +984,7 @@ function ResourceList({ resource }: { resource: Resource }) {
             className="adm-link"
             onClick={() => {
               setQuery("");
+              setSearchField("reference");
               setStatus("");
               setFilters({});
               setFromDate("");
