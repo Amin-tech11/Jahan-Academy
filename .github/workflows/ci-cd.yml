@@ -126,10 +126,11 @@ jobs:
         ports:
           - 5432:5432
         options: >-
-          --health-cmd "pg_isready -U jahan -d jahan_academy"
+          --health-cmd "pg_isready -h 127.0.0.1 -U jahan -d jahan_academy"
+          --health-start-period 120s
           --health-interval 2s
-          --health-timeout 3s
-          --health-retries 20
+          --health-timeout 5s
+          --health-retries 60
       redis:
         image: redis:8-alpine
         ports:
