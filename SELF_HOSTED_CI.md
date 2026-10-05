@@ -100,6 +100,14 @@ under `/home/jahan-ci/local-tests`, outside GitHub's active workspace. Ubuntu's
 disk is stored at `F:\DevData\WSL\Ubuntu-24.04`; these operations do not create
 Python environments or caches on C. An installed uv runner tool cache is required.
 
+The Windows wrapper checks host/guest clock skew before running. JWT session
+tests require a stable clock. On this Ubuntu 24.04 workstation,
+`systemd-timesyncd.service` is disabled so that it cannot compete with Hyper-V's
+implicit Windows time synchronization. This follows Ubuntu's WSL guidance:
+https://ubuntu.com/wsl/docs/stable/explanation/time-sync/
+If the wrapper reports clock skew after suspension, synchronize WSL with the
+Windows host before issuing tokens; do not relax JWT validation to hide the issue.
+
 The backend image assigns source ownership with `COPY --chown` and changes only
 the `/app` directory owner after dependency installation. Avoid recursive
 ownership changes over `.venv`: OverlayFS can copy files from previous layers
