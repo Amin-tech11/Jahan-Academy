@@ -102,6 +102,10 @@ mount, avoiding slow initdb/fsync on the virtual disk. This affects test service
 only; development and production PostgreSQL storage and durability are unchanged.
 The CI Compose override replaces the legacy `/var/lib/postgresql/data` volume
 mount with the PostgreSQL 18 parent directory `/var/lib/postgresql`.
+GitHub integration services allow a 120-second health-check start period followed
+by 30 checks at five-second intervals. A cold PostgreSQL start on this workstation
+previously reached readiness after the old 40-second failure budget had expired.
+The same startup budget applies to Redis; unhealthy services still fail the job.
 
 The wrapper runs as `jahan-ci` without starting an interactive systemd user
 session. Each checkout gets a separate locked environment and test/tool caches
