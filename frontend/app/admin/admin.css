@@ -447,6 +447,21 @@
 .admin-app tbody tr:hover {
   background: var(--adm-page);
 }
+.admin-app .adm-leads-table th { background: var(--adm-brand); color: white; text-align: center; }
+.adm-column-heading { display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+.admin-app .adm-column-trigger { display: inline-flex; padding: 4px; min-height: 0; border: 1px solid #ffffff60; border-radius: 4px; background: transparent; color: white; }
+.admin-app .adm-column-trigger:hover, .admin-app .adm-column-trigger[aria-pressed="true"] { background: #ffffff30; }
+.admin-app .adm-leads-table tbody tr:nth-child(odd) { background: white; }
+.admin-app .adm-leads-table tbody tr:nth-child(even) { background: #f0f4fa; }
+.admin-app .adm-leads-table tbody tr:hover { background: #e3ebf7; }
+.adm-column-overlay { position: fixed; inset: 0; background: #172b4d33; z-index: 100; display: grid; place-items: center; padding: 16px; }
+.adm-column-menu { background: white; color: var(--adm-text); border: 1px solid var(--adm-line); box-shadow: 0 12px 40px #172b4d30; border-radius: 12px; padding: 18px; width: min(380px, 100%); white-space: normal; }
+.adm-column-title { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.adm-column-menu > input { width: 100%; margin-bottom: 12px; }
+.adm-column-menu label { display: flex; align-items: center; gap: 8px; padding: 8px 0; font-size: 12px; }
+.admin-app .adm-column-menu input[type="checkbox"] { width: 16px; min-height: 16px; accent-color: var(--adm-brand); flex-shrink: 0; }
+.adm-column-values { max-height: 280px; overflow: auto; border-block: 1px solid var(--adm-line); margin-block: 8px; }
+.adm-column-menu footer { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
 .adm-empty {
   padding: 48px 15px;
   text-align: center;

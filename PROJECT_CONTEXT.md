@@ -991,6 +991,8 @@ Admin date filters approved on 2026-10-04: the consultation inbox includes «ا�
 
 Admin table presentation approved on 2026-10-04: consultation requests use fourteen right-to-left columns in this order: tracking code, full name, phone, email, age, occupation, gender, education, marital status, investment budget, English proficiency, request creation date, request type, status. The tracking code opens request details. Missing answers remain empty (shown as an em dash); existing submitted assessment answers must be displayed without inference.
 
+Admin table refinement approved on 2026-10-05: consultation column headers are centered, white on the site's navy palette, with a filter control beside every heading. Rows have alternating backgrounds. Column filters offer searchable, multiple-value selections and combine with existing search, status, and date filters before pagination. Filter options and Excel export use the same permission-scoped API, fetching all matching pages only when needed. The `.xlsx` export includes all filtered records, preserves the fourteen-column order, formatted telephone strings and localized values, and includes Excel auto-filters, a frozen header and alternating row fills. A failed or changing multi-page read must not download a partial file. No schema or access-policy change is required.
+
 ### 18.1 Product and Content Inputs
 
 - Define the initial country list.
