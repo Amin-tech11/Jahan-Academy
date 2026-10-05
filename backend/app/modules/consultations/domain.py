@@ -80,7 +80,16 @@ LEAD_STATUS_TRANSITIONS: dict[LeadStatus, frozenset[LeadStatus]] = {
     ),
     LeadStatus.NOT_QUALIFIED: frozenset({LeadStatus.QUALIFIED, LeadStatus.CLOSED}),
     LeadStatus.CONVERTED: frozenset({LeadStatus.CLOSED}),
-    LeadStatus.CLOSED: frozenset(),
+    LeadStatus.CLOSED: frozenset(
+        {
+            LeadStatus.NEW,
+            LeadStatus.ASSIGNED,
+            LeadStatus.CONTACTED,
+            LeadStatus.QUALIFIED,
+            LeadStatus.NOT_QUALIFIED,
+            LeadStatus.CONVERTED,
+        }
+    ),
 }
 
 

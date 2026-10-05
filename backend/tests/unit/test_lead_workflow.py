@@ -13,12 +13,21 @@ from app.modules.identity.authorization import AuthorizationContext, RoleGrant
 from app.shared.exceptions import ApplicationError
 
 
-def test_lead_transition_matrix_reaches_closed_without_skipping_qualification() -> None:
+def test_lead_transition_matrix_reaches_closed_and_allows_reopening() -> None:
     assert LeadStatus.ASSIGNED in LEAD_STATUS_TRANSITIONS[LeadStatus.NEW]
     assert LeadStatus.CONTACTED in LEAD_STATUS_TRANSITIONS[LeadStatus.ASSIGNED]
     assert LeadStatus.CONVERTED not in LEAD_STATUS_TRANSITIONS[LeadStatus.CONTACTED]
     assert LeadStatus.CONVERTED in LEAD_STATUS_TRANSITIONS[LeadStatus.QUALIFIED]
-    assert not LEAD_STATUS_TRANSITIONS[LeadStatus.CLOSED]
+    assert LEAD_STATUS_TRANSITIONS[LeadStatus.CLOSED] == frozenset(
+        {
+            LeadStatus.NEW,
+            LeadStatus.ASSIGNED,
+            LeadStatus.CONTACTED,
+            LeadStatus.QUALIFIED,
+            LeadStatus.NOT_QUALIFIED,
+            LeadStatus.CONVERTED,
+        }
+    )
 
 
 def test_workflow_requests_normalize_and_validate_reasons() -> None:

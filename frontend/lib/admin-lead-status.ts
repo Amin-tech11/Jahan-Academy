@@ -8,13 +8,14 @@ const transitions: Record<string, readonly string[]> = {
   qualified: ["converted", "not_qualified", "closed"],
   not_qualified: ["qualified", "closed"],
   converted: ["closed"],
-  closed: [],
+  closed: ["new", "assigned", "contacted", "qualified", "not_qualified", "converted"],
 };
+const statusesRequiringAssignee = ["assigned", "contacted", "qualified", "not_qualified", "converted"];
 
 export function canChangeLeadStatus(source: RecordData, status: string): boolean {
   return !source.archived &&
     Boolean(transitions[String(source.status)]?.includes(status)) &&
-    (status === "closed" || Boolean(source.assignee));
+    (!statusesRequiringAssignee.includes(status) || Boolean(source.assignee));
 }
 
 export async function saveLeadChanges(

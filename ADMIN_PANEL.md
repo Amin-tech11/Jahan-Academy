@@ -115,3 +115,7 @@ Current owner-approved scope exposes only consultation requests after login. Oth
 Admin-only CSS now uses the current home-page palette from frontend/app/home.css: brand blue #123B78, silver #AEB7C2, canvas #F7F8FA, text #202833 and muted text #66717F. Scoped tokens cover navigation, tables, controls, dialogs, live-update indicators and login. Success/warning/error colors retain their semantic meaning; the existing login artwork is preserved.
 
 Validation: production build (including TypeScript), browser refresh on localhost:3500, visual inspection of the request table/sidebar/login, and contrast calculations for body, muted, primary, selected and semantic text (all at least 4.5:1). No new unit tests, API/permission design, migrations or data integration tests apply because this update changes CSS colors only. Existing behavior is covered by CI.
+
+## Reopening closed consultation requests — 2026-10-05
+
+Authorized staff can transition a closed request back into an active workflow status through the existing versioned status-transition API. The status selector stays enabled for closed, non-archived records and applies existing assignee requirements to the selected target status. Reopening is recorded in the existing status history. Archived requests remain immutable. No schema, migration, permission grant or new endpoint is required.

@@ -20,7 +20,10 @@ test("workflow choices respect assignment, terminal states and archive", () => {
   assert.equal(canChangeLeadStatus({ status: "new" }, "closed"), true);
   assert.equal(canChangeLeadStatus(lead, "contacted"), true);
   assert.equal(canChangeLeadStatus(lead, "converted"), false);
-  assert.equal(canChangeLeadStatus({ ...lead, status: "closed" }, "new"), false);
+  assert.equal(canChangeLeadStatus({ ...lead, status: "closed" }, "new"), true);
+  assert.equal(canChangeLeadStatus({ ...lead, status: "closed" }, "contacted"), true);
+  assert.equal(canChangeLeadStatus({ ...lead, status: "closed" }, "closed"), false);
+  assert.equal(canChangeLeadStatus({ status: "closed" }, "new"), true);
   assert.equal(canChangeLeadStatus({ ...lead, archived: true }, "closed"), false);
 });
 
