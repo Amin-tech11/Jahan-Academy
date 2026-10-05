@@ -8,6 +8,12 @@ export type UniversityOffering = UniversityFeature & {
   status: Record<Locale, string>;
 };
 export type UniversityDiscipline = { name: Record<Locale, string>; percentage: number };
+export type UniversityDisciplineSource = {
+  year: string;
+  basis: Record<Locale, string>;
+  url: string;
+  supportingUrls?: string[];
+};
 export type UniversityOverviewPoint = { title: Record<Locale, string>; text: Record<Locale, string>; sourceUrl: string };
 export type UniversityInfo = UniversityShowcase & {
   englishName: string;
@@ -22,6 +28,8 @@ export type UniversityInfo = UniversityShowcase & {
   coordinates?: { latitude: number; longitude: number };
   dli?: string;
   topDisciplines?: UniversityDiscipline[];
+  disciplineSource?: UniversityDisciplineSource;
+  academicFields?: Record<Locale, string>[];
   whyChoose?: UniversityOverviewPoint[];
   notes?: UniversityOverviewPoint[];
   sources: { label: string; url: string }[];

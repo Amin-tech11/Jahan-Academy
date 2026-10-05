@@ -98,7 +98,7 @@ export function UniversityInfoPage({ university: u, locale }: { university: Univ
     </section>}
     {!!u.features.length && <section className={styles.lifeSection}>
       <h3 className={styles.subheading}>{fa ? "زندگی در این دانشگاه" : "Life at this university"}</h3>
-      <div className={styles.highlights}>{u.features.map((feature, index) => <article className={styles.lifeCard} key={feature.url}>
+      <div className={styles.highlights}>{u.features.map((feature, index) => <article className={styles.lifeCard} key={feature.title.en}>
         <span className={styles.lifeIcon}><CampusLifeIcon index={index} /></span><h4>{feature.title[locale]}</h4><p>{feature.text[locale]}</p>
       </article>)}</div>
     </section>}
@@ -107,7 +107,7 @@ export function UniversityInfoPage({ university: u, locale }: { university: Univ
     <h2>{fa ? `امکانات و ویژگی‌های ${u.name.fa}` : `What we offer at ${u.englishName}`}</h2>
     {offerings.length ? <div className={styles.featureList}>{offerings.map((feature, index) => {
       const url = safeUniversityUrl(feature.url);
-      return <details className={styles.featureItem} key={feature.url}>
+      return <details className={styles.featureItem} key={feature.title.en}>
         <summary className={styles.featureSummary}>
           <span className={styles.featureIcon}>{feature.icon ? <OfferingIcon icon={feature.icon} /> : <CampusLifeIcon index={index} />}</span>
           <span className={styles.featureTitle}>{feature.title[locale]}</span>
@@ -136,11 +136,16 @@ export function UniversityInfoPage({ university: u, locale }: { university: Univ
       <aside className={styles.sidebar} aria-label={fa ? "مشخصات دانشگاه" : "Institution details"}>
         <section className={styles.factCard}><h2>{fa ? "مشخصات دانشگاه" : "Institution details"}</h2><dl>{facts.map((fact) => <div key={fact.label}><dt>{fact.label}</dt><dd dir="auto">{fact.value}</dd></div>)}</dl></section>
         <section className={styles.disciplinesCard} aria-labelledby="top-disciplines-title">
-          <h3 id="top-disciplines-title">{fa ? "رشته‌های برتر" : "Top Disciplines"}</h3>
+          <h3 id="top-disciplines-title">{fa ? `رشته‌های برتر ${u.name.fa}` : `Top disciplines at ${u.englishName}`}</h3>
           {u.topDisciplines?.length ? <ul className={styles.disciplineList}>{u.topDisciplines.map((discipline) => <li key={discipline.name.en}>
             <div className={styles.disciplineLabel}><span>{discipline.name[locale]}</span><span>{discipline.percentage.toLocaleString(locale)}{fa ? "٪" : "%"}</span></div>
             <meter min={0} max={100} value={discipline.percentage} aria-label={discipline.name[locale]}>{discipline.percentage}%</meter>
-          </li>)}</ul> : <p className={styles.disciplinesEmpty}>{fa ? "اطلاعات رشته‌های برتر این دانشگاه هنوز منتشر نشده است." : "Top discipline information has not yet been published for this university."}</p>}
+          </li>)}</ul> : <p className={styles.disciplinesEmpty}>{fa ? "آمار قابل استناد برای محاسبهٔ درصد رشته‌های این دانشگاه هنوز در دسترس نیست." : "Verified statistics for this university's discipline percentages are not yet available."}</p>}
+          {u.disciplineSource && <div className={styles.disciplineSource}>
+            <p><b>{u.disciplineSource.year}</b> · {u.disciplineSource.basis[locale]}</p>
+            <p>{fa ? "درصدها سهم آماری حوزه‌ها هستند، نه رتبه‌بندی کیفیت." : "Shares describe the source population, not a quality ranking."}</p>
+            {[u.disciplineSource.url, ...(u.disciplineSource.supportingUrls ?? [])].map((url, index) => safeUniversityUrl(url) && <a key={url} href={url} target="_blank" rel="noopener noreferrer">{fa ? (index ? `منبع تکمیلی ${index}` : "منبع آمار") : (index ? `Supporting source ${index}` : "Statistics source")} ↗</a>)}
+          </div>}
         </section>
       </aside>
     </div>
