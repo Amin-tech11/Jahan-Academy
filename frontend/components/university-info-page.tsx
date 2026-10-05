@@ -143,7 +143,6 @@ export function UniversityInfoPage({ university: u, locale }: { university: Univ
           </li>)}</ul> : <p className={styles.disciplinesEmpty}>{fa ? "آمار قابل استناد برای محاسبهٔ درصد رشته‌های این دانشگاه هنوز در دسترس نیست." : "Verified statistics for this university's discipline percentages are not yet available."}</p>}
           {u.disciplineSource && <div className={styles.disciplineSource}>
             <p><b>{u.disciplineSource.year}</b> · {u.disciplineSource.basis[locale]}</p>
-            <p>{fa ? "درصدها سهم آماری حوزه‌ها هستند، نه رتبه‌بندی کیفیت." : "Shares describe the source population, not a quality ranking."}</p>
             {[u.disciplineSource.url, ...(u.disciplineSource.supportingUrls ?? [])].map((url, index) => safeUniversityUrl(url) && <a key={url} href={url} target="_blank" rel="noopener noreferrer">{fa ? (index ? `منبع تکمیلی ${index}` : "منبع آمار") : (index ? `Supporting source ${index}` : "Statistics source")} ↗</a>)}
           </div>}
         </section>
