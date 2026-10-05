@@ -2,6 +2,4 @@
 .consultation-form-heading h3 { margin: 0; color: #202833; font-size: 1.35rem; font-weight: 700; line-height: 1.6; text-align: center; }
 .consultation-form-heading p { max-width: 35rem; margin: .5rem auto 1.5rem; color: #66717f; font-size: .9rem; line-height: 1.9; text-align: center; }
 .consultation-form-heading .consultation-free-word { color: #b27a12; font-weight: 900; }
-
-/* Give the home-page consultation title and supporting copy a clearer break. */
-.home-page .home-consultation__form .consultation-form-heading p { margin-top: 1.25rem; }
+.home-page .home-consultation__form .consultation-form-heading p { margin: .25rem auto 2rem; }
