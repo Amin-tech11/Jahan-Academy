@@ -93,6 +93,9 @@ For builds, the script stages only the Dockerfile's production inputs on Linux
 storage. Windows/DrvFS cache folders are not traversed, avoiding extended-attribute
 permission errors and excessive context transfer. The staging directory is removed
 after the run.
+The production-image probe allows 180 startup attempts, with bounded connection
+and response timeouts. This accommodates first imports under workstation disk
+load; a failure still fails the gate and prints container logs.
 
 Both local and CI integration PostgreSQL data use a disposable 512 MiB tmpfs
 mount, avoiding slow initdb/fsync on the virtual disk. This affects test services

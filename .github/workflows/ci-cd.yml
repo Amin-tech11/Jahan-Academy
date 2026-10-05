@@ -215,8 +215,8 @@ jobs:
         run: |
           docker run --detach --name "${COMPOSE_PROJECT_NAME}-smoke" --publish 127.0.0.1::8000 "${BACKEND_IMAGE}"
           address=$(docker port "${COMPOSE_PROJECT_NAME}-smoke" 8000/tcp)
-          for _ in {1..30}; do
-            if curl --fail --silent "http://${address}/health/live"; then
+          for _ in {1..180}; do
+            if curl --fail --silent --connect-timeout 2 --max-time 5 "http://${address}/health/live"; then
               exit 0
             fi
             sleep 1

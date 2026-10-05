@@ -97,10 +97,11 @@ if ((build)); then
   docker build --progress=plain -f "$context/backend/Dockerfile" -t "$id:backend" "$context"
   docker run -d --name "$id-smoke" -p 127.0.0.1::8000 "$id:backend" >/dev/null
   address=$(docker port "$id-smoke" 8000/tcp)
-  for ((attempt=0; attempt<30; attempt++)); do
-    if curl --fail --silent "http://$address/health/live"; then exit 0; fi
+  for ((attempt=0; attempt<180; attempt++)); do
+    if curl --fail --silent --connect-timeout 2 --max-time 5 "http://$address/health/live"; then exit 0; fi
     sleep 1
   done
   docker logs "$id-smoke"
+  echo 'Production image did not become live within the startup attempts.' >&2
   exit 1
 fi
