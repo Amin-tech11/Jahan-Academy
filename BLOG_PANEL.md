@@ -47,3 +47,5 @@ Editorial content is arranged in three independent sections from top to bottom: 
 - Consultation text sizing update: heading 20px, supporting text and field labels/controls 14px, consent text 12.8px, and submit text 15.2px to match the supplied reference. Confirmed rendered computed sizes at localhost:3900. CSS-only; automated tests and build were not run.
 
 - Font-size root cause and fix: the blog consultation had custom font-size overrides that diverged from the home form tokens (20px title and 15.2px button vs home 20.8px and 16px). Replaced them with the existing home sizes. Browser computed-style comparison at port 3900 now matches exactly for heading 20.8px, description/labels/inputs 13.6px, consent 12.8px and submit 16px. No tests or build run; verified both rendered routes in-browser.
+
+- Consultation emphasis update: title weight 800, the gold free label 900, gray description/consent text 600, and privacy link 700. Confirmed computed styles and refreshed localhost:3900. CSS-only; no tests/build run.
