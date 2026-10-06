@@ -49,7 +49,7 @@ export const destinationOverviews: DestinationOverview[] = [
     slug: "netherlands", name: { fa: "هلند", en: "Netherlands" }, region: "europe",
     image: "/destinations/netherlands.png", imageAlt: { fa: "نمایی از هلند", en: "A view of the Netherlands" },
     capital: { fa: "آمستردام", en: "Amsterdam" }, language: { fa: "هلندی", en: "Dutch" },
-    intro: { fa: "با شهرها و محیط زندگی در هلند آشنا شوید؛ زبان دوره، محل اقامت و برنامهٔ تحصیلی را در کنار هم بررسی کنید.", en: "Explore life in the Netherlands, considering course language, accommodation and study plans together." },
+    intro: { fa: "با شهرها و محیط زندگی در هلند آشنا شوید؛ زبان روزمره، محل اقامت و سبک زندگی را در کنار هم بشناسید.", en: "Explore life in the Netherlands, considering everyday language, accommodation and lifestyle together." },
   },
   {
     slug: "australia", name: { fa: "استرالیا", en: "Australia" }, region: "oceania",

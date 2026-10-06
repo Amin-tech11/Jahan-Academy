@@ -29,14 +29,8 @@
 .decisionHeading { max-width: 850px; margin-bottom: 24px; }
 .decisionHeading > span { display: block; margin-bottom: 8px; color: var(--navy); font-size: 13px; font-weight: 700; }
 .decisionHeading h2 { margin-bottom: 12px; }
-.planningSteps, .decisionCriteria, .budgetCards { display: grid; gap: 20px; }
-.planningSteps { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 0; list-style: none; }
-.planningSteps li { display: flex; gap: 18px; padding: 26px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); }
-.stepNumber { flex: 0 0 42px; height: 42px; display: grid; place-items: center; border-radius: 50%; background: var(--navy); color: white; }
-.stepOutcome { display: block; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); color: var(--navy); font-size: 13px; line-height: 1.8; }
-.decisionCriteria { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.decisionCriteria article, .budgetCards article { padding: 26px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); }
-.criterionNumber { display: block; margin-bottom: 16px; color: var(--navy); font-family: Arial, sans-serif; font-size: 26px; }
+.decisionCriteria { display: grid; gap: 20px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.decisionCriteria article { padding: 26px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); }
 .decisionCriteria article { display: flex; flex-direction: column; }
 .decisionCriteria strong { margin-top: auto; padding-top: 20px; color: var(--navy); font-size: 13px; line-height: 1.8; }
 .comparisonSelectors, .comparisonColumns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
@@ -55,27 +49,7 @@
 .resourceLinks { display: flex; flex-wrap: wrap; gap: 12px 24px; margin-block: 18px 24px; color: var(--navy); font-size: 14px; }
 .resourceLinks a:hover { text-decoration: underline; }
 .resourceLinks a[target] { direction: ltr; }
-.comparisonNotes { display: grid; gap: 18px; padding-top: 22px; border-top: 1px solid var(--line); }
-.budgetCards { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.decisionNote { margin-top: 20px; padding: 22px 26px; border-inline-start: 4px solid var(--navy); border-radius: 8px; background: var(--surface); }
-.decisionNote strong { display: block; margin-bottom: 8px; color: var(--navy); }
-.readiness { padding: 26px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); }
-.readinessStatus { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-bottom: 24px; color: var(--navy); }
-.readinessStatus progress { width: min(40%, 300px); height: 10px; border: 0; border-radius: 99px; overflow: hidden; accent-color: var(--navy); }
-.readinessStatus progress::-webkit-progress-bar { background: var(--line); }
-.readinessStatus progress::-webkit-progress-value { background: var(--navy); }
-.readinessStatus progress::-moz-progress-bar { background: var(--navy); }
-.readinessGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
-.readinessItem { display: flex; gap: 12px; align-items: flex-start; padding: 18px; border: 1px solid var(--line); border-radius: 10px; cursor: pointer; }
-.readinessItem input { flex: 0 0 18px; width: 18px; height: 18px; margin-top: 5px; accent-color: var(--navy); }
-.readinessItem strong, .readinessItem span span { display: block; line-height: 1.8; }
-.readinessItem span span { margin-top: 5px; color: var(--muted); font-size: 13px; }
-.readinessFooter { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-top: 22px; }
-.page .readinessFooter p { font-size: 13px; }
-.readinessFooter button { flex-shrink: 0; border: 1px solid var(--navy); border-radius: 8px; padding: 10px 18px; color: var(--navy); background: white; cursor: pointer; font: inherit; }
-.readinessFooter button:disabled { opacity: .45; cursor: default; }
-@media (max-width: 900px) { .decisionCriteria { grid-template-columns: repeat(2, minmax(0, 1fr)); } .planningSteps, .budgetCards { grid-template-columns: 1fr; } }
-@media (max-width: 600px) { .decisionCriteria, .comparisonSelectors, .comparisonColumns, .readinessGrid { grid-template-columns: 1fr; } .planningSteps li, .comparisonCountry, .readiness { padding: 20px; } .readinessStatus, .readinessFooter { align-items: flex-start; flex-direction: column; gap: 12px; } .readinessStatus progress { width: 100%; } }
+@media (max-width: 600px) { .decisionCriteria, .comparisonSelectors, .comparisonColumns { grid-template-columns: 1fr; } .comparisonCountry { padding: 20px; } }
 .cards, .countries, .criteria { display: grid; gap: 18px; margin-top: 24px; }
 .cards { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .countries, .criteria { grid-template-columns: repeat(2, minmax(0, 1fr)); }
