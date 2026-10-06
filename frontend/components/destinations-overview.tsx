@@ -1,25 +1,31 @@
+
 import Image from "next/image";
-import Link from "next/link";
+
 import { SiteShell } from "@/components/site-shell";
 import { DestinationsExplorer } from "@/components/destinations-explorer";
-import { destinationCount, destinationOverviews } from "@/lib/destinations-overview";
+import { DestinationsNavigation } from "@/components/destinations-overview-interactive";
+import { HomeFaq } from "@/components/home-faq";
+import { DestinationsConsultation } from "@/components/destinations-consultation";
+import { destinationCount, destinationOverviews, regionLabels } from "@/lib/destinations-overview";
 import type { Locale } from "@/lib/site-content";
 import styles from "./destinations-overview.module.css";
 
 const copy = {
   fa: {
-    destinations: "مقصدهای تحصیلی", eyebrow: "جهان، کلاس درس شماست",
-    title: "آینده‌ات را", accent: "کجای جهان می‌بینی؟",
-    intro: "هر مقصد، دنیایی از تجربه‌های تازه است. کشورها را بشناسید، اولویت‌هایتان را روشن کنید و اولین قدم را برای مسیر تحصیلی خود بردارید.",
-    explore: "کشف مقصدها", consultation: "راهنمایی برای انتخاب مقصد",
+    home: "صفحهٔ اصلی", section: "مقصدهای تحصیلی", eyebrow: "جهان، کلاس درس شماست",
+    title: "آینده‌ات را کجای جهان می‌بینی؟",
+    intro: "کشورها را بشناسید، اولویت‌هایتان را روشن کنید و قدم بعدی مسیر تحصیلی خود را آگاهانه انتخاب کنید.",
+    overview: "دربارهٔ مقصدهای تحصیلی", overviewText: "هر مقصد، دنیایی از تجربه‌های تازه است. در این راهنما می‌توانید کشورها را کنار هدف تحصیلی، امکانات و سبک زندگی دلخواهتان بررسی کنید.",
+    factsTitle: "نگاهی سریع", number: "مقصدهای معرفی‌شده", regions: "منطقه‌های قابل بررسی", language: "زبان راهنما",
+    featuredTitle: "مقصدهای پرطرفدار", featuredLink: "دیدن همهٔ مقصدها",
     guide: "راهنمای انتخاب مقصد", guideTitle: "انتخابی فراتر از نام یک کشور", guideText: "مقصد مناسب، جایی است که با هدف تحصیلی، امکانات و سبک زندگی شما هماهنگ باشد.",
     criteria: [
-      { icon: "study", title: "هدف و مسیر تحصیلی", text: "رشتهٔ موردعلاقه، مقطع بعدی و زبان تحصیل را مشخص کنید؛ سپس گزینه‌ها را با پیشینهٔ خود بسنجید." },
-      { icon: "budget", title: "بودجه و زندگی روزمره", text: "شهریه، مسکن، رفت‌وآمد و هزینه‌های اولیه را کنار هم ببینید؛ بودجه فقط هزینهٔ دانشگاه نیست." },
-      { icon: "world", title: "زبان و سبک زندگی", text: "آب‌وهوا، زبان روزمره، فاصله از خانواده و فضای فرهنگی شهر را در تصمیم خود وارد کنید." },
+      { title: "هدف و مسیر تحصیلی", text: "رشتهٔ موردعلاقه، مقطع بعدی و زبان تحصیل را مشخص کنید؛ سپس گزینه‌ها را با پیشینهٔ خود بسنجید." },
+      { title: "بودجه و زندگی روزمره", text: "شهریه، مسکن، رفت‌وآمد و هزینه‌های اولیه را کنار هم ببینید؛ بودجه فقط هزینهٔ دانشگاه نیست." },
+      { title: "زبان و سبک زندگی", text: "آب‌وهوا، زبان روزمره، فاصله از خانواده و فضای فرهنگی شهر را در تصمیم خود وارد کنید." },
     ],
-    collection: "جهان را از اینجا کشف کنید", collectionTitle: "مقصد بعدی شما کجاست؟", collectionText: "از اروپا تا آن سوی اقیانوس؛ آشنایی اولیه با کشورهایی برای ادامهٔ مسیر تحصیلی شما.",
-    journey: "قدم‌به‌قدم، با جهان آکادمی", journeyTitle: "از شناخت مقصد تا شروع مسیر", journeyText: "لازم نیست از همین امروز پاسخ همهٔ پرسش‌ها را بدانید. از یک تصویر روشن از شرایط خود شروع کنید.",
+    collection: "فهرست مقصدها", collectionTitle: "کشور مناسب خود را پیدا کنید", collectionText: "کشورها را بر اساس منطقه مرور کنید یا نام مقصد موردنظرتان را جست‌وجو کنید.",
+    journey: "مراحل شروع مسیر", journeyTitle: "از شناخت مقصد تا شروع مسیر", journeyText: "لازم نیست از همین امروز پاسخ همهٔ پرسش‌ها را بدانید. از یک تصویر روشن از شرایط خود شروع کنید.",
     steps: [
       ["اولویت‌هایتان را بنویسید", "هدف تحصیلی، زبان، بودجه و زمان مدنظر را مشخص کنید."],
       ["چند مقصد را بشناسید", "معرفی کشورها را بخوانید و گزینه‌های موردعلاقه را کوتاه‌تر کنید."],
@@ -35,18 +41,20 @@ const copy = {
     ctaEyebrow: "قدم بعدی، یک گفت‌وگوست", ctaTitle: "هنوز مقصدتان را انتخاب نکرده‌اید؟", ctaText: "با هم شرایط و اولویت‌های شما را مرور می‌کنیم تا انتخاب بعدی‌تان روشن‌تر باشد.", ctaButton: "شروع ارزیابی شرایط", top: "بازگشت به بالای صفحه",
   },
   en: {
-    destinations: "Study destinations", eyebrow: "THE WORLD IS YOUR CLASSROOM",
-    title: "Where in the world", accent: "do you see your future?",
-    intro: "Every destination opens up new experiences. Get to know the countries, define your priorities and take the first step on your academic journey.",
-    explore: "Explore destinations", consultation: "Help me choose",
+    home: "Home", section: "Study destinations", eyebrow: "THE WORLD IS YOUR CLASSROOM",
+    title: "Where in the world do you see your future?",
+    intro: "Get to know the countries, define your priorities and make an informed choice about your next academic step.",
+    overview: "About study destinations", overviewText: "Every destination opens up new experiences. Use this guide to consider countries alongside your academic goals, resources and preferred way of life.",
+    factsTitle: "At a glance", number: "Destinations featured", regions: "Regions to explore", language: "Guide language",
+    featuredTitle: "Popular destinations", featuredLink: "View all destinations",
     guide: "A GUIDE TO YOUR NEXT CHAPTER", guideTitle: "More than choosing a country", guideText: "The right destination should fit your academic goals, resources and way of life.",
     criteria: [
-      { icon: "study", title: "Your academic direction", text: "Define your interests, next qualification and study language, then consider how each option fits your background." },
-      { icon: "budget", title: "Budget and everyday life", text: "Look at tuition, accommodation, transport and initial expenses together. Your budget goes beyond university fees." },
-      { icon: "world", title: "Language and lifestyle", text: "Consider the climate, everyday language, distance from family and cultural setting of your future city." },
+      { title: "Your academic direction", text: "Define your interests, next qualification and study language, then consider how each option fits your background." },
+      { title: "Budget and everyday life", text: "Look at tuition, accommodation, transport and initial expenses together. Your budget goes beyond university fees." },
+      { title: "Language and lifestyle", text: "Consider the climate, everyday language, distance from family and cultural setting of your future city." },
     ],
-    collection: "YOUR NEXT CHAPTER STARTS HERE", collectionTitle: "Find your place in the world", collectionText: "From Europe to across the oceans, get a first look at countries for your next academic chapter.",
-    journey: "WITH YOU, STEP BY STEP", journeyTitle: "From curiosity to a clear direction", journeyText: "You do not need all the answers today. Start with a clear picture of your own situation.",
+    collection: "DESTINATION DIRECTORY", collectionTitle: "Find a place that fits your plans", collectionText: "Browse countries by region or search for the destination on your mind.",
+    journey: "PLAN YOUR NEXT STEP", journeyTitle: "From curiosity to a clear direction", journeyText: "You do not need all the answers today. Start with a clear picture of your own situation.",
     steps: [
       ["Define your priorities", "Outline your academic goals, language, budget and preferred timeline."],
       ["Explore destinations", "Read the country introductions and narrow down the places that interest you."],
@@ -63,48 +71,43 @@ const copy = {
   },
 };
 
-function GuideIcon({ icon }: { icon: string }) {
-  return <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    {icon === "study" ? <><path d="m2 8 10-5 10 5-10 5L2 8Z" /><path d="M6 10v7c4 3 8 3 12 0v-7M22 8v8" /></> : icon === "budget" ? <><rect x="3" y="5" width="18" height="15" rx="3" /><path d="M3 9h18M16 14h5M7 5V3h10" /></> : <><circle cx="12" cy="12" r="9" /><ellipse cx="12" cy="12" rx="4" ry="9" /><path d="M3 12h18" /></>}
-  </svg>;
+const sectionIds = ["destination-regions", "destination-planning", "destination-countries", "destination-criteria", "destination-comparison", "destination-faq"];
+
+function GuideIcon({ index }: { index: number }) {
+  const paths = ["M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18ZM3 12h18M12 3c-5 5-5 13 0 18 5-5 5-13 0-18Z", "M4 5h16v16H4zM8 3v4m8-4v4M4 11h16m-12 4h3m2 0h3", "m3 9 9-5 9 5-9 5-9-5Zm4 3v5c3 3 7 3 10 0v-5M21 9v8", "M4 4h16v16H4zM8 9l2 2 5-5M8 16h8"];
+  return <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={paths[index % paths.length]} /></svg>;
 }
 
 export function DestinationsOverview({ locale }: { locale: Locale }) {
   const c = copy[locale];
   const fa = locale === "fa";
-  const consultation = `/${locale}/consultation?source=destinations-overview`;
-  return <SiteShell locale={locale}><main className={styles.page} id="destinations-top">
-    <section className={styles.hero} aria-label={fa ? "جهان آکادمی" : "Jahan Academy"}>
-      <Image className={styles.heroArtwork} src="/destinations/world-map-hero-wide.png" alt={fa ? "نقشهٔ برجستهٔ جهان با نورهای طلایی" : "A raised world map illuminated in warm gold"} fill sizes="100vw" preload />
+  const t = (persian: string, english: string) => fa ? persian : english;
+  const labels = [t("منطقه‌های جهان", "World regions"), t("برنامه‌ریزی تحصیلی", "Study planning"), t("مقصدهای تحصیلی", "Study destinations"), t("معیارهای انتخاب", "Selection criteria"), t("مقایسه مقصدها", "Comparing destinations"), t("پرسش‌های متداول", "Frequently asked questions")];
+  const planning = [
+    [t("زبان دوره", "Course language"), t("زبان تدریس و مدرک زبان موردنیاز هر دوره را جداگانه بررسی کنید؛ زبان رایج کشور به‌تنهایی معیار کافی نیست.", "Check each course’s teaching language and required language evidence separately from the country’s everyday language.")],
+    [t("هزینه‌های تحصیل و زندگی", "Study and living costs"), t("شهریه، هزینه مسکن و مخارج روزمره را با اطلاعات دانشگاه و شهر انتخابی برآورد کنید.", "Estimate tuition, housing and everyday expenses using information from your selected institution and city.")],
+    [t("زمان‌بندی درخواست", "Application timeline"), t("مهلت درخواست، زمان آماده‌سازی مدارک و تاریخ شروع دوره را در یک برنامه مشخص کنار هم قرار دهید.", "Plan application deadlines, document preparation and course start dates together.")],
+  ];
+  return <SiteShell locale={locale}><main className={styles.page}>
+    <section className={styles.hero} aria-labelledby="destination-wordmark">
+      <Image className={styles.heroArtwork} src="/destinations/world-map-hero-wide.png" alt={t("نقشه برجسته جهان با نورهای طلایی", "A raised world map illuminated in warm gold")} fill sizes="100vw" preload />
       <div className={styles.heroShade} aria-hidden="true" />
-      <p className={styles.heroBrand} lang="en">JAHAN ACADEMY</p>
+      <h1 className={styles.heroBrand} id="destination-wordmark" dir="ltr" lang="en">JAHAN ACADEMY</h1>
     </section>
-    <section className={styles.introSection} aria-labelledby="destination-title">
-      <div className={`${styles.wrap} ${styles.introCopy}`}>
-        <p className={styles.heroEyebrow}><span />{c.eyebrow}</p>
-        <h1 id="destination-title">{c.title}<br /><em>{c.accent}</em></h1>
-        <p className={styles.heroIntro}>{c.intro}</p>
-        <div className={styles.heroActions}><a className={styles.primary} href="#explore">{c.explore}<span aria-hidden="true">↓</span></a><Link className={styles.secondary} href={consultation}>{c.consultation}<span aria-hidden="true">{fa ? "←" : "→"}</span></Link></div>
-        <div className={styles.heroFootnote}><span className={styles.miniFlags}>{["canada", "germany", "italy"].map((slug) => <Image key={slug} src={`/destinations/flags/${slug}.svg`} width={30} height={30} alt="" />)}</span><span>{fa ? "۱۰ مقصد، فرصت‌های تازه برای فردای شما" : "10 destinations. A world of possibilities."}</span></div>
+    <div className={`shell ${styles.guide}`}>
+      <div className={styles.guideContent}>
+        <DestinationsNavigation title={t("راهنمای مقصدهای تحصیلی جهان", "A guide to study destinations worldwide")} items={labels.map((label, index) => ({ id: sectionIds[index], label }))} />
+        <div className={styles.intro}><p>{c.intro} {c.overviewText}</p></div>
+        <section className={styles.section} id={sectionIds[0]}><h2>{labels[0]}</h2><div className={styles.cards}>
+          {(["europe", "americas", "oceania"] as const).map((region) => <article className={styles.card} key={region}><span className={styles.typeIcon}><GuideIcon index={0} /></span><h3>{regionLabels[region][locale]}</h3><p>{t("با کشورها، زبان‌ها و شهرهای دانشگاهی این منطقه آشنا شوید و گزینه‌ها را بر اساس اولویت‌های خود بررسی کنید.", "Explore the countries, languages and university cities in this region through your own priorities.")}</p><p className={styles.regionCount}>{destinationCount(destinationOverviews.filter(item => item.region === region).length, locale)} {t("مقصد معرفی‌شده", "destinations featured")}</p><a href="#destination-countries">{t("مشاهده مقصدها", "Explore destinations")} ↗</a></article>)}
+        </div></section>
+        <section className={styles.section} id={sectionIds[1]}><h2>{labels[1]}</h2><p>{c.journeyText}</p><div className={styles.cards}>{planning.map(([title, text], index) => <article className={styles.card} key={title}><span className={styles.typeIcon}><GuideIcon index={index + 1} /></span><h3>{title}</h3><p>{text}</p></article>)}</div></section>
+        <section className={styles.section} id={sectionIds[2]}><h2>{c.collectionTitle}</h2><p>{c.collectionText}</p><DestinationsExplorer locale={locale} /></section>
+        <section className={styles.section} id={sectionIds[3]}><h2>{labels[3]}</h2><p>{c.guideText}</p><div className={styles.criteria}>{c.criteria.map((item, index) => <article className={styles.card} key={item.title}><span className={styles.typeIcon}><GuideIcon index={index + 1} /></span><h3>{item.title}</h3><p>{item.text}</p></article>)}</div></section>
+        <section className={styles.section} id={sectionIds[4]}><h2>{labels[4]}</h2><p>{t("پیش از تصمیم نهایی، پاسخ این پرسش‌ها را برای هر کشور و دانشگاه انتخابی کنار هم بنویسید.", "Compare these questions for each country and selected university before making your final decision.")}</p><div className={styles.tableWrap}><table><thead><tr>{[t("معیار", "Criterion"), t("چه چیزی بررسی شود؟", "What to compare"), t("از کجا شروع کنید؟", "Where to start")].map(label => <th key={label} scope="col">{label}</th>)}</tr></thead><tbody>{planning.map(([title, text], index) => <tr key={title}><th scope="row">{title}</th><td>{text}</td><td>{[t("صفحه رسمی دوره و شرایط پذیرش", "Official course and entry requirements"), t("جدول شهریه و خدمات مسکن دانشگاه", "University fees and housing services"), t("تقویم پذیرش دانشگاه و فهرست مدارک", "University application calendar and document checklist")][index]}</td></tr>)}</tbody></table></div></section>
+        <section className={`${styles.section} ${styles.faq}`} id={sectionIds[5]}><div className="home-faq__grid"><div className="home-faq__intro"><h2>{labels[5]}</h2></div><HomeFaq items={c.faqs.map(([question, answer]) => ({ question, answer }))} /></div></section>
       </div>
-    </section>
-    <nav className={`${styles.wrap} ${styles.quickNav}`} aria-label={fa ? "بخش‌های راهنما" : "On this page"}>
-      <a href="#explore"><span>{destinationCount(destinationOverviews.length, locale)}</span>{c.destinations}</a><a href="#choose"><GuideIcon icon="world" />{c.guide}</a><a href="#journey"><GuideIcon icon="study" />{fa ? "مراحل شروع مسیر" : "Plan your journey"}</a><a href="#questions"><span>?</span>{fa ? "پرسش‌های پرتکرار" : "Common questions"}</a>
-    </nav>
-    <section className={`${styles.wrap} ${styles.section}`} id="choose" aria-labelledby="choose-title">
-      <div className={styles.sectionHead}><div><p className={styles.eyebrow}>{c.guide}</p><h2 id="choose-title">{c.guideTitle}</h2></div><p>{c.guideText}</p></div>
-      <div className={styles.criteria}>{c.criteria.map((item, index) => <article key={item.icon}><div className={styles.criteriaTop}><span className={styles.iconBox}><GuideIcon icon={item.icon} /></span><span>{`0${index + 1}`}</span></div><h3>{item.title}</h3><p>{item.text}</p></article>)}</div>
-    </section>
-    <section className={styles.exploreSection} id="explore" aria-labelledby="explore-title"><div className={styles.wrap}>
-      <div className={styles.sectionHead}><div><p className={styles.eyebrow}>{c.collection}</p><h2 id="explore-title">{c.collectionTitle}</h2></div><p>{c.collectionText}</p></div>
-      <DestinationsExplorer locale={locale} />
-    </div></section>
-    <section className={`${styles.wrap} ${styles.section} ${styles.journey}`} id="journey" aria-labelledby="journey-title">
-      <div className={styles.journeyIntro}><p className={styles.eyebrow}>{c.journey}</p><h2 id="journey-title">{c.journeyTitle}</h2><p>{c.journeyText}</p><Link className={styles.inlineLink} href={consultation}>{c.ctaButton}<span aria-hidden="true">{fa ? "←" : "→"}</span></Link></div>
-      <ol className={styles.steps}>{c.steps.map(([title, text], index) => <li key={title}><span>{destinationCount(index + 1, locale)}</span><div><h3>{title}</h3><p>{text}</p></div></li>)}</ol>
-    </section>
-    <section className={styles.faqSection} id="questions" aria-labelledby="faq-title"><div className={`${styles.wrap} ${styles.faqGrid}`}><div><p className={styles.eyebrow}>{c.faqEyebrow}</p><h2 id="faq-title">{c.faqTitle}</h2><p className={styles.faqNote}>{fa ? "انتخاب بهتر، با پرسیدن شروع می‌شود." : "Better choices begin with good questions."}</p></div><div className={styles.faqList}>{c.faqs.map(([q, a]) => <details key={q}><summary>{q}<span aria-hidden="true">+</span></summary><p>{a}</p></details>)}</div></div></section>
-    <section className={`${styles.wrap} ${styles.cta}`} aria-labelledby="cta-title"><div><p className={styles.heroEyebrow}>{c.ctaEyebrow}</p><h2 id="cta-title">{c.ctaTitle}</h2><p>{c.ctaText}</p></div><Link className={styles.primary} href={consultation}>{c.ctaButton}<span aria-hidden="true">{fa ? "←" : "→"}</span></Link></section>
-    <div className={`${styles.wrap} ${styles.bottom}`}><span lang="en">JAHAN ACADEMY · STUDY, GROW, BELONG</span><a href="#destinations-top">{c.top} ↑</a></div>
+      <section className={`home-closing ${styles.consultation}`} id="destination-consultation" aria-labelledby="destination-closing-title"><header className="home-closing__heading"><h2 id="destination-closing-title">{c.ctaTitle}</h2><p>{c.ctaText}</p></header><div className="home-closing__layout"><div className="home-closing__image"><Image src="/journey/profile-assessment.png" alt={t("مشاوره انتخاب مقصد تحصیلی", "Study destination consultation")} fill sizes="(max-width: 800px) 100vw, 50vw" /></div><DestinationsConsultation locale={locale} /></div></section>
+    </div>
   </main></SiteShell>;
 }
