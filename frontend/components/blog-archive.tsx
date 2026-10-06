@@ -13,7 +13,7 @@ export function BlogArchive({ posts, locale, initialType = "all", sectionType }:
   const [page, setPage] = useState(1);
   const filtered = selectBlogPosts(posts, locale, { type: sectionType ?? initialType, sort: "newest" });
   const sectionId = sectionType ? `journal-${sectionType}` : "archive";
-  const title = sectionType ? copy[sectionType] : copy.archive;
+  const title = sectionType ? copy.sectionTitles[sectionType] : copy.archive;
   const pages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const number = (n: number) => n.toLocaleString(locale === "fa" ? "fa-IR" : "en-GB");
 

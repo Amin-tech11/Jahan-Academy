@@ -49,3 +49,5 @@ Editorial content is arranged in three independent sections from top to bottom: 
 - Font-size root cause and fix: the blog consultation had custom font-size overrides that diverged from the home form tokens (20px title and 15.2px button vs home 20.8px and 16px). Replaced them with the existing home sizes. Browser computed-style comparison at port 3900 now matches exactly for heading 20.8px, description/labels/inputs 13.6px, consent 12.8px and submit 16px. No tests or build run; verified both rendered routes in-browser.
 
 - Consultation emphasis update: title weight 800, the gold free label 900, gray description/consent text 600, and privacy link 700. Confirmed computed styles and refreshed localhost:3900. CSS-only; no tests/build run.
+
+- Section naming update: centered headings now read Latest Immigration News, Latest Articles and Immigration Guides (localized to Persian as requested), while the section navigation keeps its short labels. The publication-date marker is navy #123B78. Verified rendered headings and border color on localhost:3900. No automated tests/build run.

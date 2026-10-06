@@ -52,7 +52,7 @@
 .journal-card:hover .journal-card-image img { transform:scale(1.035); }
 .journal-image-arrow { position:absolute; bottom:14px; inset-inline-end:14px; width:30px; height:30px; display:grid; place-items:center; border-radius:50%; background:#ffffffeb; color:#244d68; }
 .journal-card-body { padding:24px 0 0; text-align:start; }
-.journal-meta { display:flex; align-items:center; border-inline-start:2px solid #DDA716; padding-inline-start:10px; margin:10px 0 12px; }
+.journal-meta { display:flex; align-items:center; border-inline-start:2px solid #123B78; padding-inline-start:10px; margin:10px 0 12px; }
 .journal-meta .journal-tag { background:#eef4f7; padding:4px 8px; border-radius:5px; }
 .journal-meta time { font-size:12px; color:#738593; line-height:1.6; }
 .journal-card h3 { font-size:16px; font-weight:750; line-height:1.8; margin:0; color:#17364b; }
