@@ -5,6 +5,7 @@ import { brandContent } from "@/lib/brand-content";
 import { aboutContent } from "@/lib/about-content";
 import type { Locale } from "@/lib/site-content";
 import styles from "./about-page.module.css";
+import { AboutNavigation } from "./about-navigation";
 
 const copy = {
   fa: {
@@ -58,39 +59,37 @@ function Icon({ kind }: { kind: number }) {
 export function AboutPage({ locale }: { locale: Locale }) {
   const c = copy[locale];
   const brand = brandContent[locale];
-  const anchors = ["story", "purpose", "values", "journey", "questions"];
   const consultation = `/${locale}/consultation?source=about`;
   const number = (n: number) => new Intl.NumberFormat(locale, { minimumIntegerDigits: 2 }).format(n);
   return <div className={styles.theme}><SiteShell locale={locale}>
     <a className={styles.skip} href="#about-main">{c.skip}</a>
     <main className={styles.page} id="about-main">
+      <section className={styles.banner} aria-label={c.label}>
+        <Image src="/home-hero-documentary.png" alt={c.imageAlt} fill sizes="100vw" preload />
+        <div className={styles.bannerOverlay} />
+        <p className={styles.wordmark} aria-hidden="true">JAHAN ACADEMY</p>
+      </section>
       <div className={styles.container}>
         <nav className={styles.breadcrumb} aria-label={locale === "fa" ? "مسیر صفحه" : "Breadcrumb"}><Link href={`/${locale}`}>{c.home}</Link><span aria-hidden="true">/</span><span aria-current="page">{c.label}</span></nav>
         <section className={styles.hero} aria-labelledby="about-title">
           <div className={styles.heroCopy}>
-            <span className={styles.eyebrow}><span className={styles.dot} />{c.label}</span>
-            <h1 id="about-title">{c.title}<br /><em>{c.accent}</em></h1>
+            <span className={styles.eyebrow}>{c.eyebrow}</span>
+            <h1 id="about-title">{c.label}</h1>
             <p>{c.subtitle}</p>
             <div className={styles.actions}><Link className={styles.primary} href={consultation}>{c.cta}<span aria-hidden="true">{locale === "fa" ? "↖" : "↗"}</span></Link><a className={styles.storyLink} href="#story">{c.storyLink}<span aria-hidden="true">↓</span></a></div>
-            <div className={styles.heroFoot}><span aria-hidden="true">✧</span>{c.eyebrow}</div>
           </div>
-          <figure className={styles.heroImage}>
-            <Image src="/home-hero-documentary.png" alt={c.imageAlt} fill sizes="(max-width: 800px) 100vw, 50vw" preload />
-            <div className={styles.imageWord} aria-hidden="true">BEYOND<br />BORDERS.</div>
-            <figcaption><span aria-hidden="true">↗</span><span>{c.imageCaption}<small>JAHAN ACADEMY</small></span></figcaption>
-          </figure>
         </section>
-        <nav className={styles.sectionNav} aria-label={locale === "fa" ? "بخش‌های درباره ما" : "About page sections"}>{c.nav.map((label, i) => <a href={`#${anchors[i]}`} key={label}><span>{number(i + 1)}</span>{label}</a>)}</nav>
+      </div>
+      <div className={`${styles.container} ${styles.guide}`}>
+        <AboutNavigation labels={c.nav} title={locale === "fa" ? "با جهان آکادمی آشنا شوید" : "Get to know Jahan Academy"} />
         <section id="story" className={styles.story} aria-labelledby="story-title">
           <div><span className={styles.eyebrow}>{c.storyLabel}</span><h2 id="story-title">{c.storyTitle}</h2><p className={styles.quote}>{c.quote}</p></div>
           <div className={styles.prose}>{aboutContent[locale].paragraphs.map((paragraph, i) => <p key={i}>{paragraph.split(/(\*\*.*?\*\*)/g).map((part, j) => part.startsWith("**") ? <strong key={j}>{part.slice(2, -2)}</strong> : part)}</p>)}<Link className={styles.inlineLink} href={`/${locale}/services`}>{locale === "fa" ? "آشنایی با خدمات ما" : "Explore our services"}<span aria-hidden="true">{locale === "fa" ? "←" : "→"}</span></Link></div>
         </section>
-      </div>
-      <section id="purpose" className={styles.purpose} aria-labelledby="purpose-title"><div className={styles.container}>
+      <section id="purpose" className={styles.purpose} aria-labelledby="purpose-title"><div>
         <div className={styles.purposeHeader}><div><span className={styles.eyebrow}>{c.purpose}</span><h2 id="purpose-title">{c.purposeTitle}</h2></div><span className={styles.compass} aria-hidden="true">✳</span></div>
         <div className={styles.purposeGrid}>{[{ title: brand.missionTitle, text: brand.missionText }, { title: brand.visionTitle, text: brand.visionText }].map((item, i) => <article key={item.title}><span className={styles.purposeNumber}>{number(i + 1)}</span><h3>{item.title}</h3><p>{item.text}</p></article>)}</div>
       </div></section>
-      <div className={styles.container}>
         <section id="values" className={styles.section} aria-labelledby="values-title"><div className={styles.sectionHeader}><div><span className={styles.eyebrow}>{c.valuesLabel}</span><h2 id="values-title">{brand.valuesTitle}</h2></div><p>{c.valuesIntro}</p></div>
           <div className={styles.valuesGrid}>{brand.values.map((value, i) => <article className={styles.valueCard} key={value.title}><div className={styles.valueTop}><span className={styles.icon}><Icon kind={i} /></span><span className={styles.cardNumber}>{number(i + 1)}</span></div><h3>{value.title}</h3><p>{value.text}</p></article>)}</div>
         </section>

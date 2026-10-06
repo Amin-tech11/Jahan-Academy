@@ -43,3 +43,13 @@ Root-preview routing and shared panel configuration are pending the explicit app
 - Security/code review: emphasized text is rendered with React elements, without raw HTML. No external requests or new data collection were introduced.
 - Visual refresh limitation: browser automation rejected access to the localhost URL under its security policy. This update has HTTP and build verification, but visual desktop/mobile review after refresh remains unverified.
 - Push/PR/CI remain pending the destination authorization requested earlier after automatic approval review rejected the remote push.
+
+## Match the universities and destination panels
+
+- Requirement: follow the implemented universities and destination panel design while preserving the approved full Persian narrative and English translation.
+- Actual panel references: `universities-page` checkout's `universities-theme.module.css`, `universities-hero.module.css`, `universities-guide.module.css`; `destination` checkout's `destination-page.module.css`. These newer panel implementations use navy `#123B78`, silver `#AEB7C2`, canvas `#F7F8FA`, text `#202833`, muted text `#66717F`, borders `#D6DCE4`, and white surfaces with a 60/30/10 visual balance. This request adopts those implemented values for the about panel.
+- Layout: full-width photographic banner with JAHAN ACADEMY wordmark, centered introduction, sticky pill navigation, white editorial sections, centered value cards, and white consultation ending. Panel-scoped shell overflow uses `clip` so the page's sticky navigation follows the viewport rather than an overflow-hidden ancestor.
+- Navigation: active section follows scrolling, restores the correct section on reverse scrolling, adjusts for mobile dimensions, and removes listeners and scheduled work on unmount. Native anchor links remain usable before JavaScript loads.
+- Data/API/permissions/migrations: not applicable; no new collection or backend changes. Security review found no raw HTML or new external requests. All changes remain within the about panel.
+- Validation: typecheck and production build passed; 34 tests passed, including two new navigation behavior tests. HTTP checks passed for Persian and English on port 4100: complete supplied paragraphs, five navigation targets, one H1, and the actual reference colors in the delivered stylesheet.
+- Browser refresh and visual QA remain unavailable due to the previously reported browser-policy block. Push/PR/CI retain the earlier pending destination authorization.
