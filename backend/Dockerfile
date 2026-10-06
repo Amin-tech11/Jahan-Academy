@@ -17,12 +17,12 @@ RUN addgroup --system jahan && adduser --system --ingroup jahan jahan
 COPY --from=uv /uv /uvx /bin/
 COPY backend/pyproject.toml backend/uv.lock ./
 RUN uv sync --frozen --no-dev --no-install-project
-COPY backend/app ./app
-COPY backend/alembic ./alembic
-COPY backend/alembic.ini backend/migration_sql_runner.py ./
+COPY --chown=jahan:jahan backend/app ./app
+COPY --chown=jahan:jahan backend/alembic ./alembic
+COPY --chown=jahan:jahan backend/alembic.ini backend/migration_sql_runner.py ./
 COPY database/sql /database/sql
 RUN uv sync --frozen --no-dev \
-    && chown -R jahan:jahan /app \
+    && chown jahan:jahan /app \
     && rm -f /bin/uv /bin/uvx
 USER jahan
 EXPOSE 8000

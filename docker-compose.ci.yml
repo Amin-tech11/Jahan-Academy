@@ -1,0 +1,41 @@
+# CI-only override. CI sets a unique COMPOSE_PROJECT_NAME and image tag per run.
+# Random loopback ports avoid every existing development stack on this computer.
+x-ci-health-startup: &ci-health-startup
+  # Cold executable imports on the workstation must finish before failures count.
+  start_period: 180s
+  interval: 10s
+  timeout: 10s
+  retries: 30
+
+services:
+  postgres:
+    # PostgreSQL 18 stores its cluster beneath /var/lib/postgresql. CI needs
+    # disposable storage, not the development stack's legacy volume mount.
+    volumes: !reset []
+    tmpfs:
+      - /var/lib/postgresql:rw,size=512m
+    healthcheck: *ci-health-startup
+  redis:
+    healthcheck: *ci-health-startup
+  minio-init: &ci-backend
+    image: ${BACKEND_IMAGE:?CI must set BACKEND_IMAGE}
+  migrate: *ci-backend
+  backend:
+    <<: *ci-backend
+    healthcheck: *ci-health-startup
+  mock-noura:
+    <<: *ci-backend
+    healthcheck: *ci-health-startup
+  worker-integration: *ci-backend
+  beat: *ci-backend
+  frontend:
+    image: jahan-ci-frontend:${CI_RUN_ID:?CI must set CI_RUN_ID}
+    healthcheck: *ci-health-startup
+  nginx:
+    healthcheck: *ci-health-startup
+    ports: !override
+      - "127.0.0.1::80"
+  minio:
+    healthcheck: *ci-health-startup
+    ports: !override
+      - "127.0.0.1::5000"
