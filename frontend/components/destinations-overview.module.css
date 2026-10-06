@@ -1,7 +1,6 @@
 .page { --navy: #123B78; --ink: #202833; --muted: #66717F; --paper: #F7F8FA; --surface: #FFFFFF; --line: #D6DCE4; --mint: #F7F8FA; --color-brand-900: var(--navy); --color-brand-100: var(--paper); --color-text: var(--ink); --color-muted: var(--muted); --color-border: var(--line); --color-surface: var(--surface); --color-page: var(--paper); background: var(--paper); color: var(--ink); }
 .page :focus-visible { outline: 3px solid var(--navy); outline-offset: 3px; }
 .page .heroBrand { color: white; }
-.regionCount { margin-top: 16px !important; font-size: 13px !important; }
 .srOnly { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 .hero { position: relative; display: grid; min-height: clamp(380px, 43vw, 545px); padding: 1.5rem; place-items: center; overflow: hidden; color: #fff; background: #123B78; }
 .heroArtwork { object-fit: cover; object-position: center 45%; }

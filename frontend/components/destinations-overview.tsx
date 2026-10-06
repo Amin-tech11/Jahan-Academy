@@ -6,7 +6,6 @@ import { DestinationsExplorer } from "@/components/destinations-explorer";
 import { DestinationsNavigation } from "@/components/destinations-overview-interactive";
 import { HomeFaq } from "@/components/home-faq";
 import { DestinationsConsultation } from "@/components/destinations-consultation";
-import { destinationCount, destinationOverviews, regionLabels } from "@/lib/destinations-overview";
 import type { Locale } from "@/lib/site-content";
 import styles from "./destinations-overview.module.css";
 
@@ -71,7 +70,7 @@ const copy = {
   },
 };
 
-const sectionIds = ["destination-regions", "destination-planning", "destination-countries", "destination-criteria", "destination-comparison", "destination-faq"];
+const sectionIds = ["destination-countries", "destination-planning", "destination-criteria", "destination-comparison", "destination-faq"];
 
 function GuideIcon({ index }: { index: number }) {
   const paths = ["M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18ZM3 12h18M12 3c-5 5-5 13 0 18 5-5 5-13 0-18Z", "M4 5h16v16H4zM8 3v4m8-4v4M4 11h16m-12 4h3m2 0h3", "m3 9 9-5 9 5-9 5-9-5Zm4 3v5c3 3 7 3 10 0v-5M21 9v8", "M4 4h16v16H4zM8 9l2 2 5-5M8 16h8"];
@@ -82,7 +81,7 @@ export function DestinationsOverview({ locale }: { locale: Locale }) {
   const c = copy[locale];
   const fa = locale === "fa";
   const t = (persian: string, english: string) => fa ? persian : english;
-  const labels = [t("منطقه‌های جهان", "World regions"), t("برنامه‌ریزی تحصیلی", "Study planning"), t("مقصدهای تحصیلی", "Study destinations"), t("معیارهای انتخاب", "Selection criteria"), t("مقایسه مقصدها", "Comparing destinations"), t("پرسش‌های متداول", "Frequently asked questions")];
+  const labels = [t("مقصدهای تحصیلی", "Study destinations"), t("برنامه‌ریزی تحصیلی", "Study planning"), t("معیارهای انتخاب", "Selection criteria"), t("مقایسه مقصدها", "Comparing destinations"), t("پرسش‌های متداول", "Frequently asked questions")];
   const planning = [
     [t("زبان دوره", "Course language"), t("زبان تدریس و مدرک زبان موردنیاز هر دوره را جداگانه بررسی کنید؛ زبان رایج کشور به‌تنهایی معیار کافی نیست.", "Check each course’s teaching language and required language evidence separately from the country’s everyday language.")],
     [t("هزینه‌های تحصیل و زندگی", "Study and living costs"), t("شهریه، هزینه مسکن و مخارج روزمره را با اطلاعات دانشگاه و شهر انتخابی برآورد کنید.", "Estimate tuition, housing and everyday expenses using information from your selected institution and city.")],
@@ -98,14 +97,11 @@ export function DestinationsOverview({ locale }: { locale: Locale }) {
       <div className={styles.guideContent}>
         <DestinationsNavigation title={t("راهنمای مقصدهای تحصیلی جهان", "A guide to study destinations worldwide")} items={labels.map((label, index) => ({ id: sectionIds[index], label }))} />
         <div className={styles.intro}><p>{c.intro} {c.overviewText}</p></div>
-        <section className={styles.section} id={sectionIds[0]}><h2>{labels[0]}</h2><div className={styles.cards}>
-          {(["europe", "americas", "oceania"] as const).map((region) => <article className={styles.card} key={region}><span className={styles.typeIcon}><GuideIcon index={0} /></span><h3>{regionLabels[region][locale]}</h3><p>{t("با کشورها، زبان‌ها و شهرهای دانشگاهی این منطقه آشنا شوید و گزینه‌ها را بر اساس اولویت‌های خود بررسی کنید.", "Explore the countries, languages and university cities in this region through your own priorities.")}</p><p className={styles.regionCount}>{destinationCount(destinationOverviews.filter(item => item.region === region).length, locale)} {t("مقصد معرفی‌شده", "destinations featured")}</p><a href="#destination-countries">{t("مشاهده مقصدها", "Explore destinations")} ↗</a></article>)}
-        </div></section>
+        <section className={styles.section} id={sectionIds[0]}><h2>{c.collectionTitle}</h2><p>{c.collectionText}</p><DestinationsExplorer locale={locale} /></section>
         <section className={styles.section} id={sectionIds[1]}><h2>{labels[1]}</h2><p>{c.journeyText}</p><div className={styles.cards}>{planning.map(([title, text], index) => <article className={styles.card} key={title}><span className={styles.typeIcon}><GuideIcon index={index + 1} /></span><h3>{title}</h3><p>{text}</p></article>)}</div></section>
-        <section className={styles.section} id={sectionIds[2]}><h2>{c.collectionTitle}</h2><p>{c.collectionText}</p><DestinationsExplorer locale={locale} /></section>
-        <section className={styles.section} id={sectionIds[3]}><h2>{labels[3]}</h2><p>{c.guideText}</p><div className={styles.criteria}>{c.criteria.map((item, index) => <article className={styles.card} key={item.title}><span className={styles.typeIcon}><GuideIcon index={index + 1} /></span><h3>{item.title}</h3><p>{item.text}</p></article>)}</div></section>
-        <section className={styles.section} id={sectionIds[4]}><h2>{labels[4]}</h2><p>{t("پیش از تصمیم نهایی، پاسخ این پرسش‌ها را برای هر کشور و دانشگاه انتخابی کنار هم بنویسید.", "Compare these questions for each country and selected university before making your final decision.")}</p><div className={styles.tableWrap}><table><thead><tr>{[t("معیار", "Criterion"), t("چه چیزی بررسی شود؟", "What to compare"), t("از کجا شروع کنید؟", "Where to start")].map(label => <th key={label} scope="col">{label}</th>)}</tr></thead><tbody>{planning.map(([title, text], index) => <tr key={title}><th scope="row">{title}</th><td>{text}</td><td>{[t("صفحه رسمی دوره و شرایط پذیرش", "Official course and entry requirements"), t("جدول شهریه و خدمات مسکن دانشگاه", "University fees and housing services"), t("تقویم پذیرش دانشگاه و فهرست مدارک", "University application calendar and document checklist")][index]}</td></tr>)}</tbody></table></div></section>
-        <section className={`${styles.section} ${styles.faq}`} id={sectionIds[5]}><div className="home-faq__grid"><div className="home-faq__intro"><h2>{labels[5]}</h2></div><HomeFaq items={c.faqs.map(([question, answer]) => ({ question, answer }))} /></div></section>
+        <section className={styles.section} id={sectionIds[2]}><h2>{labels[2]}</h2><p>{c.guideText}</p><div className={styles.criteria}>{c.criteria.map((item, index) => <article className={styles.card} key={item.title}><span className={styles.typeIcon}><GuideIcon index={index + 1} /></span><h3>{item.title}</h3><p>{item.text}</p></article>)}</div></section>
+        <section className={styles.section} id={sectionIds[3]}><h2>{labels[3]}</h2><p>{t("پیش از تصمیم نهایی، پاسخ این پرسش‌ها را برای هر کشور و دانشگاه انتخابی کنار هم بنویسید.", "Compare these questions for each country and selected university before making your final decision.")}</p><div className={styles.tableWrap}><table><thead><tr>{[t("معیار", "Criterion"), t("چه چیزی بررسی شود؟", "What to compare"), t("از کجا شروع کنید؟", "Where to start")].map(label => <th key={label} scope="col">{label}</th>)}</tr></thead><tbody>{planning.map(([title, text], index) => <tr key={title}><th scope="row">{title}</th><td>{text}</td><td>{[t("صفحه رسمی دوره و شرایط پذیرش", "Official course and entry requirements"), t("جدول شهریه و خدمات مسکن دانشگاه", "University fees and housing services"), t("تقویم پذیرش دانشگاه و فهرست مدارک", "University application calendar and document checklist")][index]}</td></tr>)}</tbody></table></div></section>
+        <section className={`${styles.section} ${styles.faq}`} id={sectionIds[4]}><div className="home-faq__grid"><div className="home-faq__intro"><h2>{labels[4]}</h2></div><HomeFaq items={c.faqs.map(([question, answer]) => ({ question, answer }))} /></div></section>
       </div>
       <section className={`home-closing ${styles.consultation}`} id="destination-consultation" aria-labelledby="destination-closing-title"><header className="home-closing__heading"><h2 id="destination-closing-title">{c.ctaTitle}</h2><p>{c.ctaText}</p></header><div className="home-closing__layout"><div className="home-closing__image"><Image src="/journey/profile-assessment.png" alt={t("مشاوره انتخاب مقصد تحصیلی", "Study destination consultation")} fill sizes="(max-width: 800px) 100vw, 50vw" /></div><DestinationsConsultation locale={locale} /></div></section>
     </div>
