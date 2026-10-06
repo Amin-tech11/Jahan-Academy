@@ -13,7 +13,7 @@ The panel reuses the three existing bilingual sample posts in `frontend/lib/site
 
 The October 6 update follows the `universities-page` panel: the same existing campus hero asset is copied to `public/blog/classical-campus.png`, with a full-width wordmark, navy/neutral palette, section navigation, guide cards, accordion FAQ and consultation section. The sticky navigation measures the actual header and its own height; the active link follows visible section area, and all observers/listeners are cleaned up. Navigation stops before consultation. Existing shared `HomeFaq` and `ConsultationForm` components are reused without edits. The consultation form uses its existing API and records the journal source; backend availability is required to submit requests.
 
-Articles and news share one archive ordered by publication timestamp descending by default, with oldest-first sorting, article/news filtering, normalized Persian/English search, empty state and pagination at six entries. Persian dates use the Persian calendar and UTC formatting. Invalid/future publication dates are excluded. The featured section is separate from the sortable archive.
+Editorial content is arranged in three independent sections from top to bottom: News, Articles, Guides. Each has its own search, publication order, empty state and pagination at six entries. The section navigation follows the same order. The breadcrumb, featured/mixed archive and FAQ section have been removed. Persian dates use the Persian calendar and UTC formatting. Invalid/future publication dates are excluded.
 
 ## Validation and security
 
@@ -25,6 +25,8 @@ Articles and news share one archive ordered by publication timestamp descending 
 - Feature PR targets `develop` under the repository workflow; the user performs merges. The branch includes inherited home-page work until separately integrated.
 
 ## Verified locally
+
+- Latest layout revision: after refresh on port 3900, the DOM contains News, Articles, Guides in that order and no breadcrumb or FAQ section. Searching in News does not change the other sections; oldest-first sorting in Guides returns September 15, 16, 17. The mobile layout shows the three section navigation links. All 50 existing frontend tests and TypeScript checks pass; no new API or permission design applies to this layout-only change.
 
 - All 50 frontend tests passed, including six blog tests; production build and TypeScript check passed.
 - In-app browser: Articles navigation from home, archive refresh, newest/oldest order, news filter, Persian search with Arabic letter variants, empty/reset state, existing detail route, and English language switch passed.
