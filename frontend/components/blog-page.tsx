@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { BlogArchive } from "@/components/blog-archive";
 import { BlogNavigation } from "@/components/blog-navigation";
-import { ConsultationForm } from "@/components/consultation-request-form";
+import { BlogConsultation } from "@/components/blog-consultation";
 import { SiteShell } from "@/components/site-shell";
 import { articles, type Locale } from "@/lib/site-content";
 import { blogCopy, selectBlogPosts, type BlogFilter } from "@/lib/blog-content";
@@ -20,7 +20,7 @@ export function BlogPage({ locale }: { locale: Locale; initialType?: BlogFilter 
         <header className="journal-intro"><p>{copy.intro}</p><div className="journal-intro-line"><span>{copy.eyebrow}</span></div></header>
         {sections.map(type => <BlogArchive key={type} posts={posts} locale={locale} sectionType={type}/>)}
       </div>
-      <section className="journal-consultation" id="journal-consultation"><header><h2>{copy.help}</h2><p>{copy.guideText}</p></header><div className="journal-consultation-grid"><div className="journal-consultation-image"><Image src="/journey/profile-assessment.png" alt={copy.help} fill sizes="(max-width:800px) 100vw, 50vw"/></div><ConsultationForm locale={locale} source={`/${locale}/articles#journal-consultation`}/></div></section>
+      <section className="journal-consultation" id="journal-consultation"><div className="home-closing__layout"><div className="home-closing__image"><Image src="/journey/profile-assessment.png" alt={copy.help} fill sizes="(max-width:800px) 100vw, 50vw"/></div><BlogConsultation locale={locale}/></div></section>
       <p className="journal-preview-note">{copy.note}</p>
     </div>
   </main></SiteShell>;
