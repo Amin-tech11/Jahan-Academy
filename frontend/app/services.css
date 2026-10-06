@@ -7,6 +7,7 @@
 .services-hero__brand { padding: 1rem; color: #fff; font-family: Arial, sans-serif; font-size: clamp(2rem, 2.84vw, 3.4rem); font-weight: 400; letter-spacing: .5em; line-height: 1.15; text-align: center; text-shadow: 0 3px 22px rgba(2, 15, 24, .65); direction: ltr; }
 .services-intro { position: sticky; top: 78px; z-index: 30; padding: 1.5rem 0 1rem; background: var(--services-background); text-align: center; }
 .services-intro h1 { margin: 0; color: var(--services-brand); font-size: clamp(1.5rem, 2.6vw, 2.1rem); line-height: 1.35; }
+.services-title__text { display: inline-block; }
 .services-navigation { display: flex; width: min(100%, 940px); margin: .65rem auto 0; padding: .45rem 1.25rem; align-items: center; border: 1px solid var(--services-border); border-radius: 999px; background: var(--services-surface); box-shadow: 0 3px 10px rgba(32, 40, 51, .08); overflow-x: auto; scrollbar-width: none; }
 .services-navigation::-webkit-scrollbar { display: none; }
 .services-navigation a { display: inline-flex; min-height: 40px; padding: .5rem 1.2rem; flex: 1 0 auto; align-items: center; justify-content: center; border-radius: 999px; color: var(--services-text); font-size: .92rem; font-weight: 750; white-space: nowrap; transition: color .2s, background .2s; }

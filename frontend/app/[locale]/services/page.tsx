@@ -7,6 +7,7 @@ import { ServicesConsultationForm } from "@/components/services-consultation-for
 import { ServicesNavigation } from "@/components/services-navigation";
 import { ServicesMotion } from "@/components/services-motion";
 import { ServicesHero } from "@/components/services-hero";
+import { ServicesTitle } from "@/components/services-title";
 import { isLocale, type Locale } from "@/lib/site-content";
 
 import "../../services.css";
@@ -101,7 +102,7 @@ export default async function ServicesPage({ params }: PageProps) {
       <div className="services-content">
         <section className="services-intro" aria-labelledby="services-title">
           <div className="services-container">
-            <h1 id="services-title">{copy.title}</h1>
+            <ServicesTitle>{copy.title}</ServicesTitle>
             <ServicesNavigation label={copy.jumpLabel} services={copy.services.map(({ id, short }) => ({ id, label: short }))} />
           </div>
         </section>
