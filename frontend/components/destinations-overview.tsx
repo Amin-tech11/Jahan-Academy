@@ -1,9 +1,11 @@
-import { Fragment } from "react";
+
 import Image from "next/image";
-import Link from "next/link";
+
 import { SiteShell } from "@/components/site-shell";
 import { DestinationsExplorer } from "@/components/destinations-explorer";
-import { DestinationsTabs, FeaturedDestinationsLink } from "@/components/destinations-overview-interactive";
+import { DestinationsNavigation } from "@/components/destinations-overview-interactive";
+import { HomeFaq } from "@/components/home-faq";
+import { DestinationsConsultation } from "@/components/destinations-consultation";
 import { destinationCount, destinationOverviews, regionLabels } from "@/lib/destinations-overview";
 import type { Locale } from "@/lib/site-content";
 import styles from "./destinations-overview.module.css";
@@ -69,61 +71,43 @@ const copy = {
   },
 };
 
+const sectionIds = ["destination-regions", "destination-planning", "destination-countries", "destination-criteria", "destination-comparison", "destination-faq"];
+
+function GuideIcon({ index }: { index: number }) {
+  const paths = ["M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18ZM3 12h18M12 3c-5 5-5 13 0 18 5-5 5-13 0-18Z", "M4 5h16v16H4zM8 3v4m8-4v4M4 11h16m-12 4h3m2 0h3", "m3 9 9-5 9 5-9 5-9-5Zm4 3v5c3 3 7 3 10 0v-5M21 9v8", "M4 4h16v16H4zM8 9l2 2 5-5M8 16h8"];
+  return <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={paths[index % paths.length]} /></svg>;
+}
+
 export function DestinationsOverview({ locale }: { locale: Locale }) {
   const c = copy[locale];
   const fa = locale === "fa";
-  const consultation = `/${locale}/consultation?source=destinations-overview`;
-  const regionsCount = new Set(destinationOverviews.map((item) => item.region)).size;
-  const overviewPanel = <Fragment key="overview">
-    <p className={styles.eyebrow}>{c.eyebrow}</p>
-    <h2>{c.overview}</h2>
-    <p className={styles.prose}>{c.overviewText}</p>
-    <div className={styles.overviewHighlights}>{c.criteria.map((item, index) => <article key={item.title}>
-      <span className={styles.highlightNumber}>{`0${index + 1}`}</span><h3>{item.title}</h3><p>{item.text}</p>
-    </article>)}</div>
-  </Fragment>;
-  const guidePanel = <Fragment key="guide">
-    <p className={styles.eyebrow}>{c.guide}</p><h2>{c.guideTitle}</h2><p className={styles.prose}>{c.guideText}</p>
-    <ol className={styles.steps}>{c.steps.map(([title, text], index) => <li key={title}><span>{destinationCount(index + 1, locale)}</span><div><h3>{title}</h3><p>{text}</p></div></li>)}</ol>
-  </Fragment>;
-  const faqPanel = <Fragment key="questions">
-    <p className={styles.eyebrow}>{c.faqEyebrow}</p><h2>{c.faqTitle}</h2>
-    <div className={styles.faqList}>{c.faqs.map(([question, answer]) => <details key={question}><summary>{question}<span aria-hidden="true">+</span></summary><p>{answer}</p></details>)}</div>
-  </Fragment>;
-  return <SiteShell locale={locale}><main className={styles.page} id="destinations-top">
-    <div className={styles.wrap}>
-      <nav className={styles.breadcrumb} aria-label={fa ? "مسیر صفحه" : "Breadcrumb"}>
-        <Link href={`/${locale}`}>{c.home}</Link><span aria-hidden="true">/</span><span aria-current="page">{c.section}</span>
-      </nav>
-      <header className={styles.identity} dir={fa ? "rtl" : "ltr"}>
-        <span className={styles.identityMark} aria-hidden="true"><svg width="31" height="31" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.5"/><ellipse cx="12" cy="12" rx="4" ry="9" stroke="currentColor" strokeWidth="1.5"/><path d="M3 12h18M5.5 6.5h13M5.5 17.5h13" stroke="currentColor" strokeWidth="1.3"/></svg></span>
-        <div className={styles.identityText}><p className={styles.identityEyebrow}>{c.eyebrow}</p><h1>{c.title}</h1><p className={styles.identityIntro}>{c.intro}</p></div>
-      </header>
-      <section className={styles.hero} aria-label={fa ? "نقشهٔ جهان، مقصدهای تحصیلی" : "World map, study destinations"}>
-        <Image className={styles.heroArtwork} src="/destinations/world-map-hero-wide.png" alt={fa ? "نقشهٔ برجستهٔ جهان با نورهای طلایی" : "A raised world map illuminated in warm gold"} fill sizes="(max-width: 760px) 100vw, 1160px" preload />
-        <div className={styles.heroShade} aria-hidden="true" />
-        <p className={styles.heroBrand} lang="en">JAHAN ACADEMY</p>
-      </section>
-      <div className={styles.contentGrid}>
-        <DestinationsTabs locale={locale} panels={[
-          overviewPanel,
-          <Fragment key="destinations"><p className={styles.eyebrow}>{c.collection}</p><h2>{c.collectionTitle}</h2><p className={styles.prose}>{c.collectionText}</p><DestinationsExplorer locale={locale} /></Fragment>,
-          guidePanel,
-          faqPanel,
-        ]} />
-        <aside className={styles.sidebar} aria-label={fa ? "اطلاعات مقصدهای تحصیلی" : "Study destination information"}>
-          <section className={styles.factCard}><h2>{c.factsTitle}</h2><dl>
-            <div><dt>{c.number}</dt><dd>{destinationCount(destinationOverviews.length, locale)}</dd></div>
-            <div><dt>{c.regions}</dt><dd>{destinationCount(regionsCount, locale)}</dd></div>
-            <div><dt>{c.language}</dt><dd>{fa ? "فارسی و انگلیسی" : "English and Persian"}</dd></div>
-          </dl></section>
-          <section className={styles.featuredCard}><h2>{c.featuredTitle}</h2><ul>{destinationOverviews.slice(0, 4).map((item) => <li key={item.slug}>
-            <Link href={`/${locale}/countries/${item.slug}`}><Image src={`/destinations/flags/${item.slug}.svg`} alt="" width={30} height={30} /><span>{item.name[locale]}</span><b aria-hidden="true">{fa ? "↖" : "↗"}</b></Link>
-          </li>)}</ul><FeaturedDestinationsLink locale={locale}>{c.featuredLink}</FeaturedDestinationsLink></section>
-        </aside>
+  const t = (persian: string, english: string) => fa ? persian : english;
+  const labels = [t("منطقه‌های جهان", "World regions"), t("برنامه‌ریزی تحصیلی", "Study planning"), t("مقصدهای تحصیلی", "Study destinations"), t("معیارهای انتخاب", "Selection criteria"), t("مقایسه مقصدها", "Comparing destinations"), t("پرسش‌های متداول", "Frequently asked questions")];
+  const planning = [
+    [t("زبان دوره", "Course language"), t("زبان تدریس و مدرک زبان موردنیاز هر دوره را جداگانه بررسی کنید؛ زبان رایج کشور به‌تنهایی معیار کافی نیست.", "Check each course’s teaching language and required language evidence separately from the country’s everyday language.")],
+    [t("هزینه‌های تحصیل و زندگی", "Study and living costs"), t("شهریه، هزینه مسکن و مخارج روزمره را با اطلاعات دانشگاه و شهر انتخابی برآورد کنید.", "Estimate tuition, housing and everyday expenses using information from your selected institution and city.")],
+    [t("زمان‌بندی درخواست", "Application timeline"), t("مهلت درخواست، زمان آماده‌سازی مدارک و تاریخ شروع دوره را در یک برنامه مشخص کنار هم قرار دهید.", "Plan application deadlines, document preparation and course start dates together.")],
+  ];
+  return <SiteShell locale={locale}><main className={styles.page}>
+    <section className={styles.hero} aria-labelledby="destination-wordmark">
+      <Image className={styles.heroArtwork} src="/destinations/world-map-hero-wide.png" alt={t("نقشه برجسته جهان با نورهای طلایی", "A raised world map illuminated in warm gold")} fill sizes="100vw" preload />
+      <div className={styles.heroShade} aria-hidden="true" />
+      <h1 className={styles.heroBrand} id="destination-wordmark" dir="ltr" lang="en">JAHAN ACADEMY</h1>
+    </section>
+    <div className={`shell ${styles.guide}`}>
+      <div className={styles.guideContent}>
+        <DestinationsNavigation title={t("راهنمای مقصدهای تحصیلی جهان", "A guide to study destinations worldwide")} items={labels.map((label, index) => ({ id: sectionIds[index], label }))} />
+        <div className={styles.intro}><p>{c.intro} {c.overviewText}</p></div>
+        <section className={styles.section} id={sectionIds[0]}><h2>{labels[0]}</h2><div className={styles.cards}>
+          {(["europe", "americas", "oceania"] as const).map((region) => <article className={styles.card} key={region}><span className={styles.typeIcon}><GuideIcon index={0} /></span><h3>{regionLabels[region][locale]}</h3><p>{t("با کشورها، زبان‌ها و شهرهای دانشگاهی این منطقه آشنا شوید و گزینه‌ها را بر اساس اولویت‌های خود بررسی کنید.", "Explore the countries, languages and university cities in this region through your own priorities.")}</p><p className={styles.regionCount}>{destinationCount(destinationOverviews.filter(item => item.region === region).length, locale)} {t("مقصد معرفی‌شده", "destinations featured")}</p><a href="#destination-countries">{t("مشاهده مقصدها", "Explore destinations")} ↗</a></article>)}
+        </div></section>
+        <section className={styles.section} id={sectionIds[1]}><h2>{labels[1]}</h2><p>{c.journeyText}</p><div className={styles.cards}>{planning.map(([title, text], index) => <article className={styles.card} key={title}><span className={styles.typeIcon}><GuideIcon index={index + 1} /></span><h3>{title}</h3><p>{text}</p></article>)}</div></section>
+        <section className={styles.section} id={sectionIds[2]}><h2>{c.collectionTitle}</h2><p>{c.collectionText}</p><DestinationsExplorer locale={locale} /></section>
+        <section className={styles.section} id={sectionIds[3]}><h2>{labels[3]}</h2><p>{c.guideText}</p><div className={styles.criteria}>{c.criteria.map((item, index) => <article className={styles.card} key={item.title}><span className={styles.typeIcon}><GuideIcon index={index + 1} /></span><h3>{item.title}</h3><p>{item.text}</p></article>)}</div></section>
+        <section className={styles.section} id={sectionIds[4]}><h2>{labels[4]}</h2><p>{t("پیش از تصمیم نهایی، پاسخ این پرسش‌ها را برای هر کشور و دانشگاه انتخابی کنار هم بنویسید.", "Compare these questions for each country and selected university before making your final decision.")}</p><div className={styles.tableWrap}><table><thead><tr>{[t("معیار", "Criterion"), t("چه چیزی بررسی شود؟", "What to compare"), t("از کجا شروع کنید؟", "Where to start")].map(label => <th key={label} scope="col">{label}</th>)}</tr></thead><tbody>{planning.map(([title, text], index) => <tr key={title}><th scope="row">{title}</th><td>{text}</td><td>{[t("صفحه رسمی دوره و شرایط پذیرش", "Official course and entry requirements"), t("جدول شهریه و خدمات مسکن دانشگاه", "University fees and housing services"), t("تقویم پذیرش دانشگاه و فهرست مدارک", "University application calendar and document checklist")][index]}</td></tr>)}</tbody></table></div></section>
+        <section className={`${styles.section} ${styles.faq}`} id={sectionIds[5]}><div className="home-faq__grid"><div className="home-faq__intro"><h2>{labels[5]}</h2></div><HomeFaq items={c.faqs.map(([question, answer]) => ({ question, answer }))} /></div></section>
       </div>
-      <section className={styles.cta} aria-labelledby="cta-title"><div><p className={styles.ctaEyebrow}>{c.ctaEyebrow}</p><h2 id="cta-title">{c.ctaTitle}</h2><p>{c.ctaText}</p></div><Link href={consultation}>{c.ctaButton}<span aria-hidden="true">{fa ? "←" : "→"}</span></Link></section>
-      <div className={styles.bottom}><span lang="en">JAHAN ACADEMY · STUDY, GROW, BELONG</span><a href="#destinations-top">{c.top} ↑</a></div>
+      <section className={`home-closing ${styles.consultation}`} id="destination-consultation" aria-labelledby="destination-closing-title"><header className="home-closing__heading"><h2 id="destination-closing-title">{c.ctaTitle}</h2><p>{c.ctaText}</p></header><div className="home-closing__layout"><div className="home-closing__image"><Image src="/journey/profile-assessment.png" alt={t("مشاوره انتخاب مقصد تحصیلی", "Study destination consultation")} fill sizes="(max-width: 800px) 100vw, 50vw" /></div><DestinationsConsultation locale={locale} /></div></section>
     </div>
   </main></SiteShell>;
 }
