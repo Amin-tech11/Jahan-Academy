@@ -23,7 +23,7 @@ const copy = {
       { title: "بودجه و زندگی روزمره", text: "شهریه، مسکن، رفت‌وآمد و هزینه‌های اولیه را کنار هم ببینید؛ بودجه فقط هزینهٔ دانشگاه نیست." },
       { title: "زبان و سبک زندگی", text: "آب‌وهوا، زبان روزمره، فاصله از خانواده و فضای فرهنگی شهر را در تصمیم خود وارد کنید." },
     ],
-    collection: "فهرست مقصدها", collectionTitle: "کشور مناسب خود را پیدا کنید", collectionText: "کشورها را بر اساس منطقه مرور کنید یا نام مقصد موردنظرتان را جست‌وجو کنید.",
+    collection: "فهرست مقصدها", collectionTitle: "کشور مناسب خود را پیدا کنید",
     journey: "مراحل شروع مسیر", journeyTitle: "از شناخت مقصد تا شروع مسیر", journeyText: "لازم نیست از همین امروز پاسخ همهٔ پرسش‌ها را بدانید. از یک تصویر روشن از شرایط خود شروع کنید.",
     steps: [
       ["اولویت‌هایتان را بنویسید", "هدف تحصیلی، زبان، بودجه و زمان مدنظر را مشخص کنید."],
@@ -52,7 +52,7 @@ const copy = {
       { title: "Budget and everyday life", text: "Look at tuition, accommodation, transport and initial expenses together. Your budget goes beyond university fees." },
       { title: "Language and lifestyle", text: "Consider the climate, everyday language, distance from family and cultural setting of your future city." },
     ],
-    collection: "DESTINATION DIRECTORY", collectionTitle: "Find a place that fits your plans", collectionText: "Browse countries by region or search for the destination on your mind.",
+    collection: "DESTINATION DIRECTORY", collectionTitle: "Find a place that fits your plans",
     journey: "PLAN YOUR NEXT STEP", journeyTitle: "From curiosity to a clear direction", journeyText: "You do not need all the answers today. Start with a clear picture of your own situation.",
     steps: [
       ["Define your priorities", "Outline your academic goals, language, budget and preferred timeline."],
@@ -97,7 +97,7 @@ export function DestinationsOverview({ locale }: { locale: Locale }) {
       <div className={styles.guideContent}>
         <DestinationsNavigation title={t("راهنمای مقصدهای تحصیلی جهان", "A guide to study destinations worldwide")} items={labels.map((label, index) => ({ id: sectionIds[index], label }))} />
         <div className={styles.intro}><p>{c.intro} {c.overviewText}</p></div>
-        <section className={styles.section} id={sectionIds[0]}><h2>{c.collectionTitle}</h2><p>{c.collectionText}</p><DestinationsExplorer locale={locale} /></section>
+        <section className={styles.section} id={sectionIds[0]}><h2>{c.collectionTitle}</h2><DestinationsExplorer locale={locale} /></section>
         <section className={styles.section} id={sectionIds[1]}><h2>{labels[1]}</h2><p>{c.journeyText}</p><div className={styles.cards}>{planning.map(([title, text], index) => <article className={styles.card} key={title}><span className={styles.typeIcon}><GuideIcon index={index + 1} /></span><h3>{title}</h3><p>{text}</p></article>)}</div></section>
         <section className={styles.section} id={sectionIds[2]}><h2>{labels[2]}</h2><p>{c.guideText}</p><div className={styles.criteria}>{c.criteria.map((item, index) => <article className={styles.card} key={item.title}><span className={styles.typeIcon}><GuideIcon index={index + 1} /></span><h3>{item.title}</h3><p>{item.text}</p></article>)}</div></section>
         <section className={styles.section} id={sectionIds[3]}><h2>{labels[3]}</h2><p>{t("پیش از تصمیم نهایی، پاسخ این پرسش‌ها را برای هر کشور و دانشگاه انتخابی کنار هم بنویسید.", "Compare these questions for each country and selected university before making your final decision.")}</p><div className={styles.tableWrap}><table><thead><tr>{[t("معیار", "Criterion"), t("چه چیزی بررسی شود؟", "What to compare"), t("از کجا شروع کنید؟", "Where to start")].map(label => <th key={label} scope="col">{label}</th>)}</tr></thead><tbody>{planning.map(([title, text], index) => <tr key={title}><th scope="row">{title}</th><td>{text}</td><td>{[t("صفحه رسمی دوره و شرایط پذیرش", "Official course and entry requirements"), t("جدول شهریه و خدمات مسکن دانشگاه", "University fees and housing services"), t("تقویم پذیرش دانشگاه و فهرست مدارک", "University application calendar and document checklist")][index]}</td></tr>)}</tbody></table></div></section>
