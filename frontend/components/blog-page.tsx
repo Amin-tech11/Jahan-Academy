@@ -17,7 +17,7 @@ export function BlogPage({ locale }: { locale: Locale; initialType?: BlogFilter 
     <div className="shell">
       <div className="journal-guide-content">
         <BlogNavigation title={copy.title} items={sections.map(type => ({ id: `journal-${type}`, label: copy[type] }))}/>
-        <header className="journal-intro"><p>{copy.intro}</p><div className="journal-intro-line"><span>{copy.eyebrow}</span></div></header>
+        <header className="journal-intro"><p>{copy.intro}</p></header>
         {sections.map(type => <BlogArchive key={type} posts={posts} locale={locale} sectionType={type}/>)}
       </div>
       <section className="journal-consultation" id="journal-consultation"><div className="home-closing__layout"><div className="home-closing__image"><Image src="/journey/profile-assessment.png" alt={copy.help} fill sizes="(max-width:800px) 100vw, 50vw"/></div><BlogConsultation locale={locale}/></div></section>
