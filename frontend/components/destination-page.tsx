@@ -53,6 +53,15 @@ export function DestinationPage({ destination: d, locale }: { destination: Desti
         <h1>{t("آینده‌ات را در", "Find your future in")}<br /><span className={styles.countryName} style={{ backgroundImage: `url(/destinations/word-flags/${d.slug}.svg)` }}>{d.name[locale]}</span> {t("بساز", "")}</h1>
         <p className={styles.tagline}>{d.tagline[locale]}</p>
         <p className={styles.intro}>{t(`از شناخت دانشگاه‌ها تا آشنایی با زندگی در ${d.name.fa}؛ اینجا نقطه شروع مسیر تحصیلی شماست. با آگاهی انتخاب کنید و قدم بعدی را همراه ما بردارید.`, `From exploring universities to discovering life in ${d.name.en}, your study journey starts here. Get to know your options and take the next step with us.`)}</p>
+        <div className={styles.studySnapshot} aria-label={t(`اطلاعات تحصیل در ${d.name.fa}`, `Study facts for ${d.name.en}`)}>
+          {([
+            [t("هزینه زندگی دانشجویی", "Student living costs"), d.studySnapshot.living[locale]],
+            [t("شهریه سالانه", "Annual tuition"), d.studySnapshot.tuition[locale]],
+            [t("امکان کار دانشجویی", "Work while studying"), d.studySnapshot.work[locale]],
+            [t("اقامت پس از تحصیل", "Post-study stay"), d.studySnapshot.postStudy[locale]],
+          ] as const).map(([label, value]) => <p className={styles.studyFact} key={label}><span>{label}:</span> <strong>{value}</strong></p>)}
+          <a className={styles.studySource} href={d.studySnapshot.source} target="_blank" rel="noreferrer">{t("منبع: GO2TR ↗", "Source: GO2TR ↗")}</a>
+        </div>
         <div className={styles.actions}><Link className={styles.primary} href={consultation}>{t("شروع مسیر با مشاوره", "Plan my study journey")} <span aria-hidden="true">{t("←", "→")}</span></Link></div>
       </div>
       <DestinationCollage photos={collages.hero} locale={locale} layout="hero" />

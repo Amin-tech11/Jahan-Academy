@@ -51,6 +51,10 @@
 .hero h1{font-size:clamp(36px,4vw,57px);line-height:1.55;letter-spacing:-1.6px;margin:0 0 12px;font-weight:850}
 .tagline{font-size:19px;font-weight:650;margin:12px 0}
 .intro{font-size:14px;line-height:2.15;color:var(--muted);max-width:480px}
+.studySnapshot{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 16px;max-width:520px;margin-top:20px;padding:14px 16px;background:var(--content);border:1px solid var(--line);border-radius:14px;box-shadow:0 8px 22px rgb(32 40 51 / 5%)}
+.studyFact{margin:0!important;display:flex;flex-wrap:wrap;gap:4px;font-size:13px!important;line-height:1.8!important;color:var(--text)!important}
+.studyFact strong{color:#d79416;font-weight:800}
+.studySource{grid-column:1/-1;justify-self:start;font-size:11px;color:var(--muted);text-decoration:underline;text-underline-offset:3px}
 .actions{display:flex;flex-wrap:wrap;gap:13px;margin-top:27px}
 .primary{display:inline-flex;align-items:center;justify-content:center;gap:20px;padding:13px 20px;border-radius:8px;font-size:13px;font-weight:700}
 .primary{background:var(--brand);color:var(--content);box-shadow:0 7px 20px rgb(18 59 120 / 12%)}
@@ -125,6 +129,8 @@
 .hero h1{font-size:40px;line-height:1.45}
 .tagline{font-size:16px}
 .intro{font-size:13px}
+.studySnapshot{gap:8px 10px;padding:12px}
+.studyFact{font-size:12px!important}
 .actions{margin-top:20px}
 .facts{grid-template-columns:repeat(2,minmax(0,1fr));padding:16px 12px}
 .fact{padding:18px 10px;min-height:156px}
