@@ -737,6 +737,7 @@ paths:
       security: [{ StaffSession: [] }]
       parameters:
         - { name: q, in: query, schema: { type: string, minLength: 2, maxLength: 100 } }
+        - { name: searchField, in: query, description: 'Limits q to the selected column; omission preserves broad search.', schema: { type: string, enum: [reference, fullName, mobile] } }
         - { name: status, in: query, schema: { $ref: '#/components/schemas/LeadStatus' } }
         - { name: syncStatus, in: query, schema: { $ref: '#/components/schemas/SyncStatus' } }
         - { name: assigneeId, in: query, schema: { $ref: '#/components/schemas/Uuid' } }

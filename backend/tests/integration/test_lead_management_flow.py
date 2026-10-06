@@ -151,6 +151,32 @@ def test_lead_list_detail_edit_archive_and_assigned_scope() -> None:
             assert summary["maritalStatus"] == "single"
             assert "تحصیلات: لیسانس" in summary["message"]
 
+            for field, query, expected in (
+                ("reference", reference, 1),
+                ("fullName", "Mina Ahmadi", 2),
+                ("fullName", reference, 0),
+                ("reference", "Mina", 0),
+                ("mobile", f"09{suffix_a:09d}", 1),
+                ("mobile", f"+98 9 {suffix_a:09d}", 1),
+                (
+                    "mobile",
+                    f"09{suffix_a:09d}".translate(str.maketrans("0123456789", "۰۱۲۳۴۵۶۷۸۹")),
+                    1,
+                ),
+                ("mobile", "Mina", 0),
+                ("fullName", "mina@example.com", 0),
+                ("reference", "%_", 0),
+            ):
+                searched = client.get(
+                    "/api/v1/admin/leads", params={"q": query, "searchField": field}
+                )
+                assert searched.status_code == 200, searched.text
+                assert searched.json()["meta"]["total"] == expected, (field, query)
+            invalid_field = client.get(
+                "/api/v1/admin/leads", params={"q": reference, "searchField": "email"}
+            )
+            assert invalid_field.status_code == 422
+
             detail = client.get(f"/api/v1/admin/leads/{lead_id}")
             assert detail.status_code == 200
             assert detail.headers["etag"] == '"1"'
@@ -192,6 +218,14 @@ def test_lead_list_detail_edit_archive_and_assigned_scope() -> None:
             assert assigned.status_code == 200
             assert assigned.json()["meta"]["total"] == 1
             assert assigned.json()["data"][0]["id"] == str(lead_id)
+            assigned_search = client.get(
+                "/api/v1/admin/leads", params={"q": "Mina", "searchField": "fullName"}
+            )
+            assert assigned_search.json()["meta"]["total"] == 1
+            hidden_search = client.get(
+                "/api/v1/admin/leads", params={"q": other_reference, "searchField": "reference"}
+            )
+            assert hidden_search.json()["meta"]["total"] == 0
             hidden = client.get(f"/api/v1/admin/leads/{other_lead_id}")
             assert hidden.status_code == 404
 

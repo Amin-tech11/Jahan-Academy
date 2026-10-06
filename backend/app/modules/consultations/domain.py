@@ -69,6 +69,12 @@ class LeadSort(StrEnum):
     UPDATED_DESC = "updated_desc"
 
 
+class LeadSearchField(StrEnum):
+    REFERENCE = "reference"
+    FULL_NAME = "fullName"
+    MOBILE = "mobile"
+
+
 LEAD_STATUS_TRANSITIONS: dict[LeadStatus, frozenset[LeadStatus]] = {
     LeadStatus.NEW: frozenset({LeadStatus.ASSIGNED, LeadStatus.CLOSED}),
     LeadStatus.ASSIGNED: frozenset({LeadStatus.CONTACTED, LeadStatus.CLOSED}),

@@ -2,12 +2,15 @@
 
 import Login from "./login";
 import DateFilter from "./date-filter";
+import ColumnFilter from "./column-filter";
+import { columnValues, filterLeadRows, loadAllLeadRows, type ColumnFilters } from "../../lib/admin-lead-table";
 import { dateRangeParams, type Calendar } from "../../lib/admin-calendar";
 import AccessManager from "./access-manager";
 import { visibleSections, type PanelAccess } from "../../lib/admin-access";
 import { startLiveRefresh } from "../../lib/admin-live";
 import { leadCell, leadEditData, leadEditPayload, newLeadIds } from "../../lib/admin-leads";
 import { canChangeLeadStatus, saveLeadChanges } from "../../lib/admin-lead-status";
+import { leadSearchFields, leadSearchParams, type LeadSearchField } from "../../lib/admin-lead-search";
 
 import {
   useCallback,
@@ -795,6 +798,7 @@ const listSessions = new Map<
   string,
   {
     query: string;
+    searchField: LeadSearchField;
     status: string;
     page: number;
     filters: Record<string, string>;
@@ -806,12 +810,39 @@ const listSessions = new Map<
 function ResourceList({ resource }: { resource: Resource }) {
   const previous = listSessions.get(resource.id);
   const [query, setQuery] = useState(previous?.query ?? "");
+  const [searchField, setSearchField] = useState<LeadSearchField>(previous?.searchField ?? "reference");
   const [status, setStatus] = useState(previous?.status && resource.statuses?.includes(previous.status) ? previous.status : "");
   const [calendar, setCalendar] = useState<Calendar>(previous?.calendar ?? "persian");
   const [fromDate, setFromDate] = useState(previous?.fromDate ?? "");
   const [toDate, setToDate] = useState(previous?.toDate ?? "");
   const [page, setPage] = useState(previous?.page ?? 1);
   const [data, setData] = useState<RecordData>({});
+  const [columnFilters, setColumnFilters] = useState<ColumnFilters>({});
+  const [filterColumn, setFilterColumn] = useState<string | null>(null);
+  const [allColumnsMode, setAllColumnsMode] = useState(false);
+  const [exporting, setExporting] = useState(false);
+  const [exportError, setExportError] = useState("");
+  const pageForRequest = allColumnsMode ? 1 : page;
+  const leadParams = () => new URLSearchParams({
+    ...dateRangeParams(fromDate, toDate), ...leadSearchParams(query, searchField),
+    sort: "created_desc", ...(status ? { status } : {}),
+  });
+  async function exportExcel() {
+    setExporting(true);
+    setExportError("");
+    try {
+      const allRows = await loadAllLeadRows(leadParams(), params => adminRequest(`${resource.path}?${params}`));
+      const { leadWorkbook } = await import("../../lib/admin-lead-export");
+      const buffer = await leadWorkbook(filterLeadRows(allRows, columnFilters), resource.columns);
+      const url = URL.createObjectURL(new Blob([new Uint8Array(buffer)], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }));
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `consultation-requests-${new Date().toISOString().slice(0, 10)}.xlsx`;
+      link.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    } catch (err) { setExportError(describe(err)); }
+    finally { setExporting(false); }
+  }
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(true);
   const [editor, setEditor] = useState<{ item: RecordData | null } | null>(
@@ -822,8 +853,8 @@ function ResourceList({ resource }: { resource: Resource }) {
     resource.id === "leads" ? {} : previous?.filters ?? {},
   );
   useEffect(() => {
-    listSessions.set(resource.id, { query, status, page, filters, fromDate, toDate, calendar });
-  }, [resource.id, query, status, page, filters, fromDate, toDate, calendar]);
+    listSessions.set(resource.id, { query, searchField, status, page, filters, fromDate, toDate, calendar });
+  }, [resource.id, query, searchField, status, page, filters, fromDate, toDate, calendar]);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [newIds, setNewIds] = useState<string[]>([]);
   const [announcement, setAnnouncement] = useState("");
@@ -836,17 +867,26 @@ function ResourceList({ resource }: { resource: Resource }) {
     setNewIds([]);
     setAnnouncement("");
     const params = new URLSearchParams({
-      page: String(page), limit: "20",
+      page: String(pageForRequest), limit: "20",
       ...(resource.id === "leads" ? dateRangeParams(fromDate, toDate) : Object.fromEntries(Object.entries(filters).filter(([, v]) => v))),
     });
-    if (resource.id === "leads") params.set("sort", "created_desc");
-    if (query.trim().length >= 2)
+    if (resource.id === "leads") {
+      params.set("sort", "created_desc");
+      for (const [key, value] of Object.entries(leadSearchParams(query, searchField))) params.set(key, value);
+    } else if (query.trim().length >= 2)
       params.set(resource.id === "audit" ? "action" : "q", query.trim());
     if (status) params.set("status", status);
     let live: ReturnType<typeof startLiveRefresh<RecordData>> | undefined;
     const timer = setTimeout(() => {
       live = startLiveRefresh({
-        load: (signal) => adminRequest(`${resource.path}?${params}`, "GET", undefined, undefined, signal),
+        load: async (signal) => {
+          const load = (query: URLSearchParams) => adminRequest(`${resource.path}?${query}`, "GET", undefined, undefined, signal);
+          if (resource.id === "leads" && allColumnsMode) {
+            const rows = await loadAllLeadRows(params, load);
+            return { data: rows, meta: { total: rows.length } };
+          }
+          return load(params);
+        },
         active: () => document.visibilityState !== "hidden" && navigator.onLine,
         interval: resource.id === "leads" ? 2000 : 30000,
         onData: (result) => {
@@ -884,9 +924,11 @@ function ResourceList({ resource }: { resource: Resource }) {
       window.removeEventListener("online", resume);
       window.removeEventListener("offline", offline);
     };
-  }, [resource.path, resource.id, page, query, status, refresh, filters, fromDate, toDate]);
-  const rows = rowsOf(data);
-  const total = totalOf(data);
+  }, [resource.path, resource.id, pageForRequest, allColumnsMode, query, searchField, status, refresh, filters, fromDate, toDate]);
+  const matchingRows = resource.id === "leads" && allColumnsMode ? filterLeadRows(rowsOf(data), columnFilters) : rowsOf(data);
+  const rows = allColumnsMode ? matchingRows.slice((page - 1) * 20, page * 20) : matchingRows;
+  const total = allColumnsMode ? matchingRows.length : totalOf(data);
+  useEffect(() => { if (allColumnsMode && page > Math.max(1, Math.ceil(total / 20))) setPage(Math.max(1, Math.ceil(total / 20))); }, [allColumnsMode, page, total]);
   return (
     <>
       <div className="adm-section-title">
@@ -925,10 +967,22 @@ function ResourceList({ resource }: { resource: Resource }) {
           <p className="adm-list-hint">برای دیدن همهٔ درخواست‌های تازه، فیلترها را پاک کنید و به صفحهٔ اول بروید.</p>
         )}
         <div className="adm-toolbar">
+          {resource.id === "leads" && (
+            <label>
+              جست‌وجو بر اساس
+              <select value={searchField} onChange={(event) => {
+                setSearchField(event.target.value as LeadSearchField);
+                setPage(1);
+              }}>
+                {leadSearchFields.map((field) => <option key={field.value} value={field.value}>{field.label}</option>)}
+              </select>
+            </label>
+          )}
           <label className="adm-search">
             {resource.id === "audit" ? "نام عملیات" : "جست‌وجو"}
             <input
-              placeholder="حداقل دو حرف…"
+              placeholder={resource.id === "leads" ? leadSearchFields.find((field) => field.value === searchField)?.placeholder : "حداقل دو حرف…"}
+              dir={resource.id === "leads" && searchField !== "fullName" ? "ltr" : undefined}
               maxLength={100}
               value={query}
               onChange={(e) => {
@@ -967,8 +1021,13 @@ function ResourceList({ resource }: { resource: Resource }) {
             className="adm-link"
             onClick={() => {
               setQuery("");
+              setSearchField("reference");
               setStatus("");
               setFilters({});
+              setColumnFilters({});
+              setAllColumnsMode(false);
+              setFilterColumn(null);
+              setExportError("");
               setFromDate("");
               setToDate("");
               setPage(1);
@@ -976,6 +1035,7 @@ function ResourceList({ resource }: { resource: Resource }) {
           >
             پاک کردن فیلترها
           </button>
+          {resource.id === "leads" && <button disabled={exporting || busy || !!error} onClick={() => void exportExcel()}>{exporting ? "در حال ساخت فایل…" : "خروجی اکسل"}</button>}
         </div>
         {["programs", "audit"].includes(resource.id) && (
           <details>
@@ -1026,17 +1086,20 @@ function ResourceList({ resource }: { resource: Resource }) {
           </details>
         )}
         <ErrorBox message={error} />
+        <ErrorBox message={exportError} />
+        {Object.keys(columnFilters).length > 0 && <p className="adm-list-hint">{Object.keys(columnFilters).length.toLocaleString("fa-IR")} فیلتر ستون فعال است.</p>}
+        {filterColumn && !busy && !error && <ColumnFilter key={filterColumn} title={labels[filterColumn] ?? filterColumn} values={columnValues(rowsOf(data), filterColumn, columnFilters)} selected={columnFilters[filterColumn]} onClose={() => setFilterColumn(null)} onApply={values => { setColumnFilters(current => { const next = { ...current }; if (values === undefined) delete next[filterColumn]; else next[filterColumn] = values; return next; }); setPage(1); }} />}
         {busy ? (
           <div className="adm-empty" role="status">
             در حال دریافت اطلاعات…
           </div>
         ) : rows.length || resource.id === "leads" ? (
           <div className="adm-table-wrap">
-            <table dir="rtl">
+            <table dir="rtl" className={resource.id === "leads" ? "adm-leads-table" : undefined}>
               <thead>
                 <tr>
                   {resource.columns.map((column) => (
-                    <th scope="col" key={column}>{labels[column] ?? column}</th>
+                    <th scope="col" key={column}><span className="adm-column-heading">{labels[column] ?? column}{resource.id === "leads" && <button className="adm-column-trigger" aria-label={`فیلتر ${labels[column] ?? column}`} aria-pressed={column in columnFilters} onClick={() => { setAllColumnsMode(true); setFilterColumn(column); setPage(1); }}><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M2 3h12L9 8v5l-2-1V8z" fill="currentColor" /></svg></button>}</span></th>
                   ))}
                   {resource.id !== "leads" && <th scope="col">عملیات</th>}
                 </tr>
