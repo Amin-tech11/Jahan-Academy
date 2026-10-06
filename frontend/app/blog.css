@@ -75,3 +75,48 @@
 @media(max-width:800px) { .journal-featured { grid-template-columns:1fr; } .journal-cover { min-height:360px; } .journal-latest { display:grid; grid-template-columns:1fr 1fr; gap:0 20px; } .journal-latest > h2,.journal-browse { grid-column:1 / -1; } .journal-cta { padding:25px; } }
 @media(max-width:640px) { .journal-intro { padding:28px 0; } .journal-intro > p { font-size:13px; } .journal-intro-line { font-size:9px; gap:10px; } .journal-cover { min-height:350px; } .journal-cover-copy { padding:22px; } .journal-cover-copy > p { font-size:12px; } .journal-latest { display:flex; } .journal-brief { grid-template-columns:86px 1fr; } .journal-brief-image { width:86px; height:78px; } .journal-archive { padding-top:32px; } .journal-section-heading h2 { font-size:21px; } .journal-filters { width:100%; } .journal-filters button { flex:1; padding-inline:8px; } .journal-search { flex-basis:100%; } .journal-sort { margin-inline-start:auto; } .journal-grid { grid-template-columns:1fr; gap:20px; } .journal-cta { flex-direction:column; align-items:flex-start; } .journal-cta h2 { font-size:22px; } }
 @media(prefers-reduced-motion:reduce) { .journal-page *, .journal-page *::before, .journal-page *::after { transition:none!important; scroll-behavior:auto!important; } }
+
+/* The universities panel's full-width hero and section navigation. */
+.site:has(> .journal-page) { --navy:#123B78; --ink:#202833; --muted:#66717F; --paper:#F7F8FA; --line:#D6DCE4; --color-brand-950:#123B78; --color-brand-900:#123B78; --color-text:#202833; --color-muted:#66717F; }
+.journal-page { background:#F7F8FA; color:#202833; }
+.journal-campus-hero { position:relative; display:grid; min-height:clamp(380px,43vw,545px); place-items:center; padding:24px; overflow:hidden; background:#123B78; }
+.journal-campus-hero > img { object-fit:cover; object-position:center 45%; }
+.journal-campus-overlay { position:absolute; inset:0; background:linear-gradient(90deg,#0000007d,#0000008c); }
+.journal-campus-hero > p { position:relative; margin:0; color:#fff; font-family:Arial,sans-serif; font-size:clamp(1.5rem,4vw,3.4rem); font-weight:300; letter-spacing:.5em; line-height:1.25; text-align:center; white-space:nowrap; text-shadow:0 2px 18px #00000073; }
+.journal-guide-content { position:relative; display:flow-root; padding-top:16px; }
+.journal-navigation { position:sticky; top:var(--journal-header-height,80px); z-index:30; padding:16px 0; background:#F7F8FA; }
+.journal-navigation h1 { text-align:center; font-size:clamp(24px,3vw,32px); line-height:1.5; font-weight:400; color:#123B78; margin:0 0 16px; }
+.journal-navigation-track { display:flex; gap:6px; padding:7px; border:1px solid #D6DCE4; border-radius:999px; background:#fff; box-shadow:0 3px 10px #20283314; overflow-x:auto; scrollbar-width:thin; }
+.journal-navigation-track a { display:flex; flex:1 0 auto; align-items:center; justify-content:center; min-height:40px; padding:9px 16px; border-radius:999px; color:#202833; font-size:14px; font-weight:700; white-space:nowrap; }
+.journal-navigation-track a:hover { background:#F7F8FA; color:#123B78; }
+.journal-navigation-track a[aria-current="location"] { background:#123B78; color:#fff; }
+.journal-navigation-track a:focus-visible { outline-offset:-3px; }
+.journal-intro { padding:24px 0 36px; }
+.journal-featured,.journal-archive,.journal-guide-section { scroll-margin-top:var(--journal-scroll-offset,240px); }
+.journal-filters button[aria-pressed="true"] { background:#123B78; }
+.journal-guide-section { margin:16px 0 56px; }
+.journal-guide-section > h2,.journal-consultation h2 { font-size:clamp(24px,3vw,32px); color:#123B78; line-height:1.5; margin:0 0 20px; }
+.journal-guide-section > p { font-size:16px; color:#66717F; line-height:2; }
+.journal-guide-cards { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; margin-top:24px; }
+.journal-guide-cards article { display:flex; flex-direction:column; align-items:center; text-align:center; padding:32px 28px; border:1px solid #D6DCE4; border-radius:8px; background:#fff; }
+.journal-guide-number { display:grid; place-items:center; width:52px; height:52px; border-radius:50%; background:#eef2f8; color:#123B78; font-size:22px; font-weight:700; margin-bottom:20px; }
+.journal-guide-cards h3 { color:#123B78; font-size:20px; line-height:1.7; margin:0 0 14px; }
+.journal-guide-cards p { color:#66717F; font-size:15px; line-height:1.9; margin:0; }
+.journal-guide-cards a { display:flex; gap:24px; color:#123B78; font-size:14px; font-weight:700; padding-top:20px; margin-top:auto; }
+.journal-faq .home-faq__intro h2 { text-align:center; color:#123B78; font-size:28px; }
+.journal-consultation { margin:56px 0; }
+.journal-consultation header { text-align:center; margin-bottom:28px; }
+.journal-consultation header p { color:#66717F; line-height:2; }
+.journal-consultation-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:start; }
+.journal-consultation-image { position:relative; min-height:600px; border-radius:14px; overflow:hidden; }
+.journal-consultation-image img { object-fit:cover; }
+.journal-guide-detail { max-width:850px!important; padding-block:40px 60px; }
+.journal-guide-detail > a:first-child { color:#123B78; font-size:14px; }
+.journal-guide-detail header { padding:36px 0; border-bottom:1px solid #D6DCE4; }
+.journal-guide-detail h1 { font-size:clamp(28px,4vw,40px); line-height:1.7; color:#123B78; }
+.journal-guide-detail time { color:#66717F; font-size:13px; }
+.journal-guide-detail p { font-size:16px; line-height:2.1; color:#66717F; }
+.journal-guide-detail section { padding:32px 0 8px; }
+.journal-guide-detail section h2 { font-size:25px; line-height:1.6; color:#123B78; }
+@media(max-width:900px) { .journal-guide-cards { grid-template-columns:1fr; } .journal-consultation-grid { grid-template-columns:1fr; } .journal-consultation-image { min-height:330px; } }
+@media(max-width:600px) { .journal-campus-hero { min-height:330px; } .journal-campus-hero > p { font-size:clamp(1.15rem,5vw,1.55rem); letter-spacing:.22em; } .journal-navigation-track a { font-size:12px; padding:9px 12px; } .journal-filters { flex-wrap:wrap; } .journal-filters button { flex:1 0 40%; } }

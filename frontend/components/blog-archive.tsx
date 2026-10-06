@@ -23,7 +23,7 @@ export function BlogArchive({ posts, locale, initialType = "all" }: { posts: Blo
     <div className="journal-section-heading"><div><span className="journal-kicker">JOURNAL / STORIES</span><h2 id="archive-title">{copy.archive}</h2></div><span className="journal-result-count" role="status" aria-live="polite">{number(filtered.length)} {copy.results}</span></div>
     <div className="journal-controls">
       <div className="journal-filters" role="group" aria-label={locale === "fa" ? "نوع مطلب" : "Story type"}>
-        {(["all", "article", "news"] as const).map((value) => <button type="button" key={value} aria-pressed={type === value} onClick={() => { setType(value); setPage(1); }}>{copy[value]}</button>)}
+        {(["all", "article", "news", "guide"] as const).map((value) => <button type="button" key={value} aria-pressed={type === value} onClick={() => { setType(value); setPage(1); }}>{copy[value]}</button>)}
       </div>
       <label className="journal-search"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="6.5" stroke="currentColor" strokeWidth="1.5"/><path d="m15 15 6 6" stroke="currentColor" strokeWidth="1.5"/></svg><span className="journal-sr-only">{copy.search}</span><input type="search" value={query} maxLength={100} placeholder={copy.placeholder} onChange={(event) => { setQuery(event.target.value); setPage(1); }}/></label>
       <label className="journal-sort"><span>{copy.sort}</span><select value={sort} onChange={(event) => { setSort(event.target.value as BlogSort); setPage(1); }}><option value="newest">{copy.newest}</option><option value="oldest">{copy.oldest}</option></select></label>
