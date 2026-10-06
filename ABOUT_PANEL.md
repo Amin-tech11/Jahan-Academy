@@ -32,3 +32,14 @@ An explicit localized about route overrides the generic catch-all only for `/fa/
 - Publication requires approved company facts before adding legal registration, offices, statistics, or named employees.
 
 Root-preview routing and shared panel configuration are pending the explicit approval required by AGENTS.md; the localized about URLs work independently.
+
+## October 6, 2026: reference palette and supplied narrative
+
+- Requirement: apply the previously approved navy/silver palette and replace the about narrative with the user's three complete paragraphs, preserving bold emphasis and omitting chat-only citation markers.
+- Palette authority: `DESIGN_SYSTEM.md`, section 2.1. Navy 950/900/800/700: `#071F31`, `#0B2E45`, `#123D59`, `#1B526F`; silver 500/100: `#9FA4AA`, `#EEF0F2`. Neutral surfaces, borders, body text, and focus follow the same reference. Silver is used decoratively, with dark readable text on light surfaces.
+- Implementation: panel-scoped CSS variables replace the previous green/gold colors. The shell inherits these variables only inside the about page. `lib/about-content.ts` owns the supplied Persian narrative and its English translation; page metadata uses the revised brand description. Shared brand content, global styles, data, and permissions are unaffected.
+- Data/API/permission design and migrations: not applicable to a static content/style edit. New unit tests are not required for this reversible presentation change; the existing 32 tests passed.
+- Verification: typecheck and production build passed. HTTP integration on port 4100 passed for both locales, including the full rendered paragraphs, four strong spans, one H1, correct language, and all four core navy/silver values in the delivered CSS. Diff whitespace check passed.
+- Security/code review: emphasized text is rendered with React elements, without raw HTML. No external requests or new data collection were introduced.
+- Visual refresh limitation: browser automation rejected access to the localhost URL under its security policy. This update has HTTP and build verification, but visual desktop/mobile review after refresh remains unverified.
+- Push/PR/CI remain pending the destination authorization requested earlier after automatic approval review rejected the remote push.

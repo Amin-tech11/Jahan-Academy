@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { SiteShell } from "@/components/site-shell";
 import { brandContent } from "@/lib/brand-content";
+import { aboutContent } from "@/lib/about-content";
 import type { Locale } from "@/lib/site-content";
 import styles from "./about-page.module.css";
 
@@ -11,9 +12,9 @@ const copy = {
     title: "جهانی از فرصت،", accent: "همراهی برای آیندهٔ شما.",
     subtitle: "ما کنار شما هستیم تا مسیر تحصیل در خارج از کشور را روشن‌تر ببینید و قدم بعدی را آگاهانه بردارید.",
     cta: "درخواست مشاوره رایگان", storyLink: "با جهان آکادمی آشنا شوید", imageAlt: "نمایی الهام‌بخش از مسیر ورود به محوطهٔ دانشگاه",
-    imageCaption: "آینده، از یک قدم آگاهانه آغاز می‌شود", storyLabel: "داستان ما", storyTitle: "فراتر از یک مقصد؛\nدر کنار یک رؤیا.",
-    quote: "باور داریم مسیر هر فرد، به اندازهٔ رؤیای او منحصربه‌فرد است.",
-    nav: ["داستان ما", "مأموریت و چشم‌انداز", "ارزش‌های ما", "مسیر همراهی", "پرسش‌های شما"],
+    imageCaption: "آینده، از یک قدم آگاهانه آغاز می‌شود", storyLabel: "جهان آکادمی", storyTitle: "درباره ما",
+    quote: "ما مهاجرت نمی‌فروشیم؛ آغاز می‌سازیم.",
+    nav: ["درباره ما", "مأموریت و چشم‌انداز", "ارزش‌های ما", "مسیر همراهی", "پرسش‌های شما"],
     purpose: "آنچه ما را پیش می‌برد", purposeTitle: "نگاه ما به فردای شما", valuesLabel: "اصولی که به آن‌ها پایبندیم", valuesIntro: "اعتماد از انتخاب‌های کوچک و رفتارهای هر روز ساخته می‌شود. این اصول، مبنای گفت‌وگوی ما با شما هستند.",
     journeyLabel: "از شناخت تا انتخاب", journeyTitle: "مسیر را با هم روشن می‌کنیم", journeyIntro: "نقطهٔ شروع، شناخت شماست؛ نه انتخاب یک کشور از روی نقشه.",
     steps: [
@@ -28,9 +29,9 @@ const copy = {
     title: "A world of opportunity.", accent: "A partner for your future.",
     subtitle: "We are here to help you understand your study-abroad options and take an informed next step.",
     cta: "Request free consultation", storyLink: "Get to know Jahan Academy", imageAlt: "An inspiring view of a path leading into a university campus",
-    imageCaption: "The future starts with an informed step", storyLabel: "Our story", storyTitle: "Beyond a destination.\nBeside your ambition.",
-    quote: "We believe every journey is as individual as the ambition behind it.",
-    nav: ["Our story", "Mission & vision", "Our values", "Your journey", "Your questions"],
+    imageCaption: "The future starts with an informed step", storyLabel: "Jahan Academy", storyTitle: "About us",
+    quote: "We do not sell migration; we create beginnings.",
+    nav: ["About us", "Mission & vision", "Our values", "Your journey", "Your questions"],
     purpose: "What moves us forward", purposeTitle: "Our perspective on your future", valuesLabel: "The principles behind our work", valuesIntro: "Trust grows through everyday choices and actions. These principles guide every conversation we have with you.",
     journeyLabel: "From understanding to choice", journeyTitle: "Finding clarity, together", journeyIntro: "Our starting point is understanding you, before choosing a country on a map.",
     steps: [
@@ -60,7 +61,7 @@ export function AboutPage({ locale }: { locale: Locale }) {
   const anchors = ["story", "purpose", "values", "journey", "questions"];
   const consultation = `/${locale}/consultation?source=about`;
   const number = (n: number) => new Intl.NumberFormat(locale, { minimumIntegerDigits: 2 }).format(n);
-  return <SiteShell locale={locale}>
+  return <div className={styles.theme}><SiteShell locale={locale}>
     <a className={styles.skip} href="#about-main">{c.skip}</a>
     <main className={styles.page} id="about-main">
       <div className={styles.container}>
@@ -82,7 +83,7 @@ export function AboutPage({ locale }: { locale: Locale }) {
         <nav className={styles.sectionNav} aria-label={locale === "fa" ? "بخش‌های درباره ما" : "About page sections"}>{c.nav.map((label, i) => <a href={`#${anchors[i]}`} key={label}><span>{number(i + 1)}</span>{label}</a>)}</nav>
         <section id="story" className={styles.story} aria-labelledby="story-title">
           <div><span className={styles.eyebrow}>{c.storyLabel}</span><h2 id="story-title">{c.storyTitle}</h2><p className={styles.quote}>{c.quote}</p></div>
-          <div className={styles.prose}><p>{brand.intro}</p><h3>{brand.whyTitle}</h3><p>{brand.whyText}</p><Link className={styles.inlineLink} href={`/${locale}/services`}>{locale === "fa" ? "آشنایی با خدمات ما" : "Explore our services"}<span aria-hidden="true">{locale === "fa" ? "←" : "→"}</span></Link></div>
+          <div className={styles.prose}>{aboutContent[locale].paragraphs.map((paragraph, i) => <p key={i}>{paragraph.split(/(\*\*.*?\*\*)/g).map((part, j) => part.startsWith("**") ? <strong key={j}>{part.slice(2, -2)}</strong> : part)}</p>)}<Link className={styles.inlineLink} href={`/${locale}/services`}>{locale === "fa" ? "آشنایی با خدمات ما" : "Explore our services"}<span aria-hidden="true">{locale === "fa" ? "←" : "→"}</span></Link></div>
         </section>
       </div>
       <section id="purpose" className={styles.purpose} aria-labelledby="purpose-title"><div className={styles.container}>
@@ -98,5 +99,5 @@ export function AboutPage({ locale }: { locale: Locale }) {
         <section className={styles.cta}><span className={styles.ctaMark} aria-hidden="true">✧</span><div><h2>{c.endTitle}</h2><p>{c.endText}</p></div><div className={styles.ctaAction}><Link className={styles.primary} href={consultation}>{c.cta}<span aria-hidden="true">{locale === "fa" ? "↖" : "↗"}</span></Link><small>{c.endNote}</small></div></section>
       </div>
     </main>
-  </SiteShell>;
+  </SiteShell></div>;
 }
