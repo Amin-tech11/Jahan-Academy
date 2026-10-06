@@ -3,6 +3,9 @@
 import Image from "next/image";
 import { DestinationConsultation } from "./destination-consultation";
 import consultationStyles from "./destination-consultation.module.css";
+import { DestinationFaq } from "./destination-faq";
+import faqStyles from "./destination-faq.module.css";
+import { destinationFaqs } from "@/lib/destination-faqs";
 import { DestinationCollage } from "./destination-collage";
 import { destinationCollages } from "@/lib/destination-collages";
 import Link from "next/link";
@@ -134,6 +137,10 @@ export function DestinationPage({ destination: d, locale }: { destination: Desti
         <Image src={`/destinations/word-flags/${item.slug}.svg`} alt="" width={28} height={22} />
         <span>{t(`تحصیل در ${item.name.fa}`, `Study in ${item.slug === "united-kingdom" || item.slug === "netherlands" ? "the " : ""}${item.name.en}`)}</span>
       </Link>)}</div>
+    </section>
+    <section id="destination-faq" aria-labelledby="destination-faq-title" className={`${styles.container} ${faqStyles.section}`}>
+      <h2 data-destination-motion="up" id="destination-faq-title" className={faqStyles.heading}>{t(`سؤالات متداول درباره تحصیل در ${d.name.fa}`, `Frequently asked questions about studying in ${d.name.en}`)}</h2>
+      <DestinationFaq key={`${locale}-${d.slug}`} items={destinationFaqs[d.slug]} locale={locale} />
     </section>
     <section id="destination-consultation" aria-labelledby="destination-consultation-title" className={`${styles.container} ${consultationStyles.section}`}>
       <header data-destination-motion="up" className={consultationStyles.heading}>
