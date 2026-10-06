@@ -31,9 +31,7 @@ env:
 jobs:
   lint:
     name: Lint
-    # Never execute a fork PR on the workstation.
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
-    runs-on: [self-hosted, linux, x64, jahan-local]
+    runs-on: ubuntu-24.04
     timeout-minutes: 45
     defaults:
       run:
@@ -49,7 +47,7 @@ jobs:
         with:
           version: ${{ env.UV_VERSION }}
           download-from-astral-mirror: false
-          enable-cache: false
+          enable-cache: true
           cache-dependency-glob: backend/uv.lock
 
       - name: Install Python
@@ -76,6 +74,8 @@ jobs:
         uses: actions/setup-node@v7.0.0
         with:
           node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+          cache-dependency-path: frontend/pnpm-lock.yaml
 
       - name: Install locked frontend dependencies
         working-directory: frontend
@@ -96,7 +96,7 @@ jobs:
   unit-tests:
     name: Unit Tests
     needs: lint
-    runs-on: [self-hosted, linux, x64, jahan-local]
+    runs-on: ubuntu-24.04
     timeout-minutes: 45
     defaults:
       run:
@@ -112,7 +112,7 @@ jobs:
         with:
           version: ${{ env.UV_VERSION }}
           download-from-astral-mirror: false
-          enable-cache: false
+          enable-cache: true
           cache-dependency-glob: backend/uv.lock
 
       - name: Install Python
@@ -127,7 +127,7 @@ jobs:
   integration-tests:
     name: Integration Tests
     needs: unit-tests
-    runs-on: [self-hosted, linux, x64, jahan-local]
+    runs-on: ubuntu-24.04
     timeout-minutes: 45
     services:
       postgres:
@@ -169,7 +169,7 @@ jobs:
         with:
           version: ${{ env.UV_VERSION }}
           download-from-astral-mirror: false
-          enable-cache: false
+          enable-cache: true
           cache-dependency-glob: backend/uv.lock
 
       - name: Install Python
@@ -202,7 +202,7 @@ jobs:
   build:
     name: Build
     needs: integration-tests
-    runs-on: [self-hosted, linux, x64, jahan-local]
+    runs-on: ubuntu-24.04
     timeout-minutes: 45
     steps:
       - name: Check out repository
@@ -253,7 +253,7 @@ jobs:
   security:
     name: Security Checks
     needs: build
-    runs-on: [self-hosted, linux, x64, jahan-local]
+    runs-on: ubuntu-24.04
     timeout-minutes: 45
     defaults:
       run:
@@ -270,7 +270,7 @@ jobs:
         with:
           version: ${{ env.UV_VERSION }}
           download-from-astral-mirror: false
-          enable-cache: false
+          enable-cache: true
           cache-dependency-glob: backend/uv.lock
 
       - name: Install Python
@@ -320,7 +320,7 @@ jobs:
       (github.ref == 'refs/heads/develop' ||
       github.ref == 'refs/heads/main' ||
       startsWith(github.ref, 'refs/tags/v'))
-    runs-on: [self-hosted, linux, x64, jahan-local]
+    runs-on: ubuntu-24.04
     timeout-minutes: 45
     permissions:
       contents: read
@@ -371,7 +371,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-      - name: Remove registry login from the persistent runner
+      - name: Log out of GitHub Container Registry
         if: always()
         run: docker logout ghcr.io
 
@@ -379,7 +379,7 @@ jobs:
     name: Deploy Staging
     needs: publish
     if: github.ref == 'refs/heads/develop' && vars.DEPLOY_ENABLED == 'true'
-    runs-on: [self-hosted, linux, x64, jahan-local]
+    runs-on: ubuntu-24.04
     timeout-minutes: 45
     environment:
       name: staging
@@ -413,7 +413,7 @@ jobs:
     name: Deploy Production
     needs: publish
     if: startsWith(github.ref, 'refs/tags/v') && vars.DEPLOY_ENABLED == 'true'
-    runs-on: [self-hosted, linux, x64, jahan-local]
+    runs-on: ubuntu-24.04
     timeout-minutes: 45
     environment:
       name: production

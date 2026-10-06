@@ -1,8 +1,29 @@
-# Local GitHub Actions runner
+# CI execution and former local runner
 
-## Configuration
+## Current configuration (2026-10-06)
 
-The workflow targets `[self-hosted, linux, x64, jahan-local]`. GitHub service
+GitHub Actions now runs every CI/CD job on GitHub-hosted `ubuntu-24.04`
+runners. The repository is public. Python and pnpm dependency caches are
+restored through GitHub Actions because each job starts on a fresh VM.
+Pull requests from forks can run the read-only validation jobs; publishing
+remains limited to trusted pushes and deployment retains its existing gates.
+
+The former `jahan-local-wsl` systemd service is stopped and disabled. It is
+retained only for historical reference; do not restart it for GitHub Actions.
+The optional local test scripts below remain available for manual development,
+but GitHub CI does not call them or depend on WSL, this PC, or localhost:5000.
+
+All existing repository branches were checked during this migration. Only
+`develop` still selected the local runner; the other branches already selected
+GitHub-hosted Ubuntu runners.
+
+No application, database schema, permission, or panel UI changes are involved.
+Verification is workflow linting and the actual GitHub CI run, rather than
+repeating the full test suite on the workstation.
+
+## Historical local configuration
+
+The former workflow targeted `[self-hosted, linux, x64, jahan-local]`. GitHub service
 containers and the existing Bash/Docker steps require Linux, so use the existing
 Ubuntu-24.04 WSL distribution rather than the Windows runner ZIP.
 
