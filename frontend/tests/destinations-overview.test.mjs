@@ -3,6 +3,17 @@ import { existsSync } from "node:fs";
 import { test } from "node:test";
 import { destinationOverviews, filterDestinations, normalizeDestinationSearch } from "../lib/destinations-overview.ts";
 import { countryGuides, headerDestinations } from "../lib/site-content.ts";
+import { destinationResources } from "../lib/destination-resources.ts";
+
+test("each comparison country has a named HTTPS study portal without embedded credentials", () => {
+  assert.deepEqual(Object.keys(destinationResources).sort(), destinationOverviews.map(country => country.slug).sort());
+  for (const source of Object.values(destinationResources)) {
+    const url = new URL(source.url);
+    assert.equal(url.protocol, "https:");
+    assert.equal(url.username + url.password, "");
+    assert.ok(source.name.trim());
+  }
+});
 
 test("overview covers every navigation country and points to existing guides and local imagery", () => {
   assert.ok(existsSync(new URL("../public/destinations/world-map-hero-wide.png", import.meta.url)));
