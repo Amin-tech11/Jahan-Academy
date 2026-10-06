@@ -117,6 +117,17 @@
 @media(max-width:600px) { .journal-campus-hero { min-height:330px; } .journal-campus-hero > p { font-size:clamp(1.15rem,5vw,1.55rem); letter-spacing:.22em; } .journal-navigation-track a { font-size:12px; padding:9px 12px; } .journal-filters { flex-wrap:wrap; } .journal-filters button { flex:1 0 40%; } }
 
 .journal-consultation-free { color:#B87B08; }
+.journal-consultation .home-closing__card { color:#15283b; font-family:"Vazirmatn Variable",Arial,sans-serif; }
+.journal-consultation .home-closing__card h3 { color:#101d2c; font-family:inherit; font-size:1.2rem; font-weight:750; }
+.journal-consultation .home-closing__card > p:not([role="alert"]) { color:#63798e; font-family:inherit; font-size:.84rem; }
+.journal-consultation .home-consultation__fields label { color:#10263b; font-family:inherit; font-size:.8rem; font-weight:650; }
+.journal-consultation .home-consultation__fields input,
+.journal-consultation .home-consultation__fields select { color:#172f47; font-family:inherit; font-size:.82rem; }
+.journal-consultation .home-consultation__fields input::placeholder { color:#8493a2; }
+.journal-consultation .home-consultation__consent { color:#728398; font-family:inherit; font-size:.75rem; }
+.journal-consultation .home-consultation__consent a { color:#17477e; }
+.journal-consultation .home-closing__card .ui-button { color:#fff; font-family:inherit; font-weight:750; }
+.journal-consultation .home-consultation__form p[role="alert"] { color:#ad3030; font-family:inherit; }
 .journal-section-heading { display:block; text-align:center; margin-bottom:48px; }
 .journal-section-heading h2 { font-size:clamp(24px,3vw,32px); font-weight:800; line-height:1.6; margin:0; }
 
