@@ -6,6 +6,7 @@ import { SiteShell } from "@/components/site-shell";
 import { ServicesConsultationForm } from "@/components/services-consultation-form";
 import { ServicesNavigation } from "@/components/services-navigation";
 import { ServicesMotion } from "@/components/services-motion";
+import { ServicesHero } from "@/components/services-hero";
 import { isLocale, type Locale } from "@/lib/site-content";
 
 import "../../services.css";
@@ -94,9 +95,7 @@ export default async function ServicesPage({ params }: PageProps) {
 
   return <SiteShell locale={locale}>
     <main className="services-page">
-      <section className="services-hero" aria-label={copy.title}>
-        <div className="services-hero__brand">JAHAN ACADEMY</div>
-      </section>
+      <ServicesHero title={copy.title} />
 
       <ServicesMotion>
       <div className="services-content">
