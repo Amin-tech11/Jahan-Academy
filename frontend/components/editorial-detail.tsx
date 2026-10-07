@@ -10,7 +10,7 @@ export function EditorialDetail({ locale, title, date, excerpt, sections = [] }:
   excerpt: string;
   sections?: { title: string; body: string }[];
 }) {
-  return <SiteShell locale={locale}>
+  return <SiteShell locale={locale} className={styles.page}>
     <main className={styles.main}>
       <article className={styles.article} aria-labelledby="editorial-title">
         <header className={styles.header}>
