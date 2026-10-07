@@ -42,7 +42,8 @@ test("about navigation follows the arriving section and scrolls back correctly",
   assert.equal(app.active, "purpose");
   tops[3] = -300; tops[4] = 200;
   app.events.get("scroll")(); app.flush();
-  assert.equal(app.active, "questions");
+  // FAQ remains on the page but is no longer a navigation target.
+  assert.equal(app.active, "journey");
   app.cleanup();
 });
 

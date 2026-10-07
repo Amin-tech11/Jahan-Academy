@@ -31,6 +31,8 @@ export function ServicesConsultationForm({ locale }: { locale: Locale }) {
     if (!form.reportValidity() || !mobile) return;
     const payload = {
       firstName: value("firstName"), lastName: value("lastName"), mobile,
+      desiredCountryText: t("هنوز انتخاب نشده؛ بررسی در مشاوره", "Undecided; discuss during consultation"),
+      intakeTerm: "unknown", startYear: new Date().getUTCFullYear(),
       occupation: value("occupation"), locale, source: { pageUrl: `/${locale}/services` },
       privacyConsent: data.get("privacyConsent") === "on",
       contactConsent: data.get("contactConsent") === "on", website: value("website"),

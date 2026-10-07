@@ -9,7 +9,10 @@ const nextConfig: NextConfig = {
       process.env.ADMIN_API_URL ?? process.env.API_INTERNAL_URL ?? "http://127.0.0.1:8000"
     ).replace(/\/$/, "");
     const api = backend.endsWith("/api/v1") ? backend : `${backend}/api/v1`;
-    return [{ source: "/api/v1/consultation-requests", destination: `${api}/consultation-requests` }];
+    return ["consultation-requests", "reference-data/:path*", "universities/:path*"].map(path => ({
+      source: `/api/v1/${path}`,
+      destination: `${api}/${path}`,
+    }));
   },
   async redirects() {
     if (process.env.JAHAN_PANEL === "admin") {
