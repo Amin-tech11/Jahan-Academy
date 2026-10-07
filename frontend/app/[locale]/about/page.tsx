@@ -10,7 +10,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   return {
-    title: locale === "fa" ? "درباره جهان آکادمی | همراه مسیر تحصیل شما" : "About Jahan Academy | Your study journey",
+    title: locale === "fa" ? "داستان جهان آکادمی | همراه مسیر تحصیل شما" : "The Jahan Academy Story | Your study journey",
     description: aboutContent[locale].description,
     alternates: { canonical: `/${locale}/about`, languages: { fa: "/fa/about", en: "/en/about" } },
   };

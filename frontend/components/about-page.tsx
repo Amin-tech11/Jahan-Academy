@@ -12,7 +12,7 @@ import { AboutIcon, valueIcons, journeyIcons } from "./about-icon";
 
 const copy = {
   fa: {
-    label: "درباره جهان آکادمی",
+    label: "داستان جهان آکادمی",
     closingTitle: "داستان مسیر شما را با هم آغاز کنیم",
     closingText: "اکنون که با نگاه جهان آکادمی آشنا شدید، از هدف‌ها و دغدغه‌های خود برای ما بگویید. در یک مشاوره رایگان، شرایط شما را می‌شناسیم و درباره قدم بعدی مسیرتان گفت‌وگو می‌کنیم.",
     title: "جهانی از فرصت،", accent: "همراهی برای آیندهٔ شما.",
@@ -31,7 +31,7 @@ const copy = {
     faqTitle: "سوالات متداول", endTitle: "آیندهٔ شما، ارزش یک گفت‌وگو را دارد.", endText: "از هدف‌ها و پرسش‌هایتان بگویید. اولین قدم را با یک درخواست مشاوره رایگان بردارید.", skip: "رفتن به محتوای اصلی",
   },
   en: {
-    label: "About Jahan Academy",
+    label: "The Jahan Academy Story",
     closingTitle: "Let’s begin your next chapter together",
     closingText: "Now that you know our approach, tell us about your goals and concerns. In a free consultation, we will get to know your circumstances and discuss the next step in your journey.",
     title: "A world of opportunity.", accent: "A partner for your future.",
