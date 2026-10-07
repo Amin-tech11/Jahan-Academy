@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 from collections.abc import Sequence
 from datetime import datetime
 from typing import Any
@@ -9,7 +10,14 @@ from uuid import UUID
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.modules.consultations.domain import LeadArchiveFilter, LeadSort, LeadStatus, SyncStatus
+from app.modules.consultations.domain import (
+    DIGIT_TRANSLATION,
+    LeadArchiveFilter,
+    LeadSearchField,
+    LeadSort,
+    LeadStatus,
+    SyncStatus,
+)
 
 
 class StaleLeadError(Exception):
@@ -66,9 +74,11 @@ class LeadRepository:
         archive: LeadArchiveFilter,
         sort: LeadSort,
         assigned_scope_user_id: UUID | None,
+        search_field: LeadSearchField | None = None,
     ) -> tuple[list[dict[str, Any]], int]:
         where, params = self._filters(
             query=query,
+            search_field=search_field,
             status=status,
             sync_status=sync_status,
             assignee_id=assignee_id,
@@ -380,22 +390,47 @@ class LeadRepository:
         created_to: datetime | None,
         archive: LeadArchiveFilter,
         assigned_scope_user_id: UUID | None,
+        search_field: LeadSearchField | None = None,
     ) -> tuple[str, dict[str, Any]]:
         predicates = ["1 = 1"]
         params: dict[str, Any] = {}
         if query:
+            if search_field is LeadSearchField.MOBILE:
+                query = re.sub(r"\D", "", query.translate(DIGIT_TRANSLATION))
+                if query.startswith("00"):
+                    query = query[2:]
+                elif len(query) <= 11 and query.startswith("09"):
+                    query = "98" + query[1:]
+                elif len(query) == 10 and query.startswith("9"):
+                    query = "98" + query
+            elif search_field is LeadSearchField.FULL_NAME:
+                query = " ".join(query.split())
             escaped = query.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
             params["query"] = f"%{escaped}%"
-            predicates.append(
-                "(l.public_reference ILIKE :query ESCAPE '\\' "
-                "OR l.first_name ILIKE :query ESCAPE '\\' "
-                "OR l.last_name ILIKE :query ESCAPE '\\' "
-                "OR concat_ws(' ', l.first_name, l.last_name) ILIKE :query ESCAPE '\\' "
-                "OR l.mobile_raw ILIKE :query ESCAPE '\\' "
-                "OR l.mobile_normalized ILIKE :query ESCAPE '\\' "
-                "OR l.email ILIKE :query ESCAPE '\\' "
-                "OR l.desired_country_text ILIKE :query ESCAPE '\\')"
-            )
+            if not query:
+                predicates.append("1 = 0")
+            elif search_field is LeadSearchField.REFERENCE:
+                predicates.append("l.public_reference ILIKE :query ESCAPE '\\'")
+            elif search_field is LeadSearchField.FULL_NAME:
+                predicates.append(
+                    "concat_ws(' ', l.first_name, l.last_name) ILIKE :query ESCAPE '\\'"
+                )
+            elif search_field is LeadSearchField.MOBILE:
+                predicates.append(
+                    "(regexp_replace(l.mobile_raw, '[^0-9]', '', 'g') ILIKE :query "
+                    "OR regexp_replace(l.mobile_normalized, '[^0-9]', '', 'g') ILIKE :query)"
+                )
+            else:
+                predicates.append(
+                    "(l.public_reference ILIKE :query ESCAPE '\\' "
+                    "OR l.first_name ILIKE :query ESCAPE '\\' "
+                    "OR l.last_name ILIKE :query ESCAPE '\\' "
+                    "OR concat_ws(' ', l.first_name, l.last_name) ILIKE :query ESCAPE '\\' "
+                    "OR l.mobile_raw ILIKE :query ESCAPE '\\' "
+                    "OR l.mobile_normalized ILIKE :query ESCAPE '\\' "
+                    "OR l.email ILIKE :query ESCAPE '\\' "
+                    "OR l.desired_country_text ILIKE :query ESCAPE '\\')"
+                )
         if status:
             predicates.append("l.status = :status")
             params["status"] = status.value

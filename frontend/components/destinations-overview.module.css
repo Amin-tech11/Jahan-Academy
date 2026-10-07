@@ -29,8 +29,9 @@
 .decisionHeading { max-width: 850px; margin-bottom: 24px; }
 .decisionHeading > span { display: block; margin-bottom: 8px; color: var(--navy); font-size: 13px; font-weight: 700; }
 .decisionHeading h2 { margin-bottom: 12px; }
-.decisionCriteria { display: grid; gap: 18px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.decisionCriteria .typeCard { min-height: 290px; padding-block: 36px 32px; }
+.decisionCriteria { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.decisionCriteria .typeCard { min-height: 270px; padding-block: 36px 32px; }
+.decisionCriteria .typeIcon svg { width: 48px; height: 48px; }
 .decisionCriteria .typeCard p { line-height: 2; }
 @media (max-width: 900px) { .decisionCriteria { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .comparisonSelectors, .comparisonColumns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }

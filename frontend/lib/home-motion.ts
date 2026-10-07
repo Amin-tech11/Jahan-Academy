@@ -1,4 +1,5 @@
 type Direction = "up" | "left" | "right" | "fade" | "hero";
+export type MotionGroup = readonly [string, Direction, number];
 
 const groups: readonly [string, Direction, number][] = [
   [".home-start__features > li", "up", 60],
@@ -40,12 +41,16 @@ export function animateHomeElement(element: HTMLElement, direction: Direction = 
 }
 
 /** Progressive enhancement: server HTML and unsupported browsers stay visible. */
-export function startHomeMotion(root: HTMLElement) {
+export function startHomeMotion(root: HTMLElement, options: {
+  groups?: readonly MotionGroup[];
+  heroSelector?: string;
+  includeFooter?: boolean;
+} = {}) {
   const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
   if (preference.matches || typeof IntersectionObserver === "undefined" || typeof root.animate !== "function") return () => {};
 
   const targets = new Map<HTMLElement, { direction: Direction; delay: number }>();
-  for (const [selector, direction, stagger] of groups) {
+  for (const [selector, direction, stagger] of options.groups ?? groups) {
     root.querySelectorAll<HTMLElement>(selector).forEach((element, index) => {
       const evenStep = element.closest(".home-process__step:nth-child(even)");
       const side = evenStep && (direction === "left" || direction === "right")
@@ -55,10 +60,10 @@ export function startHomeMotion(root: HTMLElement) {
   }
   // This footer belongs to the current home shell; shared shell markup is untouched.
   const footer = root.nextElementSibling;
-  if (footer instanceof HTMLElement && footer.matches(".site-footer")) {
+  if (options.includeFooter !== false && footer instanceof HTMLElement && footer.matches(".site-footer")) {
     targets.set(footer, { direction: "fade", delay: 0 });
   }
-  const hero = root.querySelector<HTMLElement>(".home-hero__image");
+  const hero = root.querySelector<HTMLElement>(options.heroSelector ?? ".home-hero__image");
   if (hero) targets.set(hero, { direction: "hero", delay: 0 });
   // Keep at most one animation cleanup per target across repeated scroll cycles.
   const cleanups = new Map<HTMLElement, () => void>();

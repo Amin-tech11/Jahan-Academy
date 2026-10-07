@@ -8,7 +8,7 @@ const require = createRequire(import.meta.url);
 const ts = require("typescript");
 const source = readFileSync(new URL("../lib/home-motion.ts", import.meta.url), "utf8");
 
-function setup({ reduced = false, mobile = false, supported = true } = {}) {
+function setup({ reduced = false, mobile = false, supported = true, custom = false } = {}) {
   const preference = {
     matches: reduced, listeners: new Set(),
     addEventListener(name, fn) { this.listeners.add(fn); },
@@ -47,8 +47,8 @@ function setup({ reduced = false, mobile = false, supported = true } = {}) {
   root.parentElement = parent;
   root.ownerDocument = { activeElement: null };
   root.nextElementSibling = footer;
-  root.querySelector = () => hero;
-  root.querySelectorAll = (selector) => selector === ".home-service-card" ? [first, later, passed]
+  root.querySelector = (selector) => selector === (custom ? ".university-hero" : ".home-hero__image") ? hero : null;
+  root.querySelectorAll = (selector) => selector === (custom ? ".university-cards" : ".home-service-card") ? [first, later, passed]
     : selector === ".home-process__media" ? [media] : [];
   let observer;
   class Observer {
@@ -65,9 +65,31 @@ function setup({ reduced = false, mobile = false, supported = true } = {}) {
     IntersectionObserver: supported ? Observer : undefined,
     window: { getComputedStyle: (element) => ({ translate: element.translate ?? "none" }), innerHeight: 1000, matchMedia: (query) => query.includes("reduced-motion") ? preference : { matches: mobile } },
   });
-  const cleanup = module.exports.startHomeMotion(root);
+  const cleanup = module.exports.startHomeMotion(root, custom ? {
+    groups: [[".university-cards", "up", 60]],
+    heroSelector: ".university-hero",
+    includeFooter: false,
+  } : undefined);
   return { root, first, later, passed, media, hero, footer, parent, preference, observer, cleanup, animate: module.exports.animateHomeElement };
 }
+
+test("university targets reuse home timing, replay and accessibility without touching the footer", () => {
+  const app = setup({ custom: true });
+  assert.equal(app.hero.animations[0].options.duration, 1200);
+  assert.equal(app.observer.observed.has(app.footer), false);
+  assert.equal(app.observer.observed.has(app.media), false);
+  app.observer.enter(app.later);
+  assert.equal(app.later.animations[0].options.duration, 760);
+  assert.equal(app.later.animations[0].options.delay, 60);
+  app.observer.leave(app.later);
+  assert.equal(app.later.dataset.homePending, "true");
+  app.parent.events.get("focusin")({ target: app.later });
+  assert.equal(app.later.dataset.homePending, undefined);
+  app.preference.change(true);
+  assert.equal(app.observer.disconnected, true);
+  assert.equal(app.preference.listeners.size, 0);
+  app.cleanup();
+});
 
 test("sections reveal once per visit and replay after scrolling upward past them", () => {
   const app = setup();

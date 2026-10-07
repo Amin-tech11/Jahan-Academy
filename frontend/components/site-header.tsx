@@ -3,10 +3,13 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
+import { captureLocaleScroll, restoreLocaleScroll, type LocaleScrollPosition } from "@/lib/locale-scroll";
 
 import { ButtonLink } from "@/components/ui";
 import { headerDestinations, type Locale, siteCopy } from "@/lib/site-content";
+
+let pendingLocaleScroll: LocaleScrollPosition | undefined;
 
 export function SiteHeader({ locale }: { locale: Locale }) {
   const copy = siteCopy[locale];
@@ -15,6 +18,27 @@ export function SiteHeader({ locale }: { locale: Locale }) {
   const alternateLocale: Locale = locale === "fa" ? "en" : "fa";
   const alternatePath = pathname.replace(/^\/(fa|en)(?=\/|$)/, `/${alternateLocale}`);
   const consultationPath = `/${locale}/consultation?source=header`;
+  useLayoutEffect(() => {
+    const position = pendingLocaleScroll;
+    if (!position || position.path !== pathname) return;
+    pendingLocaleScroll = undefined;
+    restoreLocaleScroll(position);
+    // Account for deferred image/font layout without overriding user scrolling.
+    const main = document.querySelector("main");
+    const observer = new ResizeObserver(() => restoreLocaleScroll(position));
+    if (main) observer.observe(main);
+    // Route commit and browser focus restoration may run after layout effects.
+    const settle = window.setInterval(() => restoreLocaleScroll(position), 50);
+    const stop = () => { observer.disconnect(); window.clearInterval(settle); };
+    const timeout = window.setTimeout(stop, 2000);
+    const events = ["wheel", "touchstart", "pointerdown", "keydown"] as const;
+    events.forEach(event => window.addEventListener(event, stop, { passive: true, once: true }));
+    return () => {
+      stop();
+      window.clearTimeout(timeout);
+      events.forEach(event => window.removeEventListener(event, stop));
+    };
+  }, [pathname]);
   useEffect(() => setOpen(false), [pathname]);
   useEffect(() => {
     if (!open) return;
@@ -29,7 +53,6 @@ export function SiteHeader({ locale }: { locale: Locale }) {
     if (item.href === "/countries") {
       const destinations = [...headerDestinations].sort((a, b) => a[locale].localeCompare(b[locale], locale));
       const options = <div className="nav-destinations-list" dir={locale === "fa" ? "rtl" : "ltr"}>
-        <Link href={href} onClick={() => setOpen(false)}>{locale === "fa" ? "همه مقصدها" : "All destinations"}</Link>
         {destinations.map((destination) => <Link key={destination.slug} href={`/${locale}/countries/${destination.slug}`} onClick={() => setOpen(false)}><span className="nav-destination-flag" aria-hidden="true"><Image src={`/destinations/flags/${destination.slug}.svg`} alt="" width={28} height={28} /></span><span>{destination[locale]}</span></Link>)}
       </div>;
       if (desktop) return <div className="nav-destinations nav-destinations--desktop" key={href}>
@@ -50,7 +73,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
     </Link>
     <nav className="main-nav" aria-label={locale === "fa" ? "ناوبری اصلی" : "Main navigation"}>{links(true)}</nav>
     <div className="header-actions">
-      <Link className="locale-link" href={alternatePath || `/${alternateLocale}`} lang={alternateLocale} hrefLang={alternateLocale} aria-label={locale === "fa" ? "English" : "فارسی"}>{alternateLocale.toUpperCase()}</Link>
+      <Link className="locale-link" href={alternatePath || `/${alternateLocale}`} scroll={false} onNavigate={() => { pendingLocaleScroll = captureLocaleScroll(alternatePath || `/${alternateLocale}`); }} lang={alternateLocale} hrefLang={alternateLocale} aria-label={locale === "fa" ? "English" : "فارسی"}>{alternateLocale.toUpperCase()}</Link>
       <ButtonLink size="sm" href={consultationPath}>{copy.consultation}</ButtonLink>
       <button className="mobile-menu-toggle" type="button" aria-label={locale === "fa" ? "باز کردن منو" : "Toggle menu"} aria-controls="mobile-navigation" aria-expanded={open} onClick={() => setOpen(!open)}><span aria-hidden="true">{open ? "×" : "☰"}</span></button>
     </div>

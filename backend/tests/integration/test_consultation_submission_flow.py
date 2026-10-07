@@ -10,6 +10,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from app.main import app
+from app.modules.consultations.service import ConsultationService
 
 pytestmark = pytest.mark.skipif(
     os.getenv("JAHAN_RUN_INTEGRATION") != "1",
@@ -81,7 +82,9 @@ def _database_state(reference: str) -> dict[str, Any]:
     }
 
 
-def test_public_consultation_submission_idempotency_and_deduplication() -> None:
+def test_public_consultation_submission_idempotency_and_deduplication(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     unique = uuid4().int % 1_000_000_000
     national_mobile = f"09{unique:09d}"
     international_mobile = f"+98 9{unique:09d}"
@@ -107,6 +110,7 @@ def test_public_consultation_submission_idempotency_and_deduplication() -> None:
         "contactConsent": True,
     }
     reference = ""
+    collision_reference = ""
 
     try:
         with TestClient(app) as client:
@@ -119,7 +123,7 @@ def test_public_consultation_submission_idempotency_and_deduplication() -> None:
             assert created.headers["cache-control"] == "no-store"
             reference = created.json()["data"]["reference"]
             assert reference.startswith("JA-")
-            assert len(reference) == 19
+            assert len(reference) == 11
             assert created.json()["data"]["duplicate"] is False
 
             replay = client.post(
@@ -142,6 +146,23 @@ def test_public_consultation_submission_idempotency_and_deduplication() -> None:
             assert invalid_mobile.status_code == 422
             assert invalid_mobile.json()["error"]["code"] == "INVALID_MOBILE"
 
+            # Force a collision with an existing code, then allocate a new one in
+            # the same transaction. No duplicate lead or consent may be created.
+            fresh_reference = ConsultationService._new_reference()
+            candidates = iter([reference, fresh_reference])
+            monkeypatch.setattr(
+                ConsultationService, "_new_reference", staticmethod(lambda: next(candidates))
+            )
+            collided = client.post(
+                "/api/v1/consultation-requests",
+                json={**payload, "desiredCountryText": f"{country} collision"},
+                headers={"Idempotency-Key": f"{idempotency_key}-collision"},
+            )
+            assert collided.status_code == 201, collided.text
+            collision_reference = collided.json()["data"]["reference"]
+            assert collision_reference == fresh_reference
+            assert _database_state(collision_reference)["consents"] == 2
+
         state = _database_state(reference)
         assert state["mobile"] == f"+989{unique:09d}"
         assert state["duplicateCount"] == 1
@@ -150,5 +171,7 @@ def test_public_consultation_submission_idempotency_and_deduplication() -> None:
         assert state["outbox"] == 1
         assert state["syncRecords"] == 1
     finally:
+        if collision_reference:
+            _cleanup(collision_reference, f"{idempotency_key}-collision")
         if reference:
             _cleanup(reference, idempotency_key)

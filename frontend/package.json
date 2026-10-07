@@ -7,6 +7,7 @@
     "node": ">=24 <25"
   },
   "scripts": {
+    "dev:admin": "node scripts/dev-panel.mjs admin",
     "dev": "next dev",
     "dev:destination": "node scripts/dev-destination.mjs",
     "dev:home": "node scripts/dev-panel.mjs home-page",
@@ -15,6 +16,8 @@
     "dev:users": "node scripts/dev-panel.mjs users",
     "dev:orders": "node scripts/dev-panel.mjs orders",
     "dev:university-info": "node scripts/dev-panel.mjs university-info",
+    "dev:services": "node scripts/dev-panel.mjs service-page",
+    "dev:universities": "node scripts/dev-panel.mjs universities-page",
     "dev:develop": "node scripts/dev-panel.mjs develop",
     "build": "next build",
     "start": "next start",
@@ -23,6 +26,7 @@
   },
   "dependencies": {
     "@fontsource-variable/vazirmatn": "^5.3.0",
+    "exceljs": "4.4.0",
     "next": "16.3.6",
     "react": "19.3.0",
     "react-dom": "19.3.0"
