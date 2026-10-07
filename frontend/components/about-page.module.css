@@ -71,6 +71,8 @@
 .closing { margin-top: 56px; }
 .closing :global(.home-closing__card) h3 { margin-bottom: .6rem; }
 .closing :global(.home-closing__card) p { margin-bottom: 1.75rem; }
+.closing :global(.home-consultation__form) > h3 { font-family: var(--font-body); font-size: 1.3rem; font-weight: 700; line-height: 1.6; color: var(--color-brand-900); text-align: center; }
+.closing :global(.home-consultation__form) > p:not([role="alert"]) { font-family: var(--font-body); font-size: .85rem; font-weight: 400; line-height: 1.9; color: var(--color-muted); text-align: center; }
 .story > div:first-child { text-align: center; margin-bottom: 30px; }
 .quote { margin: 15px auto 0 !important; color: var(--about-navy) !important; font-size: 18px; font-weight: 650; }
 .prose { max-width: 940px; margin-inline: auto; }
