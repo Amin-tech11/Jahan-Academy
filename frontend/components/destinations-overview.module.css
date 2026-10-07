@@ -34,27 +34,27 @@
 .decisionCriteria .typeIcon svg { width: 48px; height: 48px; }
 .decisionCriteria .typeCard p { line-height: 2; }
 @media (max-width: 900px) { .decisionCriteria { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-.comparisonColumns { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
-.comparisonCountry { display: flex; flex-direction: column; min-width: 0; padding: 24px; border: 1px solid var(--line); border-top: 3px solid var(--navy); border-radius: 16px; background: var(--surface); box-shadow: 0 4px 20px rgb(32 40 51 / 4%); }
-.comparisonCountry header { display: flex; align-items: center; gap: 12px; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
-.page .comparisonCountry header h3 { margin: 0; color: var(--navy); font-size: 22px; }
-.factCapital { color: var(--muted); font-size: 13px; }
-.comparisonCountry dl { display: grid; gap: 0; margin: 0 0 20px; }
-.factRow { padding-block: 17px; border-bottom: 1px solid var(--line); }
-.factRow dt { margin-bottom: 7px; color: var(--muted); font-size: 13px; }
-.factRow dd { display: flex; flex-direction: column; gap: 5px; margin: 0; }
-.factRow strong { color: var(--ink); font-size: 16px; line-height: 1.8; }
-.factRow dd > span { color: var(--muted); font-size: 12px; line-height: 1.9; }
-.factRow a { align-self: flex-start; color: var(--navy); font-size: 11px; text-underline-offset: 3px; }
-.factRow a:hover { text-decoration: underline; }
-.factDestinationLink { display: flex; justify-content: space-between; gap: 12px; margin-top: auto; color: var(--navy); font-size: 14px; font-weight: 700; }
-.factDestinationLink:hover { text-decoration: underline; text-underline-offset: 4px; }
-@media (max-width: 1000px) { .comparisonColumns { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.comparisonTableWrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); box-shadow: 0 4px 20px rgb(32 40 51 / 4%); }
+.comparisonTable { width: 100%; min-width: 1040px; border-collapse: collapse; text-align: start; table-layout: fixed; }
+.comparisonTable th, .comparisonTable td { padding: 20px 18px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.comparisonTable thead th { background: var(--navy); color: var(--surface); font-size: 14px; font-weight: 700; line-height: 1.8; }
+.comparisonTable th:first-child { width: 17%; }
+.comparisonTable tbody tr:nth-child(even) { background: var(--paper); }
+.comparisonTable tbody tr:last-child th, .comparisonTable tbody tr:last-child td { border-bottom: 0; }
+.tableCountry { display: flex; align-items: center; gap: 10px; color: var(--navy); font-size: 16px; line-height: 1.8; }
+.tableCountry img { flex: none; }
+.tableCountry small { display: block; color: var(--muted); font-size: 12px; font-weight: 400; }
+.tableCountry:hover { text-decoration: underline; text-underline-offset: 4px; }
+.tableFact { display: flex; flex-direction: column; gap: 7px; }
+.tableFact strong { color: var(--ink); font-size: 14px; line-height: 1.8; }
+.tableFact > span { color: var(--muted); font-size: 12px; line-height: 1.9; }
+.tableFact a { align-self: flex-start; color: var(--navy); font-size: 11px; text-underline-offset: 3px; }
+.tableFact a:hover { text-decoration: underline; }
 .page .smallNote { margin-top: 14px; font-size: 13px; line-height: 1.9; }
 .resourceLinks { display: flex; flex-wrap: wrap; gap: 12px 24px; margin-block: 18px 24px; color: var(--navy); font-size: 14px; }
 .resourceLinks a:hover { text-decoration: underline; }
 .resourceLinks a[target] { direction: ltr; }
-@media (max-width: 600px) { .decisionCriteria, .comparisonColumns { grid-template-columns: 1fr; } .comparisonCountry { padding: 20px; } }
+@media (max-width: 600px) { .decisionCriteria { grid-template-columns: 1fr; } }
 .cards, .countries, .criteria { display: grid; gap: 18px; margin-top: 24px; }
 .cards { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .countries, .criteria { grid-template-columns: repeat(2, minmax(0, 1fr)); }
