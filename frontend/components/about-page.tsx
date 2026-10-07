@@ -13,11 +13,11 @@ const copy = {
     title: "جهانی از فرصت،", accent: "همراهی برای آیندهٔ شما.",
     subtitle: "ما کنار شما هستیم تا مسیر تحصیل در خارج از کشور را روشن‌تر ببینید و قدم بعدی را آگاهانه بردارید.",
     cta: "درخواست مشاوره رایگان", imageAlt: "نمایی الهام‌بخش از مسیر ورود به محوطهٔ دانشگاه",
-    imageCaption: "آینده، از یک قدم آگاهانه آغاز می‌شود", storyLabel: "جهان آکادمی", storyTitle: "درباره ما",
+    imageCaption: "آینده، از یک قدم آگاهانه آغاز می‌شود", storyTitle: "درباره ما",
     quote: "ما مهاجرت نمی‌فروشیم؛ آغاز می‌سازیم.",
     nav: ["درباره ما", "مأموریت و چشم‌انداز", "ارزش‌های ما", "مسیر همراهی", "پرسش‌های شما"],
-    purpose: "آنچه ما را پیش می‌برد", purposeTitle: "نگاه ما به فردای شما", valuesLabel: "اصولی که به آن‌ها پایبندیم", valuesIntro: "اعتماد از انتخاب‌های کوچک و رفتارهای هر روز ساخته می‌شود. این اصول، مبنای گفت‌وگوی ما با شما هستند.",
-    journeyLabel: "از شناخت تا انتخاب", journeyTitle: "مسیر را با هم روشن می‌کنیم", journeyIntro: "نقطهٔ شروع، شناخت شماست؛ نه انتخاب یک کشور از روی نقشه.",
+    purposeTitle: "نگاه ما به فردای شما", valuesIntro: "اعتماد از انتخاب‌های کوچک و رفتارهای هر روز ساخته می‌شود. این اصول، مبنای گفت‌وگوی ما با شما هستند.",
+    journeyTitle: "مسیر را با هم روشن می‌کنیم", journeyIntro: "نقطهٔ شروع، شناخت شماست؛ نه انتخاب یک کشور از روی نقشه.",
     steps: [
       { title: "شنیدن داستان شما", text: "دربارهٔ هدف، پیشینهٔ تحصیلی، سطح زبان و دغدغه‌هایتان گفت‌وگو می‌کنیم." },
       { title: "روشن‌کردن گزینه‌ها", text: "مقصدها و مسیرهای مرتبط را با توجه به بودجه، زمان و اولویت‌های شما بررسی می‌کنیم." },
@@ -30,11 +30,11 @@ const copy = {
     title: "A world of opportunity.", accent: "A partner for your future.",
     subtitle: "We are here to help you understand your study-abroad options and take an informed next step.",
     cta: "Request free consultation", imageAlt: "An inspiring view of a path leading into a university campus",
-    imageCaption: "The future starts with an informed step", storyLabel: "Jahan Academy", storyTitle: "About us",
+    imageCaption: "The future starts with an informed step", storyTitle: "About us",
     quote: "We do not sell migration; we create beginnings.",
     nav: ["About us", "Mission & vision", "Our values", "Your journey", "Your questions"],
-    purpose: "What moves us forward", purposeTitle: "Our perspective on your future", valuesLabel: "The principles behind our work", valuesIntro: "Trust grows through everyday choices and actions. These principles guide every conversation we have with you.",
-    journeyLabel: "From understanding to choice", journeyTitle: "Finding clarity, together", journeyIntro: "Our starting point is understanding you, before choosing a country on a map.",
+    purposeTitle: "Our perspective on your future", valuesIntro: "Trust grows through everyday choices and actions. These principles guide every conversation we have with you.",
+    journeyTitle: "Finding clarity, together", journeyIntro: "Our starting point is understanding you, before choosing a country on a map.",
     steps: [
       { title: "Listen to your story", text: "We discuss your goals, academic background, language level, and concerns." },
       { title: "Explore your options", text: "We review relevant destinations and pathways in light of your budget, timing, and priorities." },
@@ -45,15 +45,15 @@ const copy = {
 };
 
 function Icon({ kind }: { kind: number }) {
-  const paths = [
-    <path key="shield" d="M12 3 4 6v6c0 5 8 9 8 9s8-4 8-9V6l-8-3Zm-4 9 3 3 5-6" />,
-    <path key="book" d="M12 6c-3-2-6-2-9-1v14c3-1 6-1 9 1 3-2 6-2 9-1V5c-3-1-6-1-9 1Zm0 0v14" />,
-    <path key="heart" d="M12 20S3 14 3 8a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 6-9 12-9 12Z" />,
-    <path key="chat" d="M20 11a8 8 0 0 1-8 8H4l1-5a8 8 0 1 1 15-3ZM8 10h8m-8 4h5" />,
-    <path key="growth" d="M5 20V10m7 10V4m7 16v-7M3 6l6-3m7 4 5-4" />,
-    <g key="globe"><circle cx="12" cy="12" r="9" /><ellipse cx="12" cy="12" rx="4" ry="9" /><path d="M3 12h18" /></g>,
+  const icons = [
+    <g key="clarity"><path d="M2.5 12s3.3-6 9.5-6 9.5 6 9.5 6-3.3 6-9.5 6-9.5-6-9.5-6Z" /><circle cx="12" cy="12" r="2.75" /></g>,
+    <g key="expertise"><path d="m2.5 9 9.5-5 9.5 5-9.5 5-9.5-5Z" /><path d="M6.5 11.2v4.5c3.7 2.4 7.3 2.4 11 0v-4.5M21.5 9v6" /></g>,
+    <g key="people"><circle cx="9" cy="7.5" r="3.5" /><path d="M2.5 20v-1.5a4 4 0 0 1 4-4h5a4 4 0 0 1 4 4V20M16.5 4.5a3.5 3.5 0 0 1 0 6.8M18 14.7a4 4 0 0 1 3.5 3.8V20" /></g>,
+    <g key="support"><path d="M21 11a8.5 8.5 0 0 1-8.5 8.5H7l-4 2 1-4.2A8.5 8.5 0 1 1 21 11Z" /><path d="M9.5 11.5c.8-1.6 2.5-1.1 2.5.3 0-1.4 1.7-1.9 2.5-.3.9 1.8-2.5 3.7-2.5 3.7s-3.4-1.9-2.5-3.7Z" /></g>,
+    <g key="growth"><path d="M3 19.5h18M4.5 16l5-5 3.5 3 7-8M15.5 6H20v4.5" /></g>,
+    <g key="global"><circle cx="12" cy="12" r="9" /><ellipse cx="12" cy="12" rx="4" ry="9" /><path d="M3 12h18M5.7 6.5h12.6M5.7 17.5h12.6" /></g>,
   ];
-  return <svg viewBox="0 0 24 24" width="27" height="27" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[kind % paths.length]}</svg>;
+  return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{icons[kind] ?? icons[0]}</svg>;
 }
 
 export function AboutPage({ locale }: { locale: Locale }) {
@@ -80,17 +80,17 @@ export function AboutPage({ locale }: { locale: Locale }) {
       <div className={`${styles.container} ${styles.guide}`}>
         <AboutNavigation labels={c.nav} title={locale === "fa" ? "با جهان آکادمی آشنا شوید" : "Get to know Jahan Academy"} />
         <section id="story" className={styles.story} aria-labelledby="story-title">
-          <div><span className={styles.eyebrow}>{c.storyLabel}</span><h2 id="story-title">{c.storyTitle}</h2><p className={styles.quote}>{c.quote}</p></div>
+          <div><h2 id="story-title">{c.storyTitle}</h2><p className={styles.quote}>{c.quote}</p></div>
           <div className={styles.prose}>{aboutContent[locale].paragraphs.map((paragraph, i) => <p key={i}>{paragraph.split(/(\*\*.*?\*\*)/g).map((part, j) => part.startsWith("**") ? <strong key={j}>{part.slice(2, -2)}</strong> : part)}</p>)}</div>
         </section>
       <section id="purpose" className={styles.purpose} aria-labelledby="purpose-title"><div>
-        <div className={styles.purposeHeader}><div><span className={styles.eyebrow}>{c.purpose}</span><h2 id="purpose-title">{c.purposeTitle}</h2></div><span className={styles.compass} aria-hidden="true">✳</span></div>
+        <div className={styles.purposeHeader}><div><h2 id="purpose-title">{c.purposeTitle}</h2></div><span className={styles.compass} aria-hidden="true">✳</span></div>
         <div className={styles.purposeGrid}>{[{ title: brand.missionTitle, text: brand.missionText }, { title: brand.visionTitle, text: brand.visionText }].map((item, i) => <article key={item.title}><span className={styles.purposeNumber}>{number(i + 1)}</span><h3>{item.title}</h3><p>{item.text}</p></article>)}</div>
       </div></section>
-        <section id="values" className={styles.section} aria-labelledby="values-title"><div className={styles.sectionHeader}><div><span className={styles.eyebrow}>{c.valuesLabel}</span><h2 id="values-title">{brand.valuesTitle}</h2></div><p>{c.valuesIntro}</p></div>
+        <section id="values" className={styles.section} aria-labelledby="values-title"><div className={styles.sectionHeader}><div><h2 id="values-title">{brand.valuesTitle}</h2></div><p>{c.valuesIntro}</p></div>
           <div className={styles.valuesGrid}>{brand.values.map((value, i) => <article className={styles.valueCard} key={value.title}><div className={styles.valueTop}><span className={styles.icon}><Icon kind={i} /></span><span className={styles.cardNumber}>{number(i + 1)}</span></div><h3>{value.title}</h3><p>{value.text}</p></article>)}</div>
         </section>
-        <section id="journey" className={styles.journey} aria-labelledby="journey-title"><span className={styles.eyebrow}>{c.journeyLabel}</span><h2 id="journey-title">{c.journeyTitle}</h2><p className={styles.journeyIntro}>{c.journeyIntro}</p><ol className={styles.steps}>{c.steps.map((step, i) => <li key={step.title}><span>{number(i + 1)}</span><h3>{step.title}</h3><p>{step.text}</p></li>)}</ol></section>
+        <section id="journey" className={styles.journey} aria-labelledby="journey-title"><h2 id="journey-title">{c.journeyTitle}</h2><p className={styles.journeyIntro}>{c.journeyIntro}</p><ol className={styles.steps}>{c.steps.map((step, i) => <li key={step.title}><span>{number(i + 1)}</span><h3>{step.title}</h3><p>{step.text}</p></li>)}</ol></section>
         <section id="questions" className={styles.faq} aria-labelledby="faq-title"><div><span className={styles.eyebrow}>{c.faqLabel}</span><h2 id="faq-title">{c.faqTitle}</h2><p>{brand.faqIntro}</p><Link href={`/${locale}/contact`} className={styles.inlineLink}>{c.contact}<span aria-hidden="true">{locale === "fa" ? "←" : "→"}</span></Link></div><div className={styles.questions}>{brand.faqs.map((faq) => <details key={faq.question}><summary>{faq.question}<span aria-hidden="true" className={styles.plus}>+</span></summary><p>{faq.answer}</p></details>)}</div></section>
         <section className={styles.cta}><span className={styles.ctaMark} aria-hidden="true">✧</span><div><h2>{c.endTitle}</h2><p>{c.endText}</p></div><div className={styles.ctaAction}><Link className={styles.primary} href={consultation}>{c.cta}<span aria-hidden="true">{locale === "fa" ? "↖" : "↗"}</span></Link><small>{c.endNote}</small></div></section>
       </div>

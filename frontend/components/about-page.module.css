@@ -87,12 +87,13 @@
 .valueCard { background: white; border: 1px solid var(--about-border); border-radius: 14px; padding: 30px 26px; text-align: center; }
 .valueCard:hover { border-color: var(--about-silver); }
 .valueTop { display: flex; justify-content: center; margin-bottom: 20px; }
-.icon { display: grid; place-items: center; width: 48px; height: 48px; color: var(--about-navy); }
-.icon svg { width: 42px; height: 42px; }
+.icon { display: grid; place-items: center; width: 56px; height: 56px; border: 1px solid var(--about-border); border-radius: 16px; background: var(--about-page); color: var(--about-navy); transition: background .2s, border-color .2s; }
+.valueCard:hover .icon { background: white; border-color: var(--about-silver); }
+.icon svg { width: 30px; height: 30px; }
 .cardNumber { display: none; }
 .valueCard h3 { color: var(--about-navy); margin-bottom: 14px; font-size: 20px; }
 .valueCard p { font-size: 15px; line-height: 1.9; }
-.journey > .eyebrow, .journey > h2, .journeyIntro { text-align: center; }
+.journey > h2, .journeyIntro { text-align: center; }
 .journeyIntro { margin-top: 15px !important; font-size: 16px; }
 .steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; padding: 0; list-style: none; margin: 32px 0 0; }
 .steps li { border-top: 1px solid var(--about-border); padding-top: 22px; }
