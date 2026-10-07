@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { destinationOverviews } from "@/lib/destinations-overview";
-import { countryFactsReviewedAt, destinationCountryFacts } from "@/lib/destination-country-facts";
+import { destinationCountryFacts } from "@/lib/destination-country-facts";
 import type { Locale } from "@/lib/site-content";
 import styles from "./destinations-overview.module.css";
 
@@ -14,14 +14,14 @@ export function DestinationComparison({ locale }: { locale: Locale }) {
         <caption className={styles.srOnly}>{t("مقایسه اطلاعات کلی مقصدهای تحصیلی", "Study destinations: general information comparison")}</caption>
         <thead><tr><th scope="col">{t("کشور", "Country")}</th>{fields.map(([key, label]) => <th scope="col" key={key}>{label}</th>)}</tr></thead>
         <tbody>{destinationOverviews.map(country => <tr key={country.slug}>
-          <th scope="row"><Link className={styles.tableCountry} href={`/${locale}/countries/${country.slug}`}><Image src={`/destinations/flags/${country.slug}.svg`} width={30} height={30} alt="" /><span>{country.name[locale]}<small>{country.capital[locale]}</small></span></Link></th>
-          {fields.map(([key, label]) => {
+          <th scope="row"><Link className={styles.tableCountry} href={`/${locale}/countries/${country.slug}`}><Image src={`/destinations/flags/${country.slug}.svg`} width={30} height={30} alt="" /><span>{country.name[locale]}</span></Link></th>
+          {fields.map(([key]) => {
         const fact = destinationCountryFacts[country.slug][key];
-        return <td key={key}><div className={styles.tableFact}><strong>{fact.value[locale]}</strong><span>{fact.note[locale]}</span><a href={fact.source} target="_blank" rel="noopener noreferrer" aria-label={`${t("منبع رسمی", "Official source")}: ${label} — ${country.name[locale]}`}>{t("منبع رسمی", "Official source")} ↗</a></div></td>;
+        return <td key={key}><div className={styles.tableFact}><strong>{fact.value[locale]}</strong><span>{fact.note[locale]}</span></div></td>;
           })}
         </tr>)}</tbody>
       </table>
     </div>
-    <p className={styles.smallNote}>{t("ارقام، برآورد عمومی برای دانشجوی بین‌المللی‌اند و هزینه واقعی به شهر و شرایط فردی بستگی دارد. اجازه کار و اقامت پس از تحصیل مشروط به احراز شرایط است و به معنی اقامت دائم نیست. بررسی منابع: ۷ اکتبر ۲۰۲۶.", "Figures are general international-student estimates; actual costs depend on the city and individual circumstances. Work and post-study permits require eligibility and do not imply permanent residence. Sources reviewed: 7 October 2026.")}<time dateTime={countryFactsReviewedAt} className={styles.srOnly}>{countryFactsReviewedAt}</time></p>
+    <p className={styles.smallNote}>{t("ارقام، برآورد عمومی برای دانشجوی بین‌المللی‌اند و هزینه واقعی به شهر و شرایط فردی بستگی دارد. اجازه کار و اقامت پس از تحصیل مشروط به احراز شرایط است و به معنی اقامت دائم نیست.", "Figures are general international-student estimates; actual costs depend on the city and individual circumstances. Work and post-study permits require eligibility and do not imply permanent residence.")}</p>
   </div>;
 }

@@ -43,13 +43,10 @@
 .comparisonTable tbody tr:last-child th, .comparisonTable tbody tr:last-child td { border-bottom: 0; }
 .tableCountry { display: flex; align-items: center; gap: 10px; color: var(--navy); font-size: 16px; line-height: 1.8; }
 .tableCountry img { flex: none; }
-.tableCountry small { display: block; color: var(--muted); font-size: 12px; font-weight: 400; }
 .tableCountry:hover { text-decoration: underline; text-underline-offset: 4px; }
 .tableFact { display: flex; flex-direction: column; gap: 7px; }
 .tableFact strong { color: var(--ink); font-size: 14px; line-height: 1.8; }
 .tableFact > span { color: var(--muted); font-size: 12px; line-height: 1.9; }
-.tableFact a { align-self: flex-start; color: var(--navy); font-size: 11px; text-underline-offset: 3px; }
-.tableFact a:hover { text-decoration: underline; }
 .page .smallNote { margin-top: 14px; font-size: 13px; line-height: 1.9; }
 .resourceLinks { display: flex; flex-wrap: wrap; gap: 12px 24px; margin-block: 18px 24px; color: var(--navy); font-size: 14px; }
 .resourceLinks a:hover { text-decoration: underline; }
