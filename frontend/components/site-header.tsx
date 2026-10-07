@@ -73,7 +73,12 @@ export function SiteHeader({ locale }: { locale: Locale }) {
     </Link>
     <nav className="main-nav" aria-label={locale === "fa" ? "ناوبری اصلی" : "Main navigation"}>{links(true)}</nav>
     <div className="header-actions">
-      <Link className="locale-link" href={alternatePath || `/${alternateLocale}`} scroll={false} onNavigate={() => { pendingLocaleScroll = captureLocaleScroll(alternatePath || `/${alternateLocale}`); }} lang={alternateLocale} hrefLang={alternateLocale} aria-label={locale === "fa" ? "English" : "فارسی"}>{alternateLocale.toUpperCase()}</Link>
+      <div className="language-switch" role="group" aria-label={locale === "fa" ? "انتخاب زبان سایت" : "Website language"} dir="ltr">
+        <svg className="language-switch__icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6"><circle cx="12" cy="12" r="9" /><ellipse cx="12" cy="12" rx="4" ry="9" /><path d="M3 12h18" /></svg>
+        {(["fa", "en"] as const).map(language => language === locale
+          ? <span key={language} className="language-switch__active" lang={language} aria-current="true">{language === "fa" ? "فارسی" : "English"}</span>
+          : <Link key={language} className="locale-link" href={alternatePath || `/${alternateLocale}`} scroll={false} onNavigate={() => { pendingLocaleScroll = captureLocaleScroll(alternatePath || `/${alternateLocale}`); }} lang={language} hrefLang={language} aria-label={language === "fa" ? "تغییر زبان به فارسی" : "Switch language to English"}>{language === "fa" ? "فارسی" : "English"}</Link>)}
+      </div>
       <ButtonLink size="sm" href={consultationPath}>{copy.consultation}</ButtonLink>
       <button className="mobile-menu-toggle" type="button" aria-label={locale === "fa" ? "باز کردن منو" : "Toggle menu"} aria-controls="mobile-navigation" aria-expanded={open} onClick={() => setOpen(!open)}><span aria-hidden="true">{open ? "×" : "☰"}</span></button>
     </div>
