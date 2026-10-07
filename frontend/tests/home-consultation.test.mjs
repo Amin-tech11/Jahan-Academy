@@ -6,7 +6,7 @@ import vm from "node:vm";
 const require = createRequire(import.meta.url);
 const ts = require("typescript");
 const source = readFileSync(new URL("../components/home-consultation.tsx", import.meta.url), "utf8");
-function setup(mobile, fail = false, sourcePageUrl) {
+function setup(mobile, fail = false, sourcePage) {
   const calls = [];
   const ref = { current: null };
   const module = { exports: {} };
@@ -18,12 +18,14 @@ function setup(mobile, fail = false, sourcePageUrl) {
       if (name === "react") return { useId: () => "form", useRef: () => ref, useState: (value) => [value, () => {}] };
       if (name === "react/jsx-runtime") return { jsx: (type, props) => ({ type, props }), jsxs: (type, props) => ({ type, props }) };
       if (name === "next/link") return { default: () => null };
+      if (name === "./consultation-success") return { ConsultationSuccess: () => null };
+      if (name === "./consultation-form-heading") return { ConsultationFormHeading: () => null };
       if (name === "@/lib/consultation") return { normalizeMobile: (value) => value === "09120000000" ? "+989120000000" : null };
       if (name === "@/lib/api-client") return { ApiError, apiRequest: async (path, options) => { calls.push({ path, options }); if (fail) throw new Error("network"); return { data: { reference: "R1" } }; } };
       throw new Error(name);
     },
   });
-  const form = module.exports.HomeConsultation({ locale: "en", sourcePageUrl });
+  const form = module.exports.HomeConsultation({ locale: "en", sourcePage });
   return { calls, submit: () => form.props.onSubmit({ preventDefault() {}, currentTarget: {} }), form };
 }
 test("invalid mobile prevents consultation submission", async () => {
@@ -31,10 +33,11 @@ test("invalid mobile prevents consultation submission", async () => {
   await app.submit();
   assert.equal(app.calls.length, 0);
 });
-test("about consultation records its own page as the request source", async () => {
-  const app = setup("09120000000", false, "/en/about#about-consultation");
+
+test("university consultation records its own source page", async () => {
+  const app = setup("09120000000", false, "/en/universities#university-consultation");
   await app.submit();
-  assert.equal(app.calls[0].options.body.source.pageUrl, "/en/about#about-consultation");
+  assert.equal(app.calls[0].options.body.source.pageUrl, "/en/universities#university-consultation");
 });
 test("home form sends normalized contact details, consents and preferred time with stable retry key", async () => {
   const app = setup("09120000000", true);
@@ -52,4 +55,10 @@ test("home form sends normalized contact details, consents and preferred time wi
   const consents = app.form.props.children.filter((child) => child?.type === "label");
   assert.equal(consents.length, 2);
   assert.equal(consents.every((label) => label.props.children[0].props.required), true);
+});
+
+test("about consultation records its own source page", async () => {
+  const app = setup("09120000000", false, "/en/about#about-consultation");
+  await app.submit();
+  assert.equal(app.calls[0].options.body.source.pageUrl, "/en/about#about-consultation");
 });

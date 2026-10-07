@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { HomeHeroChat } from "@/components/home-hero-chat";
 import { HomeMotion } from "@/components/home-motion";
 import { HomeConsultation } from "@/components/home-consultation";
 import { HomeFaq } from "@/components/home-faq";
@@ -7,7 +8,7 @@ import { HomeJourneyProgress } from "@/components/home-journey-progress";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
-import { ConsultationButton, localPath, SiteShell } from "@/components/site-shell";
+import { localPath, SiteShell } from "@/components/site-shell";
 import { brandContent } from "@/lib/brand-content";
 import { getHomeContent } from "@/lib/home-content";
 import { HomeUniversityShowcase } from "@/components/home-university-showcase";
@@ -59,6 +60,13 @@ function ServiceGlyph({ id }: { id: (typeof homeServices)[number]["id"] }) {
   return <svg width="58" height="58" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[id]}</svg>;
 }
 
+function TrustGlyph({ number }: { number: string }) {
+  return <svg className="home-trust__icon" width="52" height="52" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    {Number(number) === 1 ? <><path d="M16 3 26 7v8c0 6-4.5 10.5-10 14C10.5 25.5 6 21 6 15V7l10-4Z" /><path d="m11.5 15.5 3 3 6-6" /></>
+      : Number(number) === 2 ? <path d="M16 27 5 16C-3 7 8-1 16 8 24-1 35 7 27 16L16 27Z" />
+      : <><circle cx="16" cy="9" r="4" /><circle cx="6" cy="12" r="2.5" /><circle cx="26" cy="12" r="2.5" /><path d="M9 26v-3a7 7 0 0 1 14 0v3a22 22 0 0 1-14 0ZM9 17a5 5 0 0 0-7 4v2h4M23 17a5 5 0 0 1 7 4v2h-4" /></>}
+  </svg>;
+}
 export async function HomePage({ locale }: { locale: Locale }) {
   const copy = siteCopy[locale];
   const content = getHomeContent(locale);
@@ -66,9 +74,10 @@ export async function HomePage({ locale }: { locale: Locale }) {
   const visibleArticles = [...articles].sort((a, b) => b.date.localeCompare(a.date));
 
   return <SiteShell locale={locale}><HomeMotion>
-    <div className={`home-hero home-hero--${locale}`} aria-hidden="true">
+    <div className={`home-hero home-hero--${locale}`}>
       <Image src="/home-hero-campus-v2.png" alt="" fill sizes="100vw" preload className="home-hero__image" />
-      <div className="home-hero__shade" />
+      <div className="home-hero__shade" aria-hidden="true" />
+      <HomeHeroChat locale={locale} />
     </div>
 
     <section className="home-start shell" aria-label={locale === "fa" ? "شروع مسیر با جهان آکادمی" : "Start your journey with Jahan Academy"}>
@@ -112,11 +121,25 @@ export async function HomePage({ locale }: { locale: Locale }) {
 
     <section className="home-section home-trust" aria-labelledby="home-trust-title"><div className="shell home-trust__inner">
       <div className="home-trust__header">
-        <div className="home-trust__intro"><h2 id="home-trust-title">{brand.whyTitle}</h2><p>{brand.whyText}</p></div>
-        <ConsultationButton locale={locale} source="home-trust" />
+        <div className="home-trust__intro" dir={locale === "fa" ? "rtl" : "ltr"}>
+          <h2 id="home-trust-title">{brand.whyTitle}</h2>
+          <p className="home-trust__subtitle">{content.trustSubtitle}</p>
+          <p className="home-trust__description">{content.trustText}</p>
+          <Link className="home-trust__cta" href={localPath(locale, "/free-consultation?source=home-trust")}>
+            {content.trustCta}<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M19 12H5m6-6-6 6 6 6" /></svg>
+          </Link>
+        </div>
+        <div className="home-trust__media">
+          <Image src="/home-trust-consultation.png" alt={locale === "fa" ? "گفت‌وگوی مشاور با دو متقاضی درباره مسیر تحصیلی" : "An advisor discussing study plans with two applicants"} fill sizes="(max-width: 760px) 100vw, 50vw" />
+          <div className="home-trust__caption" dir={locale === "fa" ? "rtl" : "ltr"}>
+            <p>{content.trustImageCaption}</p>
+            {locale === "fa" && <p className="home-trust__caption-en" lang="en" dir="ltr">A Brighter<br />Tomorrow<br />Together</p>}
+          </div>
+        </div>
       </div>
       <ul className="home-trust__values">{content.trustValues.map((value) => <li className="home-trust__value" key={value.number}>
-        <span className="home-trust__number" aria-hidden="true">{value.number}</span><h3>{value.title}</h3><p>{value.text}</p>
+        <span className="home-trust__number" aria-hidden="true">{Number(value.number)}</span>
+        <TrustGlyph number={value.number} /><h3>{value.title}</h3><p>{value.text}</p>
       </li>)}</ul>
     </div></section>
 

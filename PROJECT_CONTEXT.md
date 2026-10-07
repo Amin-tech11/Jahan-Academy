@@ -938,6 +938,7 @@ required CI gate for the current feature is green.
 - [x] Reference Data Management implemented for countries, cities, academic levels, fields of study, intakes, and currencies: bilingual validation, public localized reads, protected admin CRUD/archive, relation validation, search/filter/pagination, seed data, RBAC permissions, audit logging, ETag/If-Match concurrency control, reversible migration `009_reference_data`, and automated coverage.
 - [x] Public Consultation Request Submission implemented at `POST /api/v1/consultation-requests`: Iranian/international mobile normalization, mandatory versioned privacy/contact consent evidence, 24-hour atomic duplicate prevention, non-sequential tracking codes, optional idempotency replay, Redis rate limiting with safe fail-open behavior, source/reference validation, transactional lead/status/outbox/sync creation, reversible migration `010_consultation_submission`, and end-to-end PostgreSQL/Redis coverage.
 - [x] Lead Management implemented under `/api/v1/admin/leads`: permission-scoped list/search/filter/pagination, assigned-only Consultant visibility enforced in SQL, detail views, validated partial edits, ETag/If-Match concurrency control, reasoned Archive without permanent deletion, localized country and Noura sync state, PII-safe audit evidence, role-permission grants, reversible migration `011_lead_management`, and end-to-end coverage.
+- **Approved admin search refinement (2026-10-05):** consultation search lets staff choose tracking code, full name, or telephone and filters only the chosen column before pagination. The API accepts `searchField=reference|fullName|mobile`; existing access scopes remain enforced. Formatted telephone numbers and Persian/Arabic digits are supported.
 - [x] Lead Assignment & Status Workflow implemented: consultant availability validation, initial assignment and transfer with retained timelines, `New` through terminal `Closed` transition matrix, assigned-only Consultant updates, combined assignment/status history API, optimistic concurrency, PII-safe audit events, canonical permissions, reversible migration `012_lead_workflow`, and end-to-end coverage.
 - [x] Application repository/scaffold implemented.
 - [x] Database schema and migrations implemented.
@@ -974,7 +975,23 @@ required CI gate for the current feature is green.
 | RISK-010 | Numeric KPI targets are not established. | Capture baseline operational metrics after launch, then approve targets in this document. |
 | RISK-011 | The exact identity-verification requirement for public applicants is undecided. | Keep verification outside MVP; decide before Application submission and document which documents/assurance level are required. |
 
+## 17.1 Approved admin section access — 2026-10-04
+
+The owner approved per-user admin section access, enforced by the API and persisted in PostgreSQL. This supersedes the consultation-only navigation restriction for super administrators and the broad default content-editor navigation.
+
+- Global super administrators see every implemented admin section, including staff administration, access management and audit logs. These three sections cannot be delegated; full super-admin access cannot be removed through section settings.
+- Other global staff accounts default to the consultation inbox only. A super administrator can replace their enabled sections individually, including removing all sections. Ordinary public accounts receive no admin section access.
+- Section access is checked on each protected API request independently of shared permission names. Granting universities does not also grant programs; granting one reference-data or content section does not expose neighboring sections.
+- Existing consultation data scope remains authoritative: consultants see only assigned leads; support staff retain their existing all-lead operations when the leads section is enabled.
+- Changes require the current staff version, lock the account row, increment that version and write an audit record. Existing sessions receive grants/revocations on their next request; the menu refreshes within ten seconds or on focus.
+
 ## 18. Pending Tasks
+
+Admin date filters approved on 2026-10-04: the consultation inbox includes «از تاریخ» and «تا تاریخ» with switchable Persian/Gregorian day, month and year selection. Filter stored creation timestamps with inclusive whole-day boundaries in Asia/Tehran, using the existing from/to API. Prevent inverted ranges, reset pagination on date changes and clear dates with Clear filters.
+
+Admin table presentation approved on 2026-10-04: consultation requests use fourteen right-to-left columns in this order: tracking code, full name, phone, email, age, occupation, gender, education, marital status, investment budget, English proficiency, request creation date, request type, status. The tracking code opens request details. Missing answers remain empty (shown as an em dash); existing submitted assessment answers must be displayed without inference.
+
+Admin table refinement approved on 2026-10-05: consultation column headers are centered, white on the site's navy palette, with a filter control beside every heading. Rows have alternating backgrounds. Column filters offer searchable, multiple-value selections and combine with existing search, status, and date filters before pagination. Filter options and Excel export use the same permission-scoped API, fetching all matching pages only when needed. The `.xlsx` export includes all filtered records, preserves the fourteen-column order, formatted telephone strings and localized values, and includes Excel auto-filters, a frozen header and alternating row fills. A failed or changing multi-page read must not download a partial file. No schema or access-policy change is required.
 
 ### 18.1 Product and Content Inputs
 

@@ -6,6 +6,7 @@ from uuid import UUID
 from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator, model_validator
 
 from app.modules.identity.domain import StaffRoleCode
+from app.modules.identity.panel_access import DELEGABLE_SECTIONS
 
 
 def _to_camel(value: str) -> str:
@@ -66,6 +67,27 @@ class UserView(ApiModel):
 
 class UserEnvelope(ApiModel):
     data: UserView
+
+
+class PanelAccessUpdate(ApiModel):
+    sections: list[str] = Field(max_length=len(DELEGABLE_SECTIONS))
+
+    @field_validator("sections")
+    @classmethod
+    def validate_sections(cls, value: list[str]) -> list[str]:
+        if len(value) != len(set(value)) or not set(value) <= DELEGABLE_SECTIONS:
+            raise ValueError("Unknown, duplicate or non-delegable panel section")
+        return value
+
+
+class PanelAccessView(ApiModel):
+    sections: list[str]
+    is_super_admin: bool
+    version: int | None = None
+
+
+class PanelAccessEnvelope(ApiModel):
+    data: PanelAccessView
 
 
 class RegistrationPending(ApiModel):

@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import base64
 import hashlib
 import hmac
 import json
@@ -93,11 +92,22 @@ class ConsultationService:
             await self._repository.session.commit()
             return SubmissionResult(receipt=receipt, status_code=200)
 
-        reference = self._new_reference()
         try:
-            lead = await self._repository.create_lead(
-                self._lead_values(payload, normalized_mobile, deduplication_key, reference)
-            )
+            for _ in range(5):
+                lead = await self._repository.create_lead(
+                    self._lead_values(
+                        payload, normalized_mobile, deduplication_key, self._new_reference()
+                    )
+                )
+                if lead is not None:
+                    break
+            else:
+                await self._repository.session.rollback()
+                raise ApplicationError(
+                    code="CONSULTATION_REFERENCE_UNAVAILABLE",
+                    message="A tracking code could not be allocated. Please try again.",
+                    status_code=503,
+                )
             evidence = {"ipHash": self._hmac(client_ip), "pageUrl": payload.source.page_url}
             await self._repository.record_consent(
                 lead_id=lead.id,
@@ -264,7 +274,8 @@ class ConsultationService:
 
     @staticmethod
     def _new_reference() -> str:
-        token = base64.b32encode(secrets.token_bytes(10)).decode().rstrip("=")
+        # Eight random characters (40 bits), without ambiguous 0/O or 1/I.
+        token = "".join(secrets.choice("ABCDEFGHJKLMNPQRSTUVWXYZ23456789") for _ in range(8))
         return f"JA-{token}"
 
     @staticmethod

@@ -227,6 +227,21 @@ def test_assignment_transfer_status_workflow_and_history() -> None:
             )
             assert closed_assignment.status_code == 400
             assert closed_assignment.json()["error"]["code"] == "INVALID_STATE_TRANSITION"
+
+            reopened = client.post(
+                f"/api/v1/admin/leads/{lead_id}/status-transitions",
+                headers={"If-Match": f'"{version}"'},
+                json={"toStatus": "contacted", "reason": "Reopened for follow-up"},
+            )
+            assert reopened.status_code == 200, reopened.text
+            assert reopened.json()["data"]["status"] == "contacted"
+            assert reopened.headers["etag"] == f'"{version + 1}"'
+
+            reopened_history = client.get(f"/api/v1/admin/leads/{lead_id}/history")
+            assert reopened_history.status_code == 200, reopened_history.text
+            latest_transition = reopened_history.json()["data"]["statuses"][0]
+            assert latest_transition["oldStatus"] == "closed"
+            assert latest_transition["newStatus"] == "contacted"
     finally:
         app.dependency_overrides.clear()
         _cleanup(user_ids, reference)

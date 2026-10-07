@@ -2,30 +2,72 @@
 
 import { useEffect, useRef, type ReactNode } from "react";
 
+/** Find the point at a viewport Y coordinate on the actual rendered SVG curve. */
+export function journeyPoint(path: SVGPathElement, viewportY: number) {
+  const matrix = path.getScreenCTM();
+  if (!matrix) return null;
+  const length = path.getTotalLength();
+  const pointAt = (distance: number) => {
+    const point = path.getPointAtLength(distance);
+    return { x: matrix.a * point.x + matrix.c * point.y + matrix.e, y: matrix.b * point.x + matrix.d * point.y + matrix.f };
+  };
+  let low = 0;
+  let high = length;
+  // All journey segments run monotonically downwards, including the mobile line.
+  for (let i = 0; i < 18; i++) {
+    const middle = (low + high) / 2;
+    if (pointAt(middle).y < viewportY) low = middle;
+    else high = middle;
+  }
+  return pointAt((low + high) / 2);
+}
+
 export function HomeJourneyProgress({ children }: { children: ReactNode }) {
   const listRef = useRef<HTMLOListElement>(null);
+  const dotRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
-    const steps = Array.from(listRef.current?.querySelectorAll<HTMLElement>(".home-process__step") ?? []);
+    const list = listRef.current;
+    const dot = dotRef.current;
+    if (!list || !dot) return;
+    const steps = Array.from(list.querySelectorAll<HTMLElement>(".home-process__step")).map((step) => ({
+      step,
+      rail: step.querySelector<HTMLElement>(".home-process__rail"),
+      path: step.querySelector<SVGPathElement>(".home-process__rail path"),
+      marker: step.querySelector<HTMLElement>(".home-process__number"),
+    }));
     let frame: number | null = null;
     const update = () => {
       frame = null;
       const focusLine = window.innerHeight * 0.5;
-      let activeStep: HTMLElement | undefined;
-      let closestDistance = Infinity;
-      for (const step of steps) {
-        const copy = step.querySelector<HTMLElement>(".home-process__copy");
-        if (!copy) continue;
-        const bounds = copy.getBoundingClientRect();
-        if (bounds.top > window.innerHeight * 0.65 || bounds.bottom < window.innerHeight * 0.15) continue;
-        const distance = Math.abs((bounds.top + bounds.bottom) / 2 - focusLine);
-        if (distance < closestDistance) {
-          closestDistance = distance;
-          activeStep = step;
+      const segments = steps.flatMap((entry) => entry.rail && entry.path && entry.marker
+        ? [{ ...entry, bounds: entry.rail.getBoundingClientRect() }] : []);
+      if (!segments.length) return;
+      const first = segments[0].bounds.top;
+      const last = segments[segments.length - 1].bounds.bottom;
+      const viewportY = Math.max(first, Math.min(last, focusLine));
+      const segment = segments.find((entry) => viewportY <= entry.bounds.bottom) ?? segments[segments.length - 1];
+      const point = journeyPoint(segment.path!, viewportY);
+      if (!point) return;
+      const origin = list.parentElement!.getBoundingClientRect();
+      dot.style.transform = `translate3d(${point.x - origin.left}px, ${point.y - origin.top}px, 0) translate(-50%, -50%)`;
+      dot.dataset.ready = "true";
+
+      let active: HTMLElement | undefined;
+      let nearest = Infinity;
+      for (const entry of segments) {
+        const marker = entry.marker!.getBoundingClientRect();
+        const distance = Math.abs(point.y - (marker.top + marker.bottom) / 2);
+        // Activate only the number the moving point is currently reaching.
+        if (focusLine >= first && focusLine <= last && distance <= marker.height / 2 + 8 && distance < nearest) {
+          active = entry.step;
+          nearest = distance;
         }
       }
-      for (const step of steps) {
-        if (step === activeStep) step.dataset.active = "true";
+      // Hide the entire dot while it passes through the numbered circle.
+      dot.style.opacity = active ? "0" : "1";
+      for (const { step } of steps) {
+        if (step === active) step.dataset.active = "true";
         else delete step.dataset.active;
       }
     };
@@ -35,12 +77,18 @@ export function HomeJourneyProgress({ children }: { children: ReactNode }) {
     update();
     window.addEventListener("scroll", schedule, { passive: true });
     window.addEventListener("resize", schedule);
+    const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(schedule);
+    observer?.observe(list);
     return () => {
       window.removeEventListener("scroll", schedule);
       window.removeEventListener("resize", schedule);
+      observer?.disconnect();
       if (frame !== null) window.cancelAnimationFrame(frame);
     };
   }, []);
 
-  return <ol ref={listRef} className="home-process__steps">{children}</ol>;
+  return <div className="home-process__timeline">
+    <ol ref={listRef} className="home-process__steps">{children}</ol>
+    <span ref={dotRef} className="home-process__dot" aria-hidden="true" />
+  </div>;
 }

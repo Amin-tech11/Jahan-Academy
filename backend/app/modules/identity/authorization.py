@@ -9,6 +9,8 @@ from uuid import UUID
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.modules.identity.domain import STAFF_ROLE_CODES
+from app.modules.identity.panel_access import ALL_SECTIONS, DEFAULT_SECTIONS, SECTION_PERMISSIONS
 from app.shared.exceptions import ApplicationError
 
 PERMISSION_CODE_PATTERN = re.compile(r"^[a-z][a-z0-9_.:-]{1,99}$")
@@ -42,17 +44,27 @@ class RoleGrant:
 class AuthorizationContext:
     user_id: UUID
     grants: tuple[RoleGrant, ...]
+    panel_sections: frozenset[str] | None = None
+
+    @property
+    def is_super_admin(self) -> bool:
+        return any(g.role == "super_admin" and g.scope_type == "global" for g in self.grants)
 
     @property
     def roles(self) -> frozenset[str]:
         return frozenset(grant.role for grant in self.grants)
 
     def permissions_for(self, scope: ResourceScope | None = None) -> frozenset[str]:
-        return frozenset(
+        permissions = frozenset(
             permission
             for grant in self.grants
             if grant.applies_to(scope)
             for permission in grant.permissions
+        )
+        return permissions | frozenset(
+            permission
+            for section in (self.panel_sections or ())
+            for permission in SECTION_PERMISSIONS.get(section, ())
         )
 
     def allows(
@@ -119,7 +131,18 @@ class AuthorizationRepository:
             )
             for row in result
         )
-        return AuthorizationContext(user_id=user_id, grants=grants)
+        context = AuthorizationContext(user_id=user_id, grants=grants)
+        if context.is_super_admin:
+            sections = ALL_SECTIONS
+        elif any(g.role in STAFF_ROLE_CODES and g.scope_type == "global" for g in grants):
+            saved = await self._session.scalar(
+                text("SELECT sections FROM staff_panel_access WHERE user_id = :id"),
+                {"id": user_id},
+            )
+            sections = frozenset(saved) if saved is not None else DEFAULT_SECTIONS
+        else:
+            sections = frozenset()
+        return AuthorizationContext(user_id=user_id, grants=grants, panel_sections=sections)
 
 
 class AuthorizationService:

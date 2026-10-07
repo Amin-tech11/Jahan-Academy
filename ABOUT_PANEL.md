@@ -53,3 +53,10 @@ Root-preview routing and shared panel configuration are pending the explicit app
 - Data/API/permissions/migrations: not applicable; no new collection or backend changes. Security review found no raw HTML or new external requests. All changes remain within the about panel.
 - Validation: typecheck and production build passed; 34 tests passed, including two new navigation behavior tests. HTTP checks passed for Persian and English on port 4100: complete supplied paragraphs, five navigation targets, one H1, and the actual reference colors in the delivered stylesheet.
 - Browser refresh and visual QA remain unavailable due to the previously reported browser-policy block. Push/PR/CI retain the earlier pending destination authorization.
+
+## October 7, 2026: develop integration
+
+- The user explicitly authorized pushing the final about panel, opening its PR, and merging after all applicable CI/CD checks pass.
+- Resolved develop conflicts by preserving the final about design and reusing develop's consultation heading, success receipt, and sourcePage attribution interface. Existing university source tests remain; about source coverage is added.
+- No API, permission, or database design changes are needed for this panel presentation update. Backend regression coverage runs in CI.
+- Final integration validation: 163 frontend tests passed, route types regenerated, typecheck and production build passed; localhost:4100/fa/about returned HTTP 200 with the final story title.

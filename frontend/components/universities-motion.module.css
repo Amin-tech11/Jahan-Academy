@@ -1,0 +1,7 @@
+/* Server-rendered content stays visible until motion is progressively enabled. */
+@media (prefers-reduced-motion: no-preference) {
+  .page [data-home-pending="true"] { opacity: 0; }
+}
+@media print {
+  .page [data-home-pending] { opacity: 1; }
+}
