@@ -309,7 +309,7 @@
 
 .home-consultation__form > h3, .home-consultation__form > p:not([role="alert"]) { text-align: center; }
 
-.home-service-card { cursor: pointer; text-decoration: none; transition: border-color .2s ease, box-shadow .2s ease; }
+.home-service-card { cursor: pointer; text-decoration: none; transition: border-color .25s ease, box-shadow .25s ease; }
 .home-service-card:hover, .home-service-card:focus-visible { border-color: var(--color-brand-900); box-shadow: 0 0 0 1px var(--color-brand-900); }
 .home-service-card:focus-visible { outline: 2px solid var(--color-brand-900); outline-offset: 4px; }
 @media (prefers-reduced-motion: reduce) { .home-service-card { transition: none; } }

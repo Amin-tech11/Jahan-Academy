@@ -100,7 +100,8 @@
 .sectionHeader > p { max-width: 700px; margin: 16px auto 0; font-size: 16px; }
 .valuesGrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
 .valueCard { background: white; border: 1px solid var(--about-border); border-radius: 14px; padding: 30px 26px; text-align: center; }
-.valueCard:hover { border-color: var(--about-silver); }
+.valueCard { transition: border-color .25s ease, box-shadow .25s ease; }
+.valueCard:hover, .valueCard:focus-within { border-color: #123b78; box-shadow: 0 0 0 1px #123b78; }
 .valueTop { display: flex; justify-content: center; margin-bottom: 20px; }
 .icon { display: grid; place-items: center; width: 56px; height: 56px; border: 1px solid var(--about-border); border-radius: 16px; background: var(--about-page); color: var(--about-navy); transition: background .2s, border-color .2s; }
 .valueCard:hover .icon { background: white; border-color: var(--about-silver); }
@@ -156,3 +157,5 @@
   .page { padding-bottom: 32px; }
 }
 @media (prefers-reduced-motion: reduce) { .page * { transition: none !important; scroll-behavior: auto !important; } }
+
+@media (prefers-reduced-motion: reduce) { .valueCard { transition: none; } }
