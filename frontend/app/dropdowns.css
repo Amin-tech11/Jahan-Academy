@@ -1,0 +1,24 @@
+/* Shared single-choice dropdown arrow. Header navigation keeps its own icons. */
+html body select:not(header select):not([multiple]):not([size]) {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("/icons/dropdown-arrow.svg");
+  background-repeat: no-repeat;
+  background-size: 10px 6px;
+  background-position: left 1rem center;
+  padding-left: 2.75rem;
+}
+
+html body select:not(header select):not([multiple]):not([size]):dir(ltr) {
+  background-position: right 1rem center;
+  padding-left: 1rem;
+  padding-right: 2.75rem;
+}
+
+@media (forced-colors: active) {
+  html body select:not(header select):not([multiple]):not([size]) {
+    appearance: auto;
+    -webkit-appearance: auto;
+    background-image: none;
+  }
+}

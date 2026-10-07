@@ -1,0 +1,351 @@
+.adm-sky-login {
+  --entry-navy: var(--adm-brand);
+  --entry-blue: var(--adm-brand);
+  min-height: 100svh;
+  background: #9bc3e4 url("/admin/login-sky.png") center/cover no-repeat;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 145px 30px 62px;
+  position: relative;
+  isolation: isolate;
+  color: var(--adm-ink);
+}
+.adm-sky-login::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, #caddeb28, #94bdec0c);
+  z-index: -1;
+}
+.adm-sky-wordmark {
+  position: absolute;
+  top: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+  font:
+    500 clamp(25px, 4.8vw, 78px)/1.3 Georgia,
+    serif;
+  letter-spacing: 0.09em;
+  color: #ffffffe0;
+  white-space: nowrap;
+  text-shadow: 0 2px 13px #ffffff88;
+  opacity: 0.85;
+  user-select: none;
+}
+.adm-entry-card {
+  width: min(1024px, 100%);
+  display: grid;
+  grid-template-columns: 1.04fr 1fr;
+  overflow: hidden;
+  border: 1px solid #ffffffd6;
+  border-radius: 24px;
+  box-shadow: 0 22px 75px #123b7829;
+  background: var(--adm-surface);
+}
+.adm-entry-brand {
+  background: linear-gradient(150deg, var(--adm-brand) 0%, var(--adm-brand-hover) 90%);
+  padding: 42px 46px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  position: relative;
+  color: #fff;
+  gap: 27px;
+  overflow: hidden;
+}
+.adm-entry-brand:after {
+  content: "";
+  position: absolute;
+  left: -130px;
+  bottom: -190px;
+  border: 1px solid #ffffff0c;
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 70px #ffffff03;
+  pointer-events: none;
+}
+.adm-entry-overline {
+  color: #e8eff8;
+  font-size: 11px;
+  font-weight: 600;
+}
+.adm-entry-logo {
+  background: #fff;
+  border-radius: 17px;
+  width: 220px;
+  height: 157px;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 8px 24px #123b7812;
+}
+.adm-entry-logo img {
+  width: 176px;
+  height: 120px;
+  object-fit: contain;
+}
+.adm-entry-brand-copy h1 {
+  font-size: 25px;
+  font-weight: 800;
+  line-height: 1.8;
+  margin-bottom: 10px;
+}
+.adm-entry-brand-copy p {
+  color: #e8eff8;
+  font-size: 13px;
+  line-height: 2;
+}
+.adm-entry-brand-footer {
+  display: flex;
+  gap: 7px;
+  align-items: center;
+  font-size: 10px;
+  color: #d6dce4;
+  margin-top: 3px;
+}
+.adm-entry-brand-footer > span {
+  height: 5px;
+  width: 5px;
+  background: var(--adm-silver);
+  border-radius: 50%;
+}
+.adm-entry-form {
+  padding: 41px 45px 27px;
+  background: var(--adm-surface);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.adm-entry-kicker {
+  font-size: 10px;
+  color: var(--adm-muted);
+  display: block;
+  margin-bottom: 6px;
+}
+.adm-entry-heading h2 {
+  color: var(--adm-ink);
+  font-size: 25px;
+  font-weight: 800;
+}
+.adm-entry-heading p {
+  color: var(--adm-muted);
+  font-size: 12px;
+  margin-top: 8px;
+  line-height: 2;
+}
+.adm-entry-form form {
+  display: grid;
+  gap: 20px;
+  margin-top: 28px;
+}
+.adm-entry-form label {
+  color: var(--adm-ink);
+  font-size: 12px;
+  font-weight: 550;
+  gap: 8px;
+}
+.adm-entry-form label b {
+  font-size: 14px;
+  color: var(--adm-danger);
+  font-weight: 400;
+  margin-right: 3px;
+}
+.adm-entry-form input {
+  border-color: var(--adm-line);
+  border-radius: 11px;
+  min-height: 46px;
+  background: white;
+  box-shadow: 0 2px 3px #123b7805;
+  font-size: 14px;
+  color: var(--adm-ink);
+}
+.adm-entry-form input:focus-visible {
+  outline: 3px solid var(--adm-brand);
+  outline-offset: 2px;
+  border-color: var(--adm-brand);
+}
+.adm-password-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.adm-password-input {
+  position: relative;
+}
+.adm-password-input input {
+  padding-right: 46px;
+}
+.adm-password-input button {
+  position: absolute;
+  right: 5px;
+  top: 3px;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  color: var(--adm-muted);
+  padding: 9px;
+}
+.adm-password-input button:hover {
+  background: var(--adm-tint);
+}
+.adm-password-input svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.adm-entry-form .adm-entry-submit {
+  background: var(--entry-blue);
+  border: 1px solid var(--entry-blue);
+  color: white;
+  border-radius: 11px;
+  min-height: 48px;
+  font-size: 13px;
+  font-weight: 650;
+  box-shadow: 0 3px 6px #123b781a;
+}
+.adm-entry-form .adm-entry-submit:hover {
+  background: var(--adm-brand-hover);
+  border-color: var(--adm-brand-hover);
+}
+.adm-entry-links {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 13px;
+}
+.adm-entry-links button {
+  font-size: 10px;
+  color: var(--adm-brand);
+  border: 0;
+  background: transparent;
+  padding: 5px;
+}
+.adm-entry-links button:hover {
+  background: transparent;
+  color: var(--adm-brand);
+  text-decoration: underline;
+}
+.adm-entry-footnote {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-size: 10px;
+  color: var(--adm-muted) !important;
+  margin-top: 25px !important;
+}
+.adm-entry-footnote svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.adm-sky-footer {
+  font-size: 10px;
+  color: #f7fbff !important;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  letter-spacing: 0.02em;
+  margin-top: 25px !important;
+  text-shadow: 0 1px 5px #2a5c8860;
+}
+.adm-entry-form .adm-error,
+.adm-entry-form .adm-success {
+  font-size: 11px;
+  margin-bottom: 0;
+}
+@media (min-width: 1600px) {
+  .adm-sky-login {
+    padding-top: 170px;
+  }
+  .adm-entry-card {
+    width: 1024px;
+    min-height: 454px;
+  }
+}
+@media (max-width: 800px) {
+  .adm-sky-login {
+    padding: 110px 22px 32px;
+    justify-content: flex-start;
+    background-position: 70% center;
+  }
+  .adm-sky-wordmark {
+    top: 33px;
+    font-size: 31px;
+    letter-spacing: 0.06em;
+  }
+  .adm-entry-card {
+    max-width: 470px;
+    grid-template-columns: 1fr;
+    border-radius: 20px;
+  }
+  .adm-entry-brand {
+    padding: 25px 24px;
+    gap: 15px;
+  }
+  .adm-entry-overline,
+  .adm-entry-brand-footer {
+    display: none;
+  }
+  .adm-entry-logo {
+    width: 127px;
+    height: 81px;
+    border-radius: 12px;
+  }
+  .adm-entry-logo img {
+    width: 110px;
+    height: 70px;
+  }
+  .adm-entry-brand-copy h1 {
+    font-size: 19px;
+    margin: 0;
+  }
+  .adm-entry-brand-copy p {
+    font-size: 11px;
+    line-height: 1.9;
+    margin-top: 5px;
+  }
+  .adm-entry-brand-copy br {
+    display: none;
+  }
+  .adm-entry-form {
+    padding: 27px 26px;
+  }
+  .adm-entry-heading h2 {
+    font-size: 23px;
+  }
+  .adm-entry-form form {
+    margin-top: 24px;
+  }
+  .adm-entry-footnote {
+    margin-top: 22px !important;
+  }
+  .adm-sky-footer {
+    font-size: 9px;
+  }
+}
+@media (max-width: 380px) {
+  .adm-sky-login {
+    padding-inline: 13px;
+  }
+  .adm-entry-form {
+    padding-inline: 21px;
+  }
+  .adm-sky-wordmark {
+    font-size: 27px;
+  }
+}

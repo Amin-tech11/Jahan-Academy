@@ -23,4 +23,3 @@ Reviewed: 2026-10-04. Scope: introductory admission and student visa/residence g
 - Dutch applicants are directed to the institution-led process.
 - Both language variants retain the same scope and qualifications.
 - Existing local destination photos are reused; this change introduces no runtime external requests.
-

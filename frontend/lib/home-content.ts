@@ -12,6 +12,10 @@ export type HomeCopy = {
   universityEyebrow: string;
   universityText: string;
   universityNote: string;
+  trustSubtitle: string;
+  trustText: string;
+  trustCta: string;
+  trustImageCaption: string;
   trustValues: Array<{ number: string; title: string; text: string }>;
   processTitle: string;
   processSteps: Array<{ number: string; title: string; text: string }>;
@@ -45,10 +49,14 @@ export const homeContent: Localized<HomeCopy> = {
     universityEyebrow: "UNIVERSITY SHOWCASES / دانشگاه‌ها",
     universityText: "معرفی‌های کوتاه و عمومی برای آشنایی اولیه با چند دانشگاه؛ بررسی گزینهٔ مناسب در مشاوره انجام می‌شود.",
     universityNote: "نمایش این دانشگاه‌ها به معنی همکاری یا تضمین پذیرش نیست.",
+    trustSubtitle: "با اطمینان، در مسیر یک آینده بین‌المللی",
+    trustText: "ما در جهان آکادمی، با تکیه بر تجربه، صداقت و شناخت عمیق از نظام آموزش بین‌المللی، در کنار شما هستیم تا بهترین مسیر را برای ادامه تحصیل پیدا کنید.",
+    trustCta: "دریافت مشاوره رایگان",
+    trustImageCaption: "آینده\nاز اینجا\nشروع می‌شود",
     trustValues: [
-      { number: "01", title: "شفافیت و صداقت", text: "گزینه‌ها و محدودیت‌ها را روشن و بدون وعدهٔ اضافه بیان می‌کنیم." },
-      { number: "02", title: "تخصص با نگاه انسانی", text: "هدف و شرایط هر فرد را می‌شنویم و پیشنهادها را بر پایهٔ بررسی دقیق شکل می‌دهیم." },
-      { number: "03", title: "همراهی در مسیر رشد", text: "کمک می‌کنیم قدم بعدی را در پیوند با مسیر یادگیری و آیندهٔ خود ببینید." },
+      { number: "01", title: "شفافیت و صداقت", text: "اطلاعات دقیق، مشاوره واقع‌گرایانه و احترام به تصمیم‌های شما، اصول همیشگی ماست." },
+      { number: "02", title: "تخصص با نگاه انسانی", text: "تیم مشاوران باتجربه ما، با درک شرایط شما، راهکارهای شخصی‌سازی‌شده ارائه می‌دهد." },
+      { number: "03", title: "همراهی در مسیر رشد", text: "تنها در مسیر اپلای نیستید؛ ما در تمام مراحل کنار شما خواهیم بود." },
     ],
     processTitle: "مسیر همراهی شما با جهان آکادمی",
     processSteps: [
@@ -94,10 +102,14 @@ export const homeContent: Localized<HomeCopy> = {
     universityEyebrow: "UNIVERSITY SHOWCASES",
     universityText: "Concise public introductions to selected universities. We discuss individual fit during consultation.",
     universityNote: "A university appearing here does not imply partnership or guarantee admission.",
+    trustSubtitle: "Move confidently toward an international future",
+    trustText: "At Jahan Academy, experience, honesty and a deep understanding of international education guide how we help you find the right path for your further studies.",
+    trustCta: "Get a free consultation",
+    trustImageCaption: "A Brighter\nTomorrow\nTogether",
     trustValues: [
-      { number: "01", title: "Honesty and clarity", text: "We explain options and constraints openly, without making excessive promises." },
-      { number: "02", title: "Expertise with a human view", text: "We listen to each person's goals and circumstances, then shape suggestions through careful review." },
-      { number: "03", title: "Support for growth", text: "We help you connect your next step with your learning path and future." },
+      { number: "01", title: "Honesty and clarity", text: "Accurate information, realistic advice and respect for your decisions are at the heart of our work." },
+      { number: "02", title: "Expertise with a human view", text: "Our experienced advisors understand your circumstances and offer guidance tailored to you." },
+      { number: "03", title: "Support for growth", text: "You are not alone in the application process. We are here to support you at every stage." },
     ],
     processTitle: "Your journey with Jahan Academy",
     processSteps: [

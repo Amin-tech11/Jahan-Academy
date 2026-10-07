@@ -26,6 +26,7 @@ function setup({ locale = "en", values = {}, fail = false, pending = false } = {
       if (name === "react/jsx-runtime") return { jsx: (type, props) => ({ type, props }), jsxs: (type, props) => ({ type, props }) };
       if (name === "next/link") return { default: () => null };
       if (name.endsWith(".module.css")) return { default: {} };
+      if (name === "./consultation-form-heading") return { ConsultationFormHeading: () => null };
       if (name === "@/lib/consultation") return { normalizeMobile };
       if (name === "@/lib/api-client") return { ApiError, apiRequest: async (path, options) => {
         calls.push({ path, options });
@@ -71,4 +72,3 @@ test("destination form prevents concurrent duplicate submissions", async () => {
   const app = setup({ pending: true }); const first = app.submit(); await app.submit();
   assert.equal(app.calls.length, 1); app.release(); await first;
 });
-

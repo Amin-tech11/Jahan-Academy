@@ -21,6 +21,72 @@ tags:
   - name: SEO
   - name: Reporting
 paths:
+  /users/me/panel-access:
+    get:
+      tags: [Staff Administration]
+      operationId: getOwnPanelAccess
+      x-phase: MVP
+      security: [{ StaffSession: [] }]
+      responses:
+        '200':
+          description: Effective enabled sections and global super-admin status, loaded on every request
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PanelAccessEnvelope' }
+        '401': { description: Authentication required }
+  /admin/staff/{staffId}/panel-access:
+    parameters:
+      - { name: staffId, in: path, required: true, schema: { type: string, format: uuid } }
+    get:
+      tags: [Staff Administration]
+      operationId: getStaffPanelAccess
+      x-phase: MVP
+      x-permissions: [role.manage]
+      security: [{ StaffSession: [] }]
+      responses:
+        '200':
+          description: Section selection and current staff version; global super-admin only
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PanelAccessEnvelope' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { description: Staff account not found }
+    put:
+      tags: [Staff Administration]
+      operationId: replaceStaffPanelAccess
+      x-phase: MVP
+      x-permissions: [role.manage]
+      security: [{ StaffSession: [] }]
+      parameters:
+        - { name: If-Match, in: header, required: true, schema: { type: string } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [sections]
+              properties:
+                sections:
+                  type: array
+                  uniqueItems: true
+                  maxItems: 16
+                  items:
+                    type: string
+                    enum: [dashboard, leads, universities, programs, articles, faqs, categories, tags, authors, media, countries, cities, academic-levels, fields-of-study, intakes, currencies]
+      responses:
+        '200':
+          description: Saved sections with incremented staff version and audit event
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PanelAccessEnvelope' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { description: Staff account not found }
+        '409': { description: Super-admin access cannot be changed }
+        '412': { description: Staff version changed; reload before saving }
+        '422': { $ref: '#/components/responses/ValidationError' }
+        '428': { description: If-Match required }
   /reporting/dashboard:
     get:
       tags: [Reporting]
@@ -671,6 +737,7 @@ paths:
       security: [{ StaffSession: [] }]
       parameters:
         - { name: q, in: query, schema: { type: string, minLength: 2, maxLength: 100 } }
+        - { name: searchField, in: query, description: 'Limits q to the selected column; omission preserves broad search.', schema: { type: string, enum: [reference, fullName, mobile] } }
         - { name: status, in: query, schema: { $ref: '#/components/schemas/LeadStatus' } }
         - { name: syncStatus, in: query, schema: { $ref: '#/components/schemas/SyncStatus' } }
         - { name: assigneeId, in: query, schema: { $ref: '#/components/schemas/Uuid' } }
@@ -1353,6 +1420,19 @@ components:
       description: Authoritative local persistence is unavailable
       content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   schemas:
+    PanelAccessEnvelope:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: object
+          required: [sections, isSuperAdmin]
+          properties:
+            sections:
+              type: array
+              items: { type: string }
+            isSuperAdmin: { type: boolean }
+            version: { type: [integer, 'null'], minimum: 1 }
     StaffRoleCode:
       type: string
       enum: [super_admin, support, consultant, content_editor]
@@ -1891,6 +1971,14 @@ components:
         version: { type: integer, minimum: 1 }
         createdAt: { type: string, format: date-time }
         updatedAt: { type: string, format: date-time }
+        age: { type: [integer, 'null'], minimum: 18, maximum: 100 }
+        gender: { type: [string, 'null'], enum: [female, male, non_binary, self_described, prefer_not_to_say, null] }
+        genderSelfDescription: { type: [string, 'null'], maxLength: 100 }
+        occupation: { type: [string, 'null'] }
+        maritalStatus: { type: [string, 'null'], enum: [single, married, divorced, widowed, prefer_not_to_say, null] }
+        investmentRangeCode: { type: [string, 'null'] }
+        investmentCurrency: { type: [string, 'null'], pattern: '^[A-Z]{3}$' }
+        message: { type: [string, 'null'] }
     LeadDetail:
       allOf:
         - $ref: '#/components/schemas/LeadSummary'
@@ -1898,14 +1986,6 @@ components:
           required: [mobileRaw, locale, duplicateCount, syncAttemptCount]
           properties:
             mobileRaw: { type: string }
-            age: { type: [integer, 'null'], minimum: 18, maximum: 100 }
-            gender: { type: [string, 'null'], enum: [female, male, non_binary, self_described, prefer_not_to_say, null] }
-            genderSelfDescription: { type: [string, 'null'], maxLength: 100 }
-            occupation: { type: [string, 'null'] }
-            maritalStatus: { type: [string, 'null'], enum: [single, married, divorced, widowed, prefer_not_to_say, null] }
-            investmentRangeCode: { type: [string, 'null'] }
-            investmentCurrency: { type: [string, 'null'], pattern: '^[A-Z]{3}$' }
-            message: { type: [string, 'null'] }
             locale: { type: string, enum: [fa, en] }
             sourceUrl: { type: [string, 'null'] }
             sourceUniversityId: { oneOf: [{ $ref: '#/components/schemas/Uuid' }, { type: 'null' }] }

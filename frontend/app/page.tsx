@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
 
 export default function RootPage() {
-  redirect("/fa");
+  redirect(process.env.JAHAN_PANEL === "destinationS" ? "/fa/countries" : "/fa");
 }

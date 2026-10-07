@@ -12,6 +12,7 @@ from app.modules.consultations.domain import (
     STATUSES_REQUIRING_ASSIGNEE,
     GenderCode,
     LeadArchiveFilter,
+    LeadSearchField,
     LeadSort,
     LeadStatus,
     SyncStatus,
@@ -61,6 +62,7 @@ class LeadService:
         created_to: datetime | None,
         archive: LeadArchiveFilter,
         sort: LeadSort,
+        search_field: LeadSearchField | None = None,
     ) -> LeadPage:
         assigned_scope = self._assigned_scope(actor)
         rows, total = await self._repository.list(
@@ -68,6 +70,7 @@ class LeadService:
             page=page,
             limit=limit,
             query=query,
+            search_field=search_field,
             status=status,
             sync_status=sync_status,
             assignee_id=assignee_id,
@@ -501,6 +504,14 @@ class LeadService:
             version=row["version"],
             created_at=row["created_at"],
             updated_at=row["updated_at"],
+            age=row.get("age"),
+            gender=row.get("gender"),
+            gender_self_description=row.get("gender_self_description"),
+            occupation=row.get("occupation"),
+            marital_status=row.get("marital_status"),
+            investment_range_code=row.get("investment_range_code"),
+            investment_currency=row.get("investment_currency"),
+            message=row.get("message"),
         )
 
     @classmethod
@@ -509,14 +520,6 @@ class LeadService:
         return LeadDetail(
             **summary.model_dump(),
             mobile_raw=row["mobile_raw"],
-            age=row["age"],
-            gender=row["gender"],
-            gender_self_description=row["gender_self_description"],
-            occupation=row["occupation"],
-            marital_status=row["marital_status"],
-            investment_range_code=row["investment_range_code"],
-            investment_currency=row["investment_currency"],
-            message=row["message"],
             locale=row["locale"],
             source_url=row["source_url"],
             source_university_id=row["source_university_id"],

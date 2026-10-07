@@ -335,7 +335,7 @@ Uploaded files are not usable until checksum, type, size and malware checks pass
 
 | ID | Method and endpoint | Request | Response | Status / errors | Permission |
 |---|---|---|---|---|---|
-| LEAD-01 | `GET /admin/leads` | `q,status,syncStatus,assigneeId,countryId,from,to,page,limit,sort` | Page of `LeadSummary` | `200`, `422` | Support/Super Admin see all; Consultant query is forcibly scoped to self |
+| LEAD-01 | `GET /admin/leads` | `q,searchField,status,syncStatus,assigneeId,countryId,from,to,page,limit,sort` | Page of `LeadSummary` | `200`, `422` | `searchField=reference\|fullName\|mobile` restricts q to the chosen column; omitted preserves broad search. Support/Super Admin see all; Consultant query is forcibly scoped to self |
 | LEAD-02 | `GET /admin/leads/{id}` | UUID | `LeadDetail` | `200`; `403`; `404` | `lead.read.all` or currently assigned + `lead.read.assigned` |
 | LEAD-03 | `PATCH /admin/leads/{id}` | Editable qualification fields, `If-Match` | `LeadDetail` | `200`; `403`; `404`; `412`; `422` | `lead.write.all`; Consultant cannot edit identity/source fields |
 | LEAD-04 | `POST /admin/leads/{id}/assignments` | `consultantId`, optional reason, `If-Match` | `LeadDetail` | `200`; `404`; `409 CONSULTANT_UNAVAILABLE`; `412`; `422` | `lead.assign`; retains assignment history |
