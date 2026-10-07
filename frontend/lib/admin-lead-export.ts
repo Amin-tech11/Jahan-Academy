@@ -3,7 +3,7 @@ import { columnText } from "./admin-lead-table";
 import { labels } from "./admin-resources";
 
 export async function leadWorkbook(rows: RecordData[], columns: string[]) {
-  if (rows.length > 1048575) throw new Error("تعداد رکوردها از ظرفیت یک برگهٔ اکسل بیشتر است؛ بازهٔ فیلتر را محدود کنید.");
+  if (rows.length > 1048575) throw new Error("تعداد رکوردها از ظرفیت یک برگه اکسل بیشتر است؛ بازه فیلتر را محدود کنید.");
   const { default: ExcelJS } = await import("exceljs");
   const workbook = new ExcelJS.Workbook();
   const sheet = workbook.addWorksheet("درخواست‌های مشاوره", { views: [{ rightToLeft: true, state: "frozen", ySplit: 1 }] });

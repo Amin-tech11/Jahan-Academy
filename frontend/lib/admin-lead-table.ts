@@ -27,7 +27,7 @@ export async function loadAllLeadRows(params: URLSearchParams, load: (params: UR
     const receivedTotal = totalOf(response);
     if (page > 1 && receivedTotal !== total) throw new Error("جدول هنگام دریافت تغییر کرد؛ دوباره تلاش کنید.");
     total = receivedTotal;
-    if (!rows.length && result.length < total) throw new Error("دریافت همهٔ رکوردها کامل نشد؛ دوباره تلاش کنید.");
+    if (!rows.length && result.length < total) throw new Error("دریافت همه رکوردها کامل نشد؛ دوباره تلاش کنید.");
     result.push(...rows);
   }
   if (new Set(result.map(row => String(row.id))).size !== total || result.length !== total) throw new Error("جدول هنگام دریافت تغییر کرد؛ دوباره تلاش کنید.");

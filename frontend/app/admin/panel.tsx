@@ -589,7 +589,7 @@ function Editor({
                       ? "این درخواست بسته شده است؛ برای پیگیری دوباره، یکی از وضعیت‌های مجاز را انتخاب کنید."
                       : !source.assignee
                         ? "برای وضعیت‌های پیگیری، ابتدا باید مسئول درخواست تعیین شده باشد؛ در حال حاضر فقط بستن درخواست مجاز است."
-                        : "وضعیت‌های قابل انتخاب بر اساس مرحلهٔ فعلی درخواست نمایش داده می‌شوند."}
+                        : "وضعیت‌های قابل انتخاب بر اساس مرحله فعلی درخواست نمایش داده می‌شوند."}
                     {" "}تغییر وضعیت با «ذخیره تغییرات» ثبت می‌شود.
                   </p>
                 </div>
@@ -936,7 +936,7 @@ function ResourceList({ resource }: { resource: Resource }) {
           <h2>{resource.title}</h2>
           <p>
             {resource.id === "leads"
-              ? "همهٔ درخواست‌های مشاوره و فرم ارزیابی، از جدیدترین به قدیمی‌ترین"
+              ? "همه درخواست‌های مشاوره و فرم ارزیابی، از جدیدترین به قدیمی‌ترین"
               : resource.id === "programs"
               ? "اطلاعات رشته‌ها صرفاً مرجع داخلی تیم است و نمایش عمومی ندارد."
               : resource.readOnly
@@ -964,7 +964,7 @@ function ResourceList({ resource }: { resource: Resource }) {
         </div>
         <p className="adm-live-announcement" role="status" aria-live="polite">{announcement}</p>
         {(page > 1 || query || status || fromDate || toDate || Object.values(filters).some(Boolean)) && (
-          <p className="adm-list-hint">برای دیدن همهٔ درخواست‌های تازه، فیلترها را پاک کنید و به صفحهٔ اول بروید.</p>
+          <p className="adm-list-hint">برای دیدن همه درخواست‌های تازه، فیلترها را پاک کنید و به صفحه اول بروید.</p>
         )}
         <div className="adm-toolbar">
           {resource.id === "leads" && (
@@ -1319,7 +1319,7 @@ export default function AdminPanel() {
         </header>
         <main className="adm-content">
           <ErrorBox message={logoutError} />
-          {accessError ? <><ErrorBox message={accessError} /><button onClick={() => setAccessRetry(value => value + 1)}>بررسی دوبارهٔ دسترسی</button></> : !access ? <p role="status">در حال بررسی دسترسی‌ها…</p> : !visibleSections(access).some(item => item.id === section) ? <p className="adm-empty">در حال حاضر دسترسی به بخشی از پنل برای شما فعال نیست. با مدیر سازمان تماس بگیرید.</p> : section === "access" && access.isSuperAdmin ? <AccessManager /> : resource ? (
+          {accessError ? <><ErrorBox message={accessError} /><button onClick={() => setAccessRetry(value => value + 1)}>بررسی دوباره دسترسی</button></> : !access ? <p role="status">در حال بررسی دسترسی‌ها…</p> : !visibleSections(access).some(item => item.id === section) ? <p className="adm-empty">در حال حاضر دسترسی به بخشی از پنل برای شما فعال نیست. با مدیر سازمان تماس بگیرید.</p> : section === "access" && access.isSuperAdmin ? <AccessManager /> : resource ? (
             <ResourceList key={resource.id} resource={resource} />
           ) : (
             <Dashboard navigate={navigate} />

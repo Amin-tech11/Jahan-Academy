@@ -12,7 +12,7 @@ const statistics: Record<string, Statistics> = statisticsData;
 const institutionTypes: Record<string, Copy> = {
   public: copy("دانشگاه عمومی", "Public university"),
   private: copy("دانشگاه خصوصی", "Private university"),
-  foundation: copy("دانشگاه با ادارهٔ بنیاد مستقل", "Independent foundation university"),
+  foundation: copy("دانشگاه با اداره بنیاد مستقل", "Independent foundation university"),
 };
 
 // Shares describe the source population, not academic quality or admission odds.
@@ -56,7 +56,7 @@ type Profile = {
 export const universityProfiles: Record<string, Profile> = {
   "dalhousie-university": {
     name: "دانشگاه دالهاوزی", website: "https://www.dal.ca/", source: "https://www.dal.ca/about/campus-locations.html",
-    campus: copy("پردیس‌های شهری دالهاوزی در هلیفکس قرار دارند و پردیس کشاورزی آن در منطقهٔ ترورو است؛ فضای ساحلی هلیفکس بخشی از تجربهٔ زندگی دانشجویی این دانشگاه است.", "Dalhousie's urban campuses are in Halifax, with an Agricultural Campus in the Truro area. Halifax's coastal setting shapes the experience of living and studying here."),
+    campus: copy("پردیس‌های شهری دالهاوزی در هلیفکس قرار دارند و پردیس کشاورزی آن در منطقه ترورو است؛ فضای ساحلی هلیفکس بخشی از تجربه زندگی دانشجویی این دانشگاه است.", "Dalhousie's urban campuses are in Halifax, with an Agricultural Campus in the Truro area. Halifax's coastal setting shapes the experience of living and studying here."),
     focus: copy("آموزش و پژوهش در حوزه‌های علوم، سلامت، مهندسی و کشاورزی در محیط‌های دانشگاهی متفاوت دنبال می‌شود.", "Teaching and research span science, health, engineering and agriculture across distinct campus settings."),
     fields: ["science", "health", "engineering", "agriculture"], address: "6299 South Street, Halifax, Nova Scotia, Canada",
   },
@@ -74,7 +74,7 @@ export const universityProfiles: Record<string, Profile> = {
   },
   "braunschweig-university-of-technology": {
     name: "دانشگاه فنی براونشوایگ", website: "https://www.tu-braunschweig.de/en", source: "https://www.tu-braunschweig.de/en/tu-braunschweig/our-profile/the-history-of-the-tu-braunschweig",
-    campus: copy("این دانشگاه در شهر براونشوایگ قرار دارد و ریشهٔ آن به کالج کارولینوم در سال ۱۷۴۵ می‌رسد. ساختمان‌های آموزشی دانشگاه در بافت شهر گسترده‌اند.", "Based in Braunschweig, the university traces its roots to the Collegium Carolinum of 1745. Its teaching buildings form part of the urban fabric."),
+    campus: copy("این دانشگاه در شهر براونشوایگ قرار دارد و ریشه آن به کالج کارولینوم در سال ۱۷۴۵ می‌رسد. ساختمان‌های آموزشی دانشگاه در بافت شهر گسترده‌اند.", "Based in Braunschweig, the university traces its roots to the Collegium Carolinum of 1745. Its teaching buildings form part of the urban fabric."),
     focus: copy("سنت آموزش فنی در این دانشگاه با علوم طبیعی و علوم انسانی همراه است و زمینه‌ای برای نگاه میان‌رشته‌ای ایجاد می‌کند.", "Its tradition of technical education sits alongside natural sciences and humanities, providing a setting for interdisciplinary learning."),
     fields: ["engineering", "science", "computing", "arts"],
   },
@@ -92,14 +92,14 @@ export const universityProfiles: Record<string, Profile> = {
   },
   "australian-national-university": {
     name: "دانشگاه ملی استرالیا", website: "https://www.anu.edu.au/", source: "https://www.anu.edu.au/about/campuses-facilities/acton-campus",
-    campus: copy("پردیس اکتون در مرکز کانبرا و نزدیک نهادهای فرهنگی و ملی استرالیا قرار دارد. درختان، فضای باز، کتابخانه‌ها و اقامتگاه‌ها بخشی از محیط روزمرهٔ آن هستند.", "The Acton campus is in central Canberra, close to Australia's national and cultural institutions. Trees, open spaces, libraries and residences are part of its everyday environment."),
+    campus: copy("پردیس اکتون در مرکز کانبرا و نزدیک نهادهای فرهنگی و ملی استرالیا قرار دارد. درختان، فضای باز، کتابخانه‌ها و اقامتگاه‌ها بخشی از محیط روزمره آن هستند.", "The Acton campus is in central Canberra, close to Australia's national and cultural institutions. Trees, open spaces, libraries and residences are part of its everyday environment."),
     focus: copy("علوم، مهندسی، علوم انسانی و علوم اجتماعی، محیط متنوعی برای آموزش و پژوهش در پایتخت استرالیا ایجاد کرده‌اند.", "Science, engineering, humanities and social sciences contribute to a varied teaching and research environment in Australia's capital."),
     fields: ["science", "engineering", "arts", "social"],
   },
   "adelaide-university": {
     name: "دانشگاه آدلاید", website: "https://adelaide.edu.au/", source: "https://adelaide.edu.au/life-at-adelaide/campuses/",
     campus: copy("دانشگاه آدلاید پردیس‌های شهری و منطقه‌ای در استرالیای جنوبی دارد. پردیس شهر آدلاید در امتداد نورث تراس، ساختمان‌های تاریخی را با فضاهای آموزشی معاصر و مراکز فرهنگی پیوند می‌دهد.", "Adelaide University has metropolitan and regional campuses across South Australia. Its City Campus on North Terrace connects historic buildings, contemporary learning spaces and cultural venues."),
-    focus: copy("حوزه‌های علمی دانشگاه از مدیریت و حقوق تا هنر، آموزش، مهندسی، سلامت و علوم گسترده‌اند. محل ارائهٔ آموزش میان پردیس‌ها متفاوت است.", "Academic areas extend from business and law to arts, education, engineering, health and science. Teaching locations vary between campuses."),
+    focus: copy("حوزه‌های علمی دانشگاه از مدیریت و حقوق تا هنر، آموزش، مهندسی، سلامت و علوم گسترده‌اند. محل ارائه آموزش میان پردیس‌ها متفاوت است.", "Academic areas extend from business and law to arts, education, engineering, health and science. Teaching locations vary between campuses."),
     fields: ["engineering", "health", "business", "science"],
   },
   "curtin-university": {
@@ -110,7 +110,7 @@ export const universityProfiles: Record<string, Profile> = {
   },
   "catholic-university-of-the-sacred-heart": {
     name: "دانشگاه کاتولیک قلب مقدس", website: "https://international.unicatt.it/", source: "https://international.unicatt.it/ucscinternational-about-the-university",
-    campus: copy("دانشگاه کاتولیک قلب مقدس در شهرهایی مانند میلان، رم، برشا، پیاچنزا و کرمونا حضور دارد. تجربهٔ زندگی و محل کلاس‌ها به پردیس انتخابی وابسته است.", "The Catholic University of the Sacred Heart has locations including Milan, Rome, Brescia, Piacenza and Cremona. Student life and teaching locations depend on the selected campus."),
+    campus: copy("دانشگاه کاتولیک قلب مقدس در شهرهایی مانند میلان، رم، برشا، پیاچنزا و کرمونا حضور دارد. تجربه زندگی و محل کلاس‌ها به پردیس انتخابی وابسته است.", "The Catholic University of the Sacred Heart has locations including Milan, Rome, Brescia, Piacenza and Cremona. Student life and teaching locations depend on the selected campus."),
     focus: copy("این دانشگاه چندرشته‌ای، زمینه‌هایی مانند اقتصاد، علوم انسانی، حقوق و علوم سلامت را در محیط‌های شهری مختلف گرد هم می‌آورد.", "This multidisciplinary university brings together economics, humanities, law and health sciences across different urban settings."),
     fields: ["business", "arts", "law", "health"],
   },
@@ -122,13 +122,13 @@ export const universityProfiles: Record<string, Profile> = {
   },
   "polytechnic-university-of-turin": {
     name: "دانشگاه پلی‌تکنیک تورین", website: "https://www.polito.it/en", source: "https://www.polito.it/en/polito/about-us/polito-campuses/torino",
-    campus: copy("پردیس مهندسی در کورسو دوکا دلی آبروتزی و مجموعهٔ چیتادلا پلی‌تکنیکا قرار دارد؛ قلعهٔ والنتینو نیز با آموزش معماری و طراحی دانشگاه مرتبط است.", "Engineering is based around Corso Duca degli Abruzzi and the Cittadella Politecnica. Valentino Castle is associated with the university's architecture and design community."),
-    focus: copy("مهندسی، معماری و طراحی در شهری با پیشینهٔ صنعتی، زمینهٔ اصلی هویت آموزشی پلی‌تکنیک تورین را می‌سازند.", "Engineering, architecture and design in a city with an industrial heritage shape Politecnico di Torino's academic identity."),
+    campus: copy("پردیس مهندسی در کورسو دوکا دلی آبروتزی و مجموعه چیتادلا پلی‌تکنیکا قرار دارد؛ قلعه والنتینو نیز با آموزش معماری و طراحی دانشگاه مرتبط است.", "Engineering is based around Corso Duca degli Abruzzi and the Cittadella Politecnica. Valentino Castle is associated with the university's architecture and design community."),
+    focus: copy("مهندسی، معماری و طراحی در شهری با پیشینه صنعتی، زمینه اصلی هویت آموزشی پلی‌تکنیک تورین را می‌سازند.", "Engineering, architecture and design in a city with an industrial heritage shape Politecnico di Torino's academic identity."),
     fields: ["engineering", "design", "computing"],
   },
   "aalborg-university": {
     name: "دانشگاه آلبورگ", website: "https://www.en.aau.dk/", source: "https://www.en.aau.dk/about-aau/profile/pbl",
-    campus: copy("دانشگاه آلبورگ در دانمارک، فعالیت گروهی و کار روی مسئله را در تجربهٔ تحصیل برجسته می‌کند. پروژه‌ها به دانشجویان فرصت بررسی مسائل واقعی را می‌دهند.", "Aalborg University in Denmark emphasizes teamwork and problem-based learning. Projects give students a setting to investigate real-world questions."),
+    campus: copy("دانشگاه آلبورگ در دانمارک، فعالیت گروهی و کار روی مسئله را در تجربه تحصیل برجسته می‌کند. پروژه‌ها به دانشجویان فرصت بررسی مسائل واقعی را می‌دهند.", "Aalborg University in Denmark emphasizes teamwork and problem-based learning. Projects give students a setting to investigate real-world questions."),
     focus: copy("رویکرد مسئله‌محور دانشگاه، دانش نظری را با پروژه‌های گروهی و ارتباط با مسائل جامعه و محیط کار ترکیب می‌کند.", "The university's problem-based approach combines academic knowledge with group projects and questions from society and working life."),
     fields: ["engineering", "science", "social", "health"],
   },
@@ -141,7 +141,7 @@ export const universityProfiles: Record<string, Profile> = {
   "technical-university-of-denmark": {
     name: "دانشگاه فنی دانمارک", website: "https://www.dtu.dk/english", source: "https://www.dtu.dk/english/education/student-guide/dtu-campusses/dtu-lyngby-campus",
     campus: copy("پردیس لینگبی در شمال کپنهاگ قرار دارد و ساختمان‌های آموزشی، آزمایشگاه‌ها و فضاهای سبز را کنار هم قرار می‌دهد.", "The Lyngby campus north of Copenhagen brings teaching buildings, laboratories and green spaces together."),
-    focus: copy("مهندسی و فناوری محور اصلی DTU هستند؛ زمینه‌هایی مانند محیط‌زیست، سلامت، فناوری اطلاعات و توسعهٔ محصول به فعالیت علمی آن تنوع می‌دهند.", "Engineering and technology are central to DTU, with areas such as the environment, health, information technology and product development adding breadth."),
+    focus: copy("مهندسی و فناوری محور اصلی DTU هستند؛ زمینه‌هایی مانند محیط‌زیست، سلامت، فناوری اطلاعات و توسعه محصول به فعالیت علمی آن تنوع می‌دهند.", "Engineering and technology are central to DTU, with areas such as the environment, health, information technology and product development adding breadth."),
     fields: ["engineering", "computing", "science", "health"],
   },
   "cardiff-university": {
@@ -152,7 +152,7 @@ export const universityProfiles: Record<string, Profile> = {
   },
   "durham-university": {
     name: "دانشگاه دورهام", website: "https://www.durham.ac.uk/", source: "https://www.durham.ac.uk/about-us/",
-    campus: copy("دانشگاه دورهام در شهری تاریخی قرار دارد و ساختار کالجی آن بخشی از زندگی اجتماعی دانشجویان است. جامعهٔ کالج در کنار دانشکده، به تجربهٔ دانشگاهی شکل می‌دهد.", "Durham University is set in a historic city, with a collegiate structure that shapes students' social lives. The college community complements the academic department."),
+    campus: copy("دانشگاه دورهام در شهری تاریخی قرار دارد و ساختار کالجی آن بخشی از زندگی اجتماعی دانشجویان است. جامعه کالج در کنار دانشکده، به تجربه دانشگاهی شکل می‌دهد.", "Durham University is set in a historic city, with a collegiate structure that shapes students' social lives. The college community complements the academic department."),
     focus: copy("علوم، علوم انسانی و علوم اجتماعی در کنار زمینه‌های مدیریت، محیط پژوهشی و آموزشی متنوعی فراهم می‌کنند.", "Science, humanities and social sciences, alongside business, provide a varied teaching and research environment."),
     fields: ["science", "arts", "social", "business"],
   },
@@ -170,8 +170,8 @@ export const universityProfiles: Record<string, Profile> = {
   },
   "tampere-university": {
     name: "دانشگاه تامپره", website: "https://www.tuni.fi/en", source: "https://www.tuni.fi/en/tau/campuses",
-    campus: copy("دانشگاه تامپره در پردیس‌های مرکز شهر، هروانتا و کاوپی فعالیت دارد. کاوپی به محیط بیمارستانی نزدیک است و هر پردیس ویژگی علمی و روزمرهٔ خود را دارد.", "Tampere University operates at the City centre, Hervanta and Kauppi campuses. Kauppi is close to the hospital environment, and each campus has its own academic and everyday setting."),
-    focus: copy("فناوری، سلامت و جامعه سه زمینهٔ اصلی پیوند آموزش و پژوهش در دانشگاه تامپره هستند.", "Technology, health and society are central themes connecting teaching and research at Tampere University."),
+    campus: copy("دانشگاه تامپره در پردیس‌های مرکز شهر، هروانتا و کاوپی فعالیت دارد. کاوپی به محیط بیمارستانی نزدیک است و هر پردیس ویژگی علمی و روزمره خود را دارد.", "Tampere University operates at the City centre, Hervanta and Kauppi campuses. Kauppi is close to the hospital environment, and each campus has its own academic and everyday setting."),
+    focus: copy("فناوری، سلامت و جامعه سه زمینه اصلی پیوند آموزش و پژوهش در دانشگاه تامپره هستند.", "Technology, health and society are central themes connecting teaching and research at Tampere University."),
     fields: ["engineering", "health", "social", "computing"],
   },
   "university-of-helsinki": {
@@ -201,7 +201,7 @@ export const universityProfiles: Record<string, Profile> = {
   "massey-university": {
     name: "دانشگاه مسی", website: "https://www.massey.ac.nz/", source: "https://www.massey.ac.nz/about/contact-us/",
     campus: copy("دانشگاه مسی در پالمرستون نورث، اوکلند و ولینگتون حضور دارد. پردیس ماناواتو در پالمرستون نورث یکی از محیط‌های اصلی زندگی و آموزش دانشگاه است.", "Massey has a presence in Palmerston North, Auckland and Wellington. The Manawatū campus in Palmerston North is a key setting for university life and teaching."),
-    focus: copy("حوزه‌هایی مانند کشاورزی و علوم زیستی، مدیریت، طراحی و علوم اجتماعی، تنوع آموزشی مسی را نشان می‌دهند؛ پردیس مرتبط با رشتهٔ انتخابی را بررسی کنید.", "Agriculture and life sciences, business, design and social sciences reflect Massey's academic variety. Check the campus associated with your chosen field."),
+    focus: copy("حوزه‌هایی مانند کشاورزی و علوم زیستی، مدیریت، طراحی و علوم اجتماعی، تنوع آموزشی مسی را نشان می‌دهند؛ پردیس مرتبط با رشته انتخابی را بررسی کنید.", "Agriculture and life sciences, business, design and social sciences reflect Massey's academic variety. Check the campus associated with your chosen field."),
     fields: ["agriculture", "business", "design", "social"],
   },
   "the-university-of-auckland": {
@@ -212,7 +212,7 @@ export const universityProfiles: Record<string, Profile> = {
   },
   "university-of-otago": {
     name: "دانشگاه اوتاگو", website: "https://www.otago.ac.nz/", source: "https://www.otago.ac.nz/life/campus",
-    campus: copy("پردیس اصلی اوتاگو در داندین، ساختمان‌های تاریخی و مدرن را در کنار فضای سبز و رود لیث گرد هم می‌آورد. کتابخانه‌ها و کافه‌ها بخشی از زندگی روزانهٔ پردیس هستند.", "Otago's main campus in Dunedin brings historic and modern buildings together with green spaces and the Leith River. Libraries and cafés form part of everyday campus life."),
+    campus: copy("پردیس اصلی اوتاگو در داندین، ساختمان‌های تاریخی و مدرن را در کنار فضای سبز و رود لیث گرد هم می‌آورد. کتابخانه‌ها و کافه‌ها بخشی از زندگی روزانه پردیس هستند.", "Otago's main campus in Dunedin brings historic and modern buildings together with green spaces and the Leith River. Libraries and cafés form part of everyday campus life."),
     focus: copy("علوم سلامت، علوم، علوم انسانی و مدیریت در محیطی دانشگاهی با ارتباط نزدیک با شهر دانشجویی داندین ارائه می‌شوند.", "Health sciences, sciences, humanities and business are set within a university environment closely connected to the student city of Dunedin."),
     fields: ["health", "science", "arts", "business"],
   },
@@ -223,21 +223,21 @@ export const universityProfiles: Record<string, Profile> = {
     fields: ["engineering", "science", "computing", "design"],
   },
   "kth-royal-institute-of-technology": {
-    name: "مؤسسهٔ سلطنتی فناوری KTH", website: "https://www.kth.se/en", source: "https://www.kth.se/en/om/kontakt/campus",
-    campus: copy("KTH در استکهلم فعالیت دارد؛ پردیس اصلی در محدودهٔ والهالاواگن و آلبانو با فضاهای آموزشی، کتابخانه و محیط شهری پیوند خورده است. محل تحصیل می‌تواند میان پردیس‌ها متفاوت باشد.", "KTH is based in Stockholm. Its main campus around Valhallavägen and Albano connects teaching spaces and the library with the city. Study locations can vary between campuses."),
+    name: "مؤسسه سلطنتی فناوری KTH", website: "https://www.kth.se/en", source: "https://www.kth.se/en/om/kontakt/campus",
+    campus: copy("KTH در استکهلم فعالیت دارد؛ پردیس اصلی در محدوده والهالاواگن و آلبانو با فضاهای آموزشی، کتابخانه و محیط شهری پیوند خورده است. محل تحصیل می‌تواند میان پردیس‌ها متفاوت باشد.", "KTH is based in Stockholm. Its main campus around Valhallavägen and Albano connects teaching spaces and the library with the city. Study locations can vary between campuses."),
     focus: copy("مهندسی، علوم کامپیوتر، علوم طبیعی و معماری زمینه‌های اصلی آموزش و پژوهش فنی در KTH هستند.", "Engineering, computer science, natural sciences and architecture are central to technical education and research at KTH."),
     fields: ["engineering", "computing", "science", "design"],
   },
   "karolinska-institute": {
-    name: "مؤسسهٔ کارولینسکا", website: "https://ki.se/en", source: "https://education.ki.se/student-at-ki/campus-information",
-    campus: copy("کارولینسکا دو پردیس اصلی در سولنا و فلمینگزبرگ دارد. کتابخانه‌ها، اتاق‌های مطالعه و ارتباط میان محیط دانشگاه و مراکز درمانی، تجربهٔ روزمرهٔ دانشجویان را شکل می‌دهند.", "Karolinska has two main campuses in Solna and Flemingsberg. Libraries, study rooms and connections between academic and healthcare environments shape the student experience."),
+    name: "مؤسسه کارولینسکا", website: "https://ki.se/en", source: "https://education.ki.se/student-at-ki/campus-information",
+    campus: copy("کارولینسکا دو پردیس اصلی در سولنا و فلمینگزبرگ دارد. کتابخانه‌ها، اتاق‌های مطالعه و ارتباط میان محیط دانشگاه و مراکز درمانی، تجربه روزمره دانشجویان را شکل می‌دهند.", "Karolinska has two main campuses in Solna and Flemingsberg. Libraries, study rooms and connections between academic and healthcare environments shape the student experience."),
     focus: copy("پزشکی، سلامت و پژوهش زیست‌پزشکی محور اصلی این دانشگاه هستند و آموزش را به پرسش‌های مرتبط با سلامت انسان پیوند می‌دهند.", "Medicine, health and biomedical research are central to this university, linking education with questions about human health."),
     fields: ["health", "science"],
   },
   "university-of-toronto": {
     name: "دانشگاه تورنتو", website: "https://www.utoronto.ca/", source: "https://www.utoronto.ca/university-life/campuses",
-    campus: copy("دانشگاه تورنتو سه پردیس سنت جورج، میسیساگا و اسکاربرو در منطقهٔ تورنتوی بزرگ دارد. هر پردیس تجربهٔ زندگی و محیط آموزشی متفاوتی ارائه می‌کند.", "The University of Toronto has three campuses in the Greater Toronto Area: St. George, Mississauga and Scarborough. Each offers a distinct living and learning environment."),
-    focus: copy("علوم، علوم انسانی، مهندسی و سلامت در یک مجموعهٔ پژوهشی گسترده قرار دارند. انتخاب پردیس بخشی از انتخاب مسیر تحصیلی در این دانشگاه است.", "Science, humanities, engineering and health sit within a broad research community. Campus choice is part of choosing a study pathway here."),
+    campus: copy("دانشگاه تورنتو سه پردیس سنت جورج، میسیساگا و اسکاربرو در منطقه تورنتوی بزرگ دارد. هر پردیس تجربه زندگی و محیط آموزشی متفاوتی ارائه می‌کند.", "The University of Toronto has three campuses in the Greater Toronto Area: St. George, Mississauga and Scarborough. Each offers a distinct living and learning environment."),
+    focus: copy("علوم، علوم انسانی، مهندسی و سلامت در یک مجموعه پژوهشی گسترده قرار دارند. انتخاب پردیس بخشی از انتخاب مسیر تحصیلی در این دانشگاه است.", "Science, humanities, engineering and health sit within a broad research community. Campus choice is part of choosing a study pathway here."),
     fields: ["science", "arts", "engineering", "health"], photo: copy("یونیورسیتی کالج در پردیس سنت جورج تورنتو", "University College at Toronto's St. George campus"),
   },
   "technical-university-of-munich": {
@@ -249,7 +249,7 @@ export const universityProfiles: Record<string, Profile> = {
   "university-of-bologna": {
     name: "دانشگاه بولونیا", website: "https://www.unibo.it/en", source: "https://www.unibo.it/en/university/organisation-and-campuses/organisations-and-campuses",
     campus: copy("دانشگاه بولونیا ساختاری چندپردیسی در بولونیا، چزنا، فورلی، راونا و ریمینی دارد. هر شهر، محیط علمی و فرهنگی متفاوتی برای دانشجویان فراهم می‌کند.", "The University of Bologna has a multicampus structure in Bologna, Cesena, Forlì, Ravenna and Rimini. Each city provides a distinct academic and cultural setting."),
-    focus: copy("علوم انسانی، حقوق، علوم و مهندسی در این مجموعهٔ چندرشته‌ای حضور دارند. محل ارائهٔ آموزش باید همراه با مسیر تحصیلی انتخاب شود.", "Humanities, law, sciences and engineering are part of this multidisciplinary university. The teaching location should be considered alongside the chosen study pathway."),
+    focus: copy("علوم انسانی، حقوق، علوم و مهندسی در این مجموعه چندرشته‌ای حضور دارند. محل ارائه آموزش باید همراه با مسیر تحصیلی انتخاب شود.", "Humanities, law, sciences and engineering are part of this multidisciplinary university. The teaching location should be considered alongside the chosen study pathway."),
     fields: ["arts", "law", "science", "engineering"], photo: copy("حیاط کاخ پوجی در بولونیا", "Palazzo Poggi courtyard in Bologna"),
   },
 };
@@ -268,11 +268,11 @@ const countryGuidance: Record<string, string> = {
 };
 
 const historyNotes: Record<string, Copy> = {
-  "adelaide-university": copy("دانشگاه جدید آدلاید در ۲۰۲۴ تأسیس شد و فعالیت آموزشی آن در ژانویهٔ ۲۰۲۶ آغاز شد. آمار دانشگاه آدلاید قدیم و دانشگاه استرالیای جنوبی، آمار این مؤسسهٔ جدید محسوب نمی‌شود.", "The new Adelaide University was established in 2024 and began teaching in January 2026. Statistics for the former University of Adelaide and University of South Australia do not describe this new institution."),
-  "curtin-university": copy("سال ۱۹۶۶ به تأسیس مؤسسهٔ فناوری استرالیای غربی (WAIT) اشاره دارد؛ این مؤسسه در ۱۹۸۷ به دانشگاه کرتین تبدیل شد.", "The 1966 foundation date refers to the Western Australian Institute of Technology (WAIT); it became Curtin University in 1987."),
-  "charite-universitatsmedizin-berlin": copy("ریشهٔ شاریته به بیمارستان تأسیس‌شده در ۱۷۱۰ می‌رسد. ساختار مشترک کنونی پزشکی دانشگاه آزاد برلین و هومبولت در ۲۰۰۳ شکل گرفت.", "Charité traces its origins to the hospital founded in 1710. Its current joint medical-faculty structure for Freie Universität Berlin and Humboldt-Universität dates to 2003."),
-  "massey-university": copy("ریشهٔ مؤسسه به کالج کشاورزی مسی در ۱۹۲۷ می‌رسد؛ مسی در ۱۹۶۴ به دانشگاه تبدیل شد.", "The institution traces its roots to Massey Agricultural College in 1927; Massey became a university in 1964."),
-  "erasmus-university-rotterdam": copy("سال ۱۹۱۳ به تأسیس مدرسهٔ بازرگانی پیشین اشاره دارد؛ دانشگاه اراسموس با ساختار کنونی در ۱۹۷۳ شکل گرفت.", "The 1913 date marks the founding of its predecessor business school; Erasmus University in its present form dates to 1973."),
+  "adelaide-university": copy("دانشگاه جدید آدلاید در ۲۰۲۴ تأسیس شد و فعالیت آموزشی آن در ژانویه ۲۰۲۶ آغاز شد. آمار دانشگاه آدلاید قدیم و دانشگاه استرالیای جنوبی، آمار این مؤسسه جدید محسوب نمی‌شود.", "The new Adelaide University was established in 2024 and began teaching in January 2026. Statistics for the former University of Adelaide and University of South Australia do not describe this new institution."),
+  "curtin-university": copy("سال ۱۹۶۶ به تأسیس مؤسسه فناوری استرالیای غربی (WAIT) اشاره دارد؛ این مؤسسه در ۱۹۸۷ به دانشگاه کرتین تبدیل شد.", "The 1966 foundation date refers to the Western Australian Institute of Technology (WAIT); it became Curtin University in 1987."),
+  "charite-universitatsmedizin-berlin": copy("ریشه شاریته به بیمارستان تأسیس‌شده در ۱۷۱۰ می‌رسد. ساختار مشترک کنونی پزشکی دانشگاه آزاد برلین و هومبولت در ۲۰۰۳ شکل گرفت.", "Charité traces its origins to the hospital founded in 1710. Its current joint medical-faculty structure for Freie Universität Berlin and Humboldt-Universität dates to 2003."),
+  "massey-university": copy("ریشه مؤسسه به کالج کشاورزی مسی در ۱۹۲۷ می‌رسد؛ مسی در ۱۹۶۴ به دانشگاه تبدیل شد.", "The institution traces its roots to Massey Agricultural College in 1927; Massey became a university in 1964."),
+  "erasmus-university-rotterdam": copy("سال ۱۹۱۳ به تأسیس مدرسه بازرگانی پیشین اشاره دارد؛ دانشگاه اراسموس با ساختار کنونی در ۱۹۷۳ شکل گرفت.", "The 1913 date marks the founding of its predecessor business school; Erasmus University in its present form dates to 1973."),
   "tampere-university": copy("دانشگاه کنونی تامپره در ۲۰۱۹ از ادغام دانشگاه تامپره و دانشگاه فناوری تامپره ایجاد شد.", "The current Tampere University was formed in 2019 through the merger of the University of Tampere and Tampere University of Technology."),
 };
 
@@ -281,14 +281,14 @@ export function enrichUniversityInfo(base: UniversityInfo): UniversityInfo {
   if (!profile) return base;
   const details = facts[base.slug];
   const guidance = Object.hasOwn(countryGuidance, base.country.en) ? countryGuidance[base.country.en] : undefined;
-  const admission = copy("پیش‌نیازها، زبان آموزش و مدارک لازم را در صفحهٔ پذیرش رشتهٔ انتخابی بررسی کنید. هر شرطی که در نامهٔ پذیرش درج شده باید در مهلت تعیین‌شده تکمیل شود.", "Check prerequisites, teaching language and required documents on the admissions page for your chosen field. Any conditions stated in an offer must be met by the specified deadline.");
+  const admission = copy("پیش‌نیازها، زبان آموزش و مدارک لازم را در صفحه پذیرش رشته انتخابی بررسی کنید. هر شرطی که در نامه پذیرش درج شده باید در مهلت تعیین‌شده تکمیل شود.", "Check prerequisites, teaching language and required documents on the admissions page for your chosen field. Any conditions stated in an offer must be met by the specified deadline.");
   const housing = copy("محل کلاس‌ها را پیش از انتخاب محل اقامت مشخص کنید. گزینه‌های مسکن، ظرفیت، شرایط درخواست و مهلت‌ها را از راهنمای رسمی دانشگاه بررسی کنید؛ پذیرش تحصیلی به‌تنهایی تضمین محل اقامت نیست.", "Confirm your teaching location before choosing where to live. Check the university's official guidance for housing options, capacity, application requirements and deadlines; academic admission alone does not guarantee accommodation.");
   const offerings: UniversityOffering[] = [
     ...(guidance ? [{ icon: "permit" as const, title: copy("اقامت و مسیر پس از تحصیل", "Residence and post-study guidance"), status: copy("بررسی شرایط", "Check eligibility"),
       text: copy(`برای برنامه‌ریزی اقامت پس از تحصیل در ${base.country.fa}، راهنمای مرجع رسمی این کشور را بررسی کنید. تابعیت، نوع مجوز و مسیر تحصیلی در انتخاب راه مناسب اهمیت دارند.`, `For planning your stay after study in ${base.country.en}, consult the country's official guidance. Nationality, permit type and study pathway matter when identifying the appropriate route.`), url: guidance }] : []),
-    { icon: "internship", title: copy("کوآپ و کارآموزی", "Co-op / Internship Participation"), status: copy("بسته به رشته", "Program dependent"), text: copy(`امکان کارآموزی، پروژهٔ عملی یا کوآپ در ${profile.name} را برای رشتهٔ انتخابی خود بررسی کنید. وجود این فرصت‌ها، نحوهٔ انتخاب و احتساب واحد به مقررات همان دوره وابسته است.`, `Check internship, practical project or co-op options for your chosen field at ${base.englishName}. Availability, selection and academic credit depend on the specific course regulations.`), url: profile.website },
-    ...(guidance ? [{ icon: "work" as const, title: copy("کار هنگام تحصیل", "Work While Studying"), status: copy("بررسی شرایط", "Check eligibility"), text: copy(`پیش از شروع کار در ${base.country.fa}، شرایط مجوز اقامت و محدودیت‌های مرتبط با وضعیت دانشجویی خود را در راهنمای رسمی بررسی کنید. این اطلاعات برای همهٔ تابعیت‌ها و انواع مجوز یکسان نیست.`, `Before starting work in ${base.country.en}, check the official guidance for your residence status and any student-related restrictions. Requirements differ by nationality and permit type.`), url: guidance }] : []),
-    { icon: "offer", title: copy("شرایط نامهٔ پذیرش", "Offer conditions"), status: copy("طبق نامهٔ پذیرش", "Offer specific"), text: admission, url: profile.website },
+    { icon: "internship", title: copy("کوآپ و کارآموزی", "Co-op / Internship Participation"), status: copy("بسته به رشته", "Program dependent"), text: copy(`امکان کارآموزی، پروژه عملی یا کوآپ در ${profile.name} را برای رشته انتخابی خود بررسی کنید. وجود این فرصت‌ها، نحوه انتخاب و احتساب واحد به مقررات همان دوره وابسته است.`, `Check internship, practical project or co-op options for your chosen field at ${base.englishName}. Availability, selection and academic credit depend on the specific course regulations.`), url: profile.website },
+    ...(guidance ? [{ icon: "work" as const, title: copy("کار هنگام تحصیل", "Work While Studying"), status: copy("بررسی شرایط", "Check eligibility"), text: copy(`پیش از شروع کار در ${base.country.fa}، شرایط مجوز اقامت و محدودیت‌های مرتبط با وضعیت دانشجویی خود را در راهنمای رسمی بررسی کنید. این اطلاعات برای همه تابعیت‌ها و انواع مجوز یکسان نیست.`, `Before starting work in ${base.country.en}, check the official guidance for your residence status and any student-related restrictions. Requirements differ by nationality and permit type.`), url: guidance }] : []),
+    { icon: "offer", title: copy("شرایط نامه پذیرش", "Offer conditions"), status: copy("طبق نامه پذیرش", "Offer specific"), text: admission, url: profile.website },
     { icon: "home", title: copy("اقامتگاه‌های دانشجویی", "Accommodations"), status: copy("بررسی ظرفیت", "Check availability"), text: housing, url: profile.source },
   ];
   return {
@@ -313,13 +313,13 @@ export function enrichUniversityInfo(base: UniversityInfo): UniversityInfo {
       { title: copy("هویت علمی", "Academic identity"), text: profile.focus, sourceUrl: profile.website },
     ],
     notes: [
-      ...(historyNotes[base.slug] ? [{ title: copy("پیشینهٔ مؤسسه", "Institutional history"), text: historyNotes[base.slug], sourceUrl: profile.website }] : []),
+      ...(historyNotes[base.slug] ? [{ title: copy("پیشینه مؤسسه", "Institutional history"), text: historyNotes[base.slug], sourceUrl: profile.website }] : []),
       { title: copy("پذیرش و زبان آموزش", "Admissions and teaching language"), text: admission, sourceUrl: profile.website },
       { title: copy("انتخاب محل اقامت", "Choosing accommodation"), text: housing, sourceUrl: profile.source },
     ],
     features: [
-      { title: copy("فضای پردیس", "Campus setting"), text: copy(`برای آشنایی با محیط ${profile.name}، محل دانشکده و مسیر رفت‌وآمد خود را در نقشهٔ دانشگاه پیدا کنید.`, `Explore ${base.englishName}'s campus information to locate your department and plan your daily journey.`), url: profile.source },
-      { title: copy("برنامه‌ریزی زندگی دانشجویی", "Planning student life"), text: copy("فاصلهٔ محل اقامت تا کلاس‌ها، دسترسی به حمل‌ونقل و مهلت درخواست مسکن را پیش از ورود بررسی کنید.", "Before arrival, consider the journey between accommodation and classes, transport connections and housing application deadlines."), url: profile.website },
+      { title: copy("فضای پردیس", "Campus setting"), text: copy(`برای آشنایی با محیط ${profile.name}، محل دانشکده و مسیر رفت‌وآمد خود را در نقشه دانشگاه پیدا کنید.`, `Explore ${base.englishName}'s campus information to locate your department and plan your daily journey.`), url: profile.source },
+      { title: copy("برنامه‌ریزی زندگی دانشجویی", "Planning student life"), text: copy("فاصله محل اقامت تا کلاس‌ها، دسترسی به حمل‌ونقل و مهلت درخواست مسکن را پیش از ورود بررسی کنید.", "Before arrival, consider the journey between accommodation and classes, transport connections and housing application deadlines."), url: profile.website },
       { title: copy("مطالعه و پژوهش", "Study and research"), text: copy("از راهنمای دانشجویان دانشگاه برای یافتن منابع آموزشی، فضاهای مطالعه و مسیر ارتباط با دانشکده استفاده کنید.", "Use the university's student guidance to find learning resources, study spaces and ways to contact your department."), url: profile.website },
     ],
     offerings,

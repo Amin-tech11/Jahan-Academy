@@ -80,7 +80,7 @@ export function UniversityInfoPage({ university: u, locale }: { university: Univ
     <h2>{fa ? `موقعیت ${u.name.fa}` : `Location for ${u.englishName}`}</h2>
     <figure className={styles.campusMap}>
       <div className={styles.mapCanvas}>
-        <iframe src={universityMapEmbedUrl(u)} title={fa ? `نقشهٔ ${u.name.fa}` : `Map of ${u.englishName}`} loading="lazy" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen />
+        <iframe src={universityMapEmbedUrl(u)} title={fa ? `نقشه ${u.name.fa}` : `Map of ${u.englishName}`} loading="lazy" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen />
         <div className={styles.mapInfo} dir="ltr" lang="en"><strong>{u.englishName}</strong><span>{u.address || u.location.en}</span></div>
       </div>
       <figcaption dir="ltr" lang="en">{u.address || u.location.en}</figcaption>
@@ -142,7 +142,7 @@ export function UniversityInfoPage({ university: u, locale }: { university: Univ
           {u.topDisciplines?.length ? <ul className={styles.disciplineList}>{u.topDisciplines.map((discipline) => <li key={discipline.name.en}>
             <div className={styles.disciplineLabel}><span>{discipline.name[locale]}</span><span>{discipline.percentage.toLocaleString(locale)}{fa ? "٪" : "%"}</span></div>
             <meter min={0} max={100} value={discipline.percentage} aria-label={discipline.name[locale]}>{discipline.percentage}%</meter>
-          </li>)}</ul> : <p className={styles.disciplinesEmpty}>{fa ? "آمار قابل استناد برای محاسبهٔ درصد رشته‌های این دانشگاه هنوز در دسترس نیست." : "Verified statistics for this university's discipline percentages are not yet available."}</p>}
+          </li>)}</ul> : <p className={styles.disciplinesEmpty}>{fa ? "آمار قابل استناد برای محاسبه درصد رشته‌های این دانشگاه هنوز در دسترس نیست." : "Verified statistics for this university's discipline percentages are not yet available."}</p>}
           {u.disciplineSource && <div className={styles.disciplineSource}>
             <p><b>{u.disciplineSource.year}</b> · {u.disciplineSource.basis[locale]}</p>
             {[u.disciplineSource.url, ...(u.disciplineSource.supportingUrls ?? [])].map((url, index) => safeUniversityUrl(url) && <a key={url} href={url} target="_blank" rel="noopener noreferrer">{fa ? (index ? `منبع تکمیلی ${index}` : "منبع آمار") : (index ? `Supporting source ${index}` : "Statistics source")} ↗</a>)}

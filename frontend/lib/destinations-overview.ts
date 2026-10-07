@@ -31,7 +31,7 @@ export const destinationOverviews: DestinationOverview[] = [
     slug: "canada", name: { fa: "کانادا", en: "Canada" }, region: "americas",
     image: "/destinations/canada.png", imageAlt: { fa: "نمایی از کانادا", en: "A view of Canada" },
     capital: { fa: "اتاوا", en: "Ottawa" }, language: { fa: "انگلیسی و فرانسوی", en: "English and French" },
-    intro: { fa: "با شهرها و فضای چندزبانهٔ کانادا آشنا شوید و پرسش‌های مهم برای انتخاب مقصد خود را بشناسید.", en: "Explore Canada's cities and multilingual setting, and the questions to consider for your destination." },
+    intro: { fa: "با شهرها و فضای چندزبانه کانادا آشنا شوید و پرسش‌های مهم برای انتخاب مقصد خود را بشناسید.", en: "Explore Canada's cities and multilingual setting, and the questions to consider for your destination." },
   },
   {
     slug: "united-kingdom", name: { fa: "انگلستان", en: "United Kingdom" }, region: "europe", aliases: "بریتانیا انگلیس UK Britain England",
@@ -61,7 +61,7 @@ export const destinationOverviews: DestinationOverview[] = [
     slug: "sweden", name: { fa: "سوئد", en: "Sweden" }, region: "europe",
     image: "/destinations/sweden-twilight.png", imageAlt: { fa: "نمای شهر و ساحل سوئد", en: "City waterfront in sweden" },
     capital: { fa: "استکهلم", en: "Stockholm" }, language: { fa: "سوئدی", en: "Swedish" },
-    intro: { fa: "نقطهٔ شروعی برای آشنایی با سوئد؛ از محیط دانشگاهی تا آب‌وهوا و زندگی در شمال اروپا.", en: "A starting point for exploring Sweden, from university settings to climate and life in northern Europe." },
+    intro: { fa: "نقطه شروعی برای آشنایی با سوئد؛ از محیط دانشگاهی تا آب‌وهوا و زندگی در شمال اروپا.", en: "A starting point for exploring Sweden, from university settings to climate and life in northern Europe." },
   },
   {
     slug: "finland", name: { fa: "فنلاند", en: "Finland" }, region: "europe",
@@ -79,7 +79,7 @@ export const destinationOverviews: DestinationOverview[] = [
     slug: "new-zealand", name: { fa: "نیوزلند", en: "New Zealand" }, region: "oceania", aliases: "نیوزیلند زلاند نو NZ",
     image: "/destinations/new-zealand-twilight.png", imageAlt: { fa: "نمای شهر و ساحل نیوزلند", en: "City waterfront in new-zealand" },
     capital: { fa: "ولینگتون", en: "Wellington" }, language: { fa: "انگلیسی و مائوری", en: "English and Māori" },
-    intro: { fa: "آشنایی با نیوزلند را با شناخت شهرها، محیط طبیعی و فاصلهٔ جغرافیایی آن آغاز کنید.", en: "Begin exploring New Zealand through its cities, natural surroundings and geographic distance." },
+    intro: { fa: "آشنایی با نیوزلند را با شناخت شهرها، محیط طبیعی و فاصله جغرافیایی آن آغاز کنید.", en: "Begin exploring New Zealand through its cities, natural surroundings and geographic distance." },
   },
 ];
 

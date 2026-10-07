@@ -163,7 +163,7 @@
         3263
       ],
       [
-        "دانشکدهٔ کارل فریدریش گاوس",
+        "دانشکده کارل فریدریش گاوس",
         "Carl Friedrich Gauss Faculty",
         2873
       ],
@@ -579,7 +579,7 @@
     "year": "2024",
     "source": "https://ki.se/media/271249/download",
     "basis": {
-      "fa": "معادل دانشجوی تمام‌وقت در دوره‌های کارشناسی و ارشد؛ همهٔ منابع مالی، بدون دوره‌های تکمیلی؛ جدول ۴",
+      "fa": "معادل دانشجوی تمام‌وقت در دوره‌های کارشناسی و ارشد؛ همه منابع مالی، بدون دوره‌های تکمیلی؛ جدول ۴",
       "en": "Full-time equivalents in first- and second-cycle education, all funding, excluding supplementary education; table 4"
     },
     "rows": [
@@ -684,7 +684,7 @@
     "year": "2025/26",
     "source": "https://duo.nl/open_onderwijsdata/images/04.-inschrijvingen-wo-2025.csv",
     "basis": {
-      "fa": "ثبت‌نام‌های منتشرشدهٔ DUO به تفکیک حوزه؛ شامل ثبت‌نام دوم. خانه‌های کمتر از ۵ نفر منتشر نشده‌اند؛ درصدها تقریبی‌اند.",
+      "fa": "ثبت‌نام‌های منتشرشده DUO به تفکیک حوزه؛ شامل ثبت‌نام دوم. خانه‌های کمتر از ۵ نفر منتشر نشده‌اند؛ درصدها تقریبی‌اند.",
       "en": "Published DUO enrolments by field, including secondary enrolments. Cells below 5 are suppressed; percentages are approximate."
     },
     "rows": [
@@ -714,7 +714,7 @@
     "year": "2025/26",
     "source": "https://duo.nl/open_onderwijsdata/images/04.-inschrijvingen-wo-2025.csv",
     "basis": {
-      "fa": "ثبت‌نام‌های منتشرشدهٔ DUO به تفکیک حوزه؛ شامل ثبت‌نام دوم. خانه‌های کمتر از ۵ نفر منتشر نشده‌اند؛ درصدها تقریبی‌اند.",
+      "fa": "ثبت‌نام‌های منتشرشده DUO به تفکیک حوزه؛ شامل ثبت‌نام دوم. خانه‌های کمتر از ۵ نفر منتشر نشده‌اند؛ درصدها تقریبی‌اند.",
       "en": "Published DUO enrolments by field, including secondary enrolments. Cells below 5 are suppressed; percentages are approximate."
     },
     "rows": [
@@ -734,7 +734,7 @@
     "year": "2025/26",
     "source": "https://duo.nl/open_onderwijsdata/images/04.-inschrijvingen-wo-2025.csv",
     "basis": {
-      "fa": "ثبت‌نام‌های منتشرشدهٔ DUO به تفکیک حوزه؛ شامل ثبت‌نام دوم. خانه‌های کمتر از ۵ نفر منتشر نشده‌اند؛ درصدها تقریبی‌اند.",
+      "fa": "ثبت‌نام‌های منتشرشده DUO به تفکیک حوزه؛ شامل ثبت‌نام دوم. خانه‌های کمتر از ۵ نفر منتشر نشده‌اند؛ درصدها تقریبی‌اند.",
       "en": "Published DUO enrolments by field, including secondary enrolments. Cells below 5 are suppressed; percentages are approximate."
     },
     "rows": [
@@ -784,7 +784,7 @@
     "year": "2025/26",
     "source": "https://uni-tuebingen.de/de/597",
     "basis": {
-      "fa": "ثبت‌نام رشتهٔ اصلی به تفکیک دانشکده در ترم زمستان؛ ممکن است هر فرد بیش از یک ثبت‌نام داشته باشد",
+      "fa": "ثبت‌نام رشته اصلی به تفکیک دانشکده در ترم زمستان؛ ممکن است هر فرد بیش از یک ثبت‌نام داشته باشد",
       "en": "Winter main-subject enrolments by faculty; a person may have more than one enrolment"
     },
     "rows": [
@@ -829,7 +829,7 @@
         147
       ],
       [
-        "مؤسسهٔ لایبنیتس",
+        "مؤسسه لایبنیتس",
         "Leibniz Institute",
         52
       ]
@@ -870,7 +870,7 @@
     "year": "2025",
     "source": "https://www.aalto.fi/sites/default/files/2026-03/Aalto-University-Annual-Review-Board-Report-and-Financial-Statements-2025.pdf",
     "basis": {
-      "fa": "دانشجویان دوره‌های منتهی به مدرک در سه حوزهٔ دانشگاه؛ سهم فناوری از تفاضل کل و دو حوزهٔ دیگر محاسبه شده است",
+      "fa": "دانشجویان دوره‌های منتهی به مدرک در سه حوزه دانشگاه؛ سهم فناوری از تفاضل کل و دو حوزه دیگر محاسبه شده است",
       "en": "Degree students in the university's three fields; technology calculated as the total less the other two fields"
     },
     "rows": [
