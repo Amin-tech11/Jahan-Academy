@@ -61,8 +61,8 @@ export function DestinationsOverview({ locale }: { locale: Locale }) {
         <PanelConsultationCallout locale={locale} panel="destinations" />
 <section className={styles.section} id={sectionIds[0]}><h2>{c.collectionTitle}</h2><DestinationsExplorer locale={locale} /></section>
         <DestinationDecisionGuide locale={locale} />
-        <section className={`${styles.section} ${styles.faq}`} id={sectionIds[3]}><div className="home-faq__grid"><div className="home-faq__intro"><h2>{labels[3]}</h2></div><HomeFaq items={c.faqs.map(([question, answer]) => ({ question, answer }))} /></div></section>
       </div>
+      <section className={`${styles.section} ${styles.faq}`} id={sectionIds[3]}><div className="home-faq__grid"><div className="home-faq__intro"><h2>{labels[3]}</h2></div><HomeFaq items={c.faqs.map(([question, answer]) => ({ question, answer }))} /></div></section>
       <section className={`home-closing ${styles.consultation}`} id="destination-consultation" aria-labelledby="destination-closing-title"><header className="home-closing__heading"><h2 id="destination-closing-title">{c.ctaTitle}</h2><p>{c.ctaText}</p></header><div className="home-closing__layout"><div className="home-closing__image"><Image src="/journey/profile-assessment.png" alt={t("مشاوره انتخاب مقصد تحصیلی", "Study destination consultation")} fill sizes="(max-width: 800px) 100vw, 50vw" /></div><DestinationsConsultation locale={locale} /></div></section>
     </div>
   </PublicPanelsMotion></SiteShell>;

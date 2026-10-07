@@ -31,8 +31,8 @@ export function UniversitiesGuide({ locale }: { locale: Locale }) {
       <div className={styles.criteria}>{content.criteria.map((item, index) => <article className={`${styles.card} ${styles.typeCard}`} key={item.title}><span className={styles.typeIcon}><UniversityCriteriaIcon index={index} /></span><div><h3>{item.title}</h3><p>{item.text}</p></div></article>)}</div>
     </section>
     <section id={sectionIds[4]} className={styles.section}><h2>{content.sections[4]}</h2><p>{content.collegeIntro}</p><div className={styles.tableWrap}><table><thead><tr>{content.comparisonLabels.map(label => <th scope="col" key={label}>{label}</th>)}</tr></thead><tbody>{content.comparison.map(row => <tr key={row[0]}><th scope="row">{row[0]}</th><td>{row[1]}</td><td>{row[2]}</td></tr>)}</tbody></table></div></section>
-    <section id={sectionIds[5]} className={`${styles.section} ${styles.faq}`} aria-labelledby="university-faq-title"><div className="home-faq__grid"><div className="home-faq__intro"><h2 id="university-faq-title">{content.sections[5]}</h2></div><HomeFaq items={content.faq} /></div></section>
     </div>
+    <section id={sectionIds[5]} className={`${styles.section} ${styles.faq}`} aria-labelledby="university-faq-title"><div className="home-faq__grid"><div className="home-faq__intro"><h2 id="university-faq-title">{content.sections[5]}</h2></div><HomeFaq items={content.faq} /></div></section>
     <section className={`home-closing ${styles.consultation}`} id="university-consultation" aria-labelledby="university-closing-title">
       <header className="home-closing__heading">
         <h2 id="university-closing-title">{locale === "fa" ? "برای انتخاب دانشگاه مناسب آماده‌اید؟" : "Ready to find the right university?"}</h2>
