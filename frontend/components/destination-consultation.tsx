@@ -1,4 +1,5 @@
 "use client";
+import { createRequestKey } from "@/lib/request-key";
 
 import Link from "next/link";
 import styles from "./destination-consultation.module.css";
@@ -36,7 +37,7 @@ export function DestinationConsultation({ locale, destination }: { locale: Local
       privacyConsent: form.get("privacyConsent") === "on", contactConsent: form.get("contactConsent") === "on", website: "",
     };
     const serialized = JSON.stringify(payload);
-    if (request.current?.serialized !== serialized) request.current = { serialized, key: crypto.randomUUID() };
+    if (request.current?.serialized !== serialized) request.current = { serialized, key: createRequestKey() };
     sending.current = true;
     setStatus("sending"); setError("");
     try {

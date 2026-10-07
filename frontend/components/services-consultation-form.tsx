@@ -1,4 +1,5 @@
 "use client";
+import { createRequestKey } from "@/lib/request-key";
 
 import Link from "next/link";
 import { ConsultationSuccess } from "./consultation-success";
@@ -39,7 +40,7 @@ export function ServicesConsultationForm({ locale }: { locale: Locale }) {
       message: value("contactTime") ? `${t("زمان ترجیحی تماس", "Preferred contact time")}: ${value("contactTime")}` : null,
     };
     const serialized = JSON.stringify(payload);
-    if (request.current?.serialized !== serialized) request.current = { serialized, key: crypto.randomUUID() };
+    if (request.current?.serialized !== serialized) request.current = { serialized, key: createRequestKey() };
     setBusy(true); setError("");
     try {
       const response = await apiRequest<ApiEnvelope<Receipt>>("/consultation-requests", {

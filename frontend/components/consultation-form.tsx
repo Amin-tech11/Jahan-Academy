@@ -1,4 +1,5 @@
 "use client";
+import { createRequestKey } from "@/lib/request-key";
 
 import { type FormEvent, type ReactNode, useId, useState } from "react";
 import { ConsultationSuccess } from "./consultation-success";
@@ -17,7 +18,7 @@ export function ConsultationForm({ locale, source }: { locale: Locale; source: s
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); const form = new FormData(event.currentTarget); setStatus("submitting"); setMessage("");
     const payload = { firstName: form.get("firstName"), lastName: form.get("lastName"), mobile: form.get("mobile"), email: form.get("email") || null, desiredCountryText: form.get("country"), intakeTerm: form.get("intake"), startYear: Number(form.get("startYear")), age: form.get("age") ? Number(form.get("age")) : null, gender: form.get("gender") || null, occupation: form.get("occupation") || null, maritalStatus: form.get("maritalStatus") || null, message: form.get("message") || null, locale, source: { pageUrl: source }, privacyConsent: form.get("privacyConsent") === "on", contactConsent: form.get("contactConsent") === "on", website: "" };
-    try { const body = await apiRequest<ApiEnvelope<{ reference: string; duplicate: boolean }>>("/consultation-requests", { method: "POST", headers: { "Idempotency-Key": crypto.randomUUID() }, body: payload }); setReceipt(body.data); setStatus("success"); } catch (error) { setMessage(error instanceof ApiError ? error.message : copy.formError); setStatus("error"); }
+    try { const body = await apiRequest<ApiEnvelope<{ reference: string; duplicate: boolean }>>("/consultation-requests", { method: "POST", headers: { "Idempotency-Key": createRequestKey() }, body: payload }); setReceipt(body.data); setStatus("success"); } catch (error) { setMessage(error instanceof ApiError ? error.message : copy.formError); setStatus("error"); }
   }
   if (status === "success" && receipt) return <div className="consultation-form"><ConsultationSuccess locale={locale} reference={receipt.reference} duplicate={receipt.duplicate} /></div>;
   const year = new Date().getUTCFullYear(); const label = (fa: string, en: string) => locale === "fa" ? fa : en;

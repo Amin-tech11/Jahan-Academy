@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Explicit LAN hostnames only; production routing is unaffected.
+  allowedDevOrigins: (process.env.JAHAN_DEV_ORIGINS ?? "").split(",").map(host => host.trim()).filter(Boolean),
   output: "standalone",
   poweredByHeader: false,
   reactStrictMode: true,

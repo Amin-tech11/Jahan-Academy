@@ -1,4 +1,5 @@
 "use client";
+import { createRequestKey } from "@/lib/request-key";
 
 import Link from "next/link";
 import { useId, useRef, useState, type FormEvent } from "react";
@@ -29,7 +30,7 @@ export function DestinationsConsultation({ locale }: { locale: Locale }) {
       privacyConsent: form.get("privacyConsent") === "on", contactConsent: form.get("contactConsent") === "on", website: "",
     };
     const serialized = JSON.stringify(payload);
-    if (request.current?.serialized !== serialized) request.current = { serialized, key: crypto.randomUUID() };
+    if (request.current?.serialized !== serialized) request.current = { serialized, key: createRequestKey() };
     setStatus("sending"); setError("");
     try {
       const response = await apiRequest<ApiEnvelope<{ reference: string }>>("/consultation-requests", { method: "POST", headers: { "Idempotency-Key": request.current.key }, body: payload });

@@ -1,4 +1,5 @@
 "use client";
+import { createRequestKey } from "@/lib/request-key";
 import Link from "next/link";
 import { type FormEvent, useRef, useState } from "react";
 import { ApiError, apiRequest, type ApiEnvelope } from "@/lib/api-client";
@@ -52,7 +53,7 @@ export function AssessmentForm({ locale, source }: { locale: Locale; source: str
     };
     const payload = consultationPayload(fields, locale, source, mobile);
     const serialized = JSON.stringify(payload);
-    if (requestKey.current?.payload !== serialized) requestKey.current = { payload: serialized, key: crypto.randomUUID() };
+    if (requestKey.current?.payload !== serialized) requestKey.current = { payload: serialized, key: createRequestKey() };
     setStatus("submitting"); setError("");
     try {
       const response = await apiRequest<ApiEnvelope<Receipt>>("/consultation-requests", { method: "POST", headers: { "Idempotency-Key": requestKey.current.key }, body: payload });

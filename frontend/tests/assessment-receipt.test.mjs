@@ -1,3 +1,4 @@
+import { createRequestKey } from "../lib/request-key.ts";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
@@ -17,6 +18,7 @@ function setup({ copyFails = false, submitFails = false } = {}) {
     navigator: { clipboard: { writeText: async value => { if (copyFails) throw new Error("Denied"); copied.push(value); } } },
     FormData: class { get(key) { return { fullName: "Test Applicant", mobile: "09120000000", privacyConsent: "on", contactConsent: "on" }[key] ?? ""; } },
     require(name) {
+      if (name === "@/lib/request-key") return { createRequestKey: () => createRequestKey({ getRandomValues: crypto.getRandomValues.bind(crypto) }) };
       if (name === "react") return {
         useState: initial => { const i = cursor++; if (!(i in state)) state[i] = initial; return [state[i], value => { state[i] = value; }]; },
         useRef: initial => refs[refCursor++] ??= { current: initial },

@@ -1,3 +1,4 @@
+import { createRequestKey } from "../lib/request-key.ts";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
@@ -15,6 +16,7 @@ function setup(mobile, fail = false, sourcePage) {
     module, exports: module.exports, Date, crypto: { randomUUID: () => "same-retry-key" },
     FormData: class { get(key) { return { firstName: " Ali ", lastName: " Ahmadi ", mobile, occupation: "Student", contactTime: "Morning", privacyConsent: "on", contactConsent: "on" }[key]; } },
     require(name) {
+      if (name === "@/lib/request-key") return { createRequestKey };
       if (name === "react") return { useId: () => "form", useRef: () => ref, useState: (value) => [value, () => {}] };
       if (name === "react/jsx-runtime") return { jsx: (type, props) => ({ type, props }), jsxs: (type, props) => ({ type, props }) };
       if (name === "next/link") return { default: () => null };
