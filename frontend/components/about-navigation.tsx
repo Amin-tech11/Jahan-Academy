@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import styles from "./about-page.module.css";
 
-const sections = ["story", "purpose", "values", "journey", "questions"];
+const sections = ["story", "purpose", "values", "journey"];
 
 export function AboutNavigation({ labels, title }: { labels: string[]; title: string }) {
   const [active, setActive] = useState("story");

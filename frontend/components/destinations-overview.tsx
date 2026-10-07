@@ -55,7 +55,7 @@ export function DestinationsOverview({ locale }: { locale: Locale }) {
     </section>
     <div className={`shell ${styles.guide}`}>
       <div className={styles.guideContent}>
-        <DestinationsNavigation title={t("راهنمای مقصدهای تحصیلی جهان", "A guide to study destinations worldwide")} items={labels.map((label, index) => ({ id: sectionIds[index], label }))} />
+        <DestinationsNavigation title={t("راهنمای مقصدهای تحصیلی جهان", "A guide to study destinations worldwide")} items={labels.map((label, index) => ({ id: sectionIds[index], label })).filter(item => item.id !== "destination-faq")} />
         <div className={styles.intro}><p>{c.intro} {c.overviewText}</p></div>
         <section className={styles.section} id={sectionIds[0]}><h2>{c.collectionTitle}</h2><DestinationsExplorer locale={locale} /></section>
         <DestinationDecisionGuide locale={locale} />
