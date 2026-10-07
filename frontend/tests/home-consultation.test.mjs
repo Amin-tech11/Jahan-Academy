@@ -56,3 +56,9 @@ test("home form sends normalized contact details, consents and preferred time wi
   assert.equal(consents.length, 2);
   assert.equal(consents.every((label) => label.props.children[0].props.required), true);
 });
+
+test("about consultation records its own source page", async () => {
+  const app = setup("09120000000", false, "/en/about#about-consultation");
+  await app.submit();
+  assert.equal(app.calls[0].options.body.source.pageUrl, "/en/about#about-consultation");
+});
