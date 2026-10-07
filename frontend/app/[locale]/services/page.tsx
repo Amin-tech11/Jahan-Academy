@@ -1,3 +1,4 @@
+import { PanelConsultationCallout } from "@/components/panel-consultation-callout";
 import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -107,7 +108,8 @@ export default async function ServicesPage({ params }: PageProps) {
           </div>
         </section>
 
-        <div className="services-list" aria-label={copy.detailsLabel}>
+        <div className="services-container"><PanelConsultationCallout locale={locale} panel="services" /></div>
+<div className="services-list" aria-label={copy.detailsLabel}>
           {copy.services.map((service) => <section className="services-feature" id={service.id} key={service.id} aria-labelledby={`${service.id}-title`}>
             <div className="services-container services-feature__grid">
               <div className="services-feature__art">

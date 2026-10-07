@@ -1,3 +1,4 @@
+import { PanelConsultationCallout } from "@/components/panel-consultation-callout";
 
 import Image from "next/image";
 
@@ -57,7 +58,8 @@ export function DestinationsOverview({ locale }: { locale: Locale }) {
       <div className={styles.guideContent}>
         <DestinationsNavigation title={t("راهنمای مقصدهای تحصیلی جهان", "A guide to study destinations worldwide")} items={labels.map((label, index) => ({ id: sectionIds[index], label })).filter(item => item.id !== "destination-faq")} />
         <div className={styles.intro}><p>{c.intro} {c.overviewText}</p></div>
-        <section className={styles.section} id={sectionIds[0]}><h2>{c.collectionTitle}</h2><DestinationsExplorer locale={locale} /></section>
+        <PanelConsultationCallout locale={locale} panel="destinations" />
+<section className={styles.section} id={sectionIds[0]}><h2>{c.collectionTitle}</h2><DestinationsExplorer locale={locale} /></section>
         <DestinationDecisionGuide locale={locale} />
         <section className={`${styles.section} ${styles.faq}`} id={sectionIds[3]}><div className="home-faq__grid"><div className="home-faq__intro"><h2>{labels[3]}</h2></div><HomeFaq items={c.faqs.map(([question, answer]) => ({ question, answer }))} /></div></section>
       </div>

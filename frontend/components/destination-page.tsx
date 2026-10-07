@@ -1,4 +1,5 @@
 "use client";
+import { PanelConsultationCallout } from "@/components/panel-consultation-callout";
 
 import Image from "next/image";
 import { DestinationConsultation } from "./destination-consultation";
@@ -95,7 +96,8 @@ export function DestinationPage({ destination: d, locale }: { destination: Desti
       <div data-destination-motion="side"><h2>{t("جایی برای رشد ایده‌های شما", "Give your ideas room to grow")}</h2><p>{d.academics[locale]}</p><ul className={styles.checklist}><li>{t("انتخاب دانشگاه متناسب با هدف تحصیلی", "Choose a university that fits your goals")}</li><li>{t("بررسی زبان، پیش‌نیازها و محتوای دوره", "Review language, prerequisites and course content")}</li><li>{t("آماده‌سازی یک مسیر شخصی برای اپلای", "Build an application plan around your background")}</li></ul></div>
     </section>
 
-    <section id="universities" data-destination-section className={`${styles.section} ${styles.universitySection}`}><div className={styles.container}>
+    <div className={styles.container}><PanelConsultationCallout locale={locale} panel="destination" subject={d.name[locale]} /></div>
+<section id="universities" data-destination-section className={`${styles.section} ${styles.universitySection}`}><div className={styles.container}>
       <div className={styles.sectionHeading} data-destination-motion="up"><div><h2>{t(`دانشگاه‌های ${d.name.fa} را بشناسید`, `Discover universities in ${d.name.en}`)}</h2></div></div>
       <div className={styles.universityGrid}>{universities.map((university, index) => <article data-destination-motion="up" data-destination-delay={index * 60} className={styles.universityCard} key={university.slug}>
         <div className={styles.cardPhoto}><Image src={university.image} alt={university.name} fill sizes="(max-width: 760px) 100vw, 33vw" /></div>

@@ -7,6 +7,7 @@ import destinations from "./destinations-overview.module.css";
 import styles from "./universities-motion.module.css";
 
 const shared: readonly MotionGroup[] = [
+  [".panel-consultation-callout", "up", 0],
   [".home-faq__intro, .home-closing__heading", "up", 0],
   [".home-faq__item", "up", 60],
   [".home-closing__image", "left", 0],

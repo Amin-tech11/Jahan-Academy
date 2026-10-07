@@ -1,3 +1,4 @@
+import { PanelConsultationCallout } from "@/components/panel-consultation-callout";
 import Image from "next/image";
 import Link from "next/link";
 import { SiteShell } from "@/components/site-shell";
@@ -131,7 +132,8 @@ export function UniversityInfoPage({ university: u, locale }: { university: Univ
       </div>
     </header>
     <UniversityGallery photos={u.photos} name={u.name[locale]} locale={locale} />
-    <div className={styles.contentGrid}>
+    <PanelConsultationCallout locale={locale} panel="university" subject={u.name[locale]} />
+<div className={styles.contentGrid}>
       <UniversityTabs locale={locale} overview={overview} features={features} location={location} />
       <aside className={styles.sidebar} aria-label={fa ? "مشخصات دانشگاه" : "Institution details"}>
         <section className={styles.factCard}><h2>{fa ? "مشخصات دانشگاه" : "Institution details"}</h2><dl>{facts.map((fact) => <div key={fact.label}><dt>{fact.label}</dt><dd dir="auto">{fact.value}</dd></div>)}</dl></section>

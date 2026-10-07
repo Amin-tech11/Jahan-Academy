@@ -1,3 +1,4 @@
+import { PanelConsultationCallout } from "@/components/panel-consultation-callout";
 import Image from "next/image";
 import Link from "next/link";
 import { SiteShell } from "@/components/site-shell";
@@ -86,7 +87,7 @@ export function AboutPage({ locale }: { locale: Locale }) {
             <h3>{item.title}</h3><p>{item.text}</p>
           </article>)}</div>
         </section>
-        <section className={styles.cta} aria-labelledby="consultation-title"><span className={styles.ctaMark} aria-hidden="true"><AboutIcon name="conversation" /></span><div><h2 id="consultation-title">{c.endTitle}</h2><p>{c.endText}</p></div><div className={styles.ctaAction}><Link className={styles.primary} href={consultation}>{c.cta}<span aria-hidden="true">{locale === "fa" ? "↖" : "↗"}</span></Link></div></section>
+        <PanelConsultationCallout locale={locale} panel="about" />
         <section id="values" className={styles.section} aria-labelledby="values-title"><div className={styles.sectionHeader}><div><h2 id="values-title">{brand.valuesTitle}</h2></div><p>{c.valuesIntro}</p></div>
           <div className={styles.valuesGrid}>{brand.values.map((value, i) => <article className={styles.valueCard} key={value.title}><div className={styles.valueTop}><span className={styles.icon}><AboutIcon name={valueIcons[i]} /></span><span className={styles.cardNumber}>{number(i + 1)}</span></div><h3>{value.title}</h3><p>{value.text}</p></article>)}</div>
         </section>
