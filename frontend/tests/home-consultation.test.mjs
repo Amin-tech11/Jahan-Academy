@@ -6,7 +6,7 @@ import vm from "node:vm";
 const require = createRequire(import.meta.url);
 const ts = require("typescript");
 const source = readFileSync(new URL("../components/home-consultation.tsx", import.meta.url), "utf8");
-function setup(mobile, fail = false) {
+function setup(mobile, fail = false, sourcePageUrl) {
   const calls = [];
   const ref = { current: null };
   const module = { exports: {} };
@@ -23,13 +23,18 @@ function setup(mobile, fail = false) {
       throw new Error(name);
     },
   });
-  const form = module.exports.HomeConsultation({ locale: "en" });
+  const form = module.exports.HomeConsultation({ locale: "en", sourcePageUrl });
   return { calls, submit: () => form.props.onSubmit({ preventDefault() {}, currentTarget: {} }), form };
 }
 test("invalid mobile prevents consultation submission", async () => {
   const app = setup("invalid");
   await app.submit();
   assert.equal(app.calls.length, 0);
+});
+test("about consultation records its own page as the request source", async () => {
+  const app = setup("09120000000", false, "/en/about#about-consultation");
+  await app.submit();
+  assert.equal(app.calls[0].options.body.source.pageUrl, "/en/about#about-consultation");
 });
 test("home form sends normalized contact details, consents and preferred time with stable retry key", async () => {
   const app = setup("09120000000", true);

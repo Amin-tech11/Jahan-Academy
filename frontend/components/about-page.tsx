@@ -6,11 +6,14 @@ import { aboutContent } from "@/lib/about-content";
 import type { Locale } from "@/lib/site-content";
 import styles from "./about-page.module.css";
 import { HomeFaq } from "./home-faq";
+import { HomeConsultation } from "./home-consultation";
 import { AboutNavigation } from "./about-navigation";
 
 const copy = {
   fa: {
     label: "درباره جهان آکادمی",
+    closingTitle: "داستان مسیر شما را با هم آغاز کنیم",
+    closingText: "اکنون که با نگاه جهان آکادمی آشنا شدید، از هدف‌ها و دغدغه‌های خود برای ما بگویید. در یک مشاوره رایگان، شرایط شما را می‌شناسیم و درباره قدم بعدی مسیرتان گفت‌وگو می‌کنیم.",
     title: "جهانی از فرصت،", accent: "همراهی برای آیندهٔ شما.",
     subtitle: "ما کنار شما هستیم تا مسیر تحصیل در خارج از کشور را روشن‌تر ببینید و قدم بعدی را آگاهانه بردارید.",
     cta: "درخواست مشاوره رایگان", imageAlt: "نمایی الهام‌بخش از مسیر ورود به محوطهٔ دانشگاه",
@@ -28,6 +31,8 @@ const copy = {
   },
   en: {
     label: "About Jahan Academy",
+    closingTitle: "Let’s begin your next chapter together",
+    closingText: "Now that you know our approach, tell us about your goals and concerns. In a free consultation, we will get to know your circumstances and discuss the next step in your journey.",
     title: "A world of opportunity.", accent: "A partner for your future.",
     subtitle: "We are here to help you understand your study-abroad options and take an informed next step.",
     cta: "Request free consultation", imageAlt: "An inspiring view of a path leading into a university campus",
@@ -108,6 +113,15 @@ export function AboutPage({ locale }: { locale: Locale }) {
         <section id="questions" className={styles.faq} aria-labelledby="faq-title"><div className="home-faq__grid"><div className="home-faq__intro"><h2 id="faq-title">{c.faqTitle}</h2></div><HomeFaq items={brand.faqs} /></div></section>
 
       </div>
+      <section className={`home-closing ${styles.closing}`} id="about-consultation" aria-labelledby="about-closing-title">
+        <div className={styles.container}>
+          <header className="home-closing__heading"><h2 id="about-closing-title">{c.closingTitle}</h2><p>{c.closingText}</p></header>
+          <div className="home-closing__layout">
+            <div className="home-closing__image"><Image src="/journey/profile-assessment.png" alt={locale === "fa" ? "گفت‌وگو و مشاوره درباره مسیر تحصیلی" : "A consultation about your study pathway"} fill sizes="(max-width: 800px) 100vw, 50vw" /></div>
+            <HomeConsultation locale={locale} sourcePageUrl={`/${locale}/about#about-consultation`} />
+          </div>
+        </div>
+      </section>
     </main>
   </SiteShell></div>;
 }

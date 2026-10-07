@@ -6,7 +6,7 @@ import { apiRequest, ApiError, type ApiEnvelope } from "@/lib/api-client";
 import { normalizeMobile } from "@/lib/consultation";
 import type { Locale } from "@/lib/site-content";
 
-export function HomeConsultation({ locale }: { locale: Locale }) {
+export function HomeConsultation({ locale, sourcePageUrl }: { locale: Locale; sourcePageUrl?: string }) {
   const id = useId();
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [error, setError] = useState("");
@@ -24,7 +24,7 @@ export function HomeConsultation({ locale }: { locale: Locale }) {
       mobile, occupation: String(form.get("occupation")), desiredCountryText: t("هنوز انتخاب نشده؛ بررسی در مشاوره", "Undecided; discuss during consultation"),
       intakeTerm: "unknown", startYear: new Date().getUTCFullYear(),
       message: t("زمان مناسب تماس: ", "Preferred contact time: ") + String(form.get("contactTime")),
-      locale, source: { pageUrl: `/${locale}/#home-consultation` },
+      locale, source: { pageUrl: sourcePageUrl ?? `/${locale}/#home-consultation` },
       privacyConsent: form.get("privacyConsent") === "on", contactConsent: form.get("contactConsent") === "on", website: "",
     };
     const serialized = JSON.stringify(payload);
