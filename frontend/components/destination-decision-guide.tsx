@@ -26,7 +26,7 @@ export function DestinationDecisionGuide({ locale }: { locale: Locale }) {
       <div className={styles.decisionCriteria}>{criteria.map(([title, text], index) => <article className={`${styles.card} ${styles.typeCard}`} key={title}><span className={styles.typeIcon}><DestinationCriterionIcon index={index} /></span><h3>{title}</h3><p>{text}</p></article>)}</div>
     </section>
     <section id="destination-comparison" className={styles.section} aria-labelledby="destination-comparison-title">
-      <div className={styles.decisionHeading}><h2 id="destination-comparison-title">{t("نگاهی کنار هم به کشورها", "Countries at a glance")}</h2><p>{t("نام کشور، پایتخت و زبان‌های رایج را کنار هم ببینید و برای آشنایی بیشتر، معرفی مقصد را بخوانید.", "View country names, capitals and common languages side by side, then read the destination introductions.")}</p></div>
+      <div className={styles.decisionHeading}><h2 id="destination-comparison-title">{t("نگاهی کنار هم به کشورها", "Countries at a glance")}</h2></div>
       <DestinationComparison locale={locale} />
     </section>
   </>;
