@@ -14,7 +14,7 @@ export function BlogPage({ locale }: { locale: Locale; initialType?: BlogFilter 
   const posts = selectBlogPosts([...articles, ...blogGuides], locale);
   const sections = ["news", "article", "guide"] as const;
   return <SiteShell locale={locale}><PublicPanelsMotion panel="blog" className="journal-page">
-    <section className="journal-campus-hero" aria-label={copy.title}><Image src="/blog/classical-campus.png" alt="" fill sizes="100vw" preload/><div aria-hidden="true" className="journal-campus-overlay"/><p dir="ltr">JAHAN ACADEMY</p></section>
+    <section className="journal-campus-hero" aria-label={copy.title}><Image src="/blog/library-hero.webp" alt="" fill sizes="100vw" preload/><div aria-hidden="true" className="journal-campus-overlay"/><p dir="ltr">JAHAN ACADEMY</p></section>
     <div className="shell">
       <div className="journal-guide-content">
         <BlogNavigation title={copy.title} items={sections.map(type => ({ id: `journal-${type}`, label: copy[type] }))}/>

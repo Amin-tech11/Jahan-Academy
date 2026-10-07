@@ -32,7 +32,7 @@ export const siteCopy: Localized<{
 }> = {
   fa: {
     brandTagline: "تحصیل، رشد، تعلق",
-    nav: [{ href: "/countries", label: "مقصدها" }, { href: "/services", label: "خدمات" }, { href: "/universities", label: "دانشگاه‌ها" }, { href: "/articles", label: "مقالات" }, { href: "/about", label: "درباره ما" }],
+    nav: [{ href: "/countries", label: "مقصدها" }, { href: "/services", label: "خدمات" }, { href: "/universities", label: "دانشگاه‌ها" }, { href: "/articles", label: "مجله" }, { href: "/about", label: "درباره ما" }],
       consultation: "تکمیل فرم ارزیابی", heroEyebrow: "برای قدم بعدی آماده‌اید؟",
       heroTitle: "فراتر از مرز ها\nبه سوی آینده ای روشن",
       heroText: "برای تحقق رؤیاهای تحصیلی‌تان، از نخستین گام تا انتخاب مسیر مناسب، با مشاوره‌ای تخصصی همراه و پشتیبان شما خواهیم بود.",
@@ -45,7 +45,7 @@ export const siteCopy: Localized<{
   },
   en: {
     brandTagline: "Study · Grow · Belong",
-    nav: [{ href: "/countries", label: "Destinations" }, { href: "/services", label: "Services" }, { href: "/universities", label: "Universities" }, { href: "/articles", label: "Articles" }, { href: "/about", label: "About" }],
+    nav: [{ href: "/countries", label: "Destinations" }, { href: "/services", label: "Services" }, { href: "/universities", label: "Universities" }, { href: "/articles", label: "Journal" }, { href: "/about", label: "About" }],
       consultation: "Complete assessment form", heroEyebrow: "Ready for your next step?",
       heroTitle: "Beyond borders\nToward a brighter future",
       heroText: "To help you pursue your academic aspirations, we will stand beside you with expert guidance from the first step to choosing the right path.",
