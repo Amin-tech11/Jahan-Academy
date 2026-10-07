@@ -1,8 +1,29 @@
 import assert from "node:assert/strict";
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { test } from "node:test";
 import { destinationOverviews, filterDestinations, normalizeDestinationSearch } from "../lib/destinations-overview.ts";
 import { countryGuides, headerDestinations } from "../lib/site-content.ts";
+import { destinationResources } from "../lib/destination-resources.ts";
+
+test("public destination overview stays within lead-first content scope", () => {
+  for (const file of ["destinations-overview.tsx", "destination-decision-guide.tsx", "destination-decision-tools.tsx"]) {
+    const source = readFileSync(new URL(`../components/${file}`, import.meta.url), "utf8");
+    assert.doesNotMatch(source, /destination-planning|destination-budget|destination-readiness|دوره|شهریه|بورسیه|مهلت درخواست|شرایط پذیرش|\b(?:tuition|deadline|course|program)\b/i, file);
+  }
+  for (const country of destinationOverviews) {
+    assert.doesNotMatch(country.intro.fa + country.intro.en, /دوره|شهریه|\b(?:course|program|tuition|deadline)\b/i);
+  }
+});
+
+test("each comparison country has a named HTTPS study portal without embedded credentials", () => {
+  assert.deepEqual(Object.keys(destinationResources).sort(), destinationOverviews.map(country => country.slug).sort());
+  for (const source of Object.values(destinationResources)) {
+    const url = new URL(source.url);
+    assert.equal(url.protocol, "https:");
+    assert.equal(url.username + url.password, "");
+    assert.ok(source.name.trim());
+  }
+});
 
 test("overview covers every navigation country and points to existing guides and local imagery", () => {
   assert.ok(existsSync(new URL("../public/destinations/world-map-hero-wide.png", import.meta.url)));
