@@ -82,6 +82,14 @@
 .home-university-card { display: flex; flex-direction: column; min-width: 0; overflow: hidden; border: 1px solid var(--color-border); border-radius: .85rem; background: #fff; box-shadow: 0 6px 18px rgb(23 58 110 / 4%); }
 .home-university-card__media { position: relative; aspect-ratio: 1.96; overflow: hidden; background: var(--color-page); }
 .home-university-card__media img { object-fit: cover; }
+.home-page .home-university-card { transition: border-color .25s ease, box-shadow .25s ease; }
+.home-page .home-university-card__media img { transition: transform .55s cubic-bezier(.25,.1,.25,1); }
+.home-page .home-university-card:hover, .home-page .home-university-card:focus-visible { border-color: var(--color-brand-900); box-shadow: 0 0 0 1px var(--color-brand-900); }
+.home-page .home-university-card:hover .home-university-card__media img, .home-page .home-university-card:focus-visible .home-university-card__media img { transform: scale(1.045); }
+@media (prefers-reduced-motion: reduce) {
+  .home-page .home-university-card, .home-page .home-university-card__media img { transition: none; }
+  .home-page .home-university-card:hover .home-university-card__media img, .home-page .home-university-card:focus-visible .home-university-card__media img { transform: none; }
+}
 .home-university-card__body { flex: 1; padding: 1.25rem 1.35rem 1.75rem; text-align: start; }
 .home-university-card__mark { position: relative; display: grid; width: 4rem; height: 4rem; place-items: center; margin: -2.875rem auto 1.1rem 0; padding: .5rem; overflow: hidden; border: 1px solid var(--color-border); border-radius: .65rem; color: var(--color-brand-900); background: #fff; font-family: Georgia, serif; font-size: 1.25rem; font-weight: 700; }
 .home-university-card__mark--dark { background: var(--color-brand-900); border-color: var(--color-brand-900); }
