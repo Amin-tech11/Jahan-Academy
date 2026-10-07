@@ -81,7 +81,7 @@ export function AboutPage({ locale }: { locale: Locale }) {
         <AboutNavigation labels={c.nav} title={locale === "fa" ? "با جهان آکادمی آشنا شوید" : "Get to know Jahan Academy"} />
         <section id="story" className={styles.story} aria-labelledby="story-title">
           <div><span className={styles.eyebrow}>{c.storyLabel}</span><h2 id="story-title">{c.storyTitle}</h2><p className={styles.quote}>{c.quote}</p></div>
-          <div className={styles.prose}>{aboutContent[locale].paragraphs.map((paragraph, i) => <p key={i}>{paragraph.split(/(\*\*.*?\*\*)/g).map((part, j) => part.startsWith("**") ? <strong key={j}>{part.slice(2, -2)}</strong> : part)}</p>)}<Link className={styles.inlineLink} href={`/${locale}/services`}>{locale === "fa" ? "آشنایی با خدمات ما" : "Explore our services"}<span aria-hidden="true">{locale === "fa" ? "←" : "→"}</span></Link></div>
+          <div className={styles.prose}>{aboutContent[locale].paragraphs.map((paragraph, i) => <p key={i}>{paragraph.split(/(\*\*.*?\*\*)/g).map((part, j) => part.startsWith("**") ? <strong key={j}>{part.slice(2, -2)}</strong> : part)}</p>)}</div>
         </section>
       <section id="purpose" className={styles.purpose} aria-labelledby="purpose-title"><div>
         <div className={styles.purposeHeader}><div><span className={styles.eyebrow}>{c.purpose}</span><h2 id="purpose-title">{c.purposeTitle}</h2></div><span className={styles.compass} aria-hidden="true">✳</span></div>
