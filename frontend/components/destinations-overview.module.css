@@ -80,10 +80,15 @@
 .faq :global(.home-faq__question) { margin: 0; font: inherit; }
 .faq :global(.home-faq__item) p { margin: 0; color: var(--color-muted); font-size: .95rem; line-height: 2; }
 .consultation { margin-top: 56px; scroll-margin-top: var(--guide-scroll-offset, 240px); }
-.consultation :global(.home-closing__heading) h2 { font-size: clamp(1.5rem, 2.5vw, 2.25rem); line-height: 1.6; margin: 0; }
-.consultation :global(.home-closing__heading) p { margin: .8rem auto 0; max-width: 45rem; line-height: 1.9; }
-.consultation :global(.home-closing__card) h3 { margin: 0 0 .6rem; color: var(--color-text); font-size: 1.3rem; line-height: 1.6; }
-.consultation :global(.home-closing__card) p { margin: 0 0 1.75rem; font-size: .85rem; line-height: 1.9; }
+.consultation { font-family: "Vazirmatn Variable", sans-serif; }
+.consultation :global(.home-closing__heading) h2 { margin: 0; color: var(--color-brand-900); font-size: clamp(24px, 2.5vw, 36px); font-weight: 500; line-height: 1.6; }
+.consultation :global(.home-closing__heading) p { margin: 14px auto 0; max-width: 45rem; color: var(--color-muted); font-size: 15px; font-weight: 400; line-height: 1.9; }
+.consultation :global(.home-closing__card) h3 { margin: 0 0 10px; color: var(--color-text); font-size: 21px; font-weight: 700; line-height: 1.6; text-align: center; }
+.consultation :global(.home-closing__card) p { margin: 0 0 28px; color: var(--color-muted); font-size: 13px; font-weight: 400; line-height: 1.9; text-align: center; }
+.consultation :global(.home-consultation__fields) label { color: var(--color-text); font-size: 13px; font-weight: 650; }
+.consultation :global(.home-consultation__fields) input, .consultation :global(.home-consultation__fields) select { font-family: inherit; font-size: 13px; font-weight: 400; }
+.consultation :global(.home-consultation__consent) { color: var(--color-muted); font-size: 12px; font-weight: 400; line-height: 1.9; }
+.consultation :global(.ui-button) { font-family: inherit; font-size: 14px; font-weight: 750; }
 .consultation :global(.home-closing__card) p[role="alert"] { color: #ad3030; }
 @media (max-width: 900px) { .cards { grid-template-columns: 1fr; } }
 
