@@ -21,7 +21,7 @@ export function PanelConsultationCallout({ locale, panel, subject }: { locale: L
       : content[fa ? 0 : 2];
   return <section className={`${styles.card} panel-consultation-callout`} aria-label={fa ? "مشاوره دربارهٔ مسیر شما" : "Discuss your study path"}>
     <span className={styles.icon} aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a2 2 0 0 1-2 2H9l-4 4V4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2Z" /><path d="M9 6h8M9 9.5h5M2 8v12h12l4 2v-5" /></svg></span>
-    <div className={styles.copy}><span className={styles.eyebrow}>{fa ? "یک گفت‌وگو، یک شروع روشن‌تر" : "A conversation. A clearer beginning."}</span><h2>{title}</h2><p>{content[fa ? 1 : 3]}</p></div>
+    <div className={styles.copy}><h2>{title}</h2><p>{content[fa ? 1 : 3]}</p></div>
     <Link className={styles.button} href={`/${locale}/free-consultation?source=${panel}-midpage`}>{fa ? "دریافت مشاوره رایگان" : "Get a free consultation"}<span aria-hidden="true">{fa ? "←" : "→"}</span></Link>
   </section>;
 }
