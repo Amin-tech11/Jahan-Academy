@@ -2,6 +2,7 @@
 import Image from "next/image";
 
 import { SiteShell } from "@/components/site-shell";
+import { PublicPanelsMotion } from "./public-panels-motion";
 import { DestinationDecisionGuide } from "@/components/destination-decision-guide";
 import { DestinationsExplorer } from "@/components/destinations-explorer";
 import { DestinationsNavigation } from "@/components/destinations-overview-interactive";
@@ -46,7 +47,7 @@ export function DestinationsOverview({ locale }: { locale: Locale }) {
   const t = (persian: string, english: string) => fa ? persian : english;
   const labels = [t("مقصدهای تحصیلی", "Study destinations"), t("شناخت مقصد", "Explore destinations"), t("کشورها در یک نگاه", "Countries at a glance"), t("پرسش‌های متداول", "Frequently asked questions")];
 
-  return <SiteShell locale={locale}><main className={styles.page}>
+  return <SiteShell locale={locale}><PublicPanelsMotion panel="destinations" className={styles.page}>
     <section className={styles.hero} aria-labelledby="destination-wordmark">
       <Image className={styles.heroArtwork} src="/destinations/world-map-hero-wide.png" alt={t("نقشه برجسته جهان با نورهای طلایی", "A raised world map illuminated in warm gold")} fill sizes="100vw" preload />
       <div className={styles.heroShade} aria-hidden="true" />
@@ -62,5 +63,5 @@ export function DestinationsOverview({ locale }: { locale: Locale }) {
       </div>
       <section className={`home-closing ${styles.consultation}`} id="destination-consultation" aria-labelledby="destination-closing-title"><header className="home-closing__heading"><h2 id="destination-closing-title">{c.ctaTitle}</h2><p>{c.ctaText}</p></header><div className="home-closing__layout"><div className="home-closing__image"><Image src="/journey/profile-assessment.png" alt={t("مشاوره انتخاب مقصد تحصیلی", "Study destination consultation")} fill sizes="(max-width: 800px) 100vw, 50vw" /></div><DestinationsConsultation locale={locale} /></div></section>
     </div>
-  </main></SiteShell>;
+  </PublicPanelsMotion></SiteShell>;
 }

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { PublicPanelsMotion } from "./public-panels-motion";
 import { BlogArchive } from "@/components/blog-archive";
 import { BlogNavigation } from "@/components/blog-navigation";
 import { BlogConsultation } from "@/components/blog-consultation";
@@ -12,7 +13,7 @@ export function BlogPage({ locale }: { locale: Locale; initialType?: BlogFilter 
   const copy = blogCopy[locale];
   const posts = selectBlogPosts([...articles, ...blogGuides], locale);
   const sections = ["news", "article", "guide"] as const;
-  return <SiteShell locale={locale}><main className="journal-page">
+  return <SiteShell locale={locale}><PublicPanelsMotion panel="blog" className="journal-page">
     <section className="journal-campus-hero" aria-label={copy.title}><Image src="/blog/classical-campus.png" alt="" fill sizes="100vw" preload/><div aria-hidden="true" className="journal-campus-overlay"/><p dir="ltr">JAHAN ACADEMY</p></section>
     <div className="shell">
       <div className="journal-guide-content">
@@ -23,5 +24,5 @@ export function BlogPage({ locale }: { locale: Locale; initialType?: BlogFilter 
       <section className="journal-consultation" id="journal-consultation"><div className="home-closing__layout"><div className="home-closing__image"><Image src="/journey/profile-assessment.png" alt={copy.help} fill sizes="(max-width:800px) 100vw, 50vw"/></div><BlogConsultation locale={locale}/></div></section>
       <p className="journal-preview-note">{copy.note}</p>
     </div>
-  </main></SiteShell>;
+  </PublicPanelsMotion></SiteShell>;
 }

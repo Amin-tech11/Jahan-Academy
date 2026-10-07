@@ -9,6 +9,7 @@ import { HomeFaq } from "./home-faq";
 import { HomeConsultation } from "./home-consultation";
 import { AboutNavigation } from "./about-navigation";
 import { AboutIcon, valueIcons, journeyIcons } from "./about-icon";
+import { PublicPanelsMotion } from "./public-panels-motion";
 
 const copy = {
   fa: {
@@ -58,7 +59,7 @@ export function AboutPage({ locale }: { locale: Locale }) {
   const number = (n: number) => new Intl.NumberFormat(locale, { minimumIntegerDigits: 2 }).format(n);
   return <div className={styles.theme}><SiteShell locale={locale}>
     <a className={styles.skip} href="#about-main">{c.skip}</a>
-    <main className={styles.page} id="about-main">
+    <PublicPanelsMotion panel="about" className={styles.page} id="about-main">
       <section className={styles.banner} aria-label={c.label}>
         <Image src="/home-hero-documentary.png" alt={c.imageAlt} fill sizes="100vw" preload />
         <div className={styles.bannerOverlay} />
@@ -102,6 +103,6 @@ export function AboutPage({ locale }: { locale: Locale }) {
           </div>
         </div>
       </section>
-    </main>
+    </PublicPanelsMotion>
   </SiteShell></div>;
 }
