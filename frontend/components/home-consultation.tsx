@@ -1,12 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useId, useRef, useState, type FormEvent } from "react";
+import { useId, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { apiRequest, ApiError, type ApiEnvelope } from "@/lib/api-client";
 import { normalizeMobile } from "@/lib/consultation";
 import type { Locale } from "@/lib/site-content";
 
-export function HomeConsultation({ locale, sourcePageUrl }: { locale: Locale; sourcePageUrl?: string }) {
+export function HomeConsultation({ locale, sourcePageUrl, heading }: { locale: Locale; sourcePageUrl?: string; heading?: ReactNode }) {
   const id = useId();
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [error, setError] = useState("");
@@ -40,7 +40,7 @@ export function HomeConsultation({ locale, sourcePageUrl }: { locale: Locale; so
   }
   if (status === "success") return <div className="home-closing__card" role="status"><h3>{t("درخواست شما ثبت شد", "Your request has been received")}</h3><p>{t("تیم جهان آکادمی برای هماهنگی مشاوره با شما تماس می‌گیرد.", "Jahan Academy will contact you to arrange your consultation.")}</p><strong>{t("کد پیگیری: ", "Reference: ")}{reference}</strong></div>;
   return <form className="home-closing__card home-consultation__form" onSubmit={submit} aria-label={t("درخواست مشاوره تخصصی رایگان", "Request a free consultation")}>
-    <h3>{t("درخواست مشاوره تخصصی رایگان", "Request a free consultation")}</h3>
+    <h3>{heading ?? t("درخواست مشاوره تخصصی رایگان", "Request a free consultation")}</h3>
     <p>{t("اطلاعات کوتاه زیر را بنویسید تا برای هماهنگی مشاوره با شما تماس بگیریم.", "Share a few details so we can contact you to arrange a consultation.")}</p>
     <div className="home-consultation__fields">
       <label htmlFor={id + "-first"}>{t("نام *", "First name *")}<input id={id + "-first"} name="firstName" required maxLength={100} autoComplete="given-name" /></label>

@@ -98,7 +98,7 @@ export function AboutPage({ locale }: { locale: Locale }) {
           <header className="home-closing__heading"><h2 id="about-closing-title">{c.closingTitle}</h2><p>{c.closingText}</p></header>
           <div className="home-closing__layout">
             <div className="home-closing__image"><Image src="/journey/profile-assessment.png" alt={locale === "fa" ? "گفت‌وگو و مشاوره درباره مسیر تحصیلی" : "A consultation about your study pathway"} fill sizes="(max-width: 800px) 100vw, 50vw" /></div>
-            <HomeConsultation locale={locale} sourcePageUrl={`/${locale}/about#about-consultation`} />
+            <HomeConsultation locale={locale} sourcePageUrl={`/${locale}/about#about-consultation`} heading={locale === "fa" ? <>درخواست مشاوره تخصصی <span className={styles.freeAccent}>رایگان</span></> : <>Request a <span className={styles.freeAccent}>free</span> consultation</>} />
           </div>
         </div>
       </section>
