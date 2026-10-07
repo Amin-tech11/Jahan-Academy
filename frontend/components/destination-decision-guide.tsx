@@ -1,3 +1,4 @@
+import { PanelConsultationCallout } from "./panel-consultation-callout";
 import type { Locale } from "@/lib/site-content";
 import { DestinationComparison } from "./destination-decision-tools";
 import styles from "./destinations-overview.module.css";
@@ -25,6 +26,7 @@ export function DestinationDecisionGuide({ locale }: { locale: Locale }) {
       <div className={styles.decisionHeading}><h2 id="destination-criteria-title">{t("معیارهای شناخت مقصد", "Getting to know a destination")}</h2></div>
       <div className={styles.decisionCriteria}>{criteria.map(([title, text], index) => <article className={`${styles.card} ${styles.typeCard}`} key={title}><span className={styles.typeIcon}><DestinationCriterionIcon index={index} /></span><h3>{title}</h3><p>{text}</p></article>)}</div>
     </section>
+    <PanelConsultationCallout locale={locale} panel="destinations" />
     <section id="destination-comparison" className={styles.section} aria-labelledby="destination-comparison-title">
       <div className={styles.decisionHeading}><h2 id="destination-comparison-title">{t("نگاهی کنار هم به کشورها", "Countries at a glance")}</h2></div>
       <DestinationComparison locale={locale} />

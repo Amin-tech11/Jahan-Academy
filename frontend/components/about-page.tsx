@@ -87,10 +87,10 @@ export function AboutPage({ locale }: { locale: Locale }) {
             <h3>{item.title}</h3><p>{item.text}</p>
           </article>)}</div>
         </section>
-        <PanelConsultationCallout locale={locale} panel="about" />
         <section id="values" className={styles.section} aria-labelledby="values-title"><div className={styles.sectionHeader}><div><h2 id="values-title">{brand.valuesTitle}</h2></div><p>{c.valuesIntro}</p></div>
           <div className={styles.valuesGrid}>{brand.values.map((value, i) => <article className={styles.valueCard} key={value.title}><div className={styles.valueTop}><span className={styles.icon}><AboutIcon name={valueIcons[i]} /></span><span className={styles.cardNumber}>{number(i + 1)}</span></div><h3>{value.title}</h3><p>{value.text}</p></article>)}</div>
         </section>
+        <PanelConsultationCallout locale={locale} panel="about" />
         <section id="journey" className={styles.section} aria-labelledby="journey-title"><div className={styles.sectionHeader}><h2 id="journey-title">{c.journeyTitle}</h2><p>{c.journeyIntro}</p></div><ol className={styles.steps}>{c.steps.map((step, i) => <li key={step.title}><span className={styles.stepNumber}>{new Intl.NumberFormat(locale).format(i + 1)}</span><span className={styles.stepIcon}><AboutIcon name={journeyIcons[i]} /></span><h3>{step.title}</h3><p>{step.text}</p></li>)}</ol></section>
       </div>
       <div className={styles.container}>

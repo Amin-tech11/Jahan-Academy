@@ -93,6 +93,7 @@ export function UniversityInfoPage({ university: u, locale }: { university: Univ
       <h3 className={styles.subheading}>{fa ? `چرا ${u.name.fa}؟` : `Why ${u.englishName}?`}</h3>
       <ul className={styles.reasonList}>{u.whyChoose.map((reason) => <li key={reason.title.en}><strong>{reason.title[locale]}:</strong> {reason.text[locale]}</li>)}</ul>
     </section>}
+    <PanelConsultationCallout locale={locale} panel="university" subject={u.name[locale]} />
     {!!u.notes?.length && <section className={styles.notesBox} aria-labelledby="university-notes-title">
       <h3 id="university-notes-title">{fa ? "نکات مهم" : "Important notes"}</h3>
       {u.notes.map((note) => <p key={note.title.en}><strong>{note.title[locale]}:</strong> {note.text[locale]}</p>)}
@@ -132,7 +133,6 @@ export function UniversityInfoPage({ university: u, locale }: { university: Univ
       </div>
     </header>
     <UniversityGallery photos={u.photos} name={u.name[locale]} locale={locale} />
-    <PanelConsultationCallout locale={locale} panel="university" subject={u.name[locale]} />
 <div className={styles.contentGrid}>
       <UniversityTabs locale={locale} overview={overview} features={features} location={location} />
       <aside className={styles.sidebar} aria-label={fa ? "مشخصات دانشگاه" : "Institution details"}>

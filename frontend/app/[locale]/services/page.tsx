@@ -108,9 +108,8 @@ export default async function ServicesPage({ params }: PageProps) {
           </div>
         </section>
 
-        <div className="services-container"><PanelConsultationCallout locale={locale} panel="services" /></div>
 <div className="services-list" aria-label={copy.detailsLabel}>
-          {copy.services.map((service) => <section className="services-feature" id={service.id} key={service.id} aria-labelledby={`${service.id}-title`}>
+          {copy.services.map((service, index) => <div key={service.id}><section className={`services-feature${index % 2 ? " services-feature--alternate" : ""}`} id={service.id} aria-labelledby={`${service.id}-title`}>
             <div className="services-container services-feature__grid">
               <div className="services-feature__art">
                 <Image className="services-feature__image" src={service.image} alt={service.imageAlt} fill sizes="(max-width: 900px) calc(100vw - 3rem), 600px" />
@@ -121,7 +120,9 @@ export default async function ServicesPage({ params }: PageProps) {
                 <ul>{service.points.map((point) => <li key={point}>{point}</li>)}</ul>
               </div>
             </div>
-          </section>)}
+          </section>
+          {index === Math.floor(copy.services.length / 2) - 1 && <div className="services-container"><PanelConsultationCallout locale={locale} panel="services" /></div>}
+          </div>)}
         </div>
       </div>
 
