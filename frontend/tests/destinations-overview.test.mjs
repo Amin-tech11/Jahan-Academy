@@ -4,15 +4,36 @@ import { test } from "node:test";
 import { destinationOverviews, filterDestinations, normalizeDestinationSearch } from "../lib/destinations-overview.ts";
 import { countryGuides, headerDestinations } from "../lib/site-content.ts";
 import { destinationResources } from "../lib/destination-resources.ts";
+import { destinationCountryFacts, countryFactsReviewedAt } from "../lib/destination-country-facts.ts";
 
 test("public destination overview stays within lead-first content scope", () => {
   for (const file of ["destinations-overview.tsx", "destination-decision-guide.tsx", "destination-decision-tools.tsx"]) {
     const source = readFileSync(new URL(`../components/${file}`, import.meta.url), "utf8");
-    assert.doesNotMatch(source, /destination-planning|destination-budget|destination-readiness|دوره|شهریه|بورسیه|مهلت درخواست|شرایط پذیرش|\b(?:tuition|deadline|course|program)\b/i, file);
+    assert.doesNotMatch(source, /destination-planning|destination-budget|destination-readiness|دوره|بورسیه|مهلت درخواست|شرایط پذیرش|\b(?:deadline|course|program)\b/i, file);
   }
   for (const country of destinationOverviews) {
     assert.doesNotMatch(country.intro.fa + country.intro.en, /دوره|شهریه|\b(?:course|program|tuition|deadline)\b/i);
   }
+});
+
+test("all overview countries have four bilingual, sourced country-level facts", () => {
+  assert.deepEqual(Object.keys(destinationCountryFacts).sort(), destinationOverviews.map(country => country.slug).sort());
+  assert.equal(countryFactsReviewedAt, "2026-10-07");
+  for (const facts of Object.values(destinationCountryFacts)) {
+    assert.deepEqual(Object.keys(facts).sort(), ["living", "stay", "tuition", "work"]);
+    for (const fact of Object.values(facts)) {
+      for (const locale of ["fa", "en"]) {
+        assert.ok(fact.value[locale].trim());
+        assert.ok(fact.note[locale].trim());
+      }
+      const url = new URL(fact.source);
+      assert.equal(url.protocol, "https:");
+      assert.equal(url.username + url.password, "");
+    }
+  }
+  const source = readFileSync(new URL("../components/destination-decision-tools.tsx", import.meta.url), "utf8");
+  assert.doesNotMatch(source, /<select|مقصد اول|مقصد دوم|#destination-consultation|useState/);
+  assert.match(source, /destinationOverviews\.map/);
 });
 
 test("each comparison country has a named HTTPS study portal without embedded credentials", () => {

@@ -41,7 +41,7 @@ export const destinationOverviews: DestinationOverview[] = [
   },
   {
     slug: "italy", name: { fa: "ایتالیا", en: "Italy" }, region: "europe",
-    image: "/destinations/italy.png", imageAlt: { fa: "نمایی از ایتالیا", en: "A view of Italy" },
+    image: "/destinations/italy-twilight.png", imageAlt: { fa: "کانال بزرگ ونیز و کلیسای سانتا ماریا دلا سالوته در غروب آبی", en: "Venice Grand Canal and Santa Maria della Salute at blue hour" },
     capital: { fa: "رم", en: "Rome" }, language: { fa: "ایتالیایی", en: "Italian" },
     intro: { fa: "تاریخ، فرهنگ و شهرهای دانشگاهی ایتالیا را کنار اولویت‌های تحصیلی و سبک زندگی خود قرار دهید.", en: "Consider Italy's history, culture and university cities alongside your academic and lifestyle priorities." },
   },
