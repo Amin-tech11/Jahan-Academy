@@ -93,10 +93,13 @@ export function AboutPage({ locale }: { locale: Locale }) {
           <div><h2 id="story-title">{c.storyTitle}</h2><p className={styles.quote}>{c.quote}</p></div>
           <div className={styles.prose}>{aboutContent[locale].paragraphs.map((paragraph, i) => <p key={i}>{paragraph.split(/(\*\*.*?\*\*)/g).map((part, j) => part.startsWith("**") ? <strong key={j}>{part.slice(2, -2)}</strong> : part)}</p>)}</div>
         </section>
-      <section id="purpose" className={styles.purpose} aria-labelledby="purpose-title"><div>
-        <div className={styles.purposeHeader}><div><h2 id="purpose-title">{c.purposeTitle}</h2></div><span className={styles.compass} aria-hidden="true">✳</span></div>
-        <div className={styles.purposeGrid}>{[{ title: brand.missionTitle, text: brand.missionText }, { title: brand.visionTitle, text: brand.visionText }].map((item, i) => <article key={item.title}><span className={styles.purposeNumber}>{number(i + 1)}</span><h3>{item.title}</h3><p>{item.text}</p></article>)}</div>
-      </div></section>
+        <section id="purpose" className={styles.purpose} aria-labelledby="purpose-title">
+          <div className={styles.sectionHeader}><h2 id="purpose-title">{c.purposeTitle}</h2></div>
+          <div className={styles.purposeGrid}>{[{ title: brand.missionTitle, text: brand.missionText }, { title: brand.visionTitle, text: brand.visionText }].map((item, i) => <article key={item.title} className={i === 1 ? styles.visionCard : styles.missionCard}>
+            <div className={styles.purposeCardHeader}><span className={styles.purposeIcon} aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">{i === 0 ? <><circle cx="16" cy="16" r="11" /><circle cx="16" cy="16" r="6" /><path d="m16 16 10-10m-5 0h5v5" /></> : <><path d="M3 23h26M8 23a8 8 0 0 1 16 0M16 4v5M5 11l3 3m19-3-3 3M3 28h26" /><path d="m12 18 4-4 4 4m-4-4v8" /></>}</svg></span><span className={styles.purposeNumber} aria-hidden="true">{number(i + 1)}</span></div>
+            <h3>{item.title}</h3><p>{item.text}</p>
+          </article>)}</div>
+        </section>
         <section id="values" className={styles.section} aria-labelledby="values-title"><div className={styles.sectionHeader}><div><h2 id="values-title">{brand.valuesTitle}</h2></div><p>{c.valuesIntro}</p></div>
           <div className={styles.valuesGrid}>{brand.values.map((value, i) => <article className={styles.valueCard} key={value.title}><div className={styles.valueTop}><span className={styles.icon}><Icon kind={i} /></span><span className={styles.cardNumber}>{number(i + 1)}</span></div><h3>{value.title}</h3><p>{value.text}</p></article>)}</div>
         </section>

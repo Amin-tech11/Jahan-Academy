@@ -65,7 +65,8 @@
 .sectionNav a[aria-current='location'] { background: var(--about-navy); color: white; }
 .sectionNav a:focus-visible { outline-offset: -3px; }
 .sectionNav a[aria-current='location']:focus-visible { outline-color: var(--about-silver); }
-.story, .purpose { background: white; border: 1px solid var(--about-border); border-radius: 16px; padding: 40px; margin-block: 56px; }
+.story { background: white; border: 1px solid var(--about-border); border-radius: 16px; padding: 40px; margin-block: 56px; }
+.purpose { margin-block: 56px; }
 .faq { margin-block: 56px; }
 .story > div:first-child { text-align: center; margin-bottom: 30px; }
 .quote { margin: 15px auto 0 !important; color: var(--about-navy) !important; font-size: 18px; font-weight: 650; }
@@ -73,13 +74,21 @@
 .prose > p { font-size: 16px; line-height: 2.2; text-align: justify; text-justify: inter-word; }
 .prose > p + p { margin-top: 24px; }
 .prose strong { color: var(--about-navy); font-weight: 750; }
-.purposeHeader { display: flex; align-items: center; justify-content: space-between; }
-.compass { font: 75px/1 Georgia, serif; color: var(--about-silver); }
-.purposeGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 30px; }
-.purposeGrid article { background: var(--about-page); border-radius: 12px; padding: 28px; position: relative; }
-.purposeGrid h3 { color: var(--about-navy); padding-inline-end: 30px; margin-bottom: 13px; }
-.purposeGrid p { font-size: 15px; }
-.purposeNumber { position: absolute; inset-inline-end: 28px; top: 28px; font-size: 13px; color: var(--about-muted); }
+.purposeGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.purposeGrid article { position: relative; isolation: isolate; overflow: hidden; border: 1px solid var(--about-border); border-radius: 20px; padding: 36px; box-shadow: 0 8px 24px rgb(32 40 51 / 4%); }
+.missionCard { background: white; }
+.purposeGrid .visionCard { background: var(--about-navy); border-color: var(--about-navy); }
+.visionCard::after { content: ""; position: absolute; z-index: -1; width: 260px; height: 260px; inset-inline-end: -100px; bottom: -160px; border: 1px solid rgb(255 255 255 / 15%); border-radius: 50%; box-shadow: 0 0 0 35px rgb(255 255 255 / 4%), 0 0 0 70px rgb(255 255 255 / 3%); pointer-events: none; }
+.purposeCardHeader { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
+.purposeIcon { display: grid; place-items: center; width: 60px; height: 60px; border-radius: 16px; background: var(--about-page); color: var(--about-navy); }
+.purposeIcon svg { width: 34px; height: 34px; }
+.visionCard .purposeIcon { background: rgb(255 255 255 / 12%); color: white; }
+.purposeNumber { font-size: 14px; font-weight: 650; letter-spacing: .08em; color: var(--about-muted); }
+.visionCard .purposeNumber { color: var(--about-silver); }
+.purposeGrid h3 { color: var(--about-navy); font-size: 24px; margin-bottom: 16px; }
+.purposeGrid p { font-size: 16px; line-height: 2.1; max-width: 48ch; }
+.purposeGrid .visionCard h3 { color: white; }
+.purposeGrid .visionCard p { color: #EDF1F7; }
 .section { margin-block: 56px; }
 .sectionHeader { text-align: center; margin-bottom: 28px; }
 .sectionHeader > p { max-width: 700px; margin: 16px auto 0; font-size: 16px; }
@@ -113,7 +122,8 @@
   .navigation h2 { font-size: 23px; }
   .sectionNav { border-radius: 28px; padding: 6px; }
   .sectionNav a { flex: 0 0 auto; font-size: 12px; min-width: 125px; }
-  .story, .purpose { padding: 26px 20px; margin-block: 32px; }
+  .story { padding: 26px 20px; margin-block: 32px; }
+  .purpose { margin-block: 32px; }
   .faq { margin-block: 32px; }
   .purposeGrid { gap: 18px; }
   .valuesGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -129,8 +139,9 @@
   .hero { padding-block: 24px 25px; }
   .heroCopy > p, .prose > p { font-size: 15px; }
   .purposeGrid, .valuesGrid, .steps { grid-template-columns: 1fr; }
-  .purposeGrid article { padding: 22px; }
-  .compass { font-size: 50px; }
+  .purposeGrid article { padding: 28px 24px; }
+  .purposeGrid h3 { font-size: 22px; }
+  .purposeGrid p { font-size: 15px; }
   .cta h2 { font-size: 23px; }
   .ctaAction, .ctaAction .primary { width: 100%; }
   .page { padding-bottom: 32px; }
