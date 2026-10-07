@@ -32,7 +32,7 @@ export const siteCopy: Localized<{
 }> = {
   fa: {
     brandTagline: "تحصیل، رشد، تعلق",
-    nav: [{ href: "/countries", label: "مقصدها" }, { href: "/services", label: "خدمات" }, { href: "/universities", label: "دانشگاه‌ها" }, { href: "/articles", label: "مجله" }, { href: "/about", label: "درباره ما" }],
+    nav: [{ href: "/countries", label: "مقصدها" }, { href: "/services", label: "خدمات" }, { href: "/universities", label: "دانشگاه‌ها" }, { href: "/articles", label: "کجله ها" }, { href: "/about", label: "درباره ما" }],
       consultation: "تکمیل فرم ارزیابی", heroEyebrow: "برای قدم بعدی آماده‌اید؟",
       heroTitle: "فراتر از مرز ها\nبه سوی آینده ای روشن",
       heroText: "برای تحقق رؤیاهای تحصیلی‌تان، از نخستین گام تا انتخاب مسیر مناسب، با مشاوره‌ای تخصصی همراه و پشتیبان شما خواهیم بود.",
