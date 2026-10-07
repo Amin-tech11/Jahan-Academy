@@ -9,10 +9,10 @@ import { AboutNavigation } from "./about-navigation";
 
 const copy = {
   fa: {
-    label: "درباره جهان آکادمی", home: "خانه", eyebrow: "هر مسیر بزرگ، با یک انتخاب شروع می‌شود",
+    label: "درباره جهان آکادمی",
     title: "جهانی از فرصت،", accent: "همراهی برای آیندهٔ شما.",
     subtitle: "ما کنار شما هستیم تا مسیر تحصیل در خارج از کشور را روشن‌تر ببینید و قدم بعدی را آگاهانه بردارید.",
-    cta: "درخواست مشاوره رایگان", storyLink: "با جهان آکادمی آشنا شوید", imageAlt: "نمایی الهام‌بخش از مسیر ورود به محوطهٔ دانشگاه",
+    cta: "درخواست مشاوره رایگان", imageAlt: "نمایی الهام‌بخش از مسیر ورود به محوطهٔ دانشگاه",
     imageCaption: "آینده، از یک قدم آگاهانه آغاز می‌شود", storyLabel: "جهان آکادمی", storyTitle: "درباره ما",
     quote: "ما مهاجرت نمی‌فروشیم؛ آغاز می‌سازیم.",
     nav: ["درباره ما", "مأموریت و چشم‌انداز", "ارزش‌های ما", "مسیر همراهی", "پرسش‌های شما"],
@@ -26,10 +26,10 @@ const copy = {
     faqLabel: "پیش از شروع", faqTitle: "بیشتر با ما آشنا شوید", contact: "ارتباط با جهان آکادمی", endTitle: "آیندهٔ شما، ارزش یک گفت‌وگو را دارد.", endText: "از هدف‌ها و پرسش‌هایتان بگویید. اولین قدم را با یک درخواست مشاوره رایگان بردارید.", endNote: "بدون نیاز به ساخت حساب کاربری", skip: "رفتن به محتوای اصلی",
   },
   en: {
-    label: "About Jahan Academy", home: "Home", eyebrow: "Every great journey begins with a choice",
+    label: "About Jahan Academy",
     title: "A world of opportunity.", accent: "A partner for your future.",
     subtitle: "We are here to help you understand your study-abroad options and take an informed next step.",
-    cta: "Request free consultation", storyLink: "Get to know Jahan Academy", imageAlt: "An inspiring view of a path leading into a university campus",
+    cta: "Request free consultation", imageAlt: "An inspiring view of a path leading into a university campus",
     imageCaption: "The future starts with an informed step", storyLabel: "Jahan Academy", storyTitle: "About us",
     quote: "We do not sell migration; we create beginnings.",
     nav: ["About us", "Mission & vision", "Our values", "Your journey", "Your questions"],
@@ -70,13 +70,10 @@ export function AboutPage({ locale }: { locale: Locale }) {
         <p className={styles.wordmark} aria-hidden="true">JAHAN ACADEMY</p>
       </section>
       <div className={styles.container}>
-        <nav className={styles.breadcrumb} aria-label={locale === "fa" ? "مسیر صفحه" : "Breadcrumb"}><Link href={`/${locale}`}>{c.home}</Link><span aria-hidden="true">/</span><span aria-current="page">{c.label}</span></nav>
         <section className={styles.hero} aria-labelledby="about-title">
           <div className={styles.heroCopy}>
-            <span className={styles.eyebrow}>{c.eyebrow}</span>
             <h1 id="about-title">{c.label}</h1>
             <p>{c.subtitle}</p>
-            <div className={styles.actions}><Link className={styles.primary} href={consultation}>{c.cta}<span aria-hidden="true">{locale === "fa" ? "↖" : "↗"}</span></Link><a className={styles.storyLink} href="#story">{c.storyLink}<span aria-hidden="true">↓</span></a></div>
           </div>
         </section>
       </div>

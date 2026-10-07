@@ -49,17 +49,13 @@
 .banner img { object-fit: cover; object-position: center 45%; }
 .bannerOverlay { position: absolute; inset: 0; background: linear-gradient(90deg, rgb(0 0 0 / 49%), rgb(0 0 0 / 55%)); }
 .page .wordmark { position: relative; color: white; max-width: 100%; font-family: Arial, sans-serif; font-size: clamp(24px, 4vw, 54px); font-weight: 300; letter-spacing: .5em; line-height: 1.25; text-align: center; text-shadow: 0 2px 18px rgb(0 0 0 / 45%); direction: ltr; white-space: nowrap; }
-.breadcrumb { display: flex; gap: 13px; align-items: center; padding: 25px 0; font-size: 12px; color: var(--about-muted); }
-.breadcrumb span:last-child { color: var(--about-text); font-weight: 700; }
-.hero { padding-block: 20px 45px; text-align: center; }
+.hero { padding-block: 36px 45px; text-align: center; }
 .eyebrow { display: block; color: var(--about-muted); font-size: 12px; font-weight: 700; margin-bottom: 16px; }
 .hero h1 { color: var(--about-navy); font-size: clamp(32px, 4vw, 48px); line-height: 1.6; font-weight: 850; }
 .heroCopy > p { margin: 18px auto 0; max-width: 760px; font-size: 16px; }
-.actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 23px; align-items: center; margin-top: 27px; }
 .primary { display: inline-flex; align-items: center; justify-content: center; gap: 16px; min-height: 52px; padding: 12px 21px; background: var(--about-navy); border: 1px solid var(--about-navy); border-radius: 13px; color: white; font-size: 14px; font-weight: 750; transition: box-shadow .2s; }
 .primary:hover { box-shadow: inset 0 0 0 2px var(--about-silver); }
 .primary > span { font-size: 21px; }
-.storyLink { display: inline-flex; gap: 12px; align-items: center; font-size: 13px; color: var(--about-navy); padding-block: 8px; }
 .guide { position: relative; display: flow-root; }
 .navigation { position: sticky; top: 78px; z-index: 5; padding-block: 16px; background: var(--about-page); }
 .navigation h2 { text-align: center; margin-bottom: 16px; font-weight: 400; }
@@ -138,7 +134,7 @@
 @media (max-width: 600px) {
   .banner { min-height: 330px; }
   .page .wordmark { font-size: clamp(18px, 5vw, 25px); letter-spacing: .22em; }
-  .hero { padding-block: 12px 25px; }
+  .hero { padding-block: 24px 25px; }
   .heroCopy > p, .prose > p { font-size: 15px; }
   .purposeGrid, .valuesGrid, .steps { grid-template-columns: 1fr; }
   .purposeGrid article { padding: 22px; }
