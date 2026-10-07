@@ -45,6 +45,15 @@ const copy = {
   },
 };
 
+function JourneyIcon({ step }: { step: number }) {
+  const icons = [
+    <path key="trust" d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6l8-3Zm-4 9 3 3 5-6" />,
+    <path key="care" d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z" />,
+    <g key="together"><circle cx="12" cy="6" r="3" /><circle cx="4" cy="8" r="2" /><circle cx="20" cy="8" r="2" /><path d="M6 20v-3a6 6 0 0 1 12 0v3a22 22 0 0 1-12 0ZM4 12a4 4 0 0 0-4 4v2h3m17-6a4 4 0 0 1 4 4v2h-3" /></g>,
+  ];
+  return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{icons[step]}</svg>;
+}
+
 function Icon({ kind }: { kind: number }) {
   const icons = [
     <g key="clarity"><path d="M2.5 12s3.3-6 9.5-6 9.5 6 9.5 6-3.3 6-9.5 6-9.5-6-9.5-6Z" /><circle cx="12" cy="12" r="2.75" /></g>,
@@ -91,7 +100,7 @@ export function AboutPage({ locale }: { locale: Locale }) {
         <section id="values" className={styles.section} aria-labelledby="values-title"><div className={styles.sectionHeader}><div><h2 id="values-title">{brand.valuesTitle}</h2></div><p>{c.valuesIntro}</p></div>
           <div className={styles.valuesGrid}>{brand.values.map((value, i) => <article className={styles.valueCard} key={value.title}><div className={styles.valueTop}><span className={styles.icon}><Icon kind={i} /></span><span className={styles.cardNumber}>{number(i + 1)}</span></div><h3>{value.title}</h3><p>{value.text}</p></article>)}</div>
         </section>
-        <section id="journey" className={styles.journey} aria-labelledby="journey-title"><h2 id="journey-title">{c.journeyTitle}</h2><p className={styles.journeyIntro}>{c.journeyIntro}</p><ol className={styles.steps}>{c.steps.map((step, i) => <li key={step.title}><span>{number(i + 1)}</span><h3>{step.title}</h3><p>{step.text}</p></li>)}</ol></section>
+        <section id="journey" className={styles.section} aria-labelledby="journey-title"><div className={styles.sectionHeader}><h2 id="journey-title">{c.journeyTitle}</h2><p>{c.journeyIntro}</p></div><ol className={styles.steps}>{c.steps.map((step, i) => <li key={step.title}><span className={styles.stepNumber}>{new Intl.NumberFormat(locale).format(i + 1)}</span><span className={styles.stepIcon}><JourneyIcon step={i} /></span><h3>{step.title}</h3><p>{step.text}</p></li>)}</ol></section>
         <section id="questions" className={styles.faq} aria-labelledby="faq-title"><div className="home-faq__grid"><div className="home-faq__intro"><h2 id="faq-title">{c.faqTitle}</h2></div><HomeFaq items={brand.faqs} /></div></section>
         <section className={styles.cta}><span className={styles.ctaMark} aria-hidden="true">✧</span><div><h2>{c.endTitle}</h2><p>{c.endText}</p></div><div className={styles.ctaAction}><Link className={styles.primary} href={consultation}>{c.cta}<span aria-hidden="true">{locale === "fa" ? "↖" : "↗"}</span></Link><small>{c.endNote}</small></div></section>
       </div>

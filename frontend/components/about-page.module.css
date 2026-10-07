@@ -65,7 +65,7 @@
 .sectionNav a[aria-current='location'] { background: var(--about-navy); color: white; }
 .sectionNav a:focus-visible { outline-offset: -3px; }
 .sectionNav a[aria-current='location']:focus-visible { outline-color: var(--about-silver); }
-.story, .purpose, .journey { background: white; border: 1px solid var(--about-border); border-radius: 16px; padding: 40px; margin-block: 56px; }
+.story, .purpose { background: white; border: 1px solid var(--about-border); border-radius: 16px; padding: 40px; margin-block: 56px; }
 .faq { margin-block: 56px; }
 .story > div:first-child { text-align: center; margin-bottom: 30px; }
 .quote { margin: 15px auto 0 !important; color: var(--about-navy) !important; font-size: 18px; font-weight: 650; }
@@ -93,13 +93,13 @@
 .cardNumber { display: none; }
 .valueCard h3 { color: var(--about-navy); margin-bottom: 14px; font-size: 20px; }
 .valueCard p { font-size: 15px; line-height: 1.9; }
-.journey > h2, .journeyIntro { text-align: center; }
-.journeyIntro { margin-top: 15px !important; font-size: 16px; }
-.steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; padding: 0; list-style: none; margin: 32px 0 0; }
-.steps li { border-top: 1px solid var(--about-border); padding-top: 22px; }
-.steps li > span { display: block; font-size: 24px; color: var(--about-navy); margin-bottom: 14px; }
-.steps h3 { font-size: 18px; margin-bottom: 10px; }
-.steps p { font-size: 15px; }
+.steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; padding: 0; list-style: none; margin: 0; }
+.steps li { position: relative; min-height: 224px; padding: 34px 28px 28px; border: 1px solid var(--about-border); border-radius: 8px; background: white; box-shadow: 0 4px 14px rgb(32 40 51 / 3%); text-align: center; }
+.stepNumber { position: absolute; top: 16px; right: 16px; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: var(--about-navy); color: white; font-size: 14px; font-weight: 750; }
+.stepIcon { display: grid; place-items: center; width: 48px; height: 48px; margin: 0 auto 24px; color: var(--about-navy); }
+.stepIcon svg { width: 48px; height: 48px; overflow: visible; }
+.steps h3 { color: var(--about-navy); font-size: 18px; margin-bottom: 12px; }
+.steps p { font-size: 15px; line-height: 2; }
 .cta { display: flex; align-items: center; gap: 26px; border: 1px solid var(--about-border); border-radius: 16px; background: white; padding: 40px; margin-block: 56px 0; }
 .cta h2 { font-size: 26px; }
 .cta p { font-size: 15px; margin-top: 12px; max-width: 570px; }
@@ -113,7 +113,7 @@
   .navigation h2 { font-size: 23px; }
   .sectionNav { border-radius: 28px; padding: 6px; }
   .sectionNav a { flex: 0 0 auto; font-size: 12px; min-width: 125px; }
-  .story, .purpose, .journey { padding: 26px 20px; margin-block: 32px; }
+  .story, .purpose { padding: 26px 20px; margin-block: 32px; }
   .faq { margin-block: 32px; }
   .purposeGrid { gap: 18px; }
   .valuesGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
