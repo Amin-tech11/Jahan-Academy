@@ -5,6 +5,7 @@ import { brandContent } from "@/lib/brand-content";
 import { aboutContent } from "@/lib/about-content";
 import type { Locale } from "@/lib/site-content";
 import styles from "./about-page.module.css";
+import { HomeFaq } from "./home-faq";
 import { AboutNavigation } from "./about-navigation";
 
 const copy = {
@@ -15,7 +16,7 @@ const copy = {
     cta: "درخواست مشاوره رایگان", imageAlt: "نمایی الهام‌بخش از مسیر ورود به محوطهٔ دانشگاه",
     imageCaption: "آینده، از یک قدم آگاهانه آغاز می‌شود", storyTitle: "درباره ما",
     quote: "ما مهاجرت نمی‌فروشیم؛ آغاز می‌سازیم.",
-    nav: ["درباره ما", "مأموریت و چشم‌انداز", "ارزش‌های ما", "مسیر همراهی", "پرسش‌های شما"],
+    nav: ["درباره ما", "مأموریت و چشم‌انداز", "ارزش‌های ما", "مسیر همراهی", "سوالات متداول"],
     purposeTitle: "نگاه ما به فردای شما", valuesIntro: "اعتماد از انتخاب‌های کوچک و رفتارهای هر روز ساخته می‌شود. این اصول، مبنای گفت‌وگوی ما با شما هستند.",
     journeyTitle: "مسیر را با هم روشن می‌کنیم", journeyIntro: "نقطهٔ شروع، شناخت شماست؛ نه انتخاب یک کشور از روی نقشه.",
     steps: [
@@ -23,7 +24,7 @@ const copy = {
       { title: "روشن‌کردن گزینه‌ها", text: "مقصدها و مسیرهای مرتبط را با توجه به بودجه، زمان و اولویت‌های شما بررسی می‌کنیم." },
       { title: "آمادگی برای قدم بعد", text: "نیازهای مسیر و گام‌های پیش رو را مشخص می‌کنیم تا بدانید از کجا شروع کنید." },
     ],
-    faqLabel: "پیش از شروع", faqTitle: "بیشتر با ما آشنا شوید", contact: "ارتباط با جهان آکادمی", endTitle: "آیندهٔ شما، ارزش یک گفت‌وگو را دارد.", endText: "از هدف‌ها و پرسش‌هایتان بگویید. اولین قدم را با یک درخواست مشاوره رایگان بردارید.", endNote: "بدون نیاز به ساخت حساب کاربری", skip: "رفتن به محتوای اصلی",
+    faqTitle: "سوالات متداول", endTitle: "آیندهٔ شما، ارزش یک گفت‌وگو را دارد.", endText: "از هدف‌ها و پرسش‌هایتان بگویید. اولین قدم را با یک درخواست مشاوره رایگان بردارید.", endNote: "بدون نیاز به ساخت حساب کاربری", skip: "رفتن به محتوای اصلی",
   },
   en: {
     label: "About Jahan Academy",
@@ -32,7 +33,7 @@ const copy = {
     cta: "Request free consultation", imageAlt: "An inspiring view of a path leading into a university campus",
     imageCaption: "The future starts with an informed step", storyTitle: "About us",
     quote: "We do not sell migration; we create beginnings.",
-    nav: ["About us", "Mission & vision", "Our values", "Your journey", "Your questions"],
+    nav: ["About us", "Mission & vision", "Our values", "Your journey", "FAQs"],
     purposeTitle: "Our perspective on your future", valuesIntro: "Trust grows through everyday choices and actions. These principles guide every conversation we have with you.",
     journeyTitle: "Finding clarity, together", journeyIntro: "Our starting point is understanding you, before choosing a country on a map.",
     steps: [
@@ -40,7 +41,7 @@ const copy = {
       { title: "Explore your options", text: "We review relevant destinations and pathways in light of your budget, timing, and priorities." },
       { title: "Prepare your next step", text: "We clarify what the journey involves and the steps ahead so you know where to begin." },
     ],
-    faqLabel: "Before you begin", faqTitle: "Get to know us better", contact: "Contact Jahan Academy", endTitle: "Your future deserves a conversation.", endText: "Tell us about your goals and questions. Take the first step with a free consultation request.", endNote: "No account needed", skip: "Skip to main content",
+    faqTitle: "Frequently Asked Questions", endTitle: "Your future deserves a conversation.", endText: "Tell us about your goals and questions. Take the first step with a free consultation request.", endNote: "No account needed", skip: "Skip to main content",
   },
 };
 
@@ -91,7 +92,7 @@ export function AboutPage({ locale }: { locale: Locale }) {
           <div className={styles.valuesGrid}>{brand.values.map((value, i) => <article className={styles.valueCard} key={value.title}><div className={styles.valueTop}><span className={styles.icon}><Icon kind={i} /></span><span className={styles.cardNumber}>{number(i + 1)}</span></div><h3>{value.title}</h3><p>{value.text}</p></article>)}</div>
         </section>
         <section id="journey" className={styles.journey} aria-labelledby="journey-title"><h2 id="journey-title">{c.journeyTitle}</h2><p className={styles.journeyIntro}>{c.journeyIntro}</p><ol className={styles.steps}>{c.steps.map((step, i) => <li key={step.title}><span>{number(i + 1)}</span><h3>{step.title}</h3><p>{step.text}</p></li>)}</ol></section>
-        <section id="questions" className={styles.faq} aria-labelledby="faq-title"><div><span className={styles.eyebrow}>{c.faqLabel}</span><h2 id="faq-title">{c.faqTitle}</h2><p>{brand.faqIntro}</p><Link href={`/${locale}/contact`} className={styles.inlineLink}>{c.contact}<span aria-hidden="true">{locale === "fa" ? "←" : "→"}</span></Link></div><div className={styles.questions}>{brand.faqs.map((faq) => <details key={faq.question}><summary>{faq.question}<span aria-hidden="true" className={styles.plus}>+</span></summary><p>{faq.answer}</p></details>)}</div></section>
+        <section id="questions" className={styles.faq} aria-labelledby="faq-title"><div className="home-faq__grid"><div className="home-faq__intro"><h2 id="faq-title">{c.faqTitle}</h2></div><HomeFaq items={brand.faqs} /></div></section>
         <section className={styles.cta}><span className={styles.ctaMark} aria-hidden="true">✧</span><div><h2>{c.endTitle}</h2><p>{c.endText}</p></div><div className={styles.ctaAction}><Link className={styles.primary} href={consultation}>{c.cta}<span aria-hidden="true">{locale === "fa" ? "↖" : "↗"}</span></Link><small>{c.endNote}</small></div></section>
       </div>
     </main>
