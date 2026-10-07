@@ -34,7 +34,7 @@ export function blogDate(date: string, locale: Locale) {
   }).format(new Date(date));
 }
 
-export function blogHref(post: BlogPost, locale: Locale) {
+export function blogHref(post: Pick<BlogPost, "type" | "slug">, locale: Locale) {
   return `/${locale}/${post.type === "news" ? "news" : post.type === "guide" ? "guides" : "articles"}/${encodeURIComponent(post.slug)}`;
 }
 

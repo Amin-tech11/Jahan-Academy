@@ -25,7 +25,7 @@ const nextConfig: NextConfig = {
       : [];
   },
   // Separate build locks allow panel dev servers to share one checkout.
-  distDir: process.env.JAHAN_DEV_PORT === "3200" ? ".next-3200" : ".next",
+  distDir: process.env.JAHAN_PERFORMANCE_BUILD === "1" ? ".next-audit" : process.env.JAHAN_DEV_PORT === "3200" ? ".next-3200" : ".next",
 };
 
 export default nextConfig;

@@ -6,28 +6,33 @@ import { DestinationConsultation } from "./destination-consultation";
 import consultationStyles from "./destination-consultation.module.css";
 import { DestinationFaq } from "./destination-faq";
 import faqStyles from "./destination-faq.module.css";
-import { destinationFaqs } from "@/lib/destination-faqs";
+import type { DestinationFaqItem } from "@/lib/destination-faqs";
 import { DestinationCollage } from "./destination-collage";
 import { destinationCollages } from "@/lib/destination-collages";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { SiteShell } from "@/components/site-shell";
-import { destinations, destinationConsultationHref, type Destination } from "@/lib/destination-content";
-import { homeUniversities } from "@/lib/home-universities";
+import type { Destination } from "@/lib/destination-content";
+import type { HomeUniversity } from "@/lib/home-universities";
 import { startDestinationMotion } from "@/lib/destination-motion";
 import { trackDestinationSections } from "@/lib/destination-section-tracker";
 import type { Locale } from "@/lib/site-content";
 import styles from "./destination-page.module.css";
 
-export function DestinationPage({ destination: d, locale }: { destination: Destination; locale: Locale }) {
+export function DestinationPage({ destination: d, locale, universities, relatedDestinations, faqs, consultation }: {
+  destination: Destination;
+  locale: Locale;
+  universities: HomeUniversity[];
+  relatedDestinations: Pick<Destination, "slug" | "name">[];
+  faqs: readonly DestinationFaqItem[];
+  consultation: string;
+}) {
   const t = (fa: string, en: string) => locale === "fa" ? fa : en;
   const [active, setActive] = useState<string | null>(null);
   const pageRef = useRef<HTMLElement>(null);
   const navigationRef = useRef<HTMLDivElement>(null);
-  const universities = homeUniversities.filter((university) => university.country === d.slug);
   const collages = destinationCollages(d, universities);
   const currencySymbol = new Intl.NumberFormat("en", { style: "currency", currency: d.currency, currencyDisplay: "narrowSymbol" }).formatToParts(0).find(({ type }) => type === "currency")?.value;
-  const consultation = destinationConsultationHref(locale, d.slug);
   const tabs = [
     ["academics", t("تحصیل و آموزش", "Academics")],
     ["universities", t("دانشگاه‌ها", "Universities")],
@@ -149,14 +154,14 @@ export function DestinationPage({ destination: d, locale }: { destination: Desti
 
     <section aria-labelledby="more-destinations-title" className={`${styles.container} ${styles.section} ${styles.more}`}>
       <h2 data-destination-motion="up" id="more-destinations-title">{t("مقصدهای دیگر را کشف کنید", "More Study Destinations to Explore")}</h2>
-      <div>{destinations.filter((item) => item.slug !== d.slug).map((item, index) => <Link data-destination-motion="up" data-destination-delay={(index % 3) * 60} key={item.slug} href={`/${locale}/countries/${item.slug}`}>
+      <div>{relatedDestinations.map((item, index) => <Link data-destination-motion="up" data-destination-delay={(index % 3) * 60} key={item.slug} href={`/${locale}/countries/${item.slug}`}>
         <Image src={`/destinations/word-flags/${item.slug}.svg`} alt="" width={28} height={22} />
         <span>{t(`تحصیل در ${item.name.fa}`, `Study in ${item.slug === "united-kingdom" || item.slug === "netherlands" ? "the " : ""}${item.name.en}`)}</span>
       </Link>)}</div>
     </section>
     <section id="destination-faq" aria-labelledby="destination-faq-title" className={`${styles.container} ${faqStyles.section}`}>
       <h2 data-destination-motion="up" id="destination-faq-title" className={faqStyles.heading}>{t(`سؤالات متداول درباره تحصیل در ${d.name.fa}`, `Frequently asked questions about studying in ${d.name.en}`)}</h2>
-      <DestinationFaq key={`${locale}-${d.slug}`} items={destinationFaqs[d.slug]} locale={locale} />
+      <DestinationFaq key={`${locale}-${d.slug}`} items={faqs} locale={locale} />
     </section>
     <section id="destination-consultation" aria-labelledby="destination-consultation-title" className={`${styles.container} ${consultationStyles.section}`}>
       <header data-destination-motion="up" className={consultationStyles.heading}>

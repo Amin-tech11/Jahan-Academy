@@ -93,6 +93,32 @@ jobs:
         working-directory: frontend
         run: pnpm build
 
+      - name: Public route and asset regression
+        working-directory: frontend
+        env:
+          AUDIT_OUTPUT: ${{ runner.temp }}/public-site-audit.json
+        run: |
+          node node_modules/next/dist/bin/next start --port 5100 > "$RUNNER_TEMP/public-site-server.log" 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          ready=0
+          for attempt in $(seq 1 60); do
+            if curl --silent --fail http://localhost:5100/en > /dev/null; then ready=1; break; fi
+            sleep 1
+          done
+          if [ "$ready" != 1 ]; then cat "$RUNNER_TEMP/public-site-server.log"; exit 1; fi
+          pnpm test:public
+
+      - name: Upload public regression evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: public-site-audit
+          path: |
+            ${{ runner.temp }}/public-site-audit.json
+            ${{ runner.temp }}/public-site-server.log
+          if-no-files-found: ignore
+
   unit-tests:
     name: Unit Tests
     needs: lint

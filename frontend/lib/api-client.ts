@@ -37,7 +37,10 @@ export type ApiRequestOptions = Omit<RequestInit, "body"> & {
 export function apiBaseUrl(isServer = typeof window === "undefined") {
   if (isServer) {
     const internal = process.env.API_INTERNAL_URL ?? process.env.JAHAN_API_BASE_URL;
-    if (internal) return `${internal.replace(/\/+$/, "")}${internal.endsWith("/api/v1") ? "" : "/api/v1"}`;
+    if (internal) {
+      const origin = internal.replace(/\/+$/, "");
+      return `${origin}${origin.endsWith("/api/v1") ? "" : "/api/v1"}`;
+    }
   }
   return (process.env.NEXT_PUBLIC_API_BASE_URL ?? "/api/v1").replace(/\/+$/, "");
 }
