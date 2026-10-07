@@ -60,9 +60,14 @@ export function DestinationPage({ destination: d, locale }: { destination: Desti
             [t("امکان کار دانشجویی", "Work while studying"), d.studySnapshot.work[locale]],
             [t("اقامت پس از تحصیل", "Post-study stay"), d.studySnapshot.postStudy[locale]],
           ] as const).map(([label, value]) => <p className={styles.studyFact} key={label}><span>{label}:</span> <strong>{value}</strong></p>)}
-          <a className={styles.studySource} href={d.studySnapshot.source} target="_blank" rel="noreferrer">{t("منبع: GO2TR ↗", "Source: GO2TR ↗")}</a>
         </div>
-        <div className={styles.actions}><Link className={styles.primary} href={consultation}>{t("شروع مسیر با مشاوره", "Plan my study journey")} <span aria-hidden="true">{t("←", "→")}</span></Link></div>
+        <div className={styles.actions}><Link className={styles.primary} href={consultation}>
+          <span>{t("شروع مسیر با مشاوره", "Start your journey with a")}</span>
+          <strong className={styles.primaryEmphasis}>
+            {t("رایگان", "free")}
+          </strong>
+          {locale === "en" && <span>consultation</span>}
+        </Link></div>
       </div>
       <DestinationCollage photos={collages.hero} locale={locale} layout="hero" />
     </div></section>
