@@ -104,8 +104,10 @@
 .flag { width: 18px; height: 18px; border-radius: 50%; object-fit: cover; }
 .countryTitle a:hover { text-decoration: underline; }
 .page .countryIntro { margin: 0; font-size: 15px; line-height: 1.9; overflow-wrap: anywhere; }
-.countryLink { display: flex; align-items: center; align-self: flex-end; gap: 7px; margin-top: 20px; color: var(--navy); font-size: 14px; line-height: 1.8; }
-.countryLink:hover { text-decoration: underline; text-underline-offset: 4px; }
+.countryLink { position: relative; display: flex; align-items: center; align-self: flex-end; gap: 7px; margin-top: 20px; color: var(--navy); font-size: 14px; line-height: 1.8; text-decoration: none; }
+.countryLink::after { content: ""; position: absolute; inset-inline: 0; bottom: -4px; height: 1px; background: currentColor; opacity: 0; }
+.countryLink:hover, .countryLink:focus-visible { text-decoration: none; }
+.countryLink:hover::after, .countryLink:focus-visible::after { opacity: 1; }
 @media (max-width: 1000px) { .countryGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 600px) { .countryGrid { grid-template-columns: 1fr; } .countryPhoto { height: 200px; } }
 @media (prefers-reduced-motion: reduce) { .countryPhoto img { transition: none; } }
