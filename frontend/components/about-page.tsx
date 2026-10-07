@@ -24,7 +24,7 @@ const copy = {
       { title: "روشن‌کردن گزینه‌ها", text: "مقصدها و مسیرهای مرتبط را با توجه به بودجه، زمان و اولویت‌های شما بررسی می‌کنیم." },
       { title: "آمادگی برای قدم بعد", text: "نیازهای مسیر و گام‌های پیش رو را مشخص می‌کنیم تا بدانید از کجا شروع کنید." },
     ],
-    faqTitle: "سوالات متداول", endTitle: "آیندهٔ شما، ارزش یک گفت‌وگو را دارد.", endText: "از هدف‌ها و پرسش‌هایتان بگویید. اولین قدم را با یک درخواست مشاوره رایگان بردارید.", endNote: "بدون نیاز به ساخت حساب کاربری", skip: "رفتن به محتوای اصلی",
+    faqTitle: "سوالات متداول", endTitle: "آیندهٔ شما، ارزش یک گفت‌وگو را دارد.", endText: "از هدف‌ها و پرسش‌هایتان بگویید. اولین قدم را با یک درخواست مشاوره رایگان بردارید.", skip: "رفتن به محتوای اصلی",
   },
   en: {
     label: "About Jahan Academy",
@@ -41,7 +41,7 @@ const copy = {
       { title: "Explore your options", text: "We review relevant destinations and pathways in light of your budget, timing, and priorities." },
       { title: "Prepare your next step", text: "We clarify what the journey involves and the steps ahead so you know where to begin." },
     ],
-    faqTitle: "Frequently Asked Questions", endTitle: "Your future deserves a conversation.", endText: "Tell us about your goals and questions. Take the first step with a free consultation request.", endNote: "No account needed", skip: "Skip to main content",
+    faqTitle: "Frequently Asked Questions", endTitle: "Your future deserves a conversation.", endText: "Tell us about your goals and questions. Take the first step with a free consultation request.", skip: "Skip to main content",
   },
 };
 
@@ -100,12 +100,13 @@ export function AboutPage({ locale }: { locale: Locale }) {
             <h3>{item.title}</h3><p>{item.text}</p>
           </article>)}</div>
         </section>
+        <section className={styles.cta} aria-labelledby="consultation-title"><span className={styles.ctaMark} aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M27 15a11 11 0 0 1-11 11H9l-6 3 2-7A11 11 0 1 1 27 15Z" /><path d="M10 12h12m-12 6h8" /></svg></span><div><h2 id="consultation-title">{c.endTitle}</h2><p>{c.endText}</p></div><div className={styles.ctaAction}><Link className={styles.primary} href={consultation}>{c.cta}<span aria-hidden="true">{locale === "fa" ? "↖" : "↗"}</span></Link></div></section>
         <section id="values" className={styles.section} aria-labelledby="values-title"><div className={styles.sectionHeader}><div><h2 id="values-title">{brand.valuesTitle}</h2></div><p>{c.valuesIntro}</p></div>
           <div className={styles.valuesGrid}>{brand.values.map((value, i) => <article className={styles.valueCard} key={value.title}><div className={styles.valueTop}><span className={styles.icon}><Icon kind={i} /></span><span className={styles.cardNumber}>{number(i + 1)}</span></div><h3>{value.title}</h3><p>{value.text}</p></article>)}</div>
         </section>
         <section id="journey" className={styles.section} aria-labelledby="journey-title"><div className={styles.sectionHeader}><h2 id="journey-title">{c.journeyTitle}</h2><p>{c.journeyIntro}</p></div><ol className={styles.steps}>{c.steps.map((step, i) => <li key={step.title}><span className={styles.stepNumber}>{new Intl.NumberFormat(locale).format(i + 1)}</span><span className={styles.stepIcon}><JourneyIcon step={i} /></span><h3>{step.title}</h3><p>{step.text}</p></li>)}</ol></section>
         <section id="questions" className={styles.faq} aria-labelledby="faq-title"><div className="home-faq__grid"><div className="home-faq__intro"><h2 id="faq-title">{c.faqTitle}</h2></div><HomeFaq items={brand.faqs} /></div></section>
-        <section className={styles.cta}><span className={styles.ctaMark} aria-hidden="true">✧</span><div><h2>{c.endTitle}</h2><p>{c.endText}</p></div><div className={styles.ctaAction}><Link className={styles.primary} href={consultation}>{c.cta}<span aria-hidden="true">{locale === "fa" ? "↖" : "↗"}</span></Link><small>{c.endNote}</small></div></section>
+
       </div>
     </main>
   </SiteShell></div>;
