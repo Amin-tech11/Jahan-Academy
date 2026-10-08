@@ -131,10 +131,6 @@ export async function HomePage({ locale }: { locale: Locale }) {
         </div>
         <div className="home-trust__media">
           <Image src="/home-trust-consultation.webp" alt={locale === "fa" ? "گفت‌وگوی مشاور با دو متقاضی درباره مسیر تحصیلی" : "An advisor discussing study plans with two applicants"} fill sizes="(max-width: 760px) 100vw, 50vw" />
-          <div className="home-trust__caption" dir={locale === "fa" ? "rtl" : "ltr"}>
-            <p>{content.trustImageCaption}</p>
-            {locale === "fa" && <p className="home-trust__caption-en" lang="en" dir="ltr">A Brighter<br />Tomorrow<br />Together</p>}
-          </div>
         </div>
       </div>
       <ul className="home-trust__values">{content.trustValues.map((value) => <li className="home-trust__value" key={value.number}>
