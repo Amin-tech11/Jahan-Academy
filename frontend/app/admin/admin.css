@@ -175,7 +175,7 @@
 .adm-sidebar nav button {
   color: var(--adm-surface);
   display: flex;
-  gap: 14px;
+  gap: 11px;
   align-items: center;
   width: 100%;
   border: 0;
@@ -183,7 +183,7 @@
   border-radius: 8px;
   background: transparent;
   padding: 10px 15px;
-  font-size: 12px;
+  font-size: 14px;
   margin: 2px 0;
 }
 .adm-sidebar nav button.selected {
@@ -191,15 +191,16 @@
   color: var(--adm-brand);
   font-weight: 700;
 }
-.adm-nav-dot {
-  width: 7px;
-  height: 7px;
-  border: 1.5px solid var(--adm-silver);
-  border-radius: 2px;
-}
-.selected .adm-nav-dot {
-  background: var(--adm-brand);
-  border-color: var(--adm-brand);
+.adm-sidebar nav .adm-nav-icon {
+  width: 19px;
+  height: 19px;
+  flex: 0 0 19px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: .9;
 }
 .adm-sidebar-note {
   margin-top: 35px;
@@ -242,6 +243,32 @@
   align-items: center;
   gap: 10px;
   font-size: 12px;
+}
+.admin-app .adm-account .adm-logout {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 38px;
+  padding: 6px 13px;
+  border: 1px solid var(--adm-line);
+  background: var(--adm-surface);
+  color: var(--adm-danger);
+  font-size: 13px;
+  font-weight: 600;
+}
+.admin-app .adm-account .adm-logout:hover {
+  border-color: var(--adm-danger);
+  background: var(--adm-danger-bg);
+}
+.adm-account .adm-logout svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 .adm-avatar {
   display: grid;
@@ -424,6 +451,19 @@
   overflow-x: auto;
   margin-top: 17px;
 }
+.adm-leads-table-wrap {
+  height: min(62vh, 640px);
+  min-height: 220px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  scrollbar-width: auto;
+  scrollbar-color: #8799b2 #e8edf4;
+}
+.adm-leads-table-wrap::-webkit-scrollbar { width: 12px; height: 12px; }
+.adm-leads-table-wrap::-webkit-scrollbar-track { background: #e8edf4; border-radius: 8px; }
+.adm-leads-table-wrap::-webkit-scrollbar-thumb { background: #8799b2; border: 2px solid #e8edf4; border-radius: 8px; }
+.adm-leads-table-wrap::-webkit-scrollbar-thumb:hover { background: var(--adm-brand); }
 .admin-app table {
   width: 100%;
   border-collapse: collapse;
@@ -448,12 +488,15 @@
   background: var(--adm-page);
 }
 .admin-app .adm-leads-table th { background: var(--adm-brand); color: white; text-align: center; }
+.admin-app .adm-leads-table thead th { position: sticky; top: 0; z-index: 2; }
 .adm-column-heading { display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
 .admin-app .adm-column-trigger { display: inline-flex; padding: 4px; min-height: 0; border: 1px solid #ffffff60; border-radius: 4px; background: transparent; color: white; }
 .admin-app .adm-column-trigger:hover, .admin-app .adm-column-trigger[aria-pressed="true"] { background: #ffffff30; }
 .admin-app .adm-leads-table tbody tr:nth-child(odd) { background: white; }
 .admin-app .adm-leads-table tbody tr:nth-child(even) { background: #f0f4fa; }
 .admin-app .adm-leads-table tbody tr:hover { background: #e3ebf7; }
+.admin-app .adm-record-row { cursor: pointer; }
+.admin-app .adm-record-row:focus-visible { outline: 2px solid var(--adm-brand); outline-offset: -2px; background: #e3ebf7; }
 .adm-column-overlay { position: fixed; inset: 0; background: #172b4d33; z-index: 100; display: grid; place-items: center; padding: 16px; }
 .adm-column-menu { background: white; color: var(--adm-text); border: 1px solid var(--adm-line); box-shadow: 0 12px 40px #172b4d30; border-radius: 12px; padding: 18px; width: min(380px, 100%); white-space: normal; }
 .adm-column-title { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
@@ -462,6 +505,9 @@
 .admin-app .adm-column-menu input[type="checkbox"] { width: 16px; min-height: 16px; accent-color: var(--adm-brand); flex-shrink: 0; }
 .adm-column-values { max-height: 280px; overflow: auto; border-block: 1px solid var(--adm-line); margin-block: 8px; }
 .adm-column-menu footer { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.adm-column-sort { display: grid; gap: 6px; padding-bottom: 12px; margin-bottom: 12px; border-bottom: 1px solid var(--adm-line); }
+.admin-app .adm-column-sort button { text-align: right; }
+.admin-app .adm-column-sort button[aria-pressed="true"] { background: var(--adm-brand); color: white; }
 .adm-empty {
   padding: 48px 15px;
   text-align: center;
@@ -769,7 +815,7 @@
   .adm-card {
     padding: 18px;
   }
-  .adm-account > span:nth-child(2) {
+  .adm-account-name {
     display: none;
   }
   .adm-section-title h2 {

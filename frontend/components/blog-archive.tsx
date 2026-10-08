@@ -1,4 +1,5 @@
 "use client";
+import SiteSelect from "./site-select";
 
 import Link from "next/link";
 import Image from "next/image";
@@ -26,7 +27,7 @@ export function BlogArchive({ posts, locale, initialType = "all" }: { posts: Blo
         {(["all", "article", "news"] as const).map((value) => <button type="button" key={value} aria-pressed={type === value} onClick={() => { setType(value); setPage(1); }}>{copy[value]}</button>)}
       </div>
       <label className="journal-search"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="6.5" stroke="currentColor" strokeWidth="1.5"/><path d="m15 15 6 6" stroke="currentColor" strokeWidth="1.5"/></svg><span className="journal-sr-only">{copy.search}</span><input type="search" value={query} maxLength={100} placeholder={copy.placeholder} onChange={(event) => { setQuery(event.target.value); setPage(1); }}/></label>
-      <label className="journal-sort"><span>{copy.sort}</span><select value={sort} onChange={(event) => { setSort(event.target.value as BlogSort); setPage(1); }}><option value="newest">{copy.newest}</option><option value="oldest">{copy.oldest}</option></select></label>
+      <label className="journal-sort"><span>{copy.sort}</span><SiteSelect value={sort} onChange={(event) => { setSort(event.target.value as BlogSort); setPage(1); }}><option value="newest">{copy.newest}</option><option value="oldest">{copy.oldest}</option></SiteSelect></label>
     </div>
     {filtered.length > 0 ? <div className="journal-grid">{filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE).map((post) => <article className="journal-card" key={post.slug}>
       <Link href={blogHref(post, locale)} className="journal-card-image" tabIndex={-1} aria-hidden="true"><Image src={blogImage(post)} alt="" fill sizes="(max-width: 640px) 100vw, (max-width: 950px) 50vw, 380px" /><span className="journal-image-arrow">↗</span></Link>

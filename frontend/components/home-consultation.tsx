@@ -1,4 +1,5 @@
 "use client";
+import SiteSelect from "./site-select";
 
 import Link from "next/link";
 import { useId, useRef, useState, type FormEvent } from "react";
@@ -46,8 +47,8 @@ export function HomeConsultation({ locale, sourcePage }: { locale: Locale; sourc
       <label htmlFor={id + "-first"}>{t("نام *", "First name *")}<input id={id + "-first"} name="firstName" required maxLength={100} autoComplete="given-name" /></label>
       <label htmlFor={id + "-last"}>{t("نام خانوادگی *", "Last name *")}<input id={id + "-last"} name="lastName" required maxLength={100} autoComplete="family-name" /></label>
       <label htmlFor={id + "-mobile"}>{t("شماره موبایل *", "Mobile number *")}<input id={id + "-mobile"} name="mobile" type="tel" required maxLength={30} autoComplete="tel" placeholder="0912 000 0000" dir="ltr" /></label>
-      <label htmlFor={id + "-occupation"}>{t("حوزه فعالیت *", "Occupation *")}<select id={id + "-occupation"} name="occupation" required defaultValue=""><option value="" disabled>{t("حوزه فعالیت خود را انتخاب کنید", "Select your occupation")}</option>{[["دانش‌آموز", "School student"], ["دانشجو", "University student"], ["شاغل", "Employed"], ["سایر", "Other"]].map(([fa, en]) => <option key={en} value={t(fa, en)}>{t(fa, en)}</option>)}</select></label>
-      <label className="home-consultation__wide" htmlFor={id + "-time"}>{t("زمان مناسب تماس (اختیاری)", "Preferred contact time (optional)")}<select id={id + "-time"} name="contactTime">{[["فرقی ندارد", "Any time"], ["صبح", "Morning"], ["بعدازظهر", "Afternoon"], ["عصر", "Evening"]].map(([fa, en]) => <option key={en} value={t(fa, en)}>{t(fa, en)}</option>)}</select></label>
+      <label htmlFor={id + "-occupation"}>{t("حوزه فعالیت *", "Occupation *")}<SiteSelect id={id + "-occupation"} name="occupation" required defaultValue=""><option value="" disabled>{t("حوزه فعالیت خود را انتخاب کنید", "Select your occupation")}</option>{[["دانش‌آموز", "School student"], ["دانشجو", "University student"], ["شاغل", "Employed"], ["سایر", "Other"]].map(([fa, en]) => <option key={en} value={t(fa, en)}>{t(fa, en)}</option>)}</SiteSelect></label>
+      <label className="home-consultation__wide" htmlFor={id + "-time"}>{t("زمان مناسب تماس (اختیاری)", "Preferred contact time (optional)")}<SiteSelect id={id + "-time"} name="contactTime">{[["فرقی ندارد", "Any time"], ["صبح", "Morning"], ["بعدازظهر", "Afternoon"], ["عصر", "Evening"]].map(([fa, en]) => <option key={en} value={t(fa, en)}>{t(fa, en)}</option>)}</SiteSelect></label>
     </div>
     <label className="home-consultation__consent"><input type="checkbox" name="privacyConsent" required /><span>{t("با ثبت اطلاعاتم طبق ", "I agree to the processing of my information under the ")}<Link href={`/${locale}/privacy`}>{t("سیاست حریم خصوصی", "privacy policy")}</Link>{t(" موافقم.", ".")}</span></label>
     <label className="home-consultation__consent"><input type="checkbox" name="contactConsent" required /><span>{t("با تماس تیم جهان آکادمی برای این درخواست موافقم.", "I agree to be contacted by Jahan Academy about this request.")}</span></label>

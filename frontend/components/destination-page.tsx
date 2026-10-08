@@ -1,4 +1,5 @@
 "use client";
+import SiteSelect from "./site-select";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -37,7 +38,7 @@ export function DestinationPage({ destination: d, locale }: { destination: Desti
   return <SiteShell locale={locale}><main className={styles.page}>
     <div className={styles.topline}><div className={styles.container}>
       <nav aria-label={t("مسیر صفحه", "Breadcrumb")} className={styles.breadcrumb}><Link href={`/${locale}`}>{t("خانه", "Home")}</Link><span>/</span><Link href={`/${locale}/countries`}>{t("مقصدهای تحصیلی", "Study destinations")}</Link><span>/</span><span aria-current="page">{d.name[locale]}</span></nav>
-      <label className={styles.selector}>{t("مقصد شما", "Your destination")}<select aria-label={t("انتخاب کشور مقصد", "Choose a destination")} value={d.slug} onChange={(event) => router.push(`/${locale}/countries/${event.target.value}`)}>{destinations.map((item) => <option key={item.slug} value={item.slug}>{item.name[locale]}</option>)}</select></label>
+      <label className={styles.selector}>{t("مقصد شما", "Your destination")}<SiteSelect aria-label={t("انتخاب کشور مقصد", "Choose a destination")} value={d.slug} onChange={(event) => router.push(`/${locale}/countries/${event.target.value}`)}>{destinations.map((item) => <option key={item.slug} value={item.slug}>{item.name[locale]}</option>)}</SiteSelect></label>
     </div></div>
 
     <section className={styles.hero}><div className={`${styles.container} ${styles.heroGrid}`}>

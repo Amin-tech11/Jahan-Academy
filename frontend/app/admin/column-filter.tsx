@@ -2,8 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 
-export default function ColumnFilter({ title, values, selected, onApply, onClose }: {
+export default function ColumnFilter({ title, values, selected, sortDirection, onSort, onApply, onClose }: {
   title: string; values: string[]; selected?: string[];
+  sortDirection?: "asc" | "desc"; onSort: (direction: "asc" | "desc" | null) => void;
   onApply: (values: string[] | undefined) => void; onClose: () => void;
 }) {
   const [query, setQuery] = useState("");
@@ -26,6 +27,11 @@ export default function ColumnFilter({ title, values, selected, onApply, onClose
       if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
     }}>
       <div className="adm-column-title"><strong>فیلتر {title}</strong><button aria-label="بستن فیلتر ستون" onClick={onClose}>×</button></div>
+      <div className="adm-column-sort">
+        <button aria-pressed={sortDirection === "asc"} onClick={() => { onSort("asc"); onClose(); }}>↑ از کمترین به بیشترین</button>
+        <button aria-pressed={sortDirection === "desc"} onClick={() => { onSort("desc"); onClose(); }}>↓ از بیشترین به کمترین</button>
+        {sortDirection && <button onClick={() => { onSort(null); onClose(); }}>پاک کردن مرتب‌سازی</button>}
+      </div>
       <input ref={input} aria-label="جست‌وجو در مقادیر ستون" placeholder="جست‌وجو در مقادیر…" value={query} onChange={event => setQuery(event.target.value)} />
       <label><input type="checkbox" checked={shown.length > 0 && shown.every(value => draft.includes(value))} onChange={event => setDraft(event.target.checked ? [...new Set([...draft, ...shown])] : draft.filter(value => !shown.includes(value)))} />انتخاب همهٔ مقادیر نمایش‌داده‌شده</label>
       <div className="adm-column-values">{shown.map(value => <label key={value}><input type="checkbox" checked={draft.includes(value)} onChange={event => setDraft(event.target.checked ? [...draft, value] : draft.filter(item => item !== value))} /><span dir="auto">{value}</span></label>)}{!shown.length && <p>مقداری پیدا نشد.</p>}</div>
