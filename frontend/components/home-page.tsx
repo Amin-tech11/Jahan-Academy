@@ -44,7 +44,7 @@ const processImages = [
   "profile-assessment", "profile-assessment", "document-preparation", "document-preparation",
   "study-options", "document-preparation", "study-options", "study-options", "study-options",
   "profile-assessment", "document-preparation", "document-preparation", "language-support",
-].map((name, index) => ["/journey/consultation-request.webp", "/journey/consultation-meeting.webp", "/journey/agreement-contract.webp"][index] ?? `/journey/${name}.png`);
+].map((name, index) => ["/journey/consultation-request.webp", "/journey/consultation-meeting.webp", "/journey/agreement-contract.webp", "/journey/document-checklist.webp"][index] ?? `/journey/${name}.png`);
 
 function Arrow({ locale }: { locale: Locale }) {
   return <span aria-hidden="true">{locale === "fa" ? "↖" : "↗"}</span>;
