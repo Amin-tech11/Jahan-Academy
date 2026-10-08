@@ -44,7 +44,7 @@ const processImages = [
   "profile-assessment", "profile-assessment", "document-preparation", "document-preparation",
   "study-options", "document-preparation", "study-options", "study-options", "study-options",
   "profile-assessment", "document-preparation", "document-preparation", "language-support",
-].map((name) => `/journey/${name}.png`);
+].map((name, index) => index === 0 ? "/journey/consultation-request.webp" : `/journey/${name}.png`);
 
 function Arrow({ locale }: { locale: Locale }) {
   return <span aria-hidden="true">{locale === "fa" ? "↖" : "↗"}</span>;
