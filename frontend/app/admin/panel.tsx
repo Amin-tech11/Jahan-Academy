@@ -1357,9 +1357,9 @@ export default function AdminPanel() {
             <Dashboard navigate={navigate} />
           )}
         </main>
-        <footer className="adm-page-footer">
+        {section !== "leads" && <footer className="adm-page-footer">
           جهان آکادمی · مدیریت درخواست‌های مشاوره و ارزیابی
-        </footer>
+        </footer>}
       </div>
     </div>
   );
