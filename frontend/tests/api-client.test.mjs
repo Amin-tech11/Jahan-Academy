@@ -15,6 +15,8 @@ afterEach(() => {
 test("API URL keeps a single version prefix and encodes filters", () => {
   process.env.API_INTERNAL_URL = "http://backend:8000/";
   assert.equal(apiBaseUrl(true), "http://backend:8000/api/v1");
+  process.env.API_INTERNAL_URL = "http://backend:8000/api/v1///";
+  assert.equal(apiBaseUrl(true), "http://backend:8000/api/v1");
   assert.equal(apiUrl("/universities", { locale: "fa", limit: 20, archived: false, skip: null }, apiBaseUrl(true)), "http://backend:8000/api/v1/universities?locale=fa&limit=20&archived=false");
   assert.throws(() => apiUrl("//elsewhere.example", {}, "/api/v1"), TypeError);
 });

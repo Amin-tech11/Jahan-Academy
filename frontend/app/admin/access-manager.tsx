@@ -25,7 +25,7 @@ export default function AccessManager() {
   }, [page, query]);
   return <>
     <section className="adm-welcome"><div>
-      <span className="adm-eyebrow">ویژهٔ سوپرادمین</span>
+      <span className="adm-eyebrow">ویژه سوپرادمین</span>
       <h2>مدیریت دسترسی اعضای سازمان</h2>
       <p>کاربر را انتخاب کنید، بخش‌های مجاز را علامت بزنید و تغییرات را ذخیره کنید. دسترسی پیش‌فرض کارکنان فقط درخواست‌های مشاوره است.</p>
     </div></section>
@@ -85,7 +85,7 @@ function AccessEditor({ person, onClose }: { person: RecordData; onClose: () => 
     {error && <div className="adm-error" role="alert">{error} <button disabled={busy} onClick={() => { if (!dirty || window.confirm("تغییرات ذخیره‌نشده کنار گذاشته و اطلاعات جدید دریافت شود؟")) setReload(reload + 1); }}>دریافت دوباره</button></div>}
     {notice && <p role="status">{notice}</p>}
     {!access ? <p role="status">در حال دریافت دسترسی‌ها…</p> : <>
-      <p>{access.isSuperAdmin ? "سوپرادمین همیشه به همهٔ بخش‌ها دسترسی دارد." : "هر بخش فعال، امکان مشاهده و انجام عملیات مجاز آن بخش را می‌دهد. مشاور فقط درخواست‌های ارجاع‌شده به خودش را می‌بیند."}</p>
+      <p>{access.isSuperAdmin ? "سوپرادمین همیشه به همه بخش‌ها دسترسی دارد." : "هر بخش فعال، امکان مشاهده و انجام عملیات مجاز آن بخش را می‌دهد. مشاور فقط درخواست‌های ارجاع‌شده به خودش را می‌بیند."}</p>
       <div className="adm-access-grid">{panelSections.map(section => <label key={section.id}>
         <input type="checkbox" checked={access.isSuperAdmin || checked.includes(section.id)} disabled={busy || access.isSuperAdmin || superAdminSections.has(section.id)} onChange={e => { setNotice(""); setChecked(e.target.checked ? [...checked, section.id] : checked.filter(id => id !== section.id)); }} />
         <span>{section.title}<small>{superAdminSections.has(section.id) ? "فقط سوپرادمین" : section.group}</small></span>

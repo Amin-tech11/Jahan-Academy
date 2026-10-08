@@ -1,3 +1,4 @@
+import { createRequestKey } from "../lib/request-key.ts";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
@@ -15,10 +16,13 @@ function setup(mobile, fail = false, sourcePage) {
     module, exports: module.exports, Date, crypto: { randomUUID: () => "same-retry-key" },
     FormData: class { get(key) { return { firstName: " Ali ", lastName: " Ahmadi ", mobile, occupation: "Student", contactTime: "Morning", privacyConsent: "on", contactConsent: "on" }[key]; } },
     require(name) {
+      if (name === "@/lib/request-key") return { createRequestKey };
       if (name === "react") return { useId: () => "form", useRef: () => ref, useState: (value) => [value, () => {}] };
       if (name === "react/jsx-runtime") return { jsx: (type, props) => ({ type, props }), jsxs: (type, props) => ({ type, props }) };
       if (name === "next/link") return { default: () => null };
       if (name === "./site-select") return { default: "select" };
+      if (name === "./consultation-success") return { ConsultationSuccess: () => null };
+      if (name === "./consultation-form-heading") return { ConsultationFormHeading: () => null };
       if (name === "@/lib/consultation") return { normalizeMobile: (value) => value === "09120000000" ? "+989120000000" : null };
       if (name === "@/lib/api-client") return { ApiError, apiRequest: async (path, options) => { calls.push({ path, options }); if (fail) throw new Error("network"); return { data: { reference: "R1" } }; } };
       throw new Error(name);
@@ -54,4 +58,10 @@ test("home form sends normalized contact details, consents and preferred time wi
   const consents = app.form.props.children.filter((child) => child?.type === "label");
   assert.equal(consents.length, 2);
   assert.equal(consents.every((label) => label.props.children[0].props.required), true);
+});
+
+test("about consultation records its own source page", async () => {
+  const app = setup("09120000000", false, "/en/about#about-consultation");
+  await app.submit();
+  assert.equal(app.calls[0].options.body.source.pageUrl, "/en/about#about-consultation");
 });

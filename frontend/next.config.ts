@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Explicit LAN hostnames only; production routing is unaffected.
+  allowedDevOrigins: (process.env.JAHAN_DEV_ORIGINS ?? "").split(",").map(host => host.trim()).filter(Boolean),
   output: "standalone",
   poweredByHeader: false,
   reactStrictMode: true,
@@ -9,7 +11,10 @@ const nextConfig: NextConfig = {
       process.env.ADMIN_API_URL ?? process.env.API_INTERNAL_URL ?? "http://127.0.0.1:8000"
     ).replace(/\/$/, "");
     const api = backend.endsWith("/api/v1") ? backend : `${backend}/api/v1`;
-    return [{ source: "/api/v1/consultation-requests", destination: `${api}/consultation-requests` }];
+    return ["consultation-requests", "reference-data/:path*", "universities/:path*"].map(path => ({
+      source: `/api/v1/${path}`,
+      destination: `${api}/${path}`,
+    }));
   },
   async redirects() {
     if (process.env.JAHAN_PANEL === "admin") {
@@ -20,7 +25,7 @@ const nextConfig: NextConfig = {
       : [];
   },
   // Separate build locks allow panel dev servers to share one checkout.
-  distDir: process.env.JAHAN_DEV_PORT === "3200" ? ".next-3200" : ".next",
+  distDir: process.env.JAHAN_PERFORMANCE_BUILD === "1" ? ".next-audit" : process.env.JAHAN_DEV_PORT === "3200" ? ".next-3200" : ".next",
 };
 
 export default nextConfig;

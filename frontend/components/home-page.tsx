@@ -100,7 +100,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
         const destination = headerDestinations.find((entry) => entry.slug === slug);
         if (!destination) return null;
         return <Link key={slug} className="home-destination" href={localPath(locale, `/countries/${slug}`)}>
-          <Image src={`/destinations/${slug}.png`} alt="" fill sizes={index < 2 ? "(max-width: 600px) 100vw, (max-width: 800px) 50vw, 50vw" : "(max-width: 600px) 100vw, (max-width: 800px) 50vw, 33vw"} className="home-destination__image" />
+          <Image src={slug === "italy" ? "/destinations/italy-home-venice.png" : `/destinations/${slug}.png`} alt="" fill sizes={index < 2 ? "(max-width: 600px) 100vw, (max-width: 800px) 50vw, 50vw" : "(max-width: 600px) 100vw, (max-width: 800px) 50vw, 33vw"} className="home-destination__image" />
           <span className="home-destination__label"><span className="home-destination__flag"><Image src={`/destinations/flags/${slug}.svg`} alt="" width={44} height={44} /></span><strong>{destination[locale]}</strong></span>
         </Link>;
       })}</div>
@@ -125,7 +125,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
           <h2 id="home-trust-title">{brand.whyTitle}</h2>
           <p className="home-trust__subtitle">{content.trustSubtitle}</p>
           <p className="home-trust__description">{content.trustText}</p>
-          <Link className="home-trust__cta" href={localPath(locale, "/consultation?source=home-trust")}>
+          <Link className="home-trust__cta" href={localPath(locale, "/free-consultation?source=home-trust")}>
             {content.trustCta}<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M19 12H5m6-6-6 6 6 6" /></svg>
           </Link>
         </div>
@@ -164,7 +164,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
 
     <section className="home-closing" id="home-consultation" aria-labelledby="home-closing-title">
       <div className="shell">
-        <header className="home-closing__heading"><h2 id="home-closing-title">{content.closingTitle}</h2><p>{content.closingText.replaceAll("هٔ", "ه")}</p></header>
+        <header className="home-closing__heading"><h2 id="home-closing-title">{content.closingTitle}</h2><p>{content.closingText.replaceAll("ه", "ه")}</p></header>
         <div className="home-closing__layout">
           <div className="home-closing__image"><Image src="/journey/profile-assessment.png" alt={locale === "fa" ? "مشاوره درباره مسیر تحصیلی" : "Study pathway consultation"} fill sizes="(max-width: 800px) 100vw, 50vw" /></div>
           <HomeConsultation locale={locale} />

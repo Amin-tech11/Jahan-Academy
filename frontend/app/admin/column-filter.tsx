@@ -33,7 +33,7 @@ export default function ColumnFilter({ title, values, selected, sortDirection, o
         {sortDirection && <button onClick={() => { onSort(null); onClose(); }}>پاک کردن مرتب‌سازی</button>}
       </div>
       <input ref={input} aria-label="جست‌وجو در مقادیر ستون" placeholder="جست‌وجو در مقادیر…" value={query} onChange={event => setQuery(event.target.value)} />
-      <label><input type="checkbox" checked={shown.length > 0 && shown.every(value => draft.includes(value))} onChange={event => setDraft(event.target.checked ? [...new Set([...draft, ...shown])] : draft.filter(value => !shown.includes(value)))} />انتخاب همهٔ مقادیر نمایش‌داده‌شده</label>
+      <label><input type="checkbox" checked={shown.length > 0 && shown.every(value => draft.includes(value))} onChange={event => setDraft(event.target.checked ? [...new Set([...draft, ...shown])] : draft.filter(value => !shown.includes(value)))} />انتخاب همه مقادیر نمایش‌داده‌شده</label>
       <div className="adm-column-values">{shown.map(value => <label key={value}><input type="checkbox" checked={draft.includes(value)} onChange={event => setDraft(event.target.checked ? [...draft, value] : draft.filter(item => item !== value))} /><span dir="auto">{value}</span></label>)}{!shown.length && <p>مقداری پیدا نشد.</p>}</div>
       <footer><button className="adm-primary" onClick={() => { onApply(draft.length === values.length && values.every(value => draft.includes(value)) ? undefined : draft); onClose(); }}>اعمال فیلتر</button><button onClick={() => { onApply(undefined); onClose(); }}>پاک کردن فیلتر ستون</button><button onClick={onClose}>انصراف</button></footer>
     </section>

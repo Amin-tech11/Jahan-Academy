@@ -1,6 +1,8 @@
 "use client";
+import { createRequestKey } from "@/lib/request-key";
 
 import Link from "next/link";
+import { ConsultationSuccess } from "./consultation-success";
 import { type FormEvent, useEffect, useRef, useState } from "react";
 
 import { Alert, Button, FormField, Input, Select, Textarea } from "@/components/ui";
@@ -84,7 +86,7 @@ export function ConsultationForm({ locale, source }: {
     setMessage("");
     const payload = consultationPayload(fields, locale, pageUrl, result.mobile);
     const serialized = JSON.stringify(payload);
-    if (requestKey.current?.payload !== serialized) requestKey.current = { payload: serialized, key: crypto.randomUUID() };
+    if (requestKey.current?.payload !== serialized) requestKey.current = { payload: serialized, key: createRequestKey() };
     try {
       const response = await apiRequest<ApiEnvelope<Receipt>>("/consultation-requests", {
         method: "POST", headers: { "Idempotency-Key": requestKey.current.key }, body: payload,
@@ -109,14 +111,7 @@ export function ConsultationForm({ locale, source }: {
     }
   }
 
-  if (status === "success" && receipt) return <section className="consultation-receipt" role="status" aria-live="polite">
-    <span className="consultation-receipt__icon" aria-hidden="true">✓</span>
-    <h2>{copy.thankYou}</h2>
-    <p>{receipt.duplicate ? copy.duplicate : copy.consultationText}</p>
-    <div className="consultation-receipt__code"><span>{copy.trackingCode}</span><strong dir="ltr">{receipt.reference}</strong></div>
-    <p className="consultation-receipt__note">{choose(locale, "این کد را برای پیگیری نزد خود نگه دارید. ارسال پیامک یا ایمیل تأیید در این مرحله انجام نمی‌شود.", "Keep this code for follow-up. No confirmation text or email is sent at this stage.")}</p>
-    <Link className="ui-button ui-button--secondary ui-button--md" href={`/${locale}`}>{choose(locale, "بازگشت به صفحه اصلی", "Back to home")}</Link>
-  </section>;
+  if (status === "success" && receipt) return <div className="consultation-request-form"><ConsultationSuccess locale={locale} reference={receipt.reference} duplicate={receipt.duplicate} /></div>;
 
   return <form className="consultation-request-form" onSubmit={submit} noValidate aria-label={copy.consultationTitle}>
     <p className="consultation-request-form__intro">{choose(locale, "فیلدهای ستاره‌دار الزامی‌اند. اطلاعات شما فقط برای بررسی درخواست مشاوره استفاده می‌شود.", "Fields marked * are required. Your information is used to review your consultation request.")}</p>

@@ -57,7 +57,9 @@ def test_real_sessions_follow_grants_revocations_and_super_admin_protection() ->
             admin, staff = tokens[admin_id], tokens[staff_id]
             path = f"/api/v1/admin/staff/{staff_id}/panel-access"
             own = "/api/v1/users/me/panel-access"
-            assert client.get(own, headers=staff).json()["data"]["sections"] == ["leads"]
+            own_response = client.get(own, headers=staff)
+            assert own_response.status_code == 200, own_response.text
+            assert own_response.json()["data"]["sections"] == ["leads"]
             assert client.get(own, headers=admin).json()["data"]["isSuperAdmin"] is True
             leads = client.get("/api/v1/admin/leads", headers=staff)
             assert leads.status_code == 200, leads.text

@@ -41,7 +41,7 @@
 .consultation { margin-top: 56px; scroll-margin-top: var(--guide-scroll-offset, 240px); }
 .consultation :global(.home-closing__heading) h2 { font-size: clamp(1.5rem, 2.5vw, 2.25rem); line-height: 1.6; margin: 0; }
 .consultation :global(.home-closing__heading) p { margin: .8rem auto 0; max-width: 45rem; line-height: 1.9; }
-.consultation :global(.home-closing__card) h3 { margin: 0 0 .6rem; color: var(--color-brand-900); font-size: 1.3rem; line-height: 1.6; }
+.consultation :global(.home-closing__card) h3 { margin: 0 0 .6rem; color: var(--color-text); font-size: 1.3rem; line-height: 1.6; }
 .consultation :global(.home-closing__card) p { margin: 0 0 1.75rem; font-size: .85rem; line-height: 1.9; }
 .consultation :global(.home-closing__card) p[role="alert"] { color: #ad3030; }
 @media (max-width: 900px) { .cards { grid-template-columns: 1fr; } }

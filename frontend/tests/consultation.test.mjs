@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 
 import {
-  consultationPayload, latinDigits, normalizeMobile, sourcePageUrl, validateConsultation,
+  consultationPayload, isValidEmail, latinDigits, normalizeMobile, sourcePageUrl, validateConsultation,
 } from "../lib/consultation.ts";
 
 const validFields = () => ({
@@ -10,6 +10,16 @@ const validFields = () => ({
   email: "", country: "Canada", intake: "fall", startYear: String(new Date().getUTCFullYear() + 1),
   age: "", gender: "prefer_not_to_say", occupation: "", maritalStatus: "",
   budgetRange: "", currency: "", message: "", privacyConsent: true, contactConsent: true,
+});
+
+test("email format accepts common providers and rejects malformed addresses", () => {
+  for (const value of ["name@gmail.com", "first.last+study@example.co.uk", " name@example.com "]) {
+    assert.equal(isValidEmail(value), true, value);
+  }
+  for (const value of ["", "name", "name@example", "name@@gmail.com", "first..last@gmail.com", ".name@gmail.com", "name.@gmail.com", "name@-gmail.com", "name@gmail..com", "name@ gmail.com", "name@exa_mple.com", "a".repeat(65) + "@gmail.com"]) {
+    assert.equal(isValidEmail(value), false, value);
+    assert.ok(validateConsultation({ ...validFields(), email: value || "invalid" }, "fa").errors.email);
+  }
 });
 
 test("Iranian and international mobile numbers normalize without accepting invalid input", () => {

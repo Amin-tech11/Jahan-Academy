@@ -6,7 +6,9 @@ import "@fontsource-variable/vazirmatn";
 import "./globals.css";
 import "./foundation.css";
 import "./consultation.css";
+import "./free-consultation.css";
 import "./home.css";
+import "./consultation-heading.css";
 import "./dropdowns.css";
 
 export const metadata: Metadata = {

@@ -78,12 +78,21 @@
 .home-service-card { display: flex; flex-direction: column; align-items: center; min-height: 21rem; padding: 1.35rem 1.15rem 1.6rem; border: 1px solid var(--color-border); border-radius: 1rem; background: var(--color-surface); text-align: center; }
 .home-service-card__icon { display: grid; width: 6.25rem; height: 6.25rem; flex: none; place-items: center; margin-bottom: 1rem; border-radius: 50%; background: var(--color-page); color: var(--color-brand-900); }
 .home-service-card h3 { width: 100%; margin: 0 0 .85rem; color: var(--color-brand-900); font-size: clamp(.72rem, 1.02vw, .92rem); font-weight: 800; line-height: 1.5; text-align: center; white-space: nowrap; }
+.site[lang="en"] .home-service-card h3 { white-space: normal; overflow-wrap: anywhere; }
 .home-service-card p { margin: 0; color: var(--color-muted); font-size: .92rem; line-height: 1.85; }
-.home-university-card { min-width: 0; overflow: hidden; border: 1px solid var(--color-border); border-radius: 1.2rem; background: #fff; }
-.home-university-card__media { position: relative; height: clamp(12rem, 17vw, 14rem); overflow: hidden; background: var(--color-page); }
+.home-university-card { display: flex; flex-direction: column; min-width: 0; overflow: hidden; border: 1px solid var(--color-border); border-radius: .85rem; background: #fff; box-shadow: 0 6px 18px rgb(23 58 110 / 4%); }
+.home-university-card__media { position: relative; aspect-ratio: 1.96; overflow: hidden; background: var(--color-page); }
 .home-university-card__media img { object-fit: cover; }
-.home-university-card__body { padding: 1.15rem 1.2rem 1.5rem; text-align: start; }
-.home-university-card__mark { display: grid; width: 3rem; height: 3rem; place-items: center; margin: 0 auto 1.1rem 0; padding: .35rem; overflow: hidden; border: 1px solid var(--color-border); border-radius: 50%; color: var(--color-brand-900); background: #fff; font-family: Georgia, serif; font-size: 1.25rem; font-weight: 700; }
+.home-page .home-university-card { transition: border-color .25s ease, box-shadow .25s ease; }
+.home-page .home-university-card__media img { transition: transform .55s cubic-bezier(.25,.1,.25,1); }
+.home-page .home-university-card:hover, .home-page .home-university-card:focus-visible { border-color: var(--color-brand-900); box-shadow: 0 0 0 1px var(--color-brand-900); }
+.home-page .home-university-card:hover .home-university-card__media img, .home-page .home-university-card:focus-visible .home-university-card__media img { transform: scale(1.045); }
+@media (prefers-reduced-motion: reduce) {
+  .home-page .home-university-card, .home-page .home-university-card__media img { transition: none; }
+  .home-page .home-university-card:hover .home-university-card__media img, .home-page .home-university-card:focus-visible .home-university-card__media img { transform: none; }
+}
+.home-university-card__body { flex: 1; padding: 1.25rem 1.35rem 1.75rem; text-align: start; }
+.home-university-card__mark { position: relative; display: grid; width: 4rem; height: 4rem; place-items: center; margin: -2.875rem auto 1.1rem 0; padding: .5rem; overflow: hidden; border: 1px solid var(--color-border); border-radius: .65rem; color: var(--color-brand-900); background: #fff; font-family: Georgia, serif; font-size: 1.25rem; font-weight: 700; }
 .home-university-card__mark--dark { background: var(--color-brand-900); border-color: var(--color-brand-900); }
 .home-university-card__mark img { display: block; width: 100%; height: 100%; object-fit: contain; }
 .home-university-card h3 { margin: 0 0 .35rem; color: var(--color-text); font-size: 1.2rem; line-height: 1.45; }
@@ -301,7 +310,7 @@
 
 .home-consultation__form > h3, .home-consultation__form > p:not([role="alert"]) { text-align: center; }
 
-.home-service-card { cursor: pointer; text-decoration: none; transition: border-color .2s ease, box-shadow .2s ease; }
+.home-service-card { cursor: pointer; text-decoration: none; transition: border-color .25s ease, box-shadow .25s ease; }
 .home-service-card:hover, .home-service-card:focus-visible { border-color: var(--color-brand-900); box-shadow: 0 0 0 1px var(--color-brand-900); }
 .home-service-card:focus-visible { outline: 2px solid var(--color-brand-900); outline-offset: 4px; }
 @media (prefers-reduced-motion: reduce) { .home-service-card { transition: none; } }

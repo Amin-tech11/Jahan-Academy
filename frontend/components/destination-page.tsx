@@ -1,24 +1,38 @@
 "use client";
-import SiteSelect from "./site-select";
+import { PanelConsultationCallout } from "@/components/panel-consultation-callout";
 
 import Image from "next/image";
+import { DestinationConsultation } from "./destination-consultation";
+import consultationStyles from "./destination-consultation.module.css";
+import { DestinationFaq } from "./destination-faq";
+import faqStyles from "./destination-faq.module.css";
+import type { DestinationFaqItem } from "@/lib/destination-faqs";
+import { DestinationCollage } from "./destination-collage";
+import { destinationCollages } from "@/lib/destination-collages";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SiteShell } from "@/components/site-shell";
-import { destinations, destinationConsultationHref, type Destination } from "@/lib/destination-content";
-import { homeUniversities } from "@/lib/home-universities";
+import type { Destination } from "@/lib/destination-content";
+import type { HomeUniversity } from "@/lib/home-universities";
+import { startDestinationMotion } from "@/lib/destination-motion";
+import { trackDestinationSections } from "@/lib/destination-section-tracker";
 import type { Locale } from "@/lib/site-content";
 import styles from "./destination-page.module.css";
 
-export function DestinationPage({ destination: d, locale }: { destination: Destination; locale: Locale }) {
-  const router = useRouter();
+export function DestinationPage({ destination: d, locale, universities, relatedDestinations, faqs, consultation }: {
+  destination: Destination;
+  locale: Locale;
+  universities: HomeUniversity[];
+  relatedDestinations: Pick<Destination, "slug" | "name">[];
+  faqs: readonly DestinationFaqItem[];
+  consultation: string;
+}) {
   const t = (fa: string, en: string) => locale === "fa" ? fa : en;
-  const [active, setActive] = useState("academics");
-  const [query, setQuery] = useState("");
-  const universities = homeUniversities.filter((university) => university.country === d.slug);
-  const visibleUniversities = universities.filter((university) => `${university.name} ${university.location} ${university.summary[locale]}`.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()));
-  const consultation = destinationConsultationHref(locale, d.slug);
+  const [active, setActive] = useState<string | null>(null);
+  const pageRef = useRef<HTMLElement>(null);
+  const navigationRef = useRef<HTMLDivElement>(null);
+  const collages = destinationCollages(d, universities);
+  const currencySymbol = new Intl.NumberFormat("en", { style: "currency", currency: d.currency, currencyDisplay: "narrowSymbol" }).formatToParts(0).find(({ type }) => type === "currency")?.value;
   const tabs = [
     ["academics", t("تحصیل و آموزش", "Academics")],
     ["universities", t("دانشگاه‌ها", "Universities")],
@@ -27,62 +41,137 @@ export function DestinationPage({ destination: d, locale }: { destination: Desti
     ["visa", t("پذیرش و ویزا", "Admission & visa")],
   ];
   useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      const entry = entries.find((item) => item.isIntersecting);
-      if (entry) setActive(entry.target.id);
-    }, { rootMargin: "-18% 0px -60% 0px" });
-    document.querySelectorAll("[data-destination-section]").forEach((section) => observer.observe(section));
-    return () => observer.disconnect();
-  }, [d.slug]);
+    if (!pageRef.current || !navigationRef.current) return;
+    return trackDestinationSections(pageRef.current, navigationRef.current, setActive);
+  }, [d.slug, locale]);
 
-  return <SiteShell locale={locale}><main className={styles.page}>
-    <div className={styles.topline}><div className={styles.container}>
+  useEffect(() => {
+    if (pageRef.current) return startDestinationMotion(pageRef.current);
+  }, [d.slug, locale]);
+
+  return <SiteShell locale={locale}><main ref={pageRef} className={styles.page} data-destination={d.slug}>
+    <div className={styles.topline} data-destination-motion="fade"><div className={styles.container}>
       <nav aria-label={t("مسیر صفحه", "Breadcrumb")} className={styles.breadcrumb}><Link href={`/${locale}`}>{t("خانه", "Home")}</Link><span>/</span><Link href={`/${locale}/countries`}>{t("مقصدهای تحصیلی", "Study destinations")}</Link><span>/</span><span aria-current="page">{d.name[locale]}</span></nav>
-      <label className={styles.selector}>{t("مقصد شما", "Your destination")}<SiteSelect aria-label={t("انتخاب کشور مقصد", "Choose a destination")} value={d.slug} onChange={(event) => router.push(`/${locale}/countries/${event.target.value}`)}>{destinations.map((item) => <option key={item.slug} value={item.slug}>{item.name[locale]}</option>)}</SiteSelect></label>
     </div></div>
 
     <section className={styles.hero}><div className={`${styles.container} ${styles.heroGrid}`}>
-      <div className={styles.heroCopy}>
-        <p className={styles.eyebrow}><span className={styles.dot} />{t("یک مقصد تازه، یک شروع تازه", "A NEW DESTINATION. A NEW BEGINNING.")}</p>
-        <h1>{t("آینده‌ات را در", "Find your future in")}<br /><span>{d.name[locale]}</span> {t("بساز", "")}</h1>
+      <div className={styles.heroCopy} data-destination-motion="side">
+        <h1>{t("آینده‌ات را در", "Find your future in")}<br /><span className={styles.countryName} style={{ backgroundImage: `url(/destinations/word-flags/${d.slug}.svg)` }}>{d.name[locale]}</span> {t("بساز", "")}</h1>
         <p className={styles.tagline}>{d.tagline[locale]}</p>
         <p className={styles.intro}>{t(`از شناخت دانشگاه‌ها تا آشنایی با زندگی در ${d.name.fa}؛ اینجا نقطه شروع مسیر تحصیلی شماست. با آگاهی انتخاب کنید و قدم بعدی را همراه ما بردارید.`, `From exploring universities to discovering life in ${d.name.en}, your study journey starts here. Get to know your options and take the next step with us.`)}</p>
-        <div className={styles.actions}><Link className={styles.primary} href={consultation}>{t("شروع مسیر با مشاوره", "Plan my study journey")} <span aria-hidden="true">{t("←", "→")}</span></Link><a className={styles.secondary} href="#academics">{t("کشف این مقصد", "Explore this destination")} <span aria-hidden="true">↓</span></a></div>
-        <div className={styles.heroNote}><span aria-hidden="true">✓</span>{t("از اولین سؤال تا انتخاب مسیر، همراه شما هستیم", "Thoughtful guidance, from your first question onward")}</div>
+        <div className={styles.studySnapshot} aria-label={t(`اطلاعات تحصیل در ${d.name.fa}`, `Study facts for ${d.name.en}`)}>
+          {([
+            [t("هزینه زندگی دانشجویی", "Student living costs"), d.studySnapshot.living[locale]],
+            [t("شهریه سالانه", "Annual tuition"), d.studySnapshot.tuition[locale]],
+            [t("امکان کار دانشجویی", "Work while studying"), d.studySnapshot.work[locale]],
+            [t("اقامت پس از تحصیل", "Post-study stay"), d.studySnapshot.postStudy[locale]],
+          ] as const).map(([label, value]) => <p className={styles.studyFact} key={label}><span>{label}:</span> <strong>{value}</strong></p>)}
+        </div>
+        <div className={styles.actions}><Link className={styles.primary} href={consultation}>
+          <span>{t("شروع مسیر با مشاوره", "Start your journey with a")}</span>
+          <strong className={styles.primaryEmphasis}>
+            {t("رایگان", "free")}
+          </strong>
+          {locale === "en" && <span>consultation</span>}
+        </Link></div>
       </div>
-      <figure className={styles.heroVisual}><Image src={d.image} alt={d.imageLabel[locale]} fill sizes="(max-width: 760px) 100vw, 50vw" preload /><div className={styles.imageShade} /><figcaption><Image src={`/destinations/flags/${d.slug}.svg`} alt="" width={42} height={30} /><div><strong>{d.name[locale]}</strong><span>{d.imageLabel[locale]}</span></div><span className={styles.compass} aria-hidden="true">↗</span></figcaption><span className={styles.photoLabel}>YOUR NEXT CHAPTER</span></figure>
+      <DestinationCollage photos={collages.hero} locale={locale} layout="hero" />
     </div></section>
 
-    <div className={`${styles.container} ${styles.facts}`}>
-      {[[t("زبان تحصیل", "Study language"), d.language[locale]], [t("واحد پول", "Currency"), d.currency], [t("شهرهای قابل بررسی", "Cities to explore"), d.cities[locale]], [t("مسیرهای تحصیلی", "Study pathways"), t("کارشناسی · ارشد · دکتری", "Bachelor’s · Master’s · PhD")]].map(([label, value]) => <div key={label}><span>{label}</span><strong>{value}</strong></div>)}
+    <dl className={`${styles.container} ${styles.facts}`} aria-label={t("اطلاعات مقصد", "Destination facts")}>
+      {[
+        { label: t("زبان تحصیل", "Study language"), value: d.language[locale], icon: <><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z" /><path d="M8 11h.01M12 11h.01M16 11h.01" /></> },
+        { label: t("واحد پول", "Currency"), value: <span className={styles.currencyValue} dir="ltr"><span>{currencySymbol}</span><span>{d.currency}</span></span>, icon: <><circle cx="12" cy="12" r="9" /><path d="M15 8.5h-4.5a2 2 0 0 0 0 4H13a2 2 0 0 1 0 4H8.5M12 6v12" /></> },
+        { label: t("شهرهای قابل بررسی", "Cities to explore"), value: d.cities[locale], icon: <><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z" /><circle cx="12" cy="10" r="2.5" /></> },
+        { label: t("مسیرهای تحصیلی", "Study pathways"), value: t("کارشناسی · ارشد · دکتری", "Bachelor’s · Master’s · PhD"), icon: <><path d="m2 9 10-5 10 5-10 5L2 9ZM6 11v6c4 3 8 3 12 0v-6M22 9v7" /></> },
+      ].map(({ label, value, icon }, index) => <div key={label} className={styles.fact} data-destination-motion="up" data-destination-delay={index * 60}>
+        <dt><svg className={styles.factIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">{icon}</svg><span>{label}</span></dt>
+        <dd>{value}</dd>
+      </div>)}
+    </dl>
+
+    <div className={styles.guide}>
+    <div ref={navigationRef} className={styles.navigation}>
+      <h2 data-destination-motion="fade" id="destination-guide-title" className={`${styles.container} ${styles.navigationTitle}`}>{t(`۵ دلیل شگفت‌انگیز برای تحصیل در ${d.name.fa}`, `5 Incredible Reasons to Study in ${d.name.en}`)}</h2>
+      <nav data-destination-motion="fade" className={styles.container} aria-labelledby="destination-guide-title">{tabs.map(([id, title]) => <a key={id} className={active === id ? styles.selectedTab : ""} aria-current={active === id ? "location" : undefined} href={`#${id}`}>{title}</a>)}</nav>
     </div>
 
-    <div className={styles.navigation}><nav className={styles.container} aria-label={t("بخش‌های راهنمای مقصد", "Destination guide sections")}>{tabs.map(([id, title], index) => <a key={id} className={active === id ? styles.selectedTab : ""} aria-current={active === id ? "location" : undefined} href={`#${id}`} onClick={() => setActive(id)}><span aria-hidden="true">0{index + 1}</span>{title}</a>)}</nav></div>
-
     <section id="academics" data-destination-section className={`${styles.container} ${styles.section} ${styles.editorial}`}>
-      <div className={styles.academicPhotos}><Image className={styles.campusPhoto} src={universities[0]?.image || d.image} alt={universities[0]?.name || d.imageLabel[locale]} width={620} height={430} sizes="(max-width: 760px) 100vw, 45vw" /><div className={styles.logoStrip}>{universities.map((university) => <Image key={university.slug} src={university.logo} alt={university.name} width={58} height={58} />)}<span>{t("نگاهی به دانشگاه‌های این مقصد", "Meet your next campus")}</span></div></div>
-      <div><p className={styles.eyebrow}>{t("یادگیری، فراتر از مرزها", "EDUCATION BEYOND BORDERS")}</p><h2>{t("جایی برای رشد ایده‌های شما", "Give your ideas room to grow")}</h2><p>{d.academics[locale]}</p><ul className={styles.checklist}><li>{t("انتخاب دانشگاه متناسب با هدف تحصیلی", "Choose a university that fits your goals")}</li><li>{t("بررسی زبان، پیش‌نیازها و محتوای دوره", "Review language, prerequisites and course content")}</li><li>{t("آماده‌سازی یک مسیر شخصی برای اپلای", "Build an application plan around your background")}</li></ul><a className={styles.textLink} href="#universities">{t(`آشنایی با دانشگاه‌های ${d.name.fa}`, `Explore universities in ${d.name.en}`)} <span aria-hidden="true">{t("←", "→")}</span></a></div>
+      <DestinationCollage photos={collages.academics} locale={locale} layout="academics" className={styles.academicPhotos} />
+      <div data-destination-motion="side"><h2>{t("جایی برای رشد ایده‌های شما", "Give your ideas room to grow")}</h2><p>{d.academics[locale]}</p><ul className={styles.checklist}><li>{t("انتخاب دانشگاه متناسب با هدف تحصیلی", "Choose a university that fits your goals")}</li><li>{t("بررسی زبان، پیش‌نیازها و محتوای دوره", "Review language, prerequisites and course content")}</li><li>{t("آماده‌سازی یک مسیر شخصی برای اپلای", "Build an application plan around your background")}</li></ul></div>
     </section>
 
-    <section id="universities" data-destination-section className={`${styles.section} ${styles.universitySection}`}><div className={styles.container}>
-      <div className={styles.sectionHeading}><div><p className={styles.eyebrow}>{t("دانشگاه بعدی شما کجاست؟", "WHERE WILL YOU GO NEXT?")}</p><h2>{t(`دانشگاه‌های ${d.name.fa} را بشناسید`, `Discover universities in ${d.name.en}`)}</h2></div><label className={styles.search}><span>{t("جست‌وجو در این دانشگاه‌ها", "Search these universities")}</span><input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t("نام دانشگاه یا شهر…", "University or city…")} /></label></div>
-      <p className={styles.resultCount} role="status">{t(`${visibleUniversities.length.toLocaleString("fa")} دانشگاه برای آشنایی اولیه`, `${visibleUniversities.length} universities to explore`)}</p>
-      <div className={styles.universityGrid}>{visibleUniversities.map((university) => <article className={styles.universityCard} key={university.slug}><div className={styles.cardPhoto}><Image src={university.image} alt={university.name} fill sizes="(max-width: 760px) 100vw, 33vw" /><span>{d.name[locale]}</span></div><div className={styles.cardBody}><div className={styles.schoolLogo}><Image src={university.logo} alt="" width={48} height={48} /></div><p className={styles.location} dir="ltr">{university.location}</p><h3 dir="ltr">{university.name}</h3><p>{university.summary[locale]}</p><Link href={destinationConsultationHref(locale, d.slug, university.slug)}>{t("مشاوره درباره این دانشگاه", "Discuss this university")} <span aria-hidden="true">{t("←", "→")}</span></Link></div></article>)}</div>
-      {visibleUniversities.length === 0 && <div className={styles.empty}><h3>{t("دانشگاهی با این عبارت پیدا نشد", "No matching university")}</h3><p>{t("نام دیگری را امتحان کنید یا جست‌وجو را پاک کنید.", "Try another name or clear your search.")}</p><button onClick={() => setQuery("")}>{t("نمایش همه دانشگاه‌ها", "Show all universities")}</button></div>}
+<section id="universities" data-destination-section className={`${styles.section} ${styles.universitySection}`}><div className={styles.container}>
+      <div className={styles.sectionHeading} data-destination-motion="up"><div><h2>{t(`دانشگاه‌های ${d.name.fa} را بشناسید`, `Discover universities in ${d.name.en}`)}</h2></div></div>
+      <div className={styles.universityGrid}>{universities.map((university, index) => <article data-destination-motion="up" data-destination-delay={index * 60} className={styles.universityCard} key={university.slug}>
+        <div className={styles.cardPhoto}><Image src={university.image} alt={university.name} fill sizes="(max-width: 760px) 100vw, 33vw" /></div>
+        <div className={styles.cardBody}>
+          <div className={styles.schoolIdentity} dir="ltr">
+            <div className={styles.schoolLogo}><Image src={university.logo} alt="" width={48} height={48} /></div>
+            <h3>{university.name}</h3>
+            <p className={styles.location}>{university.location}</p>
+          </div>
+          <p>{university.summary[locale]}</p>
+        </div>
+      </article>)}</div>
     </div></section>
 
-    <section id="life" data-destination-section className={`${styles.container} ${styles.section} ${styles.editorial} ${styles.life}`}><div><p className={styles.eyebrow}>{t("فراتر از کلاس درس", "BEYOND THE CLASSROOM")}</p><h2>{t(`زندگی در ${d.name.fa}، تجربه‌ای تازه`, `Make a life in ${d.name.en}`)}</h2><p>{d.life[locale]}</p><div className={styles.cityNote}><span aria-hidden="true">◎</span><div><strong>{t("از این شهرها شروع کنید", "Start with these cities")}</strong><p>{d.cities[locale]}</p></div></div></div><figure className={styles.lifePhoto}><Image src={universities[2]?.image || d.image} alt={universities[2]?.name || d.imageLabel[locale]} width={620} height={400} sizes="(max-width: 760px) 100vw, 45vw" /><figcaption>{universities[2]?.name || d.name[locale]}</figcaption></figure></section>
+    <section id="life" data-destination-section className={`${styles.container} ${styles.section} ${styles.editorial} ${styles.life}`}>
+      <div data-destination-motion="side"><h2>{t(`زندگی در ${d.name.fa}، تجربه‌ای تازه`, `Make a life in ${d.name.en}`)}</h2><p>{d.life[locale]}</p></div>
+      <DestinationCollage photos={collages.life} locale={locale} layout="life" />
+    </section>
 
-    <section id="planning" data-destination-section className={`${styles.container} ${styles.section} ${styles.planning}`}><p className={styles.eyebrow}>{t("با یک برنامه روشن شروع کنید", "START WITH A CLEAR PLAN")}</p><h2>{t("هزینه‌ها را با تصویر کامل ببینید", "Plan for the whole experience")}</h2><p>{t(`بودجه تحصیل در ${d.name.fa} به شهر، دانشگاه و سبک زندگی بستگی دارد. این سه بخش را با واحد ${d.currency} کنار هم قرار دهید.`, `Your study budget in ${d.name.en} depends on the city, institution and lifestyle. Plan these three areas in ${d.currency}.`)}</p><div className={styles.planGrid}>{[
-      ["01", t("شهریه و هزینه‌های آموزشی", "Tuition & study costs"), t("شهریه دوره، منابع درسی و هزینه‌های اعلام‌شده دانشگاه را بررسی کنید.", "Check tuition, study materials and the institution’s listed fees.")],
-      ["02", t("مسکن و زندگی روزمره", "Housing & everyday life"), t("اجاره، خوراک، بیمه و رفت‌وآمد را متناسب با شهر انتخابی برآورد کنید.", "Estimate rent, food, insurance and transport for your chosen city.")],
-      ["03", t("آمادگی پیش از سفر", "Before you travel"), t("هزینه ترجمه مدارک، آزمون زبان و سفر را در برنامه خود بگنجانید.", "Include document translations, language tests and travel in your plan.")],
-    ].map(([number, title, body]) => <article key={number}><span>{number}</span><h3>{title}</h3><p>{body}</p></article>)}</div></section>
+    <div className={styles.container}><PanelConsultationCallout locale={locale} panel="destination" subject={d.name[locale]} /></div>
+    <section id="planning" data-destination-section className={`${styles.container} ${styles.section} ${styles.editorial} ${styles.planning}`}>
+      <DestinationCollage photos={collages.planning} locale={locale} layout="planning" className={styles.planningPhoto} />
+      <div data-destination-motion="side">
+        <h2>{t("هزینه‌ها را با تصویر کامل ببینید", "Plan for the whole experience")}</h2>
+        <p>{d.planning.summary[locale]}</p>
+        <ul className={`${styles.checklist} ${styles.detailList}`}>{([
+          ["tuition", t("شهریه و آموزش", "Tuition & study")],
+          ["living", t("بودجه زندگی", "Everyday budget")],
+          ["arrival", t("هزینه‌های شروع", "Getting started")],
+          ["funding", t("تأمین و مدیریت بودجه", "Funding & budgeting")],
+        ] as const).map(([key, title]) => <li key={key}><div><strong>{title}</strong><p>{d.planning[key][locale]}</p></div></li>)}</ul>
+        <p className={styles.planningNote}>{t("ارقام، برآورد منابع رسمی‌اند؛ مبلغ به‌روز را از دانشگاه و محل اقامت بگیرید.", "Figures are estimates from official guides; confirm current amounts with your institution and accommodation provider.")}</p>
+      </div>
+    </section>
 
-    <section id="visa" data-destination-section className={`${styles.container} ${styles.section} ${styles.visa}`}><div><p className={styles.eyebrow}>{t("قدم بعدی، با اطلاعات معتبر", "YOUR NEXT STEP, WELL INFORMED")}</p><h2>{t(`آمادهٔ مسیر تحصیل در ${d.name.fa} شوید`, `Prepare for your journey to ${d.name.en}`)}</h2><p>{t("ابتدا شرایط پذیرش دانشگاه را بررسی کنید؛ سپس راهنمای رسمی ویزا و اقامت متناسب با تابعیت و وضعیت خود را بخوانید. الزامات و هزینه‌ها ممکن است تغییر کنند.", "Start with your university’s admission requirements, then check official visa and residence guidance for your nationality and circumstances. Requirements and fees can change.")}</p><a href={d.source} target="_blank" rel="noopener noreferrer" className={styles.textLink}>{t("راهنمای رسمی مقصد", "Official destination guide")} · {d.sourceName} ↗</a></div><ol className={styles.steps}>{[t("هدف، رشته و مقطع را مشخص کنید", "Define your subject and study level"), t("شرایط دانشگاه و مدارک را بررسی کنید", "Check entry requirements and documents"), t("زمان‌بندی و بودجه خود را آماده کنید", "Prepare your timeline and budget"), t("الزامات ویزا را از مرجع رسمی بخوانید", "Read official visa guidance")].map((item, i) => <li key={item}><span>{(i + 1).toLocaleString(locale)}</span>{item}</li>)}</ol></section>
+    <section id="visa" data-destination-section className={`${styles.container} ${styles.section} ${styles.visa}`}>
+      <DestinationCollage photos={collages.visa} locale={locale} layout="visa" className={styles.visaPhoto} />
+      <div data-destination-motion="side" className={styles.visaCopy} dir={locale === "fa" ? "rtl" : "ltr"}>
+        <h2>{t(`پذیرش و ویزای تحصیلی ${d.name.fa}`, `Admission & student visas for ${d.name.en}`)}</h2>
+        <p>{d.visa.summary[locale]}</p>
+        <ul className={`${styles.checklist} ${styles.detailList}`}>{([
+          ["admission", t("پذیرش و تأیید ثبت‌نام", "Admission & enrolment")],
+          ["documents", t("مدارک و آمادگی پرونده", "Documents & preparation")],
+          ["process", t("مراحل ویزا و اقامت", "Visa & residence process")],
+        ] as const).map(([key, title]) => <li key={key}><div><strong>{title}</strong><p>{d.visa[key][locale]}</p></div></li>)}</ul>
+        <p className={styles.planningNote}>{t("مسیر و مدارک به تابعیت، دوره و شرایط شما بستگی دارد؛ پیش از اقدام، آخرین فهرست مرجع رسمی را بررسی کنید.", "The route and documents depend on your nationality, course and circumstances; check the official current checklist before applying.")}</p>
+      </div>
+    </section>
+    </div>
 
-    <section className={`${styles.container} ${styles.cta}`}><div><p className={styles.eyebrow}>JAHAN ACADEMY</p><h2>{t("مقصد را شناختید؛ حالا مسیر خودتان را بسازید", "You know the destination. Let’s plan your journey.")}</h2><p>{t("شرایط و هدف خود را با ما در میان بگذارید تا قدم بعدی روشن‌تر شود.", "Share your background and goals with us to clarify your next step.")}</p></div><Link href={consultation}>{t("درخواست مشاوره", "Request a consultation")} <span aria-hidden="true">{t("←", "→")}</span></Link></section>
-
-    <section className={`${styles.container} ${styles.section} ${styles.more}`}><p className={styles.eyebrow}>{t("جهان، پر از مسیرهای تازه است", "MORE PLACES. MORE POSSIBILITIES.")}</p><h2>{t("مقصدهای دیگر را کشف کنید", "Explore more destinations")}</h2><div>{destinations.filter((item) => item.slug !== d.slug).map((item) => <Link key={item.slug} href={`/${locale}/countries/${item.slug}`}><Image src={`/destinations/flags/${item.slug}.svg`} alt="" width={26} height={20} />{item.name[locale]}<span aria-hidden="true">{t("←", "→")}</span></Link>)}</div></section>
+    <section aria-labelledby="more-destinations-title" className={`${styles.container} ${styles.section} ${styles.more}`}>
+      <h2 data-destination-motion="up" id="more-destinations-title">{t("مقصدهای دیگر را کشف کنید", "More Study Destinations to Explore")}</h2>
+      <div>{relatedDestinations.map((item, index) => <Link data-destination-motion="up" data-destination-delay={(index % 3) * 60} key={item.slug} href={`/${locale}/countries/${item.slug}`}>
+        <Image src={`/destinations/word-flags/${item.slug}.svg`} alt="" width={28} height={22} />
+        <span>{t(`تحصیل در ${item.name.fa}`, `Study in ${item.slug === "united-kingdom" || item.slug === "netherlands" ? "the " : ""}${item.name.en}`)}</span>
+      </Link>)}</div>
+    </section>
+    <section id="destination-faq" aria-labelledby="destination-faq-title" className={`${styles.container} ${faqStyles.section}`}>
+      <h2 data-destination-motion="up" id="destination-faq-title" className={faqStyles.heading}>{t(`سؤالات متداول درباره تحصیل در ${d.name.fa}`, `Frequently asked questions about studying in ${d.name.en}`)}</h2>
+      <DestinationFaq key={`${locale}-${d.slug}`} items={faqs} locale={locale} />
+    </section>
+    <section id="destination-consultation" aria-labelledby="destination-consultation-title" className={`${styles.container} ${consultationStyles.section}`}>
+      <header data-destination-motion="up" className={consultationStyles.heading}>
+        <h2 id="destination-consultation-title">{t("مقصد را شناختید؛ حالا مسیر خودتان را بسازید", "You know the destination. Let’s plan your journey.")}</h2>
+        <p>{t("شرایط و هدف خود را با ما در میان بگذارید تا قدم بعدی روشن‌تر شود.", "Share your background and goals with us to clarify your next step.")}</p>
+      </header>
+      <div className={consultationStyles.layout}>
+        <div data-destination-motion="side" className={consultationStyles.photo}><Image src="/journey/profile-assessment.png" alt={t("مشاوره درباره مسیر تحصیلی", "Study pathway consultation")} fill sizes="(max-width: 800px) 100vw, 50vw" /></div>
+        <DestinationConsultation key={`${locale}-${d.slug}`} destination={d} locale={locale} />
+      </div>
+    </section>
   </main></SiteShell>;
 }

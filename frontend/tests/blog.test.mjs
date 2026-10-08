@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { selectBlogPosts, blogDate, blogHref, normalizeSearch } from "../lib/blog-content.ts";
+import { blogGuides, blogFaq } from "../lib/blog-guides.ts";
 
 const post = (slug, date, type = "article", title = "انتخاب مقصد تحصیلی") => ({ slug, date, type, title: { fa: title, en: "Choosing a destination" }, excerpt: { fa: "آماده‌سازی مشاوره", en: "Prepare for consultation" } });
 const posts = [post("old", "2026-01-01"), post("new", "2026-09-22", "news"), post("middle", "2026-05-20")];
@@ -31,4 +32,21 @@ test("Persian dates use the Persian calendar and links preserve type and locale"
   assert.match(blogDate("2026-09-22", "en"), /2026/);
   assert.equal(blogHref(posts[1], "fa"), "/fa/news/new");
   assert.equal(blogHref(posts[0], "en"), "/en/articles/old");
+});
+
+test("guides are independently filterable, chronological and have bilingual reading pages", () => {
+  const selected = selectBlogPosts([...posts, ...blogGuides], "fa", { now, type: "guide" });
+  assert.equal(selected.length, 3);
+  assert.deepEqual(selected.map(p=>p.date), ["2026-09-17", "2026-09-16", "2026-09-15"]);
+  for (const guide of selected) {
+    assert.equal(blogHref(guide,"fa"), `/fa/guides/${guide.slug}`);
+    for (const locale of ["fa","en"]) {
+      assert.ok(guide.title[locale]);
+      assert.equal(guide.sections[locale].length, 3);
+      assert.ok(guide.sections[locale].every(section=>section.title && section.body));
+    }
+  }
+  assert.equal(selectBlogPosts(blogGuides,"fa",{now,type:"article"}).length,0);
+  assert.equal(new Set(blogGuides.map(g=>g.slug)).size,blogGuides.length);
+  assert.equal(blogFaq.fa.length,blogFaq.en.length);
 });
