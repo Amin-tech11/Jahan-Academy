@@ -17,6 +17,7 @@ test("services consultation supplies the public API contract and keeps its retry
     module, exports: module.exports, Date, crypto: { randomUUID: () => "services-retry-key" },
     FormData: class { get(key) { return fields[key] ?? ""; } },
     require(name) {
+      if (name === "./site-select") return { default: "select" };
       if (name === "@/lib/request-key") return { createRequestKey: () => createRequestKey({ getRandomValues: crypto.getRandomValues.bind(crypto) }) };
       if (name === "react") return { useId: () => "services", useRef: () => ref, useState: value => [value, () => {}] };
       if (name === "react/jsx-runtime") return { jsx: (type, props) => ({ type, props }), jsxs: (type, props) => ({ type, props }) };

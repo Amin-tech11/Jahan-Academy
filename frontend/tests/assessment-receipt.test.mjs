@@ -19,6 +19,7 @@ function setup({ copyFails = false, submitFails = false, email = "test@example.c
     navigator: { clipboard: { writeText: async value => { if (copyFails) throw new Error("Denied"); copied.push(value); } } },
     FormData: class { get(key) { return { fullName: "Test Applicant", mobile, email, privacyConsent: "on", contactConsent: "on" }[key] ?? ""; } },
     require(name) {
+      if (name === "./site-select") return { default: "select" };
       if (name === "@/lib/request-key") return { createRequestKey: () => createRequestKey({ getRandomValues: crypto.getRandomValues.bind(crypto) }) };
       if (name === "react") return {
         useState: initial => { const i = cursor++; if (!(i in state)) state[i] = initial; return [state[i], value => { state[i] = value; }]; },

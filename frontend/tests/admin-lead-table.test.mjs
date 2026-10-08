@@ -6,7 +6,7 @@ registerHooks({ resolve(specifier, context, next) {
   if (specifier.startsWith("./") && !specifier.endsWith(".ts") && context.parentURL?.includes("/lib/admin-")) return next(`${specifier}.ts`, context);
   return next(specifier, context);
 } });
-const { columnText, columnValues, filterLeadRows, loadAllLeadRows } = await import("../lib/admin-lead-table.ts");
+const { columnText, columnValues, filterLeadRows, sortLeadRows, loadAllLeadRows } = await import("../lib/admin-lead-table.ts");
 const { leadWorkbook } = await import("../lib/admin-lead-export.ts");
 const { resources } = await import("../lib/admin-resources.ts");
 
@@ -18,6 +18,27 @@ test("column filters intersect, use displayed values and exclude their own filte
   assert.deepEqual(columnValues(rows, "status", { fullName: ["Mina B"], status: ["جدید"] }), ["بسته‌شده", "جدید"]);
   assert.deepEqual(filterLeadRows(rows, { email: ["—"] }), rows);
   assert.deepEqual(filterLeadRows(rows, { status: [] }), []);
+});
+
+test("column sorting uses numbers and real timestamps, keeps missing values last and ties stable", () => {
+  const rows = [{ id: "1", age: 100, createdAt: "2026-01-01T01:00:00+03:30" }, { id: "2", age: 9, createdAt: "2025-12-31T23:00:00Z" }, { id: "3", age: 10, createdAt: "2026-01-01T02:00:00+03:30" }, { id: "4", age: null }, { id: "5", age: 10, createdAt: "invalid" }];
+  const ids = (column, direction) => sortLeadRows(rows, { column, direction }).map(row => row.id);
+  assert.deepEqual(ids("age", "asc"), ["2", "3", "5", "1", "4"]);
+  assert.deepEqual(ids("age", "desc"), ["1", "3", "5", "2", "4"]);
+  assert.deepEqual(ids("requestCreatedAt", "asc"), ["1", "3", "2", "4", "5"]);
+  assert.deepEqual(ids("requestCreatedAt", "desc"), ["2", "3", "1", "4", "5"]);
+  assert.deepEqual(rows.map(row => row.id), ["1", "2", "3", "4", "5"]);
+  assert.strictEqual(sortLeadRows(rows, null), rows);
+});
+
+test("sorting occurs before paging and respects Persian numbers and budget units", () => {
+  const rows = Array.from({ length: 45 }, (_, i) => ({ id: String(i), age: 45 - i }));
+  assert.equal(sortLeadRows(rows, { column: "age", direction: "asc" }).slice(0, 20)[0].id, "44");
+  const references = [{ id: "1", reference: "JA-۱۰" }, { id: "2", reference: "JA-۲" }];
+  assert.equal(sortLeadRows(references, { column: "reference", direction: "asc" })[0].id, "2");
+  const budget = text => `تحصیلات: لیسانس\nسرمایه مهاجرت: ${text}\nمهارت زبان انگلیسی: عالی`;
+  const answers = [{ id: "1", message: budget("۲ الی ۳ میلیارد") }, { id: "2", message: budget("کمتر از ۵۰۰ میلیون") }, { id: "3", message: budget("۱ الی ۲ میلیارد") }];
+  assert.deepEqual(sortLeadRows(answers, { column: "investmentBudget", direction: "asc" }).map(row => row.id), ["2", "3", "1"]);
 });
 
 test("all-page loading preserves server scope/search and returns records beyond page one", async () => {

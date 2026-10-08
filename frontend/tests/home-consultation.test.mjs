@@ -20,6 +20,7 @@ function setup(mobile, fail = false, sourcePage) {
       if (name === "react") return { useId: () => "form", useRef: () => ref, useState: (value) => [value, () => {}] };
       if (name === "react/jsx-runtime") return { jsx: (type, props) => ({ type, props }), jsxs: (type, props) => ({ type, props }) };
       if (name === "next/link") return { default: () => null };
+      if (name === "./site-select") return { default: "select" };
       if (name === "./consultation-success") return { ConsultationSuccess: () => null };
       if (name === "./consultation-form-heading") return { ConsultationFormHeading: () => null };
       if (name === "@/lib/consultation") return { normalizeMobile: (value) => value === "09120000000" ? "+989120000000" : null };

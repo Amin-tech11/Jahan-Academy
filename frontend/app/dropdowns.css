@@ -1,4 +1,19 @@
 /* Shared single-choice dropdown arrow. Header navigation keeps its own icons. */
+.site-select { position: relative; display: block; width: 100%; min-width: 0; }
+html body .site-select__trigger { display: flex; align-items: center; justify-content: space-between; gap: 16px; width: 100%; min-height: 44px; padding: 10px 13px; border: 1px solid #d6dce4; border-radius: 8px; background: #fff; background-image: none; color: #202833; font: inherit; text-align: start; cursor: pointer; }
+.site-select__trigger > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.site-select__trigger svg { flex: none; color: #66717f; }
+html body .site-select__trigger:hover:not(:disabled), html body .site-select__trigger[aria-expanded="true"] { background: #fff; border-color: #123b78; }
+html body .site-select__trigger:disabled { opacity: .5; cursor: not-allowed; }
+html body .site-select__trigger[aria-invalid="true"] { border-color: #b42318; }
+html body .site-select__native { position: absolute !important; width: 1px !important; height: 1px !important; min-height: 0 !important; padding: 0 !important; margin: -1px !important; overflow: hidden !important; clip-path: inset(50%) !important; white-space: nowrap !important; pointer-events: none !important; border: 0 !important; }
+.site-select__list { position: fixed; z-index: 1200; overflow-y: auto; overscroll-behavior: contain; border: 1px solid #d6dce4; border-radius: 10px; padding: 6px; background: #fff; color: #202833; box-shadow: 0 10px 32px #123b7826; font: 13px/1.8 "Vazirmatn Variable", sans-serif; }
+.site-select__list [role="option"] { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 10px; border-radius: 6px; cursor: pointer; white-space: normal; overflow-wrap: anywhere; }
+.site-select__list [aria-selected="true"] { background: #e8eff8; color: #123b78; font-weight: 650; }
+.site-select__list [data-active="true"]:not([aria-disabled="true"]) { background: #123b78; color: #fff; }
+.site-select__list [aria-disabled="true"] { opacity: .45; cursor: not-allowed; }
+.site-select__error { display: block; color: #b42318; font-size: 12px; margin-top: 5px; }
+@media (forced-colors: active) { html body .site-select__trigger, .site-select__list { border-color: ButtonText; } .site-select__list [data-active="true"] { outline: 2px solid Highlight; } }
 html body select:not(header select):not([multiple]):not([size]) {
   appearance: none;
   -webkit-appearance: none;
