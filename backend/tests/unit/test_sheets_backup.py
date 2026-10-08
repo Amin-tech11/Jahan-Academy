@@ -21,6 +21,7 @@ from app.modules.operational.sheets_backup import (
     backup_day,
     day_bounds,
     google_token,
+    prepare_day,
     previous_day,
     row_values,
     snapshot_requests,
@@ -195,3 +196,10 @@ async def test_current_day_cannot_be_saved_as_a_complete_snapshot() -> None:
     ):
         with pytest.raises(ValueError, match="complete Tehran days"):
             await backup_day("2999-01-01")
+
+
+async def test_connector_preparation_rejects_incomplete_days_before_database_access() -> None:
+    with patch("app.modules.operational.sheets_backup.session_factory") as sessions:
+        with pytest.raises(ValueError, match="complete Tehran days"):
+            await prepare_day("2999-01-01")
+        sessions.assert_not_called()

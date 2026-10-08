@@ -9,7 +9,7 @@ import psycopg
 import pytest
 
 from app.core.config import Settings
-from app.modules.operational.sheets_backup import backup_day, day_bounds
+from app.modules.operational.sheets_backup import backup_day, day_bounds, prepare_day
 
 pytestmark = pytest.mark.skipif(
     os.getenv("JAHAN_RUN_INTEGRATION") != "1", reason="requires migrated PostgreSQL"
@@ -58,9 +58,17 @@ async def test_database_to_snapshot_includes_whole_day_and_archived_requests() -
             patch("app.modules.operational.sheets_backup.write_snapshot", remote),
         ):
             result = await backup_day(day.isoformat())
+            prepared = await prepare_day(day.isoformat())
         assert result["status"] == "saved"
         exported = {row[0] for row in remote.call_args.args[3]}
         assert exported.intersection(references) == set(references[1:4])
+        prepared_rows = prepared["requests"][1]["updateCells"]["rows"]
+        prepared_references = {
+            row["values"][0]["userEnteredValue"]["stringValue"] for row in prepared_rows[1:]
+        }
+        assert prepared_references == exported
+        assert prepared["rowCount"] == len(exported)
+        remote.assert_awaited_once()
     finally:
         with psycopg.connect(database_url) as connection, connection.cursor() as cursor:
             cursor.execute("DELETE FROM leads WHERE public_reference = ANY(%s)", (references,))

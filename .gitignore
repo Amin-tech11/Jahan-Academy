@@ -12,6 +12,7 @@
 !**/.env.example
 **/secrets/
 **/*service-account*.json
+**/.backup-outbox/
 
 # JavaScript
 **/node_modules/

@@ -15,6 +15,7 @@ import httpx
 import jdatetime  # type: ignore[import-untyped]
 import jwt
 from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import get_settings
 from app.core.database import dispose_database, session_factory
@@ -267,6 +268,43 @@ async def write_snapshot(
     return "saved"
 
 
+async def day_values(session: AsyncSession, day: str) -> list[list[str]]:
+    start, end = day_bounds(date.fromisoformat(day))
+    if end > datetime.now(UTC):
+        raise ValueError("Only complete Tehran days may be backed up")
+    result = await session.execute(
+        text(
+            "SELECT * FROM leads WHERE created_at >= :start AND created_at < :end "
+            "AND anonymized_at IS NULL ORDER BY created_at, id"
+        ),
+        {"start": start, "end": end},
+    )
+    return [row_values(dict(row)) for row in result.mappings()]
+
+
+async def prepare_day(day: str) -> dict[str, Any]:
+    """Read-only local export for the connected Google Drive plugin; no Google key required."""
+    # Validate before opening the database, including the disabled service-account mode.
+    if day_bounds(date.fromisoformat(day))[1] > datetime.now(UTC):
+        raise ValueError("Only complete Tehran days may be backed up")
+    try:
+        async with session_factory() as session, session.begin():
+            await session.execute(text("SET TRANSACTION READ ONLY"))
+            values = await day_values(session, day)
+        requests = snapshot_requests(day, values)
+        properties = requests[0]["addSheet"]["properties"]
+        return {
+            "spreadsheetId": get_settings().sheets_backup_spreadsheet_id,
+            "day": day,
+            "rowCount": len(values),
+            "sheetId": properties["sheetId"],
+            "sheetTitle": properties["title"],
+            "requests": requests,
+        }
+    finally:
+        await dispose_database()
+
+
 async def backup_day(day: str) -> dict[str, str | int]:
     settings = get_settings()
     if not settings.sheets_backup_enabled:
@@ -283,14 +321,7 @@ async def backup_day(day: str) -> dict[str, str | int]:
             )
             if not locked:
                 raise RuntimeError("Another worker is saving this backup; retry later")
-            result = await session.execute(
-                text(
-                    "SELECT * FROM leads WHERE created_at >= :start AND created_at < :end "
-                    "AND anonymized_at IS NULL ORDER BY created_at, id"
-                ),
-                {"start": start, "end": end},
-            )
-            values = [row_values(dict(row)) for row in result.mappings()]
+            values = await day_values(session, day)
             async with httpx.AsyncClient(timeout=60) as client:
                 token = await google_token(client, settings.sheets_backup_credentials_file)
                 client.headers["Authorization"] = f"Bearer {token}"
@@ -303,6 +334,11 @@ async def backup_day(day: str) -> dict[str, str | int]:
 
 
 if __name__ == "__main__":
-    import sys
+    import argparse
 
-    print(json.dumps(asyncio.run(backup_day(sys.argv[1] if len(sys.argv) > 1 else previous_day()))))
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("day", nargs="?", default=previous_day())
+    parser.add_argument("--prepare-only", action="store_true")
+    args = parser.parse_args()
+    operation = prepare_day if args.prepare_only else backup_day
+    print(json.dumps(asyncio.run(operation(args.day))))
