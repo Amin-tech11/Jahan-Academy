@@ -27,6 +27,10 @@
 
 ## 1. Product Overview
 
+### Approved administration backup (2026-10-08)
+
+The admin reference chat authorized daily Google Sheets snapshots of consultation and assessment requests created during the previous Tehran civil day, scheduled at 00:00 Asia/Tehran. Destination spreadsheet: `1D-OEZf_lO8pym4ZYqBxCjsMYYfG-HG109jMmx2dBK4A`. Each day has a separate immutable snapshot tab using the existing 14-column admin export layout, RTL, navy/white headers, banded rows and requested `B_Nazanin` font. Google Sheets font rendering depends on Google's font support. Secrets and account credentials are excluded. Activation requires service-account credentials, target-sheet Editor access and a successful live write. See [setup and operating guide](GOOGLE_SHEETS_BACKUP.md). Until then the integration remains disabled.
+
 Jahan Academy is a bilingual educational-migration platform for people between 18 and 40 years old who intend to study abroad, apply to universities, immigrate through education, or develop their educational and career paths.
 
 The MVP is a public **trust-building and lead-generation** website. Visitors learn about educational migration, destinations, approved academic services, and high-level university showcases; they read bilingual news and guidance, then submit a free-consultation request. The operational team qualifies and manages those requests in the website administration panel and synchronizes them with the Noura CRM/ERP.

@@ -8,6 +8,7 @@ from app.core.celery_app import celery_app
 from app.core.config import get_settings
 from app.core.database import dispose_database, session_factory
 from app.modules.operational.retention import RetentionRepository
+from app.modules.operational.sheets_backup import backup_day, previous_day
 
 
 async def enforce_retention() -> dict[str, int]:
@@ -33,3 +34,24 @@ async def enforce_retention() -> dict[str, int]:
 @celery_app.task(name="jahan.operational.enforce_retention")  # type: ignore[untyped-decorator]
 def enforce_retention_task() -> dict[str, int]:
     return asyncio.run(enforce_retention())
+
+
+@celery_app.task(name="jahan.operational.dispatch_sheets_backup")  # type: ignore[untyped-decorator]
+def dispatch_sheets_backup_task() -> None:
+    if get_settings().sheets_backup_enabled:
+        # Freeze the target day before queueing: retries after midnight keep the same day.
+        backup_sheets_task.delay(previous_day())
+
+
+@celery_app.task(  # type: ignore[untyped-decorator]
+    name="jahan.operational.backup_sheets",
+    autoretry_for=(Exception,),
+    retry_backoff=60,
+    retry_backoff_max=3600,
+    retry_jitter=True,
+    max_retries=12,
+)
+def backup_sheets_task(day: str) -> dict[str, str | int]:
+    result = asyncio.run(backup_day(day))
+    structlog.get_logger(__name__).info("consultation_sheets_backup", **result)
+    return result

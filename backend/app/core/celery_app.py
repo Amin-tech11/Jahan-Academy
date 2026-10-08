@@ -1,4 +1,5 @@
 from celery import Celery  # type: ignore[import-untyped]
+from celery.schedules import crontab  # type: ignore[import-untyped]
 
 from app.core.config import get_settings
 
@@ -8,7 +9,7 @@ celery_app.conf.update(
     task_serializer="json",
     result_serializer="json",
     accept_content=["json"],
-    timezone="UTC",
+    timezone="Asia/Tehran",
     enable_utc=True,
     task_acks_late=True,
     worker_prefetch_multiplier=1,
@@ -20,6 +21,10 @@ celery_app.conf.update(
         "enforce-data-retention": {
             "task": "jahan.operational.enforce_retention",
             "schedule": 86400.0,
+        },
+        "nightly-consultation-sheets-backup": {
+            "task": "jahan.operational.dispatch_sheets_backup",
+            "schedule": crontab(hour=0, minute=0, app=celery_app),
         },
     },
     imports=("app.modules.integrations.tasks", "app.modules.operational.tasks"),

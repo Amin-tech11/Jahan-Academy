@@ -10,6 +10,8 @@
 **/.env
 **/.env.*
 !**/.env.example
+**/secrets/
+**/*service-account*.json
 
 # JavaScript
 **/node_modules/
