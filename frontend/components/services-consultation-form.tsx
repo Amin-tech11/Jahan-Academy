@@ -1,7 +1,10 @@
 "use client";
+import SiteSelect from "./site-select";
+import { createRequestKey } from "@/lib/request-key";
 
 import Link from "next/link";
 import { ConsultationSuccess } from "./consultation-success";
+import { ConsultationFormHeading } from "./consultation-form-heading";
 import { type FormEvent, useId, useRef, useState } from "react";
 import { apiRequest, type ApiEnvelope } from "@/lib/api-client";
 import { normalizeMobile } from "@/lib/consultation";
@@ -30,13 +33,15 @@ export function ServicesConsultationForm({ locale }: { locale: Locale }) {
     if (!form.reportValidity() || !mobile) return;
     const payload = {
       firstName: value("firstName"), lastName: value("lastName"), mobile,
+      desiredCountryText: t("هنوز انتخاب نشده؛ بررسی در مشاوره", "Undecided; discuss during consultation"),
+      intakeTerm: "unknown", startYear: new Date().getUTCFullYear(),
       occupation: value("occupation"), locale, source: { pageUrl: `/${locale}/services` },
       privacyConsent: data.get("privacyConsent") === "on",
       contactConsent: data.get("contactConsent") === "on", website: value("website"),
       message: value("contactTime") ? `${t("زمان ترجیحی تماس", "Preferred contact time")}: ${value("contactTime")}` : null,
     };
     const serialized = JSON.stringify(payload);
-    if (request.current?.serialized !== serialized) request.current = { serialized, key: crypto.randomUUID() };
+    if (request.current?.serialized !== serialized) request.current = { serialized, key: createRequestKey() };
     setBusy(true); setError("");
     try {
       const response = await apiRequest<ApiEnvelope<Receipt>>("/consultation-requests", {
@@ -52,14 +57,13 @@ export function ServicesConsultationForm({ locale }: { locale: Locale }) {
   if (receipt) return <ConsultationSuccess locale={locale} reference={receipt.reference} duplicate={receipt.duplicate} />;
 
   return <form className="services-request" onSubmit={submit} aria-label={t("درخواست مشاوره تخصصی رایگان", "Request a free expert consultation")}>
-    <h3>{fa ? <>درخواست مشاوره تخصصی <strong className="services-request__free">رایگان</strong></> : <>Request a <strong className="services-request__free">free</strong> expert consultation</>}</h3>
-    <p className="services-request__hint">{t("اطلاعات کوتاه زیر را بنویسید تا برای هماهنگی مشاوره با شما تماس بگیریم.", "Share a few details so we can contact you to arrange your consultation.")}</p>
+    <ConsultationFormHeading locale={locale} />
     <div className="services-request__fields">
       <label htmlFor={`${id}-first`}>{t("نام", "First name")} *<input id={`${id}-first`} name="firstName" autoComplete="given-name" required maxLength={100} /></label>
       <label htmlFor={`${id}-last`}>{t("نام خانوادگی", "Last name")} *<input id={`${id}-last`} name="lastName" autoComplete="family-name" required maxLength={100} /></label>
       <label htmlFor={`${id}-phone`}>{t("شماره موبایل", "Mobile number")} *<input id={`${id}-phone`} name="mobile" type="tel" inputMode="tel" autoComplete="tel" dir="ltr" placeholder="0912 000 0000" required maxLength={32} onInput={(event) => event.currentTarget.setCustomValidity("")} /></label>
-      <label htmlFor={`${id}-occupation`}>{t("حوزه فعالیت", "Field of activity")} *<select id={`${id}-occupation`} name="occupation" defaultValue="" required><option value="" disabled>{t("حوزه فعالیت خود را انتخاب کنید", "Select your field of activity")}</option>{[ ["مهندسی", "Engineering"], ["علوم پایه", "Natural sciences"], ["پزشکی", "Medicine"], ["پیراپزشکی", "Allied health"], ["علوم انسانی", "Humanities"], ["مدیریت و کسب‌وکار", "Business and management"], ["هنر و معماری", "Art and architecture"], ["سایر", "Other"] ].map(([persian, english]) => <option key={english} value={t(persian, english)}>{t(persian, english)}</option>)}</select></label>
-      <label className="services-request__wide" htmlFor={`${id}-time`}>{t("زمان مناسب تماس (اختیاری)", "Preferred contact time (optional)")}<select id={`${id}-time`} name="contactTime" defaultValue=""><option value="">{t("فرقی ندارد", "No preference")}</option>{["10:00–12:00", "12:00–14:00", "14:00–16:00", "16:00–18:00"].map((time) => <option key={time} value={time}>{time}</option>)}</select></label>
+      <label htmlFor={`${id}-occupation`}>{t("حوزه فعالیت", "Field of activity")} *<SiteSelect id={`${id}-occupation`} name="occupation" defaultValue="" required><option value="" disabled>{t("حوزه فعالیت خود را انتخاب کنید", "Select your field of activity")}</option>{[ ["مهندسی", "Engineering"], ["علوم پایه", "Natural sciences"], ["پزشکی", "Medicine"], ["پیراپزشکی", "Allied health"], ["علوم انسانی", "Humanities"], ["مدیریت و کسب‌وکار", "Business and management"], ["هنر و معماری", "Art and architecture"], ["سایر", "Other"] ].map(([persian, english]) => <option key={english} value={t(persian, english)}>{t(persian, english)}</option>)}</SiteSelect></label>
+      <label className="services-request__wide" htmlFor={`${id}-time`}>{t("زمان مناسب تماس (اختیاری)", "Preferred contact time (optional)")}<SiteSelect id={`${id}-time`} name="contactTime" defaultValue=""><option value="">{t("فرقی ندارد", "No preference")}</option>{["10:00–12:00", "12:00–14:00", "14:00–16:00", "16:00–18:00"].map((time) => <option key={time} value={time}>{time}</option>)}</SiteSelect></label>
     </div>
     <div className="services-request__trap" aria-hidden="true"><label>Website<input name="website" tabIndex={-1} autoComplete="off" /></label></div>
     <label className="services-request__consent"><input type="checkbox" name="privacyConsent" required /><span>{t("با ثبت اطلاعاتم طبق", "I agree to submit my information under the")} <Link href={`/${locale}/privacy`}>{t("سیاست حریم خصوصی", "privacy policy")}</Link> {t("موافقم.", ".")}</span></label>

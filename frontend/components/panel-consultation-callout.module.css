@@ -1,0 +1,11 @@
+.card { display:flex; align-items:center; gap:28px; position:relative; isolation:isolate; margin:48px auto; padding:32px; border:1px solid #d6dce4; border-inline-start:4px solid #123b78; border-radius:18px; background:linear-gradient(120deg,#fff 60%,#f2f4f7); box-shadow:0 12px 32px rgb(18 59 120 / 5%); }
+.icon { flex:0 0 64px; display:grid; place-items:center; width:64px; height:64px; border:1px solid #d6dce4; border-radius:18px; background:#f5f6f8; color:#123b78; }
+.icon svg { width:32px; height:32px; }
+.copy { flex:1; min-width:0; }
+.copy h2 { margin:0 0 10px; color:#123b78; font-size:clamp(21px,2.4vw,28px); font-weight:800; line-height:1.65; }
+.copy p { margin:0; color:#617281; font-size:14px; line-height:1.9; }
+.button { display:inline-flex; align-items:center; justify-content:center; gap:16px; flex-shrink:0; padding:17px 22px; border-radius:12px; background:#123b78; color:#fff; font-size:14px; font-weight:750; text-decoration:none; transition:background .2s,box-shadow .2s; }
+.button:hover { background:#09253b; box-shadow:0 6px 16px rgb(18 59 120 / 16%); }
+.button:focus-visible { outline:3px solid #617281; outline-offset:4px; }
+@media(max-width:900px) { .card { flex-wrap:wrap; gap:20px; } .copy { flex-basis:calc(100% - 84px); } .button { margin-inline-start:84px; } }
+@media(max-width:600px) { .card { margin:32px auto; padding:24px; gap:16px; } .icon { width:48px; height:48px; flex-basis:48px; border-radius:14px; } .icon svg { width:26px; height:26px; } .copy { flex-basis:calc(100% - 64px); } .copy h2 { font-size:20px; } .button { width:100%; margin-inline-start:0; } }

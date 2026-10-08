@@ -11,7 +11,7 @@ import { universityInfoPath } from "@/lib/university-info-model";
 function UniversityCard({ university, locale }: { university: HomeUniversity; locale: Locale }) {
   return <a className="home-university-card" href={universityInfoPath(locale, university.slug)} target="_blank" rel="noopener noreferrer" aria-label={`${university.name} — ${locale === "fa" ? "اطلاعات دانشگاه (تب جدید)" : "University information (new tab)"}`}>
     <div className="home-university-card__media">
-      <Image src={university.image} alt={locale === "fa" ? `نمایی از ${university.name}` : `View of ${university.name}`} fill sizes="(max-width: 600px) 100vw, (max-width: 800px) 50vw, 33vw" />
+      <Image src={university.image} alt={locale === "fa" ? `نمایی از ${university.name}` : `View of ${university.name}`} fill sizes="(max-width: 600px) calc(100vw - 32px), (max-width: 800px) calc((100vw - 68px) / 2), (max-width: 1208px) calc((100vw - 88px) / 3), 374px" />
     </div>
     <div className="home-university-card__body" dir={locale === "fa" ? "rtl" : "ltr"}>
       <span className={`home-university-card__mark${university.slug === "chalmers-university-of-technology" ? " home-university-card__mark--dark" : ""}`} aria-hidden="true"><Image src={university.logo} alt="" width={44} height={44} /></span>

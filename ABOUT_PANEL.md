@@ -32,3 +32,31 @@ An explicit localized about route overrides the generic catch-all only for `/fa/
 - Publication requires approved company facts before adding legal registration, offices, statistics, or named employees.
 
 Root-preview routing and shared panel configuration are pending the explicit approval required by AGENTS.md; the localized about URLs work independently.
+
+## October 6, 2026: reference palette and supplied narrative
+
+- Requirement: apply the previously approved navy/silver palette and replace the about narrative with the user's three complete paragraphs, preserving bold emphasis and omitting chat-only citation markers.
+- Palette authority: `DESIGN_SYSTEM.md`, section 2.1. Navy 950/900/800/700: `#071F31`, `#0B2E45`, `#123D59`, `#1B526F`; silver 500/100: `#9FA4AA`, `#EEF0F2`. Neutral surfaces, borders, body text, and focus follow the same reference. Silver is used decoratively, with dark readable text on light surfaces.
+- Implementation: panel-scoped CSS variables replace the previous green/gold colors. The shell inherits these variables only inside the about page. `lib/about-content.ts` owns the supplied Persian narrative and its English translation; page metadata uses the revised brand description. Shared brand content, global styles, data, and permissions are unaffected.
+- Data/API/permission design and migrations: not applicable to a static content/style edit. New unit tests are not required for this reversible presentation change; the existing 32 tests passed.
+- Verification: typecheck and production build passed. HTTP integration on port 4100 passed for both locales, including the full rendered paragraphs, four strong spans, one H1, correct language, and all four core navy/silver values in the delivered CSS. Diff whitespace check passed.
+- Security/code review: emphasized text is rendered with React elements, without raw HTML. No external requests or new data collection were introduced.
+- Visual refresh limitation: browser automation rejected access to the localhost URL under its security policy. This update has HTTP and build verification, but visual desktop/mobile review after refresh remains unverified.
+- Push/PR/CI remain pending the destination authorization requested earlier after automatic approval review rejected the remote push.
+
+## Match the universities and destination panels
+
+- Requirement: follow the implemented universities and destination panel design while preserving the approved full Persian narrative and English translation.
+- Actual panel references: `universities-page` checkout's `universities-theme.module.css`, `universities-hero.module.css`, `universities-guide.module.css`; `destination` checkout's `destination-page.module.css`. These newer panel implementations use navy `#123B78`, silver `#AEB7C2`, canvas `#F7F8FA`, text `#202833`, muted text `#66717F`, borders `#D6DCE4`, and white surfaces with a 60/30/10 visual balance. This request adopts those implemented values for the about panel.
+- Layout: full-width photographic banner with JAHAN ACADEMY wordmark, centered introduction, sticky pill navigation, white editorial sections, centered value cards, and white consultation ending. Panel-scoped shell overflow uses `clip` so the page's sticky navigation follows the viewport rather than an overflow-hidden ancestor.
+- Navigation: active section follows scrolling, restores the correct section on reverse scrolling, adjusts for mobile dimensions, and removes listeners and scheduled work on unmount. Native anchor links remain usable before JavaScript loads.
+- Data/API/permissions/migrations: not applicable; no new collection or backend changes. Security review found no raw HTML or new external requests. All changes remain within the about panel.
+- Validation: typecheck and production build passed; 34 tests passed, including two new navigation behavior tests. HTTP checks passed for Persian and English on port 4100: complete supplied paragraphs, five navigation targets, one H1, and the actual reference colors in the delivered stylesheet.
+- Browser refresh and visual QA remain unavailable due to the previously reported browser-policy block. Push/PR/CI retain the earlier pending destination authorization.
+
+## October 7, 2026: develop integration
+
+- The user explicitly authorized pushing the final about panel, opening its PR, and merging after all applicable CI/CD checks pass.
+- Resolved develop conflicts by preserving the final about design and reusing develop's consultation heading, success receipt, and sourcePage attribution interface. Existing university source tests remain; about source coverage is added.
+- No API, permission, or database design changes are needed for this panel presentation update. Backend regression coverage runs in CI.
+- Final integration validation: 163 frontend tests passed, route types regenerated, typecheck and production build passed; localhost:4100/fa/about returned HTTP 200 with the final story title.

@@ -1,0 +1,1050 @@
+{
+  "dalhousie-university": {
+    "year": "2025/26",
+    "source": "https://www.dal.ca/content/dam/www/study/enrolment-reports/2025-enrolment-by-faculty.pdf",
+    "basis": {
+      "fa": "دانشجویان به تفکیک دانشکده؛ بدون King's",
+      "en": "Students by faculty; excluding King's"
+    },
+    "rows": [
+      [
+        "علوم",
+        "Science",
+        5000
+      ],
+      [
+        "سلامت",
+        "Health",
+        3538
+      ],
+      [
+        "مدیریت",
+        "Management",
+        2579
+      ],
+      [
+        "مهندسی",
+        "Engineering",
+        2449
+      ],
+      [
+        "هنر و علوم اجتماعی",
+        "Arts and Social Sciences",
+        2162
+      ],
+      [
+        "علوم کامپیوتر",
+        "Computer Science",
+        1647
+      ],
+      [
+        "پزشکی",
+        "Medicine",
+        1599
+      ],
+      [
+        "کشاورزی",
+        "Agriculture",
+        747
+      ],
+      [
+        "حقوق",
+        "Law",
+        504
+      ],
+      [
+        "معماری و برنامه‌ریزی",
+        "Architecture and Planning",
+        412
+      ],
+      [
+        "دندان‌پزشکی",
+        "Dentistry",
+        266
+      ],
+      [
+        "چنددانشکده‌ای",
+        "Combined / Multi-Faculty",
+        110
+      ],
+      [
+        "سایر تحصیلات تکمیلی",
+        "Other Graduate",
+        90
+      ]
+    ]
+  },
+  "mcgill-university": {
+    "year": "2025",
+    "source": "https://www.mcgill.ca/about/quickfacts",
+    "basis": {
+      "fa": "ثبت‌نام پاییز به تفکیک دانشکده",
+      "en": "Fall enrolment by faculty"
+    },
+    "rows": [
+      [
+        "هنر و علوم انسانی",
+        "Arts",
+        9630
+      ],
+      [
+        "علوم",
+        "Science",
+        6769
+      ],
+      [
+        "پزشکی و سلامت",
+        "Medicine and Health Sciences",
+        6089
+      ],
+      [
+        "مهندسی",
+        "Engineering",
+        5169
+      ],
+      [
+        "مدیریت",
+        "Management",
+        3521
+      ],
+      [
+        "آموزش",
+        "Education",
+        2566
+      ],
+      [
+        "کشاورزی و محیط زیست",
+        "Agricultural and Environmental Sciences",
+        1638
+      ],
+      [
+        "آموزش مداوم",
+        "Continuing Studies",
+        1553
+      ],
+      [
+        "حقوق",
+        "Law",
+        909
+      ],
+      [
+        "موسیقی",
+        "Music",
+        870
+      ],
+      [
+        "مطالعات بین‌دانشکده‌ای",
+        "Interfaculty Studies",
+        864
+      ],
+      [
+        "هنر و علوم بین‌دانشکده‌ای",
+        "Interfaculty BA & Sc",
+        656
+      ],
+      [
+        "دندان‌پزشکی",
+        "Dental Medicine and Oral Health",
+        297
+      ]
+    ]
+  },
+  "braunschweig-university-of-technology": {
+    "year": "2023/24",
+    "source": "https://www.tu-braunschweig.de/fileadmin/Redaktionsgruppen/Stabsstellen/Hochschulcontrolling/2025-05-08_RZ_TU_Zahlenspiegel_2023_d_nexus.pdf",
+    "basis": {
+      "fa": "دانشجویان ترم زمستان به تفکیک دانشکده",
+      "en": "Winter-semester students by faculty"
+    },
+    "rows": [
+      [
+        "مهندسی مکانیک",
+        "Mechanical Engineering",
+        3263
+      ],
+      [
+        "دانشکده کارل فریدریش گاوس",
+        "Carl Friedrich Gauss Faculty",
+        2873
+      ],
+      [
+        "معماری، عمران و محیط زیست",
+        "Architecture, Civil and Environmental Engineering",
+        2807
+      ],
+      [
+        "علوم زیستی",
+        "Life Sciences",
+        2683
+      ],
+      [
+        "علوم انسانی و آموزش",
+        "Humanities and Education",
+        2565
+      ],
+      [
+        "برق، فناوری اطلاعات و فیزیک",
+        "Electrical Engineering, IT and Physics",
+        1886
+      ]
+    ]
+  },
+  "aalborg-university": {
+    "year": "2025",
+    "source": "https://www.en.aau.dk/about-aau/key-figures/students",
+    "basis": {
+      "fa": "دانشجویان تمام‌وقت؛ ۱ اکتبر",
+      "en": "Ordinary full-time students; 1 October"
+    },
+    "rows": [
+      [
+        "علوم اجتماعی و انسانی",
+        "Social Sciences and Humanities",
+        8575
+      ],
+      [
+        "فناوری اطلاعات و طراحی",
+        "IT and Design (TECH)",
+        4234
+      ],
+      [
+        "مهندسی",
+        "Engineering",
+        2869
+      ],
+      [
+        "پزشکی",
+        "Medicine",
+        2014
+      ]
+    ]
+  },
+  "aarhus-university": {
+    "year": "2024",
+    "source": "https://i48.au.dk/fileadmin/www.international.au.dk/About_AU/Profile/About_AU/AU_key_statistics_2024/AU_Key_Statistics_2024_UK_010725_FINAL-kombineret.pdf",
+    "basis": {
+      "fa": "دانشجویان ثبت‌نام‌شده در ۱ اکتبر؛ بدون دکتری",
+      "en": "Enrolled students on 1 October; excluding PhD"
+    },
+    "rows": [
+      [
+        "مدیریت و علوم اجتماعی",
+        "Business and Social Sciences",
+        10904
+      ],
+      [
+        "هنر و علوم انسانی",
+        "Arts",
+        9292
+      ],
+      [
+        "سلامت",
+        "Health",
+        4767
+      ],
+      [
+        "علوم فنی",
+        "Technical Sciences",
+        4471
+      ],
+      [
+        "علوم طبیعی",
+        "Natural Sciences",
+        3219
+      ]
+    ]
+  },
+  "imperial-college-london": {
+    "year": "2024/25",
+    "source": "https://www.imperial.ac.uk/media/imperial-college/administration-and-support-services/planning/public/statistics-guides/24-25-Statistics-Guide.pdf",
+    "basis": {
+      "fa": "دانشجویان کارشناسی و تحصیلات تکمیلی به تفکیک دانشکده",
+      "en": "Undergraduate and postgraduate students by faculty"
+    },
+    "rows": [
+      [
+        "مهندسی",
+        "Engineering",
+        9367
+      ],
+      [
+        "علوم طبیعی",
+        "Natural Sciences",
+        5643
+      ],
+      [
+        "پزشکی",
+        "Medicine",
+        5071
+      ],
+      [
+        "مدیریت",
+        "Business",
+        2964
+      ]
+    ]
+  },
+  "polytechnic-university-of-milan": {
+    "year": "2025/26",
+    "source": "https://www.polimi.it/en/the-politecnico/our-figures",
+    "basis": {
+      "fa": "دانشجویان کارشناسی و کارشناسی ارشد؛ مارس ۲۰۲۶",
+      "en": "Bachelor's and master's students; March 2026"
+    },
+    "rows": [
+      [
+        "مهندسی",
+        "Engineering",
+        37227
+      ],
+      [
+        "معماری",
+        "Architecture",
+        7375
+      ],
+      [
+        "طراحی",
+        "Design",
+        4793
+      ]
+    ]
+  },
+  "technical-university-of-munich": {
+    "year": "2024/25",
+    "source": "https://www.ls.tum.de/fileadmin/w00bww/ls/download/media/TUM-LS-Image-Presentation-EN2025_6.pdf",
+    "basis": {
+      "fa": "دانشجویان ترم زمستان به تفکیک دانشکده",
+      "en": "Winter-semester students by school"
+    },
+    "rows": [
+      [
+        "محاسبات، اطلاعات و فناوری",
+        "Computation, Information and Technology",
+        14866
+      ],
+      [
+        "مهندسی و طراحی",
+        "Engineering and Design",
+        13884
+      ],
+      [
+        "مدیریت",
+        "Management",
+        7005
+      ],
+      [
+        "علوم طبیعی",
+        "Natural Sciences",
+        5173
+      ],
+      [
+        "علوم زیستی",
+        "Life Sciences",
+        4761
+      ],
+      [
+        "پزشکی و سلامت",
+        "Medicine and Health",
+        4335
+      ],
+      [
+        "علوم اجتماعی و فناوری",
+        "Social Sciences and Technology",
+        2079
+      ],
+      [
+        "پردیس اشتراوبینگ",
+        "Campus Straubing",
+        828
+      ]
+    ]
+  },
+  "university-of-otago": {
+    "year": "2024",
+    "source": "https://www.otago.ac.nz/about/quickstats",
+    "basis": {
+      "fa": "معادل دانشجوی تمام‌وقت (EFTS) به تفکیک حوزه",
+      "en": "Equivalent full-time students (EFTS) by division"
+    },
+    "rows": [
+      [
+        "علوم سلامت",
+        "Health Sciences",
+        6238
+      ],
+      [
+        "علوم انسانی",
+        "Humanities",
+        4773
+      ],
+      [
+        "علوم",
+        "Sciences",
+        4678
+      ],
+      [
+        "بازرگانی",
+        "Commerce",
+        2733
+      ],
+      [
+        "سایر",
+        "Other",
+        268
+      ]
+    ]
+  },
+  "university-of-helsinki": {
+    "year": "2025",
+    "source": "https://www.helsinki.fi/assets/drupal/2026-05/Statistical%20overview%202025.pdf",
+    "basis": {
+      "fa": "ثبت‌نام کارشناسی و کارشناسی ارشد به تفکیک دانشکده",
+      "en": "Bachelor's and master's enrolments by faculty"
+    },
+    "rows": [
+      [
+        "علوم",
+        "Science",
+        5388
+      ],
+      [
+        "هنر و علوم انسانی",
+        "Arts",
+        4614
+      ],
+      [
+        "علوم تربیتی",
+        "Educational Sciences",
+        3327
+      ],
+      [
+        "علوم اجتماعی",
+        "Social Sciences",
+        3235
+      ],
+      [
+        "کشاورزی و جنگلداری",
+        "Agriculture and Forestry",
+        2223
+      ],
+      [
+        "پزشکی",
+        "Medicine",
+        2156
+      ],
+      [
+        "حقوق",
+        "Law",
+        1824
+      ],
+      [
+        "زیست‌شناسی و محیط زیست",
+        "Biological and Environmental Sciences",
+        1480
+      ],
+      [
+        "الهیات",
+        "Theology",
+        1217
+      ],
+      [
+        "داروسازی",
+        "Pharmacy",
+        869
+      ],
+      [
+        "دامپزشکی",
+        "Veterinary Medicine",
+        443
+      ],
+      [
+        "دانشکده سوئدی علوم اجتماعی",
+        "Swedish School of Social Science",
+        410
+      ]
+    ]
+  },
+  "australian-national-university": {
+    "year": "2024",
+    "source": "https://www.education.gov.au/download/19483/2024-section-4-all-student-load/41932/document/xlsx",
+    "basis": {
+      "fa": "بار تحصیلی معادل تمام‌وقت (EFTSL)، برحسب حوزه؛ جدول ۴٫۶",
+      "en": "Equivalent full-time student load (EFTSL) by broad field; table 4.6"
+    },
+    "rows": [
+      [
+        "جامعه و فرهنگ",
+        "Society and culture",
+        7428
+      ],
+      [
+        "علوم طبیعی و فیزیکی",
+        "Natural and physical sciences",
+        3272
+      ],
+      [
+        "مدیریت و بازرگانی",
+        "Management and commerce",
+        2628
+      ],
+      [
+        "فناوری اطلاعات",
+        "Information technology",
+        1841
+      ],
+      [
+        "مهندسی",
+        "Engineering",
+        784
+      ],
+      [
+        "سلامت",
+        "Health",
+        671
+      ],
+      [
+        "کشاورزی و محیط‌زیست",
+        "Agriculture and environment",
+        454
+      ],
+      [
+        "هنرهای خلاق",
+        "Creative arts",
+        416
+      ]
+    ]
+  },
+  "curtin-university": {
+    "year": "2024",
+    "source": "https://www.education.gov.au/download/19483/2024-section-4-all-student-load/41932/document/xlsx",
+    "basis": {
+      "fa": "بار تحصیلی معادل تمام‌وقت (EFTSL)، برحسب حوزه؛ مقادیر منبع گرد شده‌اند",
+      "en": "Equivalent full-time student load (EFTSL) by broad field; source counts are rounded"
+    },
+    "rows": [
+      [
+        "مدیریت و بازرگانی",
+        "Management and commerce",
+        7390
+      ],
+      [
+        "سلامت",
+        "Health",
+        7095
+      ],
+      [
+        "جامعه و فرهنگ",
+        "Society and culture",
+        5220
+      ],
+      [
+        "علوم طبیعی و فیزیکی",
+        "Natural and physical sciences",
+        4291
+      ],
+      [
+        "آموزش",
+        "Education",
+        4181
+      ],
+      [
+        "مهندسی",
+        "Engineering",
+        4055
+      ],
+      [
+        "هنرهای خلاق",
+        "Creative arts",
+        2777
+      ],
+      [
+        "فناوری اطلاعات",
+        "Information technology",
+        2624
+      ],
+      [
+        "معماری و ساختمان",
+        "Architecture and building",
+        1489
+      ],
+      [
+        "کشاورزی و محیط‌زیست",
+        "Agriculture and environment",
+        299
+      ]
+    ],
+    "total": 39420
+  },
+  "karolinska-institute": {
+    "year": "2024",
+    "source": "https://ki.se/media/271249/download",
+    "basis": {
+      "fa": "معادل دانشجوی تمام‌وقت در دوره‌های کارشناسی و ارشد؛ همه منابع مالی، بدون دوره‌های تکمیلی؛ جدول ۴",
+      "en": "Full-time equivalents in first- and second-cycle education, all funding, excluding supplementary education; table 4"
+    },
+    "rows": [
+      [
+        "پزشکی",
+        "Medicine",
+        1683
+      ],
+      [
+        "پرستاری",
+        "Nursing",
+        802
+      ],
+      [
+        "پرستاری تخصصی",
+        "Specialist nursing",
+        529
+      ],
+      [
+        "سایر",
+        "Other",
+        3626
+      ]
+    ]
+  },
+  "chalmers-university-of-technology": {
+    "year": "2024",
+    "source": "https://www.chalmers.se/api/media/?url=https://cms.www.chalmers.se/Media/okvnfvik/chalmers-ar-2024.pdf?",
+    "basis": {
+      "fa": "بار آموزشی معادل تمام‌وقت به تفکیک دپارتمان؛ فقط سهم چالمرز از دپارتمان‌های مشترک",
+      "en": "Full-time equivalent teaching load by department; only Chalmers' share of joint departments"
+    },
+    "rows": [
+      [
+        "ریاضیات",
+        "Mathematical sciences",
+        1670
+      ],
+      [
+        "علوم کامپیوتر و فناوری اطلاعات",
+        "Computer science and information technology",
+        1559
+      ],
+      [
+        "معماری و مهندسی عمران",
+        "Architecture and civil engineering",
+        1534
+      ],
+      [
+        "اقتصاد و مدیریت فناوری",
+        "Technology management and economics",
+        1135
+      ],
+      [
+        "مهندسی برق",
+        "Electrical engineering",
+        1069
+      ],
+      [
+        "مکانیک و علوم دریایی",
+        "Mechanics and maritime sciences",
+        1046
+      ],
+      [
+        "صنعت و مواد",
+        "Industrial and materials science",
+        902
+      ],
+      [
+        "فضا، زمین و محیط‌زیست",
+        "Space, earth and environment",
+        521
+      ],
+      [
+        "فیزیک",
+        "Physics",
+        470
+      ],
+      [
+        "شیمی و مهندسی شیمی",
+        "Chemistry and chemical engineering",
+        390
+      ],
+      [
+        "میکروفناوری و نانوعلوم",
+        "Microtechnology and nanoscience",
+        173
+      ],
+      [
+        "علوم زیستی",
+        "Life sciences",
+        123
+      ],
+      [
+        "ارتباطات و یادگیری علم",
+        "Communication and learning in science",
+        54
+      ]
+    ]
+  },
+  "delft-university-of-technology": {
+    "year": "2025/26",
+    "source": "https://duo.nl/open_onderwijsdata/images/04.-inschrijvingen-wo-2025.csv",
+    "basis": {
+      "fa": "ثبت‌نام‌های منتشرشده DUO به تفکیک حوزه؛ شامل ثبت‌نام دوم. خانه‌های کمتر از ۵ نفر منتشر نشده‌اند؛ درصدها تقریبی‌اند.",
+      "en": "Published DUO enrolments by field, including secondary enrolments. Cells below 5 are suppressed; percentages are approximate."
+    },
+    "rows": [
+      [
+        "فناوری و مهندسی",
+        "Technology and engineering",
+        25761
+      ],
+      [
+        "سلامت",
+        "Health",
+        595
+      ],
+      [
+        "میان‌رشته‌ای",
+        "Interdisciplinary",
+        354
+      ],
+      [
+        "آموزش",
+        "Education",
+        73
+      ]
+    ]
+  },
+  "eindhoven-university-of-technology": {
+    "year": "2025/26",
+    "source": "https://duo.nl/open_onderwijsdata/images/04.-inschrijvingen-wo-2025.csv",
+    "basis": {
+      "fa": "ثبت‌نام‌های منتشرشده DUO به تفکیک حوزه؛ شامل ثبت‌نام دوم. خانه‌های کمتر از ۵ نفر منتشر نشده‌اند؛ درصدها تقریبی‌اند.",
+      "en": "Published DUO enrolments by field, including secondary enrolments. Cells below 5 are suppressed; percentages are approximate."
+    },
+    "rows": [
+      [
+        "فناوری و مهندسی",
+        "Technology and engineering",
+        14241
+      ],
+      [
+        "آموزش",
+        "Education",
+        73
+      ]
+    ]
+  },
+  "erasmus-university-rotterdam": {
+    "year": "2025/26",
+    "source": "https://duo.nl/open_onderwijsdata/images/04.-inschrijvingen-wo-2025.csv",
+    "basis": {
+      "fa": "ثبت‌نام‌های منتشرشده DUO به تفکیک حوزه؛ شامل ثبت‌نام دوم. خانه‌های کمتر از ۵ نفر منتشر نشده‌اند؛ درصدها تقریبی‌اند.",
+      "en": "Published DUO enrolments by field, including secondary enrolments. Cells below 5 are suppressed; percentages are approximate."
+    },
+    "rows": [
+      [
+        "اقتصاد",
+        "Economics",
+        14403
+      ],
+      [
+        "رفتار و جامعه",
+        "Behaviour and society",
+        6807
+      ],
+      [
+        "سلامت",
+        "Health",
+        4308
+      ],
+      [
+        "حقوق",
+        "Law",
+        3928
+      ],
+      [
+        "زبان و فرهنگ",
+        "Language and culture",
+        2038
+      ],
+      [
+        "میان‌رشته‌ای",
+        "Interdisciplinary",
+        572
+      ],
+      [
+        "آموزش",
+        "Education",
+        30
+      ],
+      [
+        "فناوری",
+        "Technology",
+        12
+      ]
+    ]
+  },
+  "eberhard-karls-university-of-tubingen": {
+    "year": "2025/26",
+    "source": "https://uni-tuebingen.de/de/597",
+    "basis": {
+      "fa": "ثبت‌نام رشته اصلی به تفکیک دانشکده در ترم زمستان؛ ممکن است هر فرد بیش از یک ثبت‌نام داشته باشد",
+      "en": "Winter main-subject enrolments by faculty; a person may have more than one enrolment"
+    },
+    "rows": [
+      [
+        "ریاضیات و علوم طبیعی",
+        "Mathematics and natural sciences",
+        9829
+      ],
+      [
+        "علوم انسانی",
+        "Humanities",
+        9689
+      ],
+      [
+        "اقتصاد و علوم اجتماعی",
+        "Economics and social sciences",
+        5954
+      ],
+      [
+        "پزشکی",
+        "Medicine",
+        5065
+      ],
+      [
+        "حقوق",
+        "Law",
+        2187
+      ],
+      [
+        "الهیات پروتستان",
+        "Protestant theology",
+        475
+      ],
+      [
+        "الهیات کاتولیک",
+        "Catholic theology",
+        200
+      ],
+      [
+        "الهیات اسلامی",
+        "Islamic theology",
+        147
+      ],
+      [
+        "مؤسسه لایبنیتس",
+        "Leibniz Institute",
+        52
+      ]
+    ]
+  },
+  "kth-royal-institute-of-technology": {
+    "year": "2024",
+    "source": "https://www.kth.se/polopoly_fs/1.1334196.1751276470!/KTH%20Annual%20report%202024.pdf",
+    "basis": {
+      "fa": "سهم تقریبی بار آموزشی تمام‌وقت با تأمین مالی دولتی؛ بدون دانشجویان شهریه‌پرداز",
+      "en": "Approximate full-time teaching-load shares funded by government; fee-paying students excluded"
+    },
+    "rows": [
+      [
+        "مهندسی",
+        "Engineering",
+        76
+      ],
+      [
+        "علوم طبیعی",
+        "Natural sciences",
+        16
+      ],
+      [
+        "علوم انسانی، حقوق و علوم اجتماعی",
+        "Humanities, law and social sciences",
+        6
+      ],
+      [
+        "سایر",
+        "Other",
+        2
+      ]
+    ],
+    "method": "published"
+  },
+  "aalto-university": {
+    "year": "2025",
+    "source": "https://www.aalto.fi/sites/default/files/2026-03/Aalto-University-Annual-Review-Board-Report-and-Financial-Statements-2025.pdf",
+    "basis": {
+      "fa": "دانشجویان دوره‌های منتهی به مدرک در سه حوزه دانشگاه؛ سهم فناوری از تفاضل کل و دو حوزه دیگر محاسبه شده است",
+      "en": "Degree students in the university's three fields; technology calculated as the total less the other two fields"
+    },
+    "rows": [
+      [
+        "فناوری و مهندسی",
+        "Technology and engineering",
+        14145
+      ],
+      [
+        "مدیریت و اقتصاد",
+        "Business and economics",
+        4700
+      ],
+      [
+        "هنر، طراحی و معماری",
+        "Arts, design and architecture",
+        2755
+      ]
+    ],
+    "supportingSources": [
+      "https://www.aalto.fi/en/school-of-business/key-figures-2021-2025",
+      "https://www.aalto.fi/en/school-of-arts-design-and-architecture/key-figures-for-2025"
+    ]
+  },
+  "university-of-toronto": {
+    "year": "2024/25",
+    "source": "https://governingcouncil.utoronto.ca/media/32081",
+    "basis": {
+      "fa": "بار تحصیلی تمام‌وقت پاییز در گروه کارشناسیِ گزارش، شامل رزیدنتی پزشکی؛ علوم و هنر سه پردیس تجمیع شده‌اند؛ جدول ۳a، ستون واقعی",
+      "en": "Fall FTE in the report's undergraduate population, including medical residents; Arts & Science combined across three campuses; schedule 3a, Actual column"
+    },
+    "total": 70434,
+    "rows": [
+      [
+        "هنر و علوم؛ سه پردیس",
+        "Arts and Science; three campuses",
+        54010
+      ],
+      [
+        "علوم کاربردی و مهندسی",
+        "Applied science and engineering",
+        5519
+      ],
+      [
+        "پزشکی",
+        "Medicine",
+        5183
+      ],
+      [
+        "حرکت‌شناسی و تربیت بدنی",
+        "Kinesiology and physical education",
+        1174
+      ],
+      [
+        "معماری، منظر و طراحی",
+        "Architecture, landscape and design",
+        1064
+      ],
+      [
+        "داروسازی",
+        "Pharmacy",
+        966
+      ],
+      [
+        "حقوق",
+        "Law",
+        673
+      ],
+      [
+        "موسیقی",
+        "Music",
+        538
+      ],
+      [
+        "پرستاری",
+        "Nursing",
+        446
+      ],
+      [
+        "دندان‌پزشکی",
+        "Dentistry",
+        443
+      ],
+      [
+        "الهیات",
+        "Theology",
+        299
+      ],
+      [
+        "اطلاعات",
+        "Information",
+        65
+      ],
+      [
+        "سال انتقالی",
+        "Transitional year",
+        53
+      ]
+    ]
+  },
+  "charite-universitatsmedizin-berlin": {
+    "year": "2024",
+    "source": "https://www.charite.de/fileadmin/user_upload/portal_relaunch/Mediathek/publikationen/jahresberichte/Charite-Jahresbericht_2024_EN.pdf",
+    "basis": {
+      "fa": "فقط دانشجویان ورودی جدید سال (۲٬۰۰۷ نفر)، نه کل دانشجویان؛ دسته‌بندی گزارش سالانه",
+      "en": "New entrants only (2,007), not all enrolled students; annual-report categories"
+    },
+    "rows": [
+      [
+        "پزشکی",
+        "Medicine",
+        696
+      ],
+      [
+        "سلامت، پرستاری، مامایی و بهداشت عمومی",
+        "Health sciences, nursing, midwifery and public health",
+        301
+      ],
+      [
+        "دندان‌پزشکی",
+        "Dentistry",
+        96
+      ],
+      [
+        "سایر",
+        "Other",
+        914
+      ]
+    ]
+  },
+  "the-university-of-auckland": {
+    "year": "2025",
+    "source": "https://www.auckland.ac.nz/assets/about-us/about-the-university/the-university/official-publications/annual-report/UoA-AR-2025-Web.pdf",
+    "basis": {
+      "fa": "معادل دانشجوی تمام‌وقت (EFTS) به تفکیک دانشکده، ۳۱ دسامبر؛ اعداد منبع گرد شده‌اند",
+      "en": "Equivalent full-time students (EFTS) by faculty at 31 December; source counts are rounded"
+    },
+    "total": 39184,
+    "rows": [
+      [
+        "علوم",
+        "Science",
+        9418
+      ],
+      [
+        "هنر و آموزش",
+        "Arts and education",
+        7523
+      ],
+      [
+        "مدیریت و اقتصاد",
+        "Business and economics",
+        6885
+      ],
+      [
+        "مهندسی و طراحی",
+        "Engineering and design",
+        5908
+      ],
+      [
+        "پزشکی و علوم سلامت",
+        "Medical and health sciences",
+        5445
+      ],
+      [
+        "حقوق",
+        "Law",
+        2072
+      ],
+      [
+        "سایر",
+        "Other",
+        1932
+      ]
+    ]
+  }
+}

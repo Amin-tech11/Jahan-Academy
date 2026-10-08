@@ -48,6 +48,16 @@ export function normalizeMobile(value: string): string | null {
   return /^\+[1-9]\d{7,14}$/.test(mobile) ? mobile : null;
 }
 
+export function isValidEmail(value: string): boolean {
+  const email = value.trim();
+  if (email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return false;
+  const [local, domain] = email.split("@");
+  if (local.length > 64 || local.startsWith(".") || local.endsWith(".") || local.includes("..")) return false;
+  if (/[<>()[\]\\,;:"]/.test(local)) return false;
+  return domain.split(".").every((label) =>
+    label.length <= 63 && /^[\p{L}\p{N}](?:[\p{L}\p{N}-]*[\p{L}\p{N}])?$/u.test(label));
+}
+
 export function sourcePageUrl(locale: Locale, source?: string): string {
   const home = `/${locale}`;
   if (!source) return `/${locale}/consultation`;
@@ -73,7 +83,7 @@ export function validateConsultation(fields: ConsultationFields, locale: Locale,
   if (!fields.lastName.trim() || fields.lastName.trim().length > 100) errors.lastName = required;
   const mobile = normalizeMobile(fields.mobile);
   if (!mobile) errors.mobile = fa ? "شماره موبایل ایران یا بین‌المللی معتبر وارد کنید." : "Enter a valid Iranian or international mobile number.";
-  if (fields.email.trim() && (fields.email.trim().length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email.trim()))) errors.email = fa ? "ایمیل معتبر وارد کنید." : "Enter a valid email address.";
+  if (fields.email.trim() && !isValidEmail(fields.email)) errors.email = fa ? "ایمیل معتبر وارد کنید؛ مانند name@example.com." : "Enter a valid email address, e.g. name@example.com.";
   if (!fields.country.trim() || fields.country.trim().length > 100) errors.country = required;
   if (!intakeTerms.has(fields.intake)) errors.intake = required;
   const startYear = Number(latinDigits(fields.startYear));

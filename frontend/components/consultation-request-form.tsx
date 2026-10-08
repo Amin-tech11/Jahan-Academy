@@ -1,4 +1,5 @@
 "use client";
+import { createRequestKey } from "@/lib/request-key";
 
 import Link from "next/link";
 import { ConsultationSuccess } from "./consultation-success";
@@ -85,7 +86,7 @@ export function ConsultationForm({ locale, source }: {
     setMessage("");
     const payload = consultationPayload(fields, locale, pageUrl, result.mobile);
     const serialized = JSON.stringify(payload);
-    if (requestKey.current?.payload !== serialized) requestKey.current = { payload: serialized, key: crypto.randomUUID() };
+    if (requestKey.current?.payload !== serialized) requestKey.current = { payload: serialized, key: createRequestKey() };
     try {
       const response = await apiRequest<ApiEnvelope<Receipt>>("/consultation-requests", {
         method: "POST", headers: { "Idempotency-Key": requestKey.current.key }, body: payload,

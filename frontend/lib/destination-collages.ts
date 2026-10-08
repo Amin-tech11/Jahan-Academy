@@ -32,4 +32,3 @@ export function destinationCollages(d: Destination, universities: readonly HomeU
     visa: [studentScenes.travel, campus(0), studentScenes.planning],
   };
 }
-

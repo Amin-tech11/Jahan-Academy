@@ -150,10 +150,6 @@ class LeadSummary(ApiModel):
     version: int
     created_at: datetime
     updated_at: datetime
-
-
-class LeadDetail(LeadSummary):
-    mobile_raw: str
     age: int | None = None
     gender: GenderCode | None = None
     gender_self_description: str | None = None
@@ -162,6 +158,10 @@ class LeadDetail(LeadSummary):
     investment_range_code: str | None = None
     investment_currency: str | None = None
     message: str | None = None
+
+
+class LeadDetail(LeadSummary):
+    mobile_raw: str
     locale: str
     source_url: str | None = None
     source_university_id: UUID | None = None

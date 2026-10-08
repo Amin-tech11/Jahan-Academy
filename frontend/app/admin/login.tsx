@@ -81,7 +81,7 @@ export default function AdminLogin({
           <div className="adm-entry-brand-copy">
             <h1>پنل مدیریت جهان آکادمی</h1>
             <p>
-              فضای یکپارچهٔ تیم برای همراهی، مشاوره
+              فضای یکپارچه تیم برای همراهی، مشاوره
               <br />و ساختن آینده‌ای فراتر از مرزها
             </p>
           </div>
@@ -231,7 +231,7 @@ export default function AdminLogin({
               <path d="M12 3 4 6v6c0 5 8 9 8 9s8-4 8-9V6l-8-3Z" />
               <path d="m8 12 3 3 5-6" />
             </svg>
-            دسترسی ویژهٔ اعضای تیم جهان آکادمی
+            دسترسی ویژه اعضای تیم جهان آکادمی
           </p>
         </section>
       </div>

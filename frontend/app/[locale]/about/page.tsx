@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { AboutPage } from "@/components/about-page";
-import { brandContent } from "@/lib/brand-content";
+import { aboutContent } from "@/lib/about-content";
 import { isLocale } from "@/lib/site-content";
 
 type Props = { params: Promise<{ locale: string }> };
@@ -10,8 +10,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   return {
-    title: locale === "fa" ? "درباره جهان آکادمی | همراه مسیر تحصیل شما" : "About Jahan Academy | Your study journey",
-    description: brandContent[locale].intro,
+    title: locale === "fa" ? "داستان جهان آکادمی | همراه مسیر تحصیل شما" : "The Jahan Academy Story | Your study journey",
+    description: aboutContent[locale].description,
     alternates: { canonical: `/${locale}/about`, languages: { fa: "/fa/about", en: "/en/about" } },
   };
 }
