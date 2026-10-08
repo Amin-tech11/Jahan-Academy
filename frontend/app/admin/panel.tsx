@@ -981,10 +981,10 @@ function ResourceList({ resource }: { resource: Resource }) {
         {(page > 1 || query || status || fromDate || toDate || Object.values(filters).some(Boolean)) && (
           <p className="adm-list-hint">برای دیدن همه درخواست‌های تازه، فیلترها را پاک کنید و به صفحه اول بروید.</p>
         )}
-        <div className="adm-toolbar">
+        <div className={`adm-toolbar ${resource.id === "leads" ? "adm-leads-toolbar" : ""}`}>
           {resource.id === "leads" && (
             <label>
-              جست‌وجو بر اساس
+              <span className="adm-filter-label">جست‌وجو بر اساس</span>
               <SiteSelect value={searchField} onChange={(event) => {
                 setSearchField(event.target.value as LeadSearchField);
                 setPage(1);
@@ -994,7 +994,7 @@ function ResourceList({ resource }: { resource: Resource }) {
             </label>
           )}
           <label className="adm-search">
-            {resource.id === "audit" ? "نام عملیات" : "جست‌وجو"}
+            <span className="adm-filter-label">{resource.id === "audit" ? "نام عملیات" : "جست‌وجو"}</span>
             <input
               placeholder={resource.id === "leads" ? leadSearchFields.find((field) => field.value === searchField)?.placeholder : "حداقل دو حرف…"}
               dir={resource.id === "leads" && searchField !== "fullName" ? "ltr" : undefined}
@@ -1008,7 +1008,7 @@ function ResourceList({ resource }: { resource: Resource }) {
           </label>
           {resource.statuses && (
             <label>
-              وضعیت
+              <span className="adm-filter-label">وضعیت</span>
               <SiteSelect
                 value={status}
                 onChange={(e) => {
@@ -1029,9 +1029,9 @@ function ResourceList({ resource }: { resource: Resource }) {
             <DateFilter calendar={calendar} onCalendarChange={setCalendar} label="از تاریخ" value={fromDate} max={toDate} onChange={(date) => { setFromDate(date); setPage(1); }} />
             <DateFilter calendar={calendar} onCalendarChange={setCalendar} label="تا تاریخ" value={toDate} min={fromDate} onChange={(date) => { setToDate(date); setPage(1); }} />
           </>}
-          <button onClick={() => setRefresh((value) => value + 1)}>
+          {resource.id !== "leads" && <button onClick={() => setRefresh((value) => value + 1)}>
             تازه‌سازی
-          </button>
+          </button>}
           <button
             className="adm-link"
             onClick={() => {
