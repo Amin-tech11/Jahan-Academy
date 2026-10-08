@@ -1,3 +1,4 @@
+import { createRequestKey } from "../lib/request-key.ts";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
@@ -18,6 +19,8 @@ function load(file, dependencies, globals = {}) {
   vm.runInNewContext(ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX } }).outputText, {
     module, exports: module.exports, ...globals,
     require(name) {
+      if (name === "./site-select") return { default: "select" };
+      if (name === "@/lib/request-key") return { createRequestKey };
       if (name === "react/jsx-runtime") return jsx;
       if (name in dependencies) return dependencies[name];
       throw new Error(`Unexpected dependency: ${name}`);
@@ -56,6 +59,7 @@ for (const [file, exportName, state, wrapper] of [
     react: { useState: () => [state[cursor++], () => {}], useRef: () => ({ current: null }), useId: () => "test", useEffect: () => {} },
     "next/link": { default: "a" },
     "./consultation-success": { ConsultationSuccess: Receipt },
+    "./consultation-form-heading": { ConsultationFormHeading: () => null },
     "@/components/ui": {},
     "@/lib/api-client": {},
     "@/lib/consultation": { sourcePageUrl: () => "/fa/contact" },

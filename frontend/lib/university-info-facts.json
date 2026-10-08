@@ -1,0 +1,303 @@
+{
+  "dalhousie-university": {
+    "foundedYear": 1818,
+    "city": {
+      "fa": "هلیفکس",
+      "en": "Halifax"
+    },
+    "address": "6299 South Street, Halifax, Nova Scotia, Canada",
+    "kind": "public",
+    "dli": "O19209939282"
+  },
+  "laval-university": {
+    "foundedYear": 1852,
+    "city": {
+      "fa": "کبک",
+      "en": "Québec City"
+    },
+    "address": "2325 rue de l’Université, Québec City, Québec, Canada",
+    "kind": "public",
+    "dli": "O19359011020"
+  },
+  "mcgill-university": {
+    "foundedYear": 1821,
+    "city": {
+      "fa": "مونترآل",
+      "en": "Montréal"
+    },
+    "address": "845 Sherbrooke Street West, Montréal, Québec, Canada",
+    "kind": "public",
+    "dli": "O19359011033"
+  },
+  "braunschweig-university-of-technology": {
+    "foundedYear": 1745,
+    "city": {
+      "fa": "براونشوایگ",
+      "en": "Braunschweig"
+    },
+    "address": "Universitätsplatz 2, 38106 Braunschweig, Germany",
+    "kind": "public"
+  },
+  "charite-universitatsmedizin-berlin": {
+    "foundedYear": 1710,
+    "city": {
+      "fa": "برلین",
+      "en": "Berlin"
+    },
+    "address": "Charitéplatz 1, 10117 Berlin, Germany",
+    "kind": "public"
+  },
+  "eberhard-karls-university-of-tubingen": {
+    "foundedYear": 1477,
+    "city": {
+      "fa": "توبینگن",
+      "en": "Tübingen"
+    },
+    "address": "Geschwister-Scholl-Platz 1, 72074 Tübingen, Germany",
+    "kind": "public"
+  },
+  "australian-national-university": {
+    "foundedYear": 1946,
+    "city": {
+      "fa": "کانبرا",
+      "en": "Canberra"
+    },
+    "address": "Acton Campus, Canberra ACT 2601, Australia",
+    "kind": "public"
+  },
+  "adelaide-university": {
+    "foundedYear": 2024,
+    "city": {
+      "fa": "آدلاید",
+      "en": "Adelaide"
+    },
+    "address": "North Terrace, Adelaide SA 5000, Australia",
+    "kind": "public"
+  },
+  "curtin-university": {
+    "foundedYear": 1966,
+    "city": {
+      "fa": "پرت",
+      "en": "Perth"
+    },
+    "address": "Kent Street, Bentley WA 6102, Australia",
+    "kind": "public"
+  },
+  "catholic-university-of-the-sacred-heart": {
+    "foundedYear": 1921,
+    "city": {
+      "fa": "میلان",
+      "en": "Milan"
+    },
+    "address": "Largo Agostino Gemelli 1, 20123 Milan, Italy",
+    "kind": "private"
+  },
+  "polytechnic-university-of-milan": {
+    "foundedYear": 1863,
+    "city": {
+      "fa": "میلان",
+      "en": "Milan"
+    },
+    "address": "Piazza Leonardo da Vinci 32, 20133 Milan, Italy",
+    "kind": "public"
+  },
+  "polytechnic-university-of-turin": {
+    "foundedYear": 1859,
+    "city": {
+      "fa": "تورین",
+      "en": "Turin"
+    },
+    "address": "Corso Duca degli Abruzzi 24, 10129 Turin, Italy",
+    "kind": "public"
+  },
+  "aalborg-university": {
+    "foundedYear": 1974,
+    "city": {
+      "fa": "آلبورگ",
+      "en": "Aalborg"
+    },
+    "address": "Fredrik Bajers Vej 7K, 9220 Aalborg Øst, Denmark",
+    "kind": "public"
+  },
+  "aarhus-university": {
+    "foundedYear": 1928,
+    "city": {
+      "fa": "آرهوس",
+      "en": "Aarhus"
+    },
+    "address": "Nordre Ringgade 1, 8000 Aarhus C, Denmark",
+    "kind": "public"
+  },
+  "technical-university-of-denmark": {
+    "foundedYear": 1829,
+    "city": {
+      "fa": "کونگنس لینگبی",
+      "en": "Kongens Lyngby"
+    },
+    "address": "Anker Engelunds Vej 101, 2800 Kongens Lyngby, Denmark",
+    "kind": "public"
+  },
+  "cardiff-university": {
+    "foundedYear": 1883,
+    "city": {
+      "fa": "کاردیف",
+      "en": "Cardiff"
+    },
+    "address": "Main Building, Park Place, Cardiff CF10 3AT, United Kingdom",
+    "kind": "public"
+  },
+  "durham-university": {
+    "foundedYear": 1832,
+    "city": {
+      "fa": "دورهام",
+      "en": "Durham"
+    },
+    "address": "Palatine Centre, Stockton Road, Durham DH1 3LE, United Kingdom",
+    "kind": "public"
+  },
+  "imperial-college-london": {
+    "foundedYear": 1907,
+    "city": {
+      "fa": "لندن",
+      "en": "London"
+    },
+    "address": "Exhibition Road, London SW7 2AZ, United Kingdom",
+    "kind": "public"
+  },
+  "aalto-university": {
+    "foundedYear": 2010,
+    "city": {
+      "fa": "اسپو",
+      "en": "Espoo"
+    },
+    "address": "Otakaari 1B, 02150 Espoo, Finland",
+    "kind": "foundation"
+  },
+  "tampere-university": {
+    "foundedYear": 2019,
+    "city": {
+      "fa": "تامپره",
+      "en": "Tampere"
+    },
+    "address": "Kalevantie 4, 33100 Tampere, Finland",
+    "kind": "foundation"
+  },
+  "university-of-helsinki": {
+    "foundedYear": 1640,
+    "city": {
+      "fa": "هلسینکی",
+      "en": "Helsinki"
+    },
+    "address": "Fabianinkatu 33, 00170 Helsinki, Finland",
+    "kind": "public"
+  },
+  "delft-university-of-technology": {
+    "foundedYear": 1842,
+    "city": {
+      "fa": "دلفت",
+      "en": "Delft"
+    },
+    "address": "Mekelweg 5, 2628 CC Delft, Netherlands",
+    "kind": "public"
+  },
+  "eindhoven-university-of-technology": {
+    "foundedYear": 1956,
+    "city": {
+      "fa": "آیندهوون",
+      "en": "Eindhoven"
+    },
+    "address": "Groene Loper 3, 5612 AE Eindhoven, Netherlands",
+    "kind": "public"
+  },
+  "erasmus-university-rotterdam": {
+    "foundedYear": 1913,
+    "city": {
+      "fa": "روتردام",
+      "en": "Rotterdam"
+    },
+    "address": "Burgemeester Oudlaan 50, 3062 PA Rotterdam, Netherlands",
+    "kind": "public"
+  },
+  "massey-university": {
+    "foundedYear": 1927,
+    "city": {
+      "fa": "پالمرستون نورث",
+      "en": "Palmerston North"
+    },
+    "address": "Tennent Drive, Palmerston North 4410, New Zealand",
+    "kind": "public"
+  },
+  "the-university-of-auckland": {
+    "foundedYear": 1883,
+    "city": {
+      "fa": "اوکلند",
+      "en": "Auckland"
+    },
+    "address": "22 Princes Street, Auckland 1010, New Zealand",
+    "kind": "public"
+  },
+  "university-of-otago": {
+    "foundedYear": 1869,
+    "city": {
+      "fa": "داندین",
+      "en": "Dunedin"
+    },
+    "address": "362 Leith Street, Dunedin 9016, New Zealand",
+    "kind": "public"
+  },
+  "chalmers-university-of-technology": {
+    "foundedYear": 1829,
+    "city": {
+      "fa": "گوتنبرگ",
+      "en": "Gothenburg"
+    },
+    "address": "Chalmersplatsen 1, 412 96 Gothenburg, Sweden",
+    "kind": "foundation"
+  },
+  "kth-royal-institute-of-technology": {
+    "foundedYear": 1827,
+    "city": {
+      "fa": "استکهلم",
+      "en": "Stockholm"
+    },
+    "address": "Drottning Kristinas väg 4, 114 28 Stockholm, Sweden",
+    "kind": "public"
+  },
+  "karolinska-institute": {
+    "foundedYear": 1810,
+    "city": {
+      "fa": "سولنا",
+      "en": "Solna"
+    },
+    "address": "Nobels väg 6, Solna, Sweden",
+    "kind": "public"
+  },
+  "university-of-toronto": {
+    "foundedYear": 1827,
+    "city": {
+      "fa": "تورنتو",
+      "en": "Toronto"
+    },
+    "address": "27 King's College Circle, Toronto, Ontario M5S 1A1, Canada",
+    "kind": "public",
+    "dli": "O19332746152"
+  },
+  "technical-university-of-munich": {
+    "foundedYear": 1868,
+    "city": {
+      "fa": "مونیخ",
+      "en": "Munich"
+    },
+    "address": "Arcisstraße 21, 80333 Munich, Germany",
+    "kind": "public"
+  },
+  "university-of-bologna": {
+    "foundedYear": 1088,
+    "city": {
+      "fa": "بولونیا",
+      "en": "Bologna"
+    },
+    "address": "Via Zamboni 33, 40126 Bologna, Italy",
+    "kind": "public"
+  }
+}

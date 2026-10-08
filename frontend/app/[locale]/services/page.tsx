@@ -1,3 +1,4 @@
+import { PanelConsultationCallout } from "@/components/panel-consultation-callout";
 import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -6,6 +7,8 @@ import { SiteShell } from "@/components/site-shell";
 import { ServicesConsultationForm } from "@/components/services-consultation-form";
 import { ServicesNavigation } from "@/components/services-navigation";
 import { ServicesMotion } from "@/components/services-motion";
+import { ServicesHero } from "@/components/services-hero";
+import { ServicesTitle } from "@/components/services-title";
 import { isLocale, type Locale } from "@/lib/site-content";
 
 import "../../services.css";
@@ -94,21 +97,19 @@ export default async function ServicesPage({ params }: PageProps) {
 
   return <SiteShell locale={locale}>
     <main className="services-page">
-      <section className="services-hero" aria-label={copy.title}>
-        <div className="services-hero__brand">JAHAN ACADEMY</div>
-      </section>
+      <ServicesHero title={copy.title} />
 
       <ServicesMotion>
       <div className="services-content">
         <section className="services-intro" aria-labelledby="services-title">
           <div className="services-container">
-            <h1 id="services-title">{copy.title}</h1>
+            <ServicesTitle>{copy.title}</ServicesTitle>
             <ServicesNavigation label={copy.jumpLabel} services={copy.services.map(({ id, short }) => ({ id, label: short }))} />
           </div>
         </section>
 
-        <div className="services-list" aria-label={copy.detailsLabel}>
-          {copy.services.map((service) => <section className="services-feature" id={service.id} key={service.id} aria-labelledby={`${service.id}-title`}>
+<div className="services-list" aria-label={copy.detailsLabel}>
+          {copy.services.map((service, index) => <div key={service.id}><section className={`services-feature${index % 2 ? " services-feature--alternate" : ""}`} id={service.id} aria-labelledby={`${service.id}-title`}>
             <div className="services-container services-feature__grid">
               <div className="services-feature__art">
                 <Image className="services-feature__image" src={service.image} alt={service.imageAlt} fill sizes="(max-width: 900px) calc(100vw - 3rem), 600px" />
@@ -119,7 +120,9 @@ export default async function ServicesPage({ params }: PageProps) {
                 <ul>{service.points.map((point) => <li key={point}>{point}</li>)}</ul>
               </div>
             </div>
-          </section>)}
+          </section>
+          {index === Math.floor(copy.services.length / 2) - 1 && <div className="services-container"><PanelConsultationCallout locale={locale} panel="services" /></div>}
+          </div>)}
         </div>
       </div>
 

@@ -13,6 +13,7 @@ from app.core.config import Settings, get_settings
 from app.core.redis import get_redis
 from app.modules.consultations.domain import (
     LeadArchiveFilter,
+    LeadSearchField,
     LeadSort,
     LeadStatus,
     SyncStatus,
@@ -127,6 +128,7 @@ async def list_leads(
     page: Annotated[int, Query(ge=1)] = 1,
     limit: Annotated[int, Query(ge=1, le=100)] = 20,
     q: Annotated[str | None, Query(min_length=2, max_length=100)] = None,
+    search_field: Annotated[LeadSearchField | None, Query(alias="searchField")] = None,
     lead_status: Annotated[LeadStatus | None, Query(alias="status")] = None,
     sync_status: Annotated[SyncStatus | None, Query(alias="syncStatus")] = None,
     assignee_id: Annotated[UUID | None, Query(alias="assigneeId")] = None,
@@ -143,6 +145,7 @@ async def list_leads(
         page=page,
         limit=limit,
         query=q,
+        search_field=search_field,
         status=lead_status,
         sync_status=sync_status,
         assignee_id=assignee_id,

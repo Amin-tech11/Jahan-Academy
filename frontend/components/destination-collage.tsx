@@ -19,4 +19,3 @@ export function DestinationCollage({ photos, locale, layout, className = "" }: {
     </div>)}
   </div>;
 }
-

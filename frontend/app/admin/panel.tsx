@@ -1,10 +1,30 @@
 "use client";
+import SiteSelect from "../../components/site-select";
 
 import Login from "./login";
+import DateFilter from "./date-filter";
+import ColumnFilter from "./column-filter";
+import { columnValues, filterLeadRows, sortLeadRows, loadAllLeadRows, type ColumnFilters, type ColumnSort } from "../../lib/admin-lead-table";
+import { dateRangeParams, type Calendar } from "../../lib/admin-calendar";
 import AccessManager from "./access-manager";
 import { visibleSections, type PanelAccess } from "../../lib/admin-access";
 import { startLiveRefresh } from "../../lib/admin-live";
-import { leadCell, newLeadIds } from "../../lib/admin-leads";
+import { leadCell, leadEditData, leadEditPayload, newLeadIds } from "../../lib/admin-leads";
+import { canChangeLeadStatus, saveLeadChanges } from "../../lib/admin-lead-status";
+import { leadSearchFields, leadSearchParams, type LeadSearchField } from "../../lib/admin-lead-search";
+
+const sectionIconPaths: Record<string, string> = {
+  dashboard: "M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z",
+  leads: "M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M10 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M20 8v6M23 11h-6",
+  universities: "M3 21h18M5 21V7l7-4 7 4v14M9 9h.01M15 9h.01M9 13h.01M15 13h.01M10 21v-4h4v4",
+  programs: "M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2ZM8 7h8M8 11h8",
+  articles: "M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M8 13h8M8 17h8",
+  faqs: "M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0ZM9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01",
+  media: "M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2ZM8.5 10a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3ZM22 15l-5-5L5 20",
+  staff: "M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M10 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M20 8v6M23 11h-6",
+  audit: "M9 5H7a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 3h6v4H9zM9 14l2 2 4-4",
+  access: "M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11ZM9 12l2 2 4-4",
+};
 
 import {
   useCallback,
@@ -125,7 +145,7 @@ function Fields({
                 onChange={(e) => change(e.target.checked)}
               />
             ) : field.type === "select" ? (
-              <select
+              <SiteSelect
                 required={field.required}
                 value={String(current ?? "")}
                 onChange={(e) => change(e.target.value)}
@@ -136,7 +156,7 @@ function Fields({
                     {labels[option] ?? option}
                   </option>
                 ))}
-              </select>
+              </SiteSelect>
             ) : field.type === "textarea" ? (
               <textarea
                 required={field.required}
@@ -355,10 +375,12 @@ function Editor({
   const [source, setSource] = useState<RecordData>(item ?? {});
   const [data, setData] = useState<RecordData>({});
   const [dirty, setDirty] = useState(false);
+  const [leadStatus, setLeadStatus] = useState(String(item?.status ?? ""));
+  const statusDirty = resource.id === "leads" && leadStatus !== String(source.status ?? "");
+  const hasChanges = dirty || statusDirty;
   const [busy, setBusy] = useState(Boolean(item));
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
-  const [history, setHistory] = useState<RecordData | null>(null);
   const dialog = useRef<HTMLDialogElement>(null);
   const creating = !item;
   const [loaded, setLoaded] = useState(false);
@@ -388,7 +410,14 @@ function Editor({
             ],
           },
         ]
-      : resource.fields;
+      : resource.id === "leads" ? resource.fields.flatMap((field): Field[] => {
+          if (field.key === "assessmentBudget" && source.investmentRangeCode) return [
+            { key: "investmentRangeCode", label: "بازه میزان سرمایه", required: true },
+            { key: "investmentCurrency", label: "ارز سرمایه", required: true },
+          ];
+          if (field.key === "gender" && (data.gender ?? source.gender) === "self_described") return [field, { key: "genderSelfDescription", label: "توضیح جنسیت", required: true }];
+          return [field];
+        }) : resource.fields;
   useEffect(() => {
     dialog.current?.showModal();
     let alive = true;
@@ -399,9 +428,19 @@ function Editor({
           next = (await adminRequest(`${resource.path}/${item.id}`))
             .data as RecordData;
         if (!alive) return;
-        const normalized = normalizeRecord(next);
+        const normalized = normalizeRecord(resource.id === "leads" ? leadEditData(next) : next);
         setSource(next);
-        setData(formData(fields, normalized));
+        setLeadStatus(String(next.status ?? ""));
+        setData({
+          ...formData(fields, normalized),
+          ...(resource.id === "leads" && next.investmentRangeCode ? {
+            investmentRangeCode: next.investmentRangeCode,
+            investmentCurrency: next.investmentCurrency,
+          } : {}),
+          ...(resource.id === "leads" && next.gender === "self_described" ? {
+            genderSelfDescription: next.genderSelfDescription,
+          } : {}),
+        });
         setLoaded(true);
       } catch (err) {
         if (alive) setError(describe(err));
@@ -416,14 +455,15 @@ function Editor({
   }, []); // Editor is remounted for each record.
   useEffect(() => {
     const handler = (event: BeforeUnloadEvent) => {
-      if (dirty) event.preventDefault();
+      if (hasChanges) event.preventDefault();
     };
     window.addEventListener("beforeunload", handler);
     return () => window.removeEventListener("beforeunload", handler);
-  }, [dirty]);
+  }, [hasChanges]);
   function close() {
+    if (busy) return;
     if (
-      !dirty ||
+      !hasChanges ||
       window.confirm("تغییرات ذخیره نشده‌اند. از فرم خارج می‌شوید؟")
     )
       onClose();
@@ -433,14 +473,22 @@ function Editor({
     setError("");
     setBusy(true);
     try {
-      const body = writePayload(resource, data, source, creating);
+      const rawBody = writePayload(resource, data, source, creating);
+      const body = resource.id === "leads" ? leadEditPayload(data, source, rawBody) : rawBody;
 
-      await adminRequest(
-        `${resource.path}${item ? `/${item.id}` : ""}`,
-        item ? (resource.method ?? "PUT") : "POST",
-        body,
-        Number(source.version) || undefined,
-      );
+      if (resource.id === "leads" && item) {
+        await saveLeadChanges(adminRequest, source, dirty ? body : undefined, leadStatus, (saved) => {
+          setSource(saved);
+          setDirty(false);
+        });
+      } else {
+        await adminRequest(
+          `${resource.path}${item ? `/${item.id}` : ""}`,
+          item ? (resource.method ?? "PUT") : "POST",
+          body,
+          Number(source.version) || undefined,
+        );
+      }
       setDirty(false);
       onSaved();
     } catch (err) {
@@ -531,11 +579,40 @@ function Editor({
                   setDirty(true);
                 }}
               />
+              {resource.id === "leads" && item && loaded && (
+                <div className="adm-fields">
+                  <label>
+                    وضعیت
+                    <SiteSelect
+                      value={leadStatus}
+                      disabled={Boolean(source.archived)}
+                      aria-describedby="lead-status-help"
+                      onChange={(event) => setLeadStatus(event.target.value)}
+                    >
+                      {source.status === "assigned" && <option value="assigned" disabled>انتخاب وضعیت جدید</option>}
+                      {leadStatuses.map((status) => (
+                        <option key={status} value={status} disabled={status !== source.status && !canChangeLeadStatus(source, status)}>
+                          {labels[status] ?? status}
+                        </option>
+                      ))}
+                    </SiteSelect>
+                  </label>
+                  <p id="lead-status-help" className="adm-wide">
+                    {source.status === "assigned" && "این رکورد قبلاً ارجاع شده است. "}
+                    {source.archived ? "وضعیت درخواست بایگانی‌شده قابل تغییر نیست." : source.status === "closed"
+                      ? "این درخواست بسته شده است؛ برای پیگیری دوباره، یکی از وضعیت‌های مجاز را انتخاب کنید."
+                      : !source.assignee
+                        ? "برای وضعیت‌های پیگیری، ابتدا باید مسئول درخواست تعیین شده باشد؛ در حال حاضر فقط بستن درخواست مجاز است."
+                        : "وضعیت‌های قابل انتخاب بر اساس مرحله فعلی درخواست نمایش داده می‌شوند."}
+                    {" "}تغییر وضعیت با «ذخیره تغییرات» ثبت می‌شود.
+                  </p>
+                </div>
+              )}
               <footer className="adm-form-footer">
                 <button
                   type="submit"
                   className="adm-primary"
-                  disabled={busy || (!dirty && !creating)}
+                  disabled={busy || (!hasChanges && !creating)}
                 >
                   ذخیره تغییرات
                 </button>
@@ -545,7 +622,7 @@ function Editor({
               </footer>
             </fieldset>
           </form>
-          {item && loaded && (
+          {item && loaded && resource.id !== "leads" && (
             <section className="adm-actions">
               <h3>عملیات رکورد</h3>
               <small>
@@ -580,57 +657,6 @@ function Editor({
                   </button>
                 </>
               )}
-              {resource.id === "leads" && (
-                <>
-                  <dl className="adm-details">
-                    {Object.entries(source)
-                      .filter(
-                        ([key]) => !fields.some((field) => field.key === key),
-                      )
-                      .map(([key, value]) => (
-                        <div key={key}>
-                          <dt>{labels[key] ?? key}</dt>
-                          <dd className="adm-lead-value">{displayValue(leadCell(source, key) == null ? null : labels[String(leadCell(source, key))] ?? leadCell(source, key))}</dd>
-                        </div>
-                      ))}
-                  </dl>
-                  <LeadActions busy={busy} onAction={action} source={source} />
-                  <button
-                    disabled={busy}
-                    onClick={async () => {
-                      try {
-                        setHistory(
-                          (
-                            await adminRequest(
-                              `${resource.path}/${item.id}/history`,
-                            )
-                          ).data as RecordData,
-                        );
-                      } catch (err) {
-                        setError(describe(err));
-                      }
-                    }}
-                  >
-                    تاریخچه وضعیت و ارجاع
-                  </button>
-                  {history && (
-                    <div className="adm-history">
-                      {[
-                        ...((history.statuses ?? []) as RecordData[]),
-                        ...((history.assignments ?? []) as RecordData[]),
-                      ].map((entry, index) => (
-                        <article key={index}>
-                          <Badge value={entry.newStatus ?? "assigned"} />
-                          <p>{displayValue(entry.reason)}</p>
-                          <small>
-                            {displayValue(entry.createdAt ?? entry.assignedAt)}
-                          </small>
-                        </article>
-                      ))}
-                    </div>
-                  )}
-                </>
-              )}
               {resource.id === "staff" && (
                 <StaffActions busy={busy} onAction={action} source={source} />
               )}
@@ -642,88 +668,6 @@ function Editor({
   );
 }
 
-function LeadActions({
-  busy,
-  source,
-  onAction,
-}: {
-  busy: boolean;
-  source: RecordData;
-  onAction: (
-    suffix: string,
-    payload: RecordData,
-    method?: string,
-  ) => Promise<void>;
-}) {
-  const [status, setStatus] = useState(String(source.status));
-  const [reason, setReason] = useState("");
-  const [consultant, setConsultant] = useState("");
-  return (
-    <div className="adm-operation-grid">
-      <label>
-        وضعیت جدید
-        <select value={status} onChange={(e) => setStatus(e.target.value)}>
-          {leadStatuses.map((value) => (
-            <option key={value} value={value}>
-              {labels[value]}
-            </option>
-          ))}
-        </select>
-      </label>
-      <label>
-        دلیل عملیات
-        <input value={reason} onChange={(e) => setReason(e.target.value)} />
-      </label>
-      <button
-        disabled={busy || status === source.status}
-        onClick={() =>
-          onAction("status-transitions", {
-            toStatus: status,
-            ...(reason ? { reason } : {}),
-          })
-        }
-      >
-        ثبت وضعیت
-      </button>
-      <label>
-        شناسه مشاور
-        <input
-          dir="ltr"
-          value={consultant}
-          onChange={(e) => setConsultant(e.target.value)}
-        />
-      </label>
-      <button
-        disabled={busy || !consultant}
-        onClick={() =>
-          onAction("assignments", {
-            consultantId: consultant,
-            ...(reason ? { reason } : {}),
-          })
-        }
-      >
-        ثبت ارجاع
-      </button>
-      <button
-        disabled={busy || source.syncStatus !== "failed"}
-        onClick={() =>
-          onAction("noura-retry", { ...(reason ? { note: reason } : {}) })
-        }
-      >
-        تلاش مجدد نورا
-      </button>
-      <button
-        disabled={busy || reason.trim().length < 3 || Boolean(source.archived)}
-        onClick={() => {
-          if (window.confirm("درخواست بایگانی شود؟"))
-            void onAction("archive", { reason });
-        }}
-      >
-        بایگانی درخواست
-      </button>
-    </div>
-  );
-}
 function StaffActions({
   busy,
   source,
@@ -841,12 +785,12 @@ function MediaUpload({ onSaved }: { onSaved: () => void }) {
         </label>
         <label>
           کاربرد
-          <select name="purpose">
+          <SiteSelect name="purpose">
             <option value="university_image">تصویر دانشگاه</option>
             <option value="logo">لوگو</option>
             <option value="article_image">تصویر مقاله</option>
             <option value="public_file">فایل عمومی PDF</option>
-          </select>
+          </SiteSelect>
         </label>
         <label>
           متن جایگزین فارسی
@@ -868,19 +812,52 @@ const listSessions = new Map<
   string,
   {
     query: string;
+    searchField: LeadSearchField;
     status: string;
-    syncStatus: string;
     page: number;
     filters: Record<string, string>;
+    calendar: Calendar;
+    fromDate: string;
+    toDate: string;
   }
 >();
 function ResourceList({ resource }: { resource: Resource }) {
   const previous = listSessions.get(resource.id);
   const [query, setQuery] = useState(previous?.query ?? "");
-  const [status, setStatus] = useState(previous?.status ?? "");
-  const [syncStatus, setSyncStatus] = useState(previous?.syncStatus ?? "");
+  const [searchField, setSearchField] = useState<LeadSearchField>(previous?.searchField ?? "reference");
+  const [status, setStatus] = useState(previous?.status && resource.statuses?.includes(previous.status) ? previous.status : "");
+  const [calendar, setCalendar] = useState<Calendar>(previous?.calendar ?? "persian");
+  const [fromDate, setFromDate] = useState(previous?.fromDate ?? "");
+  const [toDate, setToDate] = useState(previous?.toDate ?? "");
   const [page, setPage] = useState(previous?.page ?? 1);
   const [data, setData] = useState<RecordData>({});
+  const [columnFilters, setColumnFilters] = useState<ColumnFilters>({});
+  const [columnSort, setColumnSort] = useState<ColumnSort | null>(null);
+  const [filterColumn, setFilterColumn] = useState<string | null>(null);
+  const [allColumnsMode, setAllColumnsMode] = useState(false);
+  const [exporting, setExporting] = useState(false);
+  const [exportError, setExportError] = useState("");
+  const pageForRequest = allColumnsMode ? 1 : page;
+  const leadParams = () => new URLSearchParams({
+    ...dateRangeParams(fromDate, toDate), ...leadSearchParams(query, searchField),
+    sort: "created_desc", ...(status ? { status } : {}),
+  });
+  async function exportExcel() {
+    setExporting(true);
+    setExportError("");
+    try {
+      const allRows = await loadAllLeadRows(leadParams(), params => adminRequest(`${resource.path}?${params}`));
+      const { leadWorkbook } = await import("../../lib/admin-lead-export");
+      const buffer = await leadWorkbook(sortLeadRows(filterLeadRows(allRows, columnFilters), columnSort), resource.columns);
+      const url = URL.createObjectURL(new Blob([new Uint8Array(buffer)], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }));
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `consultation-requests-${new Date().toISOString().slice(0, 10)}.xlsx`;
+      link.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    } catch (err) { setExportError(describe(err)); }
+    finally { setExporting(false); }
+  }
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(true);
   const [editor, setEditor] = useState<{ item: RecordData | null } | null>(
@@ -888,11 +865,11 @@ function ResourceList({ resource }: { resource: Resource }) {
   );
   const [refresh, setRefresh] = useState(0);
   const [filters, setFilters] = useState<Record<string, string>>(
-    previous?.filters ?? {},
+    resource.id === "leads" ? {} : previous?.filters ?? {},
   );
   useEffect(() => {
-    listSessions.set(resource.id, { query, status, syncStatus, page, filters });
-  }, [resource.id, query, status, syncStatus, page, filters]);
+    listSessions.set(resource.id, { query, searchField, status, page, filters, fromDate, toDate, calendar });
+  }, [resource.id, query, searchField, status, page, filters, fromDate, toDate, calendar]);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [newIds, setNewIds] = useState<string[]>([]);
   const [announcement, setAnnouncement] = useState("");
@@ -905,18 +882,26 @@ function ResourceList({ resource }: { resource: Resource }) {
     setNewIds([]);
     setAnnouncement("");
     const params = new URLSearchParams({
-      page: String(page), limit: "20",
-      ...Object.fromEntries(Object.entries(filters).filter(([, v]) => v)),
+      page: String(pageForRequest), limit: "20",
+      ...(resource.id === "leads" ? dateRangeParams(fromDate, toDate) : Object.fromEntries(Object.entries(filters).filter(([, v]) => v))),
     });
-    if (resource.id === "leads") params.set("sort", "created_desc");
-    if (query.trim().length >= 2)
+    if (resource.id === "leads") {
+      params.set("sort", "created_desc");
+      for (const [key, value] of Object.entries(leadSearchParams(query, searchField))) params.set(key, value);
+    } else if (query.trim().length >= 2)
       params.set(resource.id === "audit" ? "action" : "q", query.trim());
     if (status) params.set("status", status);
-    if (syncStatus) params.set("syncStatus", syncStatus);
     let live: ReturnType<typeof startLiveRefresh<RecordData>> | undefined;
     const timer = setTimeout(() => {
       live = startLiveRefresh({
-        load: (signal) => adminRequest(`${resource.path}?${params}`, "GET", undefined, undefined, signal),
+        load: async (signal) => {
+          const load = (query: URLSearchParams) => adminRequest(`${resource.path}?${query}`, "GET", undefined, undefined, signal);
+          if (resource.id === "leads" && allColumnsMode) {
+            const rows = await loadAllLeadRows(params, load);
+            return { data: rows, meta: { total: rows.length } };
+          }
+          return load(params);
+        },
         active: () => document.visibilityState !== "hidden" && navigator.onLine,
         interval: resource.id === "leads" ? 2000 : 30000,
         onData: (result) => {
@@ -954,9 +939,11 @@ function ResourceList({ resource }: { resource: Resource }) {
       window.removeEventListener("online", resume);
       window.removeEventListener("offline", offline);
     };
-  }, [resource.path, resource.id, page, query, status, syncStatus, refresh, filters]);
-  const rows = rowsOf(data);
-  const total = totalOf(data);
+  }, [resource.path, resource.id, pageForRequest, allColumnsMode, query, searchField, status, refresh, filters, fromDate, toDate]);
+  const matchingRows = resource.id === "leads" && allColumnsMode ? sortLeadRows(filterLeadRows(rowsOf(data), columnFilters), columnSort) : rowsOf(data);
+  const rows = allColumnsMode ? matchingRows.slice((page - 1) * 20, page * 20) : matchingRows;
+  const total = allColumnsMode ? matchingRows.length : totalOf(data);
+  useEffect(() => { if (allColumnsMode && page > Math.max(1, Math.ceil(total / 20))) setPage(Math.max(1, Math.ceil(total / 20))); }, [allColumnsMode, page, total]);
   return (
     <>
       <div className="adm-section-title">
@@ -964,7 +951,7 @@ function ResourceList({ resource }: { resource: Resource }) {
           <h2>{resource.title}</h2>
           <p>
             {resource.id === "leads"
-              ? "همهٔ درخواست‌های مشاوره و فرم ارزیابی، از جدیدترین به قدیمی‌ترین"
+              ? "همه درخواست‌های مشاوره و فرم ارزیابی، از جدیدترین به قدیمی‌ترین"
               : resource.id === "programs"
               ? "اطلاعات رشته‌ها صرفاً مرجع داخلی تیم است و نمایش عمومی ندارد."
               : resource.readOnly
@@ -991,14 +978,26 @@ function ResourceList({ resource }: { resource: Resource }) {
           {lastUpdated && <small>آخرین دریافت: {lastUpdated.toLocaleTimeString("fa-IR")}</small>}
         </div>
         <p className="adm-live-announcement" role="status" aria-live="polite">{announcement}</p>
-        {(page > 1 || query || status || syncStatus || Object.values(filters).some(Boolean)) && (
-          <p className="adm-list-hint">برای دیدن همهٔ درخواست‌های تازه، فیلترها را پاک کنید و به صفحهٔ اول بروید.</p>
+        {(page > 1 || query || status || fromDate || toDate || Object.values(filters).some(Boolean)) && (
+          <p className="adm-list-hint">برای دیدن همه درخواست‌های تازه، فیلترها را پاک کنید و به صفحه اول بروید.</p>
         )}
         <div className="adm-toolbar">
+          {resource.id === "leads" && (
+            <label>
+              جست‌وجو بر اساس
+              <SiteSelect value={searchField} onChange={(event) => {
+                setSearchField(event.target.value as LeadSearchField);
+                setPage(1);
+              }}>
+                {leadSearchFields.map((field) => <option key={field.value} value={field.value}>{field.label}</option>)}
+              </SiteSelect>
+            </label>
+          )}
           <label className="adm-search">
             {resource.id === "audit" ? "نام عملیات" : "جست‌وجو"}
             <input
-              placeholder="حداقل دو حرف…"
+              placeholder={resource.id === "leads" ? leadSearchFields.find((field) => field.value === searchField)?.placeholder : "حداقل دو حرف…"}
+              dir={resource.id === "leads" && searchField !== "fullName" ? "ltr" : undefined}
               maxLength={100}
               value={query}
               onChange={(e) => {
@@ -1010,7 +1009,7 @@ function ResourceList({ resource }: { resource: Resource }) {
           {resource.statuses && (
             <label>
               وضعیت
-              <select
+              <SiteSelect
                 value={status}
                 onChange={(e) => {
                   setStatus(e.target.value);
@@ -1023,40 +1022,13 @@ function ResourceList({ resource }: { resource: Resource }) {
                     {labels[value] ?? value}
                   </option>
                 ))}
-              </select>
+              </SiteSelect>
             </label>
           )}
-          {resource.id === "leads" && (
-            <label>
-              نمایش درخواست‌ها
-              <select value={filters.archive ?? "active"} onChange={(e) => {
-                setFilters({ ...filters, archive: e.target.value }); setPage(1);
-              }}>
-                <option value="active">فعال</option>
-                <option value="archived">بایگانی‌شده</option>
-                <option value="all">همه</option>
-              </select>
-            </label>
-          )}
-          {resource.id === "leads" && (
-            <label>
-              همگام‌سازی
-              <select
-                value={syncStatus}
-                onChange={(e) => {
-                  setSyncStatus(e.target.value);
-                  setPage(1);
-                }}
-              >
-                <option value="">همه</option>
-                {["pending", "synced", "failed"].map((value) => (
-                  <option key={value} value={value}>
-                    {labels[value]}
-                  </option>
-                ))}
-              </select>
-            </label>
-          )}
+          {resource.id === "leads" && <>
+            <DateFilter calendar={calendar} onCalendarChange={setCalendar} label="از تاریخ" value={fromDate} max={toDate} onChange={(date) => { setFromDate(date); setPage(1); }} />
+            <DateFilter calendar={calendar} onCalendarChange={setCalendar} label="تا تاریخ" value={toDate} min={fromDate} onChange={(date) => { setToDate(date); setPage(1); }} />
+          </>}
           <button onClick={() => setRefresh((value) => value + 1)}>
             تازه‌سازی
           </button>
@@ -1064,16 +1036,24 @@ function ResourceList({ resource }: { resource: Resource }) {
             className="adm-link"
             onClick={() => {
               setQuery("");
+              setSearchField("reference");
               setStatus("");
-              setSyncStatus("");
               setFilters({});
+              setColumnFilters({});
+              setColumnSort(null);
+              setAllColumnsMode(false);
+              setFilterColumn(null);
+              setExportError("");
+              setFromDate("");
+              setToDate("");
               setPage(1);
             }}
           >
             پاک کردن فیلترها
           </button>
+          {resource.id === "leads" && <button disabled={exporting || busy || !!error} onClick={() => void exportExcel()}>{exporting ? "در حال ساخت فایل…" : "خروجی اکسل"}</button>}
         </div>
-        {["programs", "leads", "audit"].includes(resource.id) && (
+        {["programs", "audit"].includes(resource.id) && (
           <details>
             <summary>فیلترهای بیشتر</summary>
             <div className="adm-fields">
@@ -1085,17 +1065,10 @@ function ResourceList({ resource }: { resource: Resource }) {
                     ["intakeId", "شناسه ورودی"],
                     ["currency", "کد ارز"],
                   ]
-                : resource.id === "leads"
-                  ? [
-                      ["assigneeId", "شناسه مشاور"],
-                      ["countryId", "شناسه کشور"],
-                      ["from", "از تاریخ ISO"],
-                      ["to", "تا تاریخ ISO"],
-                    ]
-                  : [
-                      ["actor_user_id", "شناسه کاربر"],
-                      ["entity_type", "نوع رکورد"],
-                    ]
+                : [
+                    ["actor_user_id", "شناسه کاربر"],
+                    ["entity_type", "نوع رکورد"],
+                  ]
               ).map(([key, title]) => (
                 <label key={key}>
                   {title}
@@ -1111,7 +1084,7 @@ function ResourceList({ resource }: { resource: Resource }) {
               {resource.id === "programs" && (
                 <label>
                   مرتب‌سازی
-                  <select
+                  <SiteSelect
                     value={filters.sort ?? "updated_desc"}
                     onChange={(e) => {
                       setFilters({ ...filters, sort: e.target.value });
@@ -1122,34 +1095,51 @@ function ResourceList({ resource }: { resource: Resource }) {
                     <option value="title_asc">عنوان الفبایی</option>
                     <option value="tuition_asc">شهریه صعودی</option>
                     <option value="deadline_asc">مهلت درخواست</option>
-                  </select>
+                  </SiteSelect>
                 </label>
               )}
             </div>
           </details>
         )}
         <ErrorBox message={error} />
+        <ErrorBox message={exportError} />
+        {Object.keys(columnFilters).length > 0 && <p className="adm-list-hint">{Object.keys(columnFilters).length.toLocaleString("fa-IR")} فیلتر ستون فعال است.</p>}
+        {filterColumn && !busy && !error && <ColumnFilter key={filterColumn} title={labels[filterColumn] ?? filterColumn} values={columnValues(rowsOf(data), filterColumn, columnFilters)} selected={columnFilters[filterColumn]} sortDirection={columnSort?.column === filterColumn ? columnSort.direction : undefined} onSort={direction => { setColumnSort(direction ? { column: filterColumn, direction } : null); setPage(1); }} onClose={() => setFilterColumn(null)} onApply={values => { setColumnFilters(current => { const next = { ...current }; if (values === undefined) delete next[filterColumn]; else next[filterColumn] = values; return next; }); setPage(1); }} />}
         {busy ? (
           <div className="adm-empty" role="status">
             در حال دریافت اطلاعات…
           </div>
-        ) : rows.length ? (
-          <div className="adm-table-wrap">
-            <table>
+        ) : rows.length || resource.id === "leads" ? (
+          <div className={`adm-table-wrap ${resource.id === "leads" ? "adm-leads-table-wrap" : ""}`}>
+            <table dir="rtl" className={resource.id === "leads" ? "adm-leads-table" : undefined}>
               <thead>
                 <tr>
                   {resource.columns.map((column) => (
-                    <th scope="col" key={column}>{labels[column] ?? column}</th>
+                    <th scope="col" key={column} aria-sort={resource.id === "leads" && columnSort?.column === column ? columnSort.direction === "asc" ? "ascending" : "descending" : undefined}><span className="adm-column-heading">{labels[column] ?? column}{resource.id === "leads" && columnSort?.column === column && <span aria-hidden="true">{columnSort.direction === "asc" ? "↑" : "↓"}</span>}{resource.id === "leads" && <button className="adm-column-trigger" aria-label={`فیلتر ${labels[column] ?? column}`} aria-pressed={column in columnFilters} onClick={() => { setAllColumnsMode(true); setFilterColumn(column); setPage(1); }}><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M2 3h12L9 8v5l-2-1V8z" fill="currentColor" /></svg></button>}</span></th>
                   ))}
-                  <th scope="col">عملیات</th>
+                  {resource.id !== "leads" && <th scope="col">عملیات</th>}
                 </tr>
               </thead>
               <tbody>
+                {!rows.length && !error && <tr><td colSpan={resource.columns.length}><div className="adm-empty">درخواستی مطابق فیلترهای فعلی پیدا نشد.</div></td></tr>}
                 {rows.map((row) => (
-                  <tr key={String(row.id)} className={newIds.includes(String(row.id)) ? "adm-new-lead" : undefined}>
+                  <tr key={String(row.id)} className={[newIds.includes(String(row.id)) ? "adm-new-lead" : "", resource.id === "leads" ? "adm-record-row" : ""].filter(Boolean).join(" ") || undefined}
+                    tabIndex={resource.id === "leads" ? 0 : undefined}
+                    aria-label={resource.id === "leads" ? `جزئیات و ویرایش درخواست ${row.reference}` : undefined}
+                    onClick={resource.id === "leads" ? event => {
+                      if (!(event.target as HTMLElement).closest("button, a, input, select, textarea, [role='combobox']")) setEditor({ item: row });
+                    } : undefined}
+                    onKeyDown={resource.id === "leads" ? event => {
+                      if (event.target === event.currentTarget && (event.key === "Enter" || event.key === " ")) {
+                        event.preventDefault();
+                        setEditor({ item: row });
+                      }
+                    } : undefined}>
                     {resource.columns.map((column) => (
                       <td key={column} dir={["mobile", "email", "reference"].includes(column) ? "ltr" : undefined}>
-                        {["status", "syncStatus", "uploadStatus"].includes(
+                        {resource.id === "leads" && column === "reference" ? (
+                          <button className="adm-link" onClick={() => setEditor({ item: row })} aria-label={`مشاهده درخواست ${row.reference}`}>{displayValue(row.reference)}</button>
+                        ) : ["status", "syncStatus", "uploadStatus"].includes(
                           column,
                         ) ? (
                           <Badge value={row[column]} />
@@ -1158,14 +1148,14 @@ function ResourceList({ resource }: { resource: Resource }) {
                         )}
                       </td>
                     ))}
-                    <td>
+                    {resource.id !== "leads" && <td>
                       <button
                         className="adm-link"
                         onClick={() => setEditor({ item: row })}
                       >
                         مشاهده ←
                       </button>
-                    </td>
+                    </td>}
                   </tr>
                 ))}
               </tbody>
@@ -1297,6 +1287,7 @@ export default function AdminPanel() {
     );
   if (!user) return <Login onLogin={setUser} />;
   const resource = resources.find((item) => item.id === section);
+  const accountName = String(user.username || [user.firstName, user.lastName].filter(value => typeof value === "string" && value.trim()).join(" ") || (typeof user.email === "string" ? user.email.split("@")[0] : "کاربر"));
   return (
     <div className="adm-shell">
       <aside className={`adm-sidebar ${mobileMenu ? "is-open" : ""}`}>
@@ -1308,7 +1299,8 @@ export default function AdminPanel() {
         </div>
         <nav aria-label="بخش‌های مدیریت">
           {visibleSections(access).map(item => <button key={item.id} className={section === item.id ? "selected" : ""} onClick={() => navigate(item.id)}>
-            <span className="adm-nav-dot" /> {item.title}
+            <svg className="adm-nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d={sectionIconPaths[item.id] ?? "M4 4h16v16H4zM8 9h8M8 13h8"} /></svg>
+            <span>{item.title}</span>
           </button>)}
         </nav>
         <div className="adm-sidebar-note">
@@ -1330,14 +1322,16 @@ export default function AdminPanel() {
             <b>{section === "access" ? "مدیریت دسترسی" : resource?.title ?? "نمای کلی"}</b>
           </div>
           <div className="adm-account">
-            <span className="adm-avatar">
-              {String(user.firstName ?? "ج").slice(0, 1)}
+            <span className="adm-account-name">
+              {accountName}
             </span>
-            <span>
-              {displayValue(user.firstName)} {displayValue(user.lastName)}
+            <span className="adm-avatar">
+              {accountName.slice(0, 1)}
             </span>
             <button
-              className="adm-link"
+              className="adm-logout"
+              type="button"
+              aria-label="خروج از پنل"
               onClick={async () => {
                 setLogoutError("");
                 try {
@@ -1350,13 +1344,14 @@ export default function AdminPanel() {
                 }
               }}
             >
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M10 17l5-5-5-5M15 12H3M12 3h6a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-6" /></svg>
               خروج
             </button>
           </div>
         </header>
         <main className="adm-content">
           <ErrorBox message={logoutError} />
-          {accessError ? <><ErrorBox message={accessError} /><button onClick={() => setAccessRetry(value => value + 1)}>بررسی دوبارهٔ دسترسی</button></> : !access ? <p role="status">در حال بررسی دسترسی‌ها…</p> : !visibleSections(access).some(item => item.id === section) ? <p className="adm-empty">در حال حاضر دسترسی به بخشی از پنل برای شما فعال نیست. با مدیر سازمان تماس بگیرید.</p> : section === "access" && access.isSuperAdmin ? <AccessManager /> : resource ? (
+          {accessError ? <><ErrorBox message={accessError} /><button onClick={() => setAccessRetry(value => value + 1)}>بررسی دوباره دسترسی</button></> : !access ? <p role="status">در حال بررسی دسترسی‌ها…</p> : !visibleSections(access).some(item => item.id === section) ? <p className="adm-empty">در حال حاضر دسترسی به بخشی از پنل برای شما فعال نیست. با مدیر سازمان تماس بگیرید.</p> : section === "access" && access.isSuperAdmin ? <AccessManager /> : resource ? (
             <ResourceList key={resource.id} resource={resource} />
           ) : (
             <Dashboard navigate={navigate} />

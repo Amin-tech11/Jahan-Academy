@@ -1,4 +1,5 @@
 import Link from "next/link";
+import SiteSelect from "./site-select";
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
 
 type ButtonVariant = "primary" | "secondary" | "ghost";
@@ -74,7 +75,7 @@ export function Input(props: ComponentPropsWithoutRef<"input">) {
 }
 
 export function Select(props: ComponentPropsWithoutRef<"select">) {
-  return <select className={["ui-input", "ui-select", props.className].filter(Boolean).join(" ")} {...props} />;
+  return <SiteSelect {...props} className={["ui-input", "ui-select", props.className].filter(Boolean).join(" ")} />;
 }
 
 export function Textarea(props: ComponentPropsWithoutRef<"textarea">) {

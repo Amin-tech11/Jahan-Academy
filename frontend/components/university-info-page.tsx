@@ -1,3 +1,4 @@
+import { PanelConsultationCallout } from "@/components/panel-consultation-callout";
 import Image from "next/image";
 import Link from "next/link";
 import { SiteShell } from "@/components/site-shell";
@@ -79,7 +80,7 @@ export function UniversityInfoPage({ university: u, locale }: { university: Univ
     <h2>{fa ? `موقعیت ${u.name.fa}` : `Location for ${u.englishName}`}</h2>
     <figure className={styles.campusMap}>
       <div className={styles.mapCanvas}>
-        <iframe src={universityMapEmbedUrl(u)} title={fa ? `نقشهٔ ${u.name.fa}` : `Map of ${u.englishName}`} loading="lazy" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen />
+        <iframe src={universityMapEmbedUrl(u)} title={fa ? `نقشه ${u.name.fa}` : `Map of ${u.englishName}`} loading="lazy" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen />
         <div className={styles.mapInfo} dir="ltr" lang="en"><strong>{u.englishName}</strong><span>{u.address || u.location.en}</span></div>
       </div>
       <figcaption dir="ltr" lang="en">{u.address || u.location.en}</figcaption>
@@ -92,13 +93,14 @@ export function UniversityInfoPage({ university: u, locale }: { university: Univ
       <h3 className={styles.subheading}>{fa ? `چرا ${u.name.fa}؟` : `Why ${u.englishName}?`}</h3>
       <ul className={styles.reasonList}>{u.whyChoose.map((reason) => <li key={reason.title.en}><strong>{reason.title[locale]}:</strong> {reason.text[locale]}</li>)}</ul>
     </section>}
+    <PanelConsultationCallout locale={locale} panel="university" subject={u.name[locale]} />
     {!!u.notes?.length && <section className={styles.notesBox} aria-labelledby="university-notes-title">
       <h3 id="university-notes-title">{fa ? "نکات مهم" : "Important notes"}</h3>
       {u.notes.map((note) => <p key={note.title.en}><strong>{note.title[locale]}:</strong> {note.text[locale]}</p>)}
     </section>}
     {!!u.features.length && <section className={styles.lifeSection}>
       <h3 className={styles.subheading}>{fa ? "زندگی در این دانشگاه" : "Life at this university"}</h3>
-      <div className={styles.highlights}>{u.features.map((feature, index) => <article className={styles.lifeCard} key={feature.url}>
+      <div className={styles.highlights}>{u.features.map((feature, index) => <article className={styles.lifeCard} key={feature.title.en}>
         <span className={styles.lifeIcon}><CampusLifeIcon index={index} /></span><h4>{feature.title[locale]}</h4><p>{feature.text[locale]}</p>
       </article>)}</div>
     </section>}
@@ -107,7 +109,7 @@ export function UniversityInfoPage({ university: u, locale }: { university: Univ
     <h2>{fa ? `امکانات و ویژگی‌های ${u.name.fa}` : `What we offer at ${u.englishName}`}</h2>
     {offerings.length ? <div className={styles.featureList}>{offerings.map((feature, index) => {
       const url = safeUniversityUrl(feature.url);
-      return <details className={styles.featureItem} key={feature.url}>
+      return <details className={styles.featureItem} key={feature.title.en}>
         <summary className={styles.featureSummary}>
           <span className={styles.featureIcon}>{feature.icon ? <OfferingIcon icon={feature.icon} /> : <CampusLifeIcon index={index} />}</span>
           <span className={styles.featureTitle}>{feature.title[locale]}</span>
@@ -131,16 +133,20 @@ export function UniversityInfoPage({ university: u, locale }: { university: Univ
       </div>
     </header>
     <UniversityGallery photos={u.photos} name={u.name[locale]} locale={locale} />
-    <div className={styles.contentGrid}>
+<div className={styles.contentGrid}>
       <UniversityTabs locale={locale} overview={overview} features={features} location={location} />
       <aside className={styles.sidebar} aria-label={fa ? "مشخصات دانشگاه" : "Institution details"}>
         <section className={styles.factCard}><h2>{fa ? "مشخصات دانشگاه" : "Institution details"}</h2><dl>{facts.map((fact) => <div key={fact.label}><dt>{fact.label}</dt><dd dir="auto">{fact.value}</dd></div>)}</dl></section>
         <section className={styles.disciplinesCard} aria-labelledby="top-disciplines-title">
-          <h3 id="top-disciplines-title">{fa ? "رشته‌های برتر" : "Top Disciplines"}</h3>
+          <h3 id="top-disciplines-title">{fa ? `رشته‌های برتر ${u.name.fa}` : `Top disciplines at ${u.englishName}`}</h3>
           {u.topDisciplines?.length ? <ul className={styles.disciplineList}>{u.topDisciplines.map((discipline) => <li key={discipline.name.en}>
             <div className={styles.disciplineLabel}><span>{discipline.name[locale]}</span><span>{discipline.percentage.toLocaleString(locale)}{fa ? "٪" : "%"}</span></div>
             <meter min={0} max={100} value={discipline.percentage} aria-label={discipline.name[locale]}>{discipline.percentage}%</meter>
-          </li>)}</ul> : <p className={styles.disciplinesEmpty}>{fa ? "اطلاعات رشته‌های برتر این دانشگاه هنوز منتشر نشده است." : "Top discipline information has not yet been published for this university."}</p>}
+          </li>)}</ul> : <p className={styles.disciplinesEmpty}>{fa ? "آمار قابل استناد برای محاسبه درصد رشته‌های این دانشگاه هنوز در دسترس نیست." : "Verified statistics for this university's discipline percentages are not yet available."}</p>}
+          {u.disciplineSource && <div className={styles.disciplineSource}>
+            <p><b>{u.disciplineSource.year}</b> · {u.disciplineSource.basis[locale]}</p>
+            {[u.disciplineSource.url, ...(u.disciplineSource.supportingUrls ?? [])].map((url, index) => safeUniversityUrl(url) && <a key={url} href={url} target="_blank" rel="noopener noreferrer">{fa ? (index ? `منبع تکمیلی ${index}` : "منبع آمار") : (index ? `Supporting source ${index}` : "Statistics source")} ↗</a>)}
+          </div>}
         </section>
       </aside>
     </div>

@@ -175,7 +175,7 @@
 .adm-sidebar nav button {
   color: var(--adm-surface);
   display: flex;
-  gap: 14px;
+  gap: 11px;
   align-items: center;
   width: 100%;
   border: 0;
@@ -183,7 +183,7 @@
   border-radius: 8px;
   background: transparent;
   padding: 10px 15px;
-  font-size: 12px;
+  font-size: 14px;
   margin: 2px 0;
 }
 .adm-sidebar nav button.selected {
@@ -191,15 +191,16 @@
   color: var(--adm-brand);
   font-weight: 700;
 }
-.adm-nav-dot {
-  width: 7px;
-  height: 7px;
-  border: 1.5px solid var(--adm-silver);
-  border-radius: 2px;
-}
-.selected .adm-nav-dot {
-  background: var(--adm-brand);
-  border-color: var(--adm-brand);
+.adm-sidebar nav .adm-nav-icon {
+  width: 19px;
+  height: 19px;
+  flex: 0 0 19px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: .9;
 }
 .adm-sidebar-note {
   margin-top: 35px;
@@ -242,6 +243,32 @@
   align-items: center;
   gap: 10px;
   font-size: 12px;
+}
+.admin-app .adm-account .adm-logout {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 38px;
+  padding: 6px 13px;
+  border: 1px solid var(--adm-line);
+  background: var(--adm-surface);
+  color: var(--adm-danger);
+  font-size: 13px;
+  font-weight: 600;
+}
+.admin-app .adm-account .adm-logout:hover {
+  border-color: var(--adm-danger);
+  background: var(--adm-danger-bg);
+}
+.adm-account .adm-logout svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 .adm-avatar {
   display: grid;
@@ -424,6 +451,19 @@
   overflow-x: auto;
   margin-top: 17px;
 }
+.adm-leads-table-wrap {
+  height: min(62vh, 640px);
+  min-height: 220px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  scrollbar-width: auto;
+  scrollbar-color: #8799b2 #e8edf4;
+}
+.adm-leads-table-wrap::-webkit-scrollbar { width: 12px; height: 12px; }
+.adm-leads-table-wrap::-webkit-scrollbar-track { background: #e8edf4; border-radius: 8px; }
+.adm-leads-table-wrap::-webkit-scrollbar-thumb { background: #8799b2; border: 2px solid #e8edf4; border-radius: 8px; }
+.adm-leads-table-wrap::-webkit-scrollbar-thumb:hover { background: var(--adm-brand); }
 .admin-app table {
   width: 100%;
   border-collapse: collapse;
@@ -447,6 +487,27 @@
 .admin-app tbody tr:hover {
   background: var(--adm-page);
 }
+.admin-app .adm-leads-table th { background: var(--adm-brand); color: white; text-align: center; }
+.admin-app .adm-leads-table thead th { position: sticky; top: 0; z-index: 2; }
+.adm-column-heading { display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+.admin-app .adm-column-trigger { display: inline-flex; padding: 4px; min-height: 0; border: 1px solid #ffffff60; border-radius: 4px; background: transparent; color: white; }
+.admin-app .adm-column-trigger:hover, .admin-app .adm-column-trigger[aria-pressed="true"] { background: #ffffff30; }
+.admin-app .adm-leads-table tbody tr:nth-child(odd) { background: white; }
+.admin-app .adm-leads-table tbody tr:nth-child(even) { background: #f0f4fa; }
+.admin-app .adm-leads-table tbody tr:hover { background: #e3ebf7; }
+.admin-app .adm-record-row { cursor: pointer; }
+.admin-app .adm-record-row:focus-visible { outline: 2px solid var(--adm-brand); outline-offset: -2px; background: #e3ebf7; }
+.adm-column-overlay { position: fixed; inset: 0; background: #172b4d33; z-index: 100; display: grid; place-items: center; padding: 16px; }
+.adm-column-menu { background: white; color: var(--adm-text); border: 1px solid var(--adm-line); box-shadow: 0 12px 40px #172b4d30; border-radius: 12px; padding: 18px; width: min(380px, 100%); white-space: normal; }
+.adm-column-title { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.adm-column-menu > input { width: 100%; margin-bottom: 12px; }
+.adm-column-menu label { display: flex; align-items: center; gap: 8px; padding: 8px 0; font-size: 12px; }
+.admin-app .adm-column-menu input[type="checkbox"] { width: 16px; min-height: 16px; accent-color: var(--adm-brand); flex-shrink: 0; }
+.adm-column-values { max-height: 280px; overflow: auto; border-block: 1px solid var(--adm-line); margin-block: 8px; }
+.adm-column-menu footer { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.adm-column-sort { display: grid; gap: 6px; padding-bottom: 12px; margin-bottom: 12px; border-bottom: 1px solid var(--adm-line); }
+.admin-app .adm-column-sort button { text-align: right; }
+.admin-app .adm-column-sort button[aria-pressed="true"] { background: var(--adm-brand); color: white; }
 .adm-empty {
   padding: 48px 15px;
   text-align: center;
@@ -754,7 +815,7 @@
   .adm-card {
     padding: 18px;
   }
-  .adm-account > span:nth-child(2) {
+  .adm-account-name {
     display: none;
   }
   .adm-section-title h2 {
@@ -799,3 +860,32 @@
 .admin-app input::placeholder, .admin-app textarea::placeholder { color: var(--adm-muted); opacity: 1; }
 .admin-app input:hover:not(:disabled), .admin-app select:hover:not(:disabled), .admin-app textarea:hover:not(:disabled) { border-color: var(--adm-silver); }
 .adm-new-lead:hover { background: var(--adm-tint) !important; }
+.adm-date-filter { position: relative; min-width: 185px; flex: 0 1 220px; }
+.adm-date-label { display: block; margin-bottom: 7px; font-size: 12px; }
+.admin-app .adm-date-trigger { width: 100%; min-height: 42px; display: flex; justify-content: space-between; align-items: center; gap: 10px; color: var(--adm-brand); text-align: right; }
+.adm-date-trigger svg { flex-shrink: 0; }
+.adm-calendar { position: fixed; max-height: calc(100dvh - 24px); overflow-y: auto; z-index: 25; width: 350px; max-width: calc(100vw - 40px); padding: 12px; border: 1px solid var(--adm-line); border-radius: 16px; background: var(--adm-surface); box-shadow: 0 12px 36px #123b7826; }
+.adm-calendar-tabs { display: flex; padding: 4px; gap: 4px; background: var(--adm-tint); border-radius: 12px; }
+.admin-app .adm-calendar-tabs button { flex: 1; border: 0; background: transparent; color: var(--adm-brand); }
+.adm-calendar-heading { display: flex; align-items: center; gap: 4px; margin: 12px 0; padding: 6px; background: var(--adm-brand); border-radius: 12px; color: white; }
+.admin-app .adm-calendar-heading button { border: 0; background: transparent; color: white; padding: 7px; flex: 1; }
+.admin-app .adm-calendar-heading button:first-child, .admin-app .adm-calendar-heading button:last-child { flex: 0 0 32px; font-size: 23px; line-height: 1; }
+.adm-calendar-heading strong { flex: 1; text-align: center; }
+.admin-app .adm-calendar-heading button:hover { background: #ffffff26; }
+.adm-calendar-week, .adm-calendar-days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; text-align: center; }
+.adm-calendar-week { color: var(--adm-brand); font-size: 11px; padding: 4px 0 9px; }
+.admin-app .adm-calendar-days button { min-height: 40px; padding: 5px 0; border: 1px solid transparent; background: transparent; }
+.admin-app .adm-calendar-days .is-other-month { color: var(--adm-silver); }
+.admin-app .adm-calendar-days button[aria-current="date"] { border-color: var(--adm-line); color: var(--adm-brand); }
+.adm-calendar-options { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; padding: 8px; background: var(--adm-page); border-radius: 12px; }
+.admin-app .adm-calendar-options button { min-height: 48px; padding: 6px; font-size: 12px; box-shadow: 0 2px 3px #123b780a; }
+.admin-app .adm-calendar button[aria-pressed="true"] { color: white; background: var(--adm-brand); box-shadow: 0 2px 4px #123b7833; }
+.admin-app .adm-calendar-days button:hover:not(:disabled):not([aria-pressed="true"]) { background: var(--adm-tint); }
+.adm-calendar-footer { display: flex; justify-content: space-between; border-top: 1px solid var(--adm-line); margin-top: 10px; padding-top: 8px; }
+.admin-app .adm-calendar-footer button { border: 0; color: var(--adm-muted); padding: 4px 8px; }
+.admin-app .adm-calendar button:focus-visible, .admin-app .adm-date-trigger:focus-visible { outline: 2px solid var(--adm-brand); outline-offset: 2px; }
+.admin-app .adm-calendar-heading button:focus-visible { outline-color: white; }
+@media (max-width: 600px) {
+  .adm-date-filter { flex: 1 1 100%; }
+  .adm-calendar { width: min(350px, calc(100vw - 64px)); }
+}

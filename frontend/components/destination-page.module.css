@@ -51,14 +51,14 @@
 .hero h1{font-size:clamp(36px,4vw,57px);line-height:1.55;letter-spacing:-1.6px;margin:0 0 12px;font-weight:850}
 .tagline{font-size:19px;font-weight:650;margin:12px 0}
 .intro{font-size:14px;line-height:2.15;color:var(--muted);max-width:480px}
-.studySnapshot{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 16px;max-width:520px;margin-top:20px;padding:14px 16px;background:var(--content);border:1px solid var(--line);border-radius:14px;box-shadow:0 8px 22px rgb(32 40 51 / 5%)}
-.studyFact{margin:0!important;display:flex;flex-wrap:wrap;gap:4px;font-size:13px!important;line-height:1.8!important;color:var(--text)!important}
+.studySnapshot{display:flex;flex-direction:column;align-items:flex-start;gap:7px;max-width:600px;margin-top:20px;padding:0;background:transparent;border:0;border-radius:0;box-shadow:none}
+.studyFact{margin:0!important;display:block;font-size:16px!important;line-height:1.9!important;color:var(--text)!important}
 .studyFact strong{color:#d79416;font-weight:800}
-.studySource{grid-column:1/-1;justify-self:start;font-size:11px;color:var(--muted);text-decoration:underline;text-underline-offset:3px}
 .actions{display:flex;flex-wrap:wrap;gap:13px;margin-top:27px}
-.primary{display:inline-flex;align-items:center;justify-content:center;gap:20px;padding:13px 20px;border-radius:8px;font-size:13px;font-weight:700}
-.primary{background:var(--brand);color:var(--content);box-shadow:0 7px 20px rgb(18 59 120 / 12%)}
-.primary:hover{background:var(--brand)}
+.primary{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:52px;padding:11px 14px 11px 19px;border-radius:13px;font-size:14px;font-weight:750;transition:transform .2s,box-shadow .2s,background .2s}
+.primary{background:linear-gradient(135deg,var(--brand),#1e56a5);color:var(--content);box-shadow:0 9px 22px rgb(18 59 120 / 20%)}
+.primary:hover{transform:translateY(-2px);box-shadow:0 13px 26px rgb(18 59 120 / 25%)}
+.primary .primaryEmphasis{color:var(--content);font-size:1.08em;font-weight:900}
 .facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin-block:0;padding:24px 16px;background:var(--content);border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 26px rgb(32 40 51 / 6%)}
 .fact{min-width:0;min-height:140px;padding:6px 20px;text-align:center}
 .fact+.fact{border-inline-start:1px solid var(--line)}
@@ -129,8 +129,8 @@
 .hero h1{font-size:40px;line-height:1.45}
 .tagline{font-size:16px}
 .intro{font-size:13px}
-.studySnapshot{gap:8px 10px;padding:12px}
-.studyFact{font-size:12px!important}
+.studySnapshot{gap:6px;padding:0}
+.studyFact{font-size:15px!important}
 .actions{margin-top:20px}
 .facts{grid-template-columns:repeat(2,minmax(0,1fr));padding:16px 12px}
 .fact{padding:18px 10px;min-height:156px}
@@ -195,9 +195,11 @@
 .page :is(a, button, input, select):focus-visible { outline: 3px solid var(--brand); outline-offset: 4px; }
 .page :is(.primary):hover { box-shadow: inset 0 0 0 2px var(--silver); }
 .page :is(.editorial, .visa) { background: var(--content); border-radius: 16px; padding: 40px; margin-block: 56px; }
-.page .universityCard:hover { border-color: var(--silver); }
+.page .universityCard { transition: border-color .25s ease, box-shadow .25s ease; }
+.page .universityCard:hover, .page .universityCard:focus-within { border-color: #123b78; box-shadow: 0 0 0 1px #123b78; }
 .page .more a { background: var(--content); }
-.page .more a:hover { border-color: var(--brand); color: var(--brand); }
+.page .more a { transition: border-color .25s ease, box-shadow .25s ease; }
+.page .more a:hover, .page .more a:focus-visible { border-color: #123b78; box-shadow: 0 0 0 1px #123b78; color: var(--brand); }
 /* Shared header appearance is scoped to this destination page. */
 :global(.site):has(> .page) :global(.site-header) { background: var(--color-surface); }
 :global(.site):has(> .page) :global(.site-header) a:hover,
@@ -207,3 +209,5 @@
 @media(max-width:760px) {
   .page :is(.editorial, .visa) { padding: 26px 20px; margin-block: 32px; }
 }
+
+@media (prefers-reduced-motion: reduce) { .page .universityCard, .page .more a { transition: none; } }

@@ -1,0 +1,16 @@
+.card { display:none; }
+@media (min-width:1024px) {
+  .card { display:block; position:fixed; right:24px; bottom:24px; z-index:35; width:252px; padding:16px; border:1px solid #bac6d7; border-radius:16px; background:linear-gradient(135deg,#071b3a 0%,#123b78 100%); color:#fff; box-shadow:0 8px 28px rgb(9 37 59 / 24%); animation:consultation-float 7s ease-in-out infinite; }
+  .heading { display:flex; align-items:center; gap:12px; }
+  .icon { display:grid; place-items:center; flex:0 0 38px; height:38px; border:1px solid rgb(214 220 228 / 35%); border-radius:11px; background:rgb(214 220 228 / 12%); color:#e1e6ee; }
+  .icon svg { width:23px; height:23px; }
+  .heading strong { display:block; font-size:14px; font-weight:750; line-height:1.7; }
+  .heading small { display:block; margin-top:3px; color:#d6dce4; font-size:11px; line-height:1.7; }
+  .button { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:14px; padding:10px 12px; border:1px solid #d6dce4; border-radius:9px; background:#f2f4f7; color:#123b78; font-size:13px; font-weight:750; text-decoration:none; transition:background .2s; }
+  .button svg { width:18px; height:18px; flex-shrink:0; }
+  .button:hover { background:#fff; }
+  .button:focus-visible { outline:3px solid #fff; outline-offset:4px; }
+}
+@keyframes consultation-float { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-6px); } }
+@media (prefers-reduced-motion:reduce) { .card { animation:none; } }
+@media print { .card { display:none; } }
