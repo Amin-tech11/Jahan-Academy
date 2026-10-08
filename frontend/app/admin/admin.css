@@ -367,7 +367,10 @@
   text-align: right;
   direction: rtl;
 }
-.admin-app .adm-leads-toolbar .adm-search input:placeholder-shown { text-align: right; }
+.admin-app .adm-leads-toolbar .adm-search input:placeholder-shown {
+  direction: rtl;
+  text-align: right;
+}
 .adm-stats {
   display: grid;
   grid-template-columns: repeat(4, 1fr);

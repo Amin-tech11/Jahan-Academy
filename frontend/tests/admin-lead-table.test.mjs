@@ -84,9 +84,11 @@ test("Excel roundtrip keeps RTL columns, text phone/formula payloads, filters an
   assert.equal(sheet.getCell("A1").alignment.horizontal, "center");
   assert.equal(sheet.getCell("A1").fill.fgColor.argb, "FF123B78");
   assert.equal(sheet.getCell("A1").font.color.argb, "FFFFFFFF");
+  sheet.eachRow(row => row.eachCell(cell => assert.equal(cell.font.name, "B_Nazanin")));
   assert.notEqual(sheet.getCell("A2").fill.fgColor.argb, sheet.getCell("A3").fill.fgColor.argb);
   assert.ok(sheet.autoFilter);
   const empty = new ExcelJS.Workbook();
   await empty.xlsx.load(await leadWorkbook([], columns));
   assert.equal(empty.worksheets[0].rowCount, 1);
+  empty.worksheets[0].getRow(1).eachCell(cell => assert.equal(cell.font.name, "B_Nazanin"));
 });

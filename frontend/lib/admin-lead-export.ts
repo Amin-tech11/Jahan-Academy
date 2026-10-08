@@ -16,7 +16,7 @@ export async function leadWorkbook(rows: RecordData[], columns: string[]) {
       cell.numFmt = "@";
       cell.alignment = { horizontal: index === 1 ? "center" : "right", vertical: "middle" };
       cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: index === 1 ? "FF123B78" : index % 2 === 1 ? "FFF0F4FA" : "FFFFFFFF" } };
-      cell.font = { name: "Arial", size: 11, bold: index === 1, color: { argb: index === 1 ? "FFFFFFFF" : "FF172B4D" } };
+      cell.font = { name: "B_Nazanin", size: 11, bold: index === 1, color: { argb: index === 1 ? "FFFFFFFF" : "FF172B4D" } };
     });
     row.height = index === 1 ? 30 : 24;
   });
