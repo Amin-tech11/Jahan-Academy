@@ -13,6 +13,7 @@ dependencies = [
   "email-validator>=2.2,<3",
   "fastapi>=0.141,<0.142",
   "httpx>=0.28,<0.29",
+  "jdatetime>=6.1,<7",
   "nh3>=0.3,<0.4",
   "pydantic>=2.12,<3",
   "pydantic-settings>=2.10,<3",
