@@ -19,6 +19,7 @@ function setup({ locale = "en", values = {}, fail = false, pending = false } = {
     module, exports: module.exports, Date, crypto: { randomUUID: () => `key-${++key}` },
     FormData: class { get(key) { return data[key] ?? null; } },
     require(name) {
+      if (name === "./site-select") return { default: "select" };
       if (name === "@/lib/request-key") return { createRequestKey };
       if (name === "react") return {
         useId: () => "form",

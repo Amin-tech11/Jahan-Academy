@@ -24,6 +24,7 @@ export default function SiteSelect(props: SelectHTMLAttributes<HTMLSelectElement
   const [internal, setInternal] = useState(String(props.defaultValue ?? options.find(option => !option.disabled)?.value ?? ""));
   const value = props.value === undefined ? internal : String(props.value);
   const selected = options.findIndex(option => option.value === value);
+  const initialActive = selected >= 0 && !options[selected].disabled ? selected : options.findIndex(option => !option.disabled);
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(selected);
   const [invalid, setInvalid] = useState(false);
@@ -42,6 +43,7 @@ export default function SiteSelect(props: SelectHTMLAttributes<HTMLSelectElement
       setLabel(clone.textContent?.trim() ?? "");
     }
     const form = native.current?.form;
+    if (button) setPosition(current => ({ ...current, direction: getComputedStyle(button).direction }));
     const reset = () => { setTimeout(() => { setInternal(native.current?.value ?? ""); setInvalid(false); setOpen(false); }, 0); };
     form?.addEventListener("reset", reset);
     return () => { form?.removeEventListener("reset", reset); };
@@ -54,7 +56,7 @@ export default function SiteSelect(props: SelectHTMLAttributes<HTMLSelectElement
       const rect = button.getBoundingClientRect();
       const below = window.innerHeight - rect.bottom - 12;
       const above = rect.top - 12;
-      const height = Math.min(280, Math.max(80, below >= 180 || below >= above ? below : above));
+      const height = Math.min(280, options.length * 44 + 12, Math.max(80, below >= 180 || below >= above ? below : above));
       const width = Math.min(Math.max(rect.width, 180), window.innerWidth - 16);
       setPosition({ top: below >= 180 || below >= above ? rect.bottom + 6 : Math.max(8, rect.top - height - 6), left: Math.max(8, Math.min(rect.left, window.innerWidth - width - 8)), width, maxHeight: height, direction: getComputedStyle(button).direction });
     };
@@ -64,7 +66,7 @@ export default function SiteSelect(props: SelectHTMLAttributes<HTMLSelectElement
     window.addEventListener("scroll", place, true);
     document.addEventListener("pointerdown", outside);
     return () => { window.removeEventListener("resize", place); window.removeEventListener("scroll", place, true); document.removeEventListener("pointerdown", outside); };
-  }, [open]);
+  }, [open, options.length]);
   useEffect(() => { if (open) document.getElementById(`${id}-option-${active}`)?.scrollIntoView({ block: "nearest" }); }, [active, open, id]);
   useEffect(() => { if (props.disabled) setOpen(false); }, [props.disabled]);
   function choose(index: number) {
@@ -80,15 +82,15 @@ export default function SiteSelect(props: SelectHTMLAttributes<HTMLSelectElement
     setActive(enabled[Math.max(0, Math.min(enabled.length - 1, current + delta))] ?? -1);
   }
   return <span className="site-select" style={style}>
-    <button ref={trigger} id={id} type="button" role="combobox" className={["site-select__trigger", className].filter(Boolean).join(" ")} disabled={props.disabled}
+    <button ref={trigger} id={id} type="button" role="combobox" className={["site-select__trigger", className].filter(Boolean).join(" ")} disabled={props.disabled} tabIndex={props.tabIndex}
       aria-label={props["aria-label"] ?? (label || undefined)} aria-labelledby={props["aria-labelledby"]} aria-describedby={props["aria-describedby"]}
       aria-expanded={open} aria-controls={`${id}-list`} aria-haspopup="listbox" aria-required={props.required}
       aria-invalid={invalid || props["aria-invalid"]} aria-activedescendant={open && active >= 0 ? `${id}-option-${active}` : undefined}
-      onBlur={() => setOpen(false)} onClick={() => { setActive(selected >= 0 ? selected : options.findIndex(option => !option.disabled)); setOpen(!open); }}
+      onBlur={() => setOpen(false)} onClick={() => { setActive(initialActive); setOpen(!open); }}
       onKeyDown={event => {
-        if (["ArrowDown", "ArrowUp"].includes(event.key)) { event.preventDefault(); if (!open) { setOpen(true); setActive(selected >= 0 ? selected : options.findIndex(option => !option.disabled)); } else move(event.key === "ArrowDown" ? 1 : -1); }
+        if (["ArrowDown", "ArrowUp"].includes(event.key)) { event.preventDefault(); if (!open) { setOpen(true); setActive(initialActive); } else move(event.key === "ArrowDown" ? 1 : -1); }
         else if (event.key === "Home" || event.key === "End") { event.preventDefault(); setOpen(true); setActive(event.key === "Home" ? options.findIndex(option => !option.disabled) : options.findLastIndex(option => !option.disabled)); }
-        else if (event.key === "Enter" || event.key === " ") { event.preventDefault(); if (open) choose(active); else { setOpen(true); setActive(selected); } }
+        else if (event.key === "Enter" || event.key === " ") { event.preventDefault(); if (open) choose(active); else { setOpen(true); setActive(initialActive); } }
         else if (event.key === "Escape") { event.preventDefault(); setOpen(false); }
         else if (event.key === "Tab") setOpen(false);
         else if (event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey) {
@@ -100,7 +102,7 @@ export default function SiteSelect(props: SelectHTMLAttributes<HTMLSelectElement
     <select {...nativeProps} ref={native} id={`${id}-native`} className="site-select__native" tabIndex={-1} aria-hidden="true" onChange={event => { setInternal(event.target.value); setInvalid(false); onChange?.(event); }} onInvalid={event => { event.preventDefault(); setInvalid(true); trigger.current?.focus(); onInvalid?.(event); }}>{children}</select>
     {invalid && <span className="site-select__error" role="alert">{position.direction === "ltr" ? "Please select an option." : "لطفاً یک گزینه انتخاب کنید."}</span>}
     {open && createPortal(<div ref={list} id={`${id}-list`} className="site-select__list" role="listbox" aria-label={props["aria-label"] ?? (label || undefined)} dir={position.direction === "ltr" ? "ltr" : "rtl"} style={{ top: position.top, left: position.left, width: position.width, maxHeight: position.maxHeight }} onMouseDown={event => event.preventDefault()}>
-      {options.map((option, index) => <div key={`${option.value}-${index}`} id={`${id}-option-${index}`} role="option" aria-selected={index === selected} aria-disabled={option.disabled} data-active={index === active} onPointerMove={() => { if (!option.disabled) setActive(index); }} onClick={() => choose(index)}><span>{option.text}</span>{index === selected && <span aria-hidden="true">✓</span>}</div>)}
+      {options.map((option, index) => <div key={`${option.value}-${index}`} id={`${id}-option-${index}`} role="option" aria-selected={index === selected} aria-disabled={option.disabled} data-active={index === active} onPointerMove={() => { if (!option.disabled) setActive(index); }} onClick={event => { event.preventDefault(); event.stopPropagation(); choose(index); }}><span>{option.text}</span>{index === selected && <span aria-hidden="true">✓</span>}</div>)}
     </div>, document.body)}
   </span>;
 }
