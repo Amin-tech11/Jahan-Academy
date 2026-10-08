@@ -3,7 +3,7 @@ import { createRequestKey } from "@/lib/request-key";
 import Link from "next/link";
 import { type FormEvent, useRef, useState } from "react";
 import { ApiError, apiRequest, type ApiEnvelope } from "@/lib/api-client";
-import { consultationPayload, normalizeMobile } from "@/lib/consultation";
+import { consultationPayload, isValidEmail, normalizeMobile } from "@/lib/consultation";
 import { type Locale, siteCopy } from "@/lib/site-content";
 
 const t = (locale: Locale, fa: string, en: string) => locale === "fa" ? fa : en;
@@ -36,6 +36,11 @@ export function AssessmentForm({ locale, source }: { locale: Locale; source: str
       setError(t(locale, "نام و نام خانوادگی و شماره موبایل معتبر وارد کنید.", "Enter your full name and a valid mobile number."));
       setStatus("error"); return;
     }
+    const email = String(form.get("email") || "").trim();
+    if (!isValidEmail(email)) {
+      setError(t(locale, "ایمیل معتبر وارد کنید؛ مانند name@example.com.", "Enter a valid email address, e.g. name@example.com."));
+      setStatus("error"); return;
+    }
     const detail = (key: string, fa: string, en: string) => form.get(key) ? t(locale, fa, en) + ": " + form.get(key) : "";
     const message = [
       detail("education", "تحصیلات", "Education"),
@@ -44,7 +49,7 @@ export function AssessmentForm({ locale, source }: { locale: Locale; source: str
     ].filter(Boolean).join("\n");
     const fields = {
       firstName: names[0], lastName: names.slice(1).join(" "), mobile,
-      email: String(form.get("email") || ""), country: t(locale, "نامشخص", "Undecided"),
+      email, country: t(locale, "نامشخص", "Undecided"),
       intake: "unknown", startYear: String(new Date().getUTCFullYear()),
       age: String(form.get("age") || ""), gender: String(form.get("gender") || ""),
       occupation: String(form.get("occupation") || ""), maritalStatus: String(form.get("maritalStatus") || ""),
@@ -82,8 +87,8 @@ export function AssessmentForm({ locale, source }: { locale: Locale; source: str
     <form className="assessment-form" onSubmit={submit} aria-label={t(locale, "فرم ارزیابی اولیه", "Initial assessment form")}>
     <div className="assessment-form__grid">
       <label>{t(locale, "نام و نام خانوادگی", "Full name")}<input name="fullName" autoComplete="name" required maxLength={200} /></label>
-      <label>{t(locale, "شماره موبایل", "Mobile number")}<input name="mobile" type="tel" inputMode="tel" autoComplete="tel" required placeholder={t(locale, "مثال: ۰۹۱۲۱۲۳۴۵۶۷", "e.g. +989121234567")} /></label>
-      <label>{t(locale, "ایمیل", "Email")}<input name="email" type="email" autoComplete="email" placeholder="example@email.com" required /></label>
+      <label>{t(locale, "شماره موبایل", "Mobile number")}<input name="mobile" type="tel" inputMode="tel" autoComplete="tel" required maxLength={32} placeholder={t(locale, "مثال: ۰۹۱۲۱۲۳۴۵۶۷", "e.g. +989121234567")} /></label>
+      <label>{t(locale, "ایمیل", "Email")}<input name="email" type="email" autoComplete="email" placeholder="example@email.com" required maxLength={254} /></label>
       <label>{t(locale, "سن", "Age")}<input name="age" type="number" inputMode="numeric" min="18" max="100" placeholder={t(locale, "مثال: ۲۵", "e.g. 25")} required /></label>
       <label>{t(locale, "شغل", "Occupation")}<input name="occupation" maxLength={120} placeholder={t(locale, "مثال: دانشجو", "e.g. Student")} required /></label>
       <label>{t(locale, "جنسیت", "Gender")}<select name="gender" defaultValue="" required><option value="">{t(locale, "لطفاً جنسیت خود را انتخاب کنید", "Select your gender")}</option><option value="female">{t(locale, "زن", "Female")}</option><option value="male">{t(locale, "مرد", "Male")}</option></select></label>
