@@ -27,6 +27,10 @@
 
 ## 1. Product Overview
 
+### Approved administration backup (2026-10-08)
+
+The admin reference chat authorized daily Google Sheets snapshots of consultation and assessment requests created during the previous Tehran civil day, scheduled at 00:00 Asia/Tehran. Destination spreadsheet: `1D-OEZf_lO8pym4ZYqBxCjsMYYfG-HG109jMmx2dBK4A`. Each day has a separate immutable snapshot tab using the existing 14-column admin export layout, RTL, navy/white headers, banded rows and requested `B_Nazanin` font. Google Sheets font rendering depends on Google's font support. Secrets and account credentials are excluded. The connected Google Drive account now has access: all 18 records for 2026-10-07 were written and all 266 cells, including headers and effective font settings, were verified through readback. A heartbeat in the admin chat checks every four hours for missing days whose midnight Tehran deadline has passed; it uses a read-only database export and the authorized Google Drive connection, requiring the computer, Codex and Docker to remain available. Missing days since 2026-10-07 are recovered on a later run; delayed recovery reflects current record values, not historical edits. The independent Celery integration remains disabled until service-account credentials are supplied and tested. Never enable both schedulers simultaneously. See [setup and operating guide](GOOGLE_SHEETS_BACKUP.md).
+
 Jahan Academy is a bilingual educational-migration platform for people between 18 and 40 years old who intend to study abroad, apply to universities, immigrate through education, or develop their educational and career paths.
 
 The MVP is a public **trust-building and lead-generation** website. Visitors learn about educational migration, destinations, approved academic services, and high-level university showcases; they read bilingual news and guidance, then submit a free-consultation request. The operational team qualifies and manages those requests in the website administration panel and synchronizes them with the Noura CRM/ERP.

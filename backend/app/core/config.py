@@ -44,6 +44,11 @@ class Settings(BaseSettings):
     monitoring_token: SecretStr | None = None
     lead_retention_years: int = Field(default=3, ge=1, le=10)
     retention_batch_size: int = Field(default=200, ge=1, le=1000)
+    sheets_backup_enabled: bool = False
+    sheets_backup_spreadsheet_id: str = Field(
+        default="1D-OEZf_lO8pym4ZYqBxCjsMYYfG-HG109jMmx2dBK4A", pattern=r"^[A-Za-z0-9_-]+$"
+    )
+    sheets_backup_credentials_file: str = "/run/secrets/google-service-account.json"
     noura_base_url: str = "http://mock-noura:8090"
     noura_timeout_seconds: float = Field(default=5.0, gt=0, le=60)
     noura_mock_outcome: str = Field(

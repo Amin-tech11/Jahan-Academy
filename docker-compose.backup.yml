@@ -1,0 +1,15 @@
+# Optional override. Activate only after sharing the target spreadsheet with the service account.
+services:
+  worker-integration:
+    environment:
+      JAHAN_SHEETS_BACKUP_ENABLED: "true"
+      JAHAN_SHEETS_BACKUP_SPREADSHEET_ID: 1D-OEZf_lO8pym4ZYqBxCjsMYYfG-HG109jMmx2dBK4A
+      JAHAN_SHEETS_BACKUP_CREDENTIALS_FILE: /run/secrets/google-service-account.json
+    volumes:
+      - ${JAHAN_GOOGLE_CREDENTIALS_FILE:?Set the absolute path to the service account JSON}:/run/secrets/google-service-account.json:ro
+    networks:
+      - application
+      - edge
+  beat:
+    environment:
+      JAHAN_SHEETS_BACKUP_ENABLED: "true"
