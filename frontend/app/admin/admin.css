@@ -336,6 +336,41 @@
   min-width: 180px;
   max-width: 400px;
 }
+.admin-app .adm-leads-toolbar > label,
+.admin-app .adm-leads-toolbar > .adm-date-filter {
+  flex: 1 1 180px;
+  min-width: 180px;
+  max-width: none;
+}
+.admin-app .adm-leads-toolbar .adm-filter-label,
+.admin-app .adm-leads-toolbar .adm-date-label {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.8;
+  color: var(--adm-ink);
+}
+.admin-app .adm-leads-toolbar input,
+.admin-app .adm-leads-toolbar .site-select__trigger,
+.admin-app .adm-leads-toolbar .adm-date-trigger {
+  height: 44px;
+  min-height: 44px;
+  padding: 10px 13px;
+  border: 1px solid var(--adm-line);
+  border-radius: 8px;
+  background: var(--adm-surface);
+  color: var(--adm-ink);
+  font-size: 13px;
+  font-weight: 400;
+}
+.admin-app .adm-leads-toolbar input::placeholder {
+  color: var(--adm-muted);
+  text-align: right;
+  direction: rtl;
+}
+.admin-app .adm-leads-toolbar .adm-search input:placeholder-shown {
+  direction: rtl;
+  text-align: right;
+}
 .adm-stats {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
