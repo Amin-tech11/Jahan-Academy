@@ -135,6 +135,8 @@ def color(hex_value: str) -> dict[str, float]:
 
 
 def snapshot_requests(day: str, values: list[list[str]]) -> list[dict[str, Any]]:
+    if not values:
+        return []
     # Deterministic ID + title allow a timed-out successful request to be detected on retry.
     sheet_id = 700000000 + date.fromisoformat(day).toordinal()
     grid = {
@@ -250,6 +252,8 @@ async def google_token(client: httpx.AsyncClient, credentials_file: str) -> str:
 async def write_snapshot(
     client: httpx.AsyncClient, spreadsheet_id: str, day: str, values: list[list[str]]
 ) -> str:
+    if not values:
+        return "empty"
     url = f"https://sheets.googleapis.com/v4/spreadsheets/{spreadsheet_id}"
     response = await client.get(url, params={"fields": "sheets.properties"})
     response.raise_for_status()
@@ -292,13 +296,13 @@ async def prepare_day(day: str) -> dict[str, Any]:
             await session.execute(text("SET TRANSACTION READ ONLY"))
             values = await day_values(session, day)
         requests = snapshot_requests(day, values)
-        properties = requests[0]["addSheet"]["properties"]
         return {
+            "status": "ready" if values else "empty",
             "spreadsheetId": get_settings().sheets_backup_spreadsheet_id,
             "day": day,
             "rowCount": len(values),
-            "sheetId": properties["sheetId"],
-            "sheetTitle": properties["title"],
+            "sheetId": 700000000 + date.fromisoformat(day).toordinal(),
+            "sheetTitle": f"درخواست‌ها {day}",
             "requests": requests,
         }
     finally:
@@ -322,6 +326,8 @@ async def backup_day(day: str) -> dict[str, str | int]:
             if not locked:
                 raise RuntimeError("Another worker is saving this backup; retry later")
             values = await day_values(session, day)
+            if not values:
+                return {"status": "empty", "day": day, "rows": 0}
             async with httpx.AsyncClient(timeout=60) as client:
                 token = await google_token(client, settings.sheets_backup_credentials_file)
                 client.headers["Authorization"] = f"Bearer {token}"

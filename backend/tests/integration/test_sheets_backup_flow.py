@@ -16,6 +16,26 @@ pytestmark = pytest.mark.skipif(
 )
 
 
+async def test_empty_day_export_does_not_authenticate_or_write_to_google() -> None:
+    # An old complete day outside the application's record history.
+    day = "1900-01-01"
+    with (
+        patch(
+            "app.modules.operational.sheets_backup.get_settings",
+            return_value=Settings(sheets_backup_enabled=True),
+        ),
+        patch("app.modules.operational.sheets_backup.google_token", AsyncMock()) as token,
+        patch("app.modules.operational.sheets_backup.write_snapshot", AsyncMock()) as remote,
+    ):
+        prepared = await prepare_day(day)
+        result = await backup_day(day)
+    assert prepared["status"] == "empty"
+    assert prepared["rowCount"] == 0 and prepared["requests"] == []
+    assert result == {"status": "empty", "day": day, "rows": 0}
+    token.assert_not_awaited()
+    remote.assert_not_awaited()
+
+
 async def test_database_to_snapshot_includes_whole_day_and_archived_requests() -> None:
     day = date(2001, 1, 1)
     start, end = day_bounds(day)

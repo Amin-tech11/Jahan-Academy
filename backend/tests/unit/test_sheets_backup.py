@@ -93,7 +93,7 @@ def test_atomic_payload_matches_template_and_does_not_execute_formulas() -> None
         rows[1]["values"][0]["userEnteredFormat"]["backgroundColor"]
         != rows[2]["values"][0]["userEnteredFormat"]["backgroundColor"]
     )
-    assert len(snapshot_requests("2026-10-07", [])[1]["updateCells"]["rows"]) == 1
+    assert snapshot_requests("2026-10-07", []) == []
 
 
 async def test_remote_atomic_save_then_retry_leaves_all_tabs_unchanged() -> None:
@@ -110,7 +110,7 @@ async def test_remote_atomic_save_then_retry_leaves_all_tabs_unchanged() -> None
         return httpx.Response(200, json={})
 
     async with httpx.AsyncClient(transport=httpx.MockTransport(google)) as client:
-        assert await write_snapshot(client, "target", "2026-10-07", []) == "saved"
+        assert await write_snapshot(client, "target", "2026-10-07", [["record"] * 14]) == "saved"
         assert (
             await write_snapshot(client, "target", "2026-10-07", [["changed"] * 14])
             == "already_saved"
@@ -123,7 +123,7 @@ async def test_remote_error_does_not_report_success() -> None:
         transport=httpx.MockTransport(lambda request: httpx.Response(403, json={"error": "denied"}))
     ) as client:
         with pytest.raises(httpx.HTTPStatusError):
-            await write_snapshot(client, "target", "2026-10-07", [])
+            await write_snapshot(client, "target", "2026-10-07", [["record"] * 14])
 
 
 async def test_existing_user_tab_is_never_overwritten() -> None:
@@ -145,7 +145,15 @@ async def test_existing_user_tab_is_never_overwritten() -> None:
 
     async with httpx.AsyncClient(transport=httpx.MockTransport(google)) as client:
         with pytest.raises(ValueError, match="conflicts"):
-            await write_snapshot(client, "target", "2026-10-07", [])
+            await write_snapshot(client, "target", "2026-10-07", [["record"] * 14])
+
+
+async def test_empty_day_never_contacts_google_or_creates_a_sheet() -> None:
+    def google(request: httpx.Request) -> httpx.Response:
+        pytest.fail("Empty days must not contact Google")
+
+    async with httpx.AsyncClient(transport=httpx.MockTransport(google)) as client:
+        assert await write_snapshot(client, "target", "2026-10-07", []) == "empty"
 
 
 async def test_service_account_token_uses_signed_limited_scope_assertion(tmp_path: Path) -> None:
