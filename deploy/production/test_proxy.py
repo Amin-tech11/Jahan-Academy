@@ -1,6 +1,5 @@
 """Exercise the actual isolated Nginx config with trusted and untrusted peers."""
 
-import ipaddress
 import json
 import os
 import subprocess
@@ -55,16 +54,24 @@ class ProxyTests(unittest.TestCase):
     def test_only_trusted_peer_can_supply_client_ip_and_https(self):
         prefix = "jahan-proxy-test-" + uuid4().hex[:10]
         network = prefix + "-net"
-        names = [prefix + suffix for suffix in ("-backend", "-proxy", "-client")]
+        names = [
+            prefix + suffix
+            for suffix in ("-backend", "-proxy", "-trusted", "-untrusted")
+        ]
 
         def docker(*args):
-            return subprocess.run(
-                ["docker", *args],
-                check=True,
-                capture_output=True,
-                text=True,
-                timeout=120,
-            ).stdout.strip()
+            try:
+                return subprocess.run(
+                    ["docker", *args],
+                    check=True,
+                    capture_output=True,
+                    text=True,
+                    timeout=120,
+                ).stdout.strip()
+            except subprocess.CalledProcessError as error:
+                raise RuntimeError(
+                    f"Docker fixture failed: {error.stderr[-2000:]}"
+                ) from error
 
         # Bind mounts contain only dummy credentials, never runtime files from production.
         with tempfile.TemporaryDirectory(
@@ -73,12 +80,24 @@ class ProxyTests(unittest.TestCase):
             root = Path(directory)
             docker("network", "create", network)
             try:
-                configuration = json.loads(docker("network", "inspect", network))[0]
-                subnet = ipaddress.ip_network(
-                    configuration["IPAM"]["Config"][0]["Subnet"]
-                )
-                trusted = str(subnet.network_address + 10)
-                untrusted = str(subnet.network_address + 11)
+                # Docker assigns free addresses. Linux rejects --ip on an automatically
+                # allocated subnet; avoid static addresses and host subnet collisions.
+                for name in names[2:]:
+                    docker(
+                        "run",
+                        "-d",
+                        "--name",
+                        name,
+                        "--network",
+                        network,
+                        "python:3.12-alpine",
+                        "python",
+                        "-c",
+                        "import time; time.sleep(300)",
+                    )
+                trusted = json.loads(docker("inspect", names[2]))[0]["NetworkSettings"][
+                    "Networks"
+                ][network]["IPAddress"]
                 template = Path(__file__).with_name("preview.conf.template").read_text()
                 (root / "preview.conf").write_text(
                     template.replace("@GATEWAY@", trusted)
@@ -122,24 +141,17 @@ class ProxyTests(unittest.TestCase):
                     "nginx:1.28-alpine",
                 )
                 docker("exec", names[1], "nginx", "-t")
-                for address in (untrusted, trusted):
+                for name in (names[3], names[2]):
                     results = json.loads(
                         docker(
-                            "run",
-                            "--rm",
-                            "--name",
-                            names[2],
-                            "--network",
-                            network,
-                            "--ip",
-                            address,
-                            "python:3.12-alpine",
+                            "exec",
+                            name,
                             "python",
                             "-c",
                             CLIENT,
                         )
                     )
-                    if address == untrusted:
+                    if name == names[3]:
                         self.assertEqual([row[0] for row in results], [308, 308, 308])
                     else:
                         self.assertEqual([row[0] for row in results], [200, 404, 404])

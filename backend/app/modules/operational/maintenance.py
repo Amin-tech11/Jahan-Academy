@@ -10,7 +10,7 @@ from sqlalchemy import text
 
 from app.core.config import get_settings
 from app.core.database import dispose_database, session_factory
-from app.modules.operational.retention import RetentionRepository
+from app.modules.operational.retention import EXPIRED_LEAD_PREDICATE, RetentionRepository
 
 
 async def run(*, apply: bool) -> dict[str, int | bool]:
@@ -25,11 +25,8 @@ async def run(*, apply: bool) -> dict[str, int | bool]:
         async with session_factory() as session:
             result["eligible_leads"] = int(
                 await session.scalar(
-                    text(
-                        "SELECT count(*) FROM leads WHERE anonymized_at IS NULL "
-                        "AND greatest(created_at, updated_at) < now() "
-                        "- make_interval(years => :years)"
-                    ),
+                    # The only inserted fragment is a fixed source constant; years is bound.
+                    text(f"SELECT count(*) FROM leads l WHERE {EXPIRED_LEAD_PREDICATE}"),  # nosec B608
                     {"years": settings.lead_retention_years},
                 )
                 or 0

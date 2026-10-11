@@ -3,20 +3,53 @@ from __future__ import annotations
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
+# Shared by the dry-run and mutation. Related activity may not update the lead row.
+EXPIRED_LEAD_PREDICATE = """
+    l.anonymized_at IS NULL
+    AND greatest(l.created_at, l.updated_at) < now() - make_interval(years => :years)
+    AND NOT EXISTS (
+        SELECT 1 FROM lead_notes n WHERE n.lead_id = l.id
+        AND greatest(n.created_at, n.edited_at) >= now() - make_interval(years => :years)
+    )
+    AND NOT EXISTS (
+        SELECT 1 FROM lead_submission_events e WHERE e.lead_id = l.id
+        AND e.created_at >= now() - make_interval(years => :years)
+    )
+    AND NOT EXISTS (
+        SELECT 1 FROM lead_status_history h WHERE h.lead_id = l.id
+        AND h.created_at >= now() - make_interval(years => :years)
+    )
+    AND NOT EXISTS (
+        SELECT 1 FROM lead_assignments a WHERE a.lead_id = l.id
+        AND greatest(a.assigned_at, a.unassigned_at) >= now() - make_interval(years => :years)
+    )
+    AND NOT EXISTS (
+        SELECT 1 FROM consultation_bookings b WHERE b.lead_id = l.id
+        AND (
+            greatest(b.created_at, b.updated_at, b.ends_at)
+                >= now() - make_interval(years => :years)
+            OR EXISTS (
+                SELECT 1 FROM consultation_sessions s WHERE s.booking_id = b.id
+                AND greatest(s.created_at, s.started_at, s.ended_at)
+                    >= now() - make_interval(years => :years)
+            )
+        )
+    )
+"""
+
 
 class RetentionRepository:
     def __init__(self, session: AsyncSession) -> None:
         self._session = session
 
     async def anonymize_expired_leads(self, *, years: int, limit: int) -> int:
+        # Only a fixed source predicate is interpolated; years and limit stay bound.
         rows = await self._session.execute(
             text(
-                """
+                f"""
                 WITH candidates AS (
-                    SELECT id FROM leads
-                    WHERE anonymized_at IS NULL
-                      AND greatest(created_at, updated_at) < now() - make_interval(years => :years)
-                    ORDER BY updated_at ASC LIMIT :limit FOR UPDATE SKIP LOCKED
+                    SELECT l.id FROM leads l WHERE {EXPIRED_LEAD_PREDICATE}
+                    ORDER BY l.updated_at ASC LIMIT :limit FOR UPDATE OF l SKIP LOCKED
                 ), anonymized AS (
                     UPDATE leads SET first_name = 'Anonymized', last_name = 'Lead',
                       mobile_raw = 'anonymized', mobile_normalized = '+10000000000', email = NULL,
@@ -35,7 +68,7 @@ class RetentionRepository:
                 SELECT 'lead.retention_anonymized', 'lead', id,
                        jsonb_build_object('retention', true)
                 FROM anonymized RETURNING entity_id
-                """
+                """  # nosec B608
             ),
             {"years": years, "limit": limit},
         )
@@ -48,6 +81,7 @@ class RetentionRepository:
             "UPDATE lead_notes SET body = '[Anonymized]', edited_at = now() "
             "WHERE lead_id = ANY(:ids)",
             "UPDATE lead_status_history SET reason = NULL WHERE lead_id = ANY(:ids)",
+            "UPDATE lead_assignments SET reason = NULL WHERE lead_id = ANY(:ids)",
             "UPDATE lead_submission_events SET source_url = NULL, request_fingerprint_hash = NULL, "
             "metadata_safe = '{}' WHERE lead_id = ANY(:ids)",
             "UPDATE consent_records SET user_id = NULL, source = 'retention', evidence = '{}' "
