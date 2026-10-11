@@ -10,7 +10,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) 240px;
   gap: clamp(40px, 6vw, 92px);
-  padding-block: 56px;
+  padding-block: 44px;
 }
 
 .content h2 {
@@ -121,7 +121,7 @@
 }
 
 @media (min-width: 1024px) {
-  .inner { padding-bottom: 160px; }
+  .inner { padding-bottom: 128px; }
 }
 
 @media (max-width: 900px) {
@@ -131,7 +131,7 @@
 
 @media (max-width: 600px) {
   .footer { margin: 16px 8px 8px; border-radius: 18px; }
-  .inner { padding-block: 32px; }
+  .inner { padding-block: 28px; }
   .columns { grid-template-columns: 1fr; gap: 32px; }
   .identity { align-items: flex-start; flex-direction: column; }
 }
