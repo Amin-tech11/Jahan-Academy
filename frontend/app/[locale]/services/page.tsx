@@ -25,7 +25,7 @@ const content = {
         id: "assessment", short: "بررسی شرایط", title: "بررسی تخصصی شرایط هر متقاضی",
         description: "مسیر تحصیلی با شناخت شما آغاز می‌شود. سوابق تحصیلی، سطح زبان، بودجه و هدف‌های شما را کنار هم می‌گذاریم تا نقطه شروع روشن باشد.",
         points: ["سوابق و مقطع تحصیلی", "سطح زبان و زمان‌بندی", "بودجه و هدف دانشجو"],
-        image: "/services/profile-assessment.png", imageAlt: "بررسی سوابق تحصیلی متقاضی در جلسه مشاوره",
+        image: "/services/profile-assessment.webp", imageAlt: "بررسی سوابق تحصیلی متقاضی در جلسه مشاوره",
       },
       {
         id: "options", short: "پیشنهاد گزینه‌ها", title: "پیشنهاد گزینه‌های مناسب",
@@ -58,7 +58,7 @@ const content = {
         id: "assessment", short: "Your profile", title: "A thoughtful review of your profile",
         description: "Your academic path starts with understanding you. We look at your education, language level, budget, and goals together to establish a clear starting point.",
         points: ["Academic background", "Language level and timeline", "Budget and goals"],
-        image: "/services/profile-assessment.png", imageAlt: "An advisor reviewing a student's academic profile",
+        image: "/services/profile-assessment.webp", imageAlt: "An advisor reviewing a student's academic profile",
       },
       {
         id: "options", short: "Suitable options", title: "Options suited to your goals",
