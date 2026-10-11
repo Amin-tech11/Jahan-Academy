@@ -1,0 +1,137 @@
+.footer {
+  margin: 24px 20px 20px;
+  border: 1px solid #283e61;
+  border-radius: 24px;
+  background: linear-gradient(135deg, #071b3a 0%, #123b78 100%);
+  color: #f3f5f9;
+}
+
+.inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 240px;
+  gap: clamp(40px, 6vw, 92px);
+  padding-block: 44px;
+}
+
+.content h2 {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(23px, 2.3vw, 31px);
+  line-height: 1.65;
+  font-weight: 800;
+}
+
+.columns {
+  margin-top: 32px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: 36px;
+}
+
+.columns h3 {
+  margin: 0 0 18px;
+  font-size: 15px;
+  color: #fff;
+  font-weight: 700;
+}
+
+.details {
+  font-style: normal;
+}
+
+.detailValue {
+  display: block;
+  margin-top: 4px;
+  color: #ccd6e7;
+}
+
+.detailValue[dir="ltr"] {
+  display: block;
+  width: fit-content;
+  unicode-bidi: isolate;
+}
+
+.contactLink {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.contactLink svg {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: #bdcbe0;
+}
+
+.identity {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  padding-top: 8px;
+}
+
+.logo {
+  display: inline-flex;
+  background: #f3f5f9;
+  padding: 18px;
+  border-radius: 16px;
+  border: 1px solid #d0d9e6;
+}
+
+.logo img {
+  width: 180px;
+  height: auto;
+}
+
+.socials {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.socials a {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid #637c9f;
+  border-radius: 50%;
+  color: #e4eaf3;
+  transition: background-color .2s, border-color .2s;
+}
+
+.socials a:hover {
+  background: #254a7c;
+  border-color: #ccd6e7;
+}
+
+.socials svg {
+  width: 22px;
+  height: 22px;
+}
+
+.footer a {
+  overflow-wrap: anywhere;
+}
+
+@media (min-width: 1024px) {
+  .inner { padding-bottom: 128px; }
+}
+
+@media (max-width: 900px) {
+  .inner { grid-template-columns: 1fr; gap: 36px; }
+  .identity { flex-direction: row; align-items: center; flex-wrap: wrap; border-top: 1px solid #476087; padding-top: 28px; }
+}
+
+@media (max-width: 600px) {
+  .footer { margin: 16px 8px 8px; border-radius: 18px; }
+  .inner { padding-block: 28px; }
+  .columns { grid-template-columns: 1fr; gap: 32px; }
+  .identity { align-items: flex-start; flex-direction: column; }
+}

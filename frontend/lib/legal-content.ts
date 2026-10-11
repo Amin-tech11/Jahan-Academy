@@ -1,0 +1,40 @@
+export type LegalDocument = {
+  title: string;
+  intro: string;
+  sections: Array<{ title: string; paragraphs: string[] }>;
+};
+
+export const legalContent: Record<"fa" | "en", Record<"privacy", LegalDocument>> = {
+  fa: {
+    privacy: {
+      title: "حریم خصوصی",
+      intro: "این سیاست توضیح می‌دهد جهان آکادمی در وب‌سایت و هنگام دریافت درخواست مشاوره و ارزیابی اولیه، چه اطلاعاتی دریافت می‌کند و چگونه از آن استفاده می‌کند.",
+      sections: [
+        { title: "دامنه اطلاعات دریافتی", paragraphs: ["متناسب با نوع فرم، نام و نام خانوادگی، شماره موبایل، ایمیل، شغل، مقصد و زمان موردنظر برای شروع تحصیل و اطلاعاتی مانند سن، جنسیت، وضعیت تأهل و پیام شما دریافت می‌شود. تکمیل فیلدهای اختیاری الزامی نیست. رضایت متقاضی نسبت به پردازش اطلاعات و تماس برای پیگیری درخواست، در سامانه ثبت می‌شود.", "کد پیگیری، زمان ثبت و صفحه مبدأ درخواست برای مدیریت و پیگیری ذخیره می‌شود. سامانه و زیرساخت می‌توانند اطلاعات فنی مانند نشانی IP و گزارش خطا یا دسترسی را برای امنیت و تشخیص ارسال‌های مشکوک ثبت کنند. از درج رمز عبور، اطلاعات بانکی و تصاویر مدارک هویتی در فرم‌های عمومی خودداری شود."] },
+        { title: "اهداف پردازش اطلاعات", paragraphs: ["اطلاعات فرم برای بررسی شرایط اولیه، پاسخ به درخواست، هماهنگی جلسه و پیگیری همان موضوع استفاده می‌شود. بازه بودجه سالانه و واحد پول، در صورت تکمیل، برای ارزیابی گزینه‌های متناسب با شرایط متقاضی دریافت می‌شود. ثبت فرم به‌تنهایی قرارداد خدمات یا تضمین پذیرش نیست. رضایت به تماس برای پیگیری درخواست به معنای رضایت به پیام‌های تبلیغاتی نامرتبط نیست."] },
+        { title: "حدود دسترسی و ارائه اطلاعات به اشخاص ثالث", paragraphs: ["پاسخ‌های ثبت‌شده در فرم‌ها در دسترس عمومی قرار ندارند. دسترسی کارکنان از طریق پنل مدیریت و بر اساس مجوزهای تعیین‌شده صورت می‌گیرد. ارائه‌دهندگان زیرساخت میزبانی، پایگاه داده و پشتیبان‌گیری در حد نیاز عملیاتی در پردازش داده‌ها نقش دارند.", "ارائه اطلاعات به دانشگاه یا سایر طرف‌های پرونده باید در چارچوب خدمت مشخص و هماهنگی با متقاضی انجام شود. درخواست معتبر مرجع قانونی ذی‌صلاح نیز ممکن است مستلزم ارائه اطلاعات باشد. اطلاعات شخصی متقاضیان به عنوان محتوای عمومی سایت منتشر نمی‌شود."] },
+        { title: "تدابیر امنیتی و مسئولیت کاربران", paragraphs: ["سامانه از کنترل دسترسی مدیریتی، اعتبارسنجی داده‌های ورودی و محدودسازی ارسال‌های مشکوک استفاده می‌کند. کاربران باید برای ارتباط با وب‌سایت اصلی از اتصال HTTPS استفاده کنند و کد پیگیری و اطلاعات ورود خود را محرمانه نگه دارند. هیچ سامانه‌ای مصونیت مطلق در برابر خطا یا دسترسی غیرمجاز ندارد. موارد مشکوک باید برای بررسی به تیم جهان آکادمی اعلام شود."] },
+        { title: "نگهداری اطلاعات و نسخه‌های پشتیبان", paragraphs: ["نگهداری اطلاعات به وضعیت درخواست، ادامه همکاری و الزامات قانونی و عملیاتی وابسته است. متقاضی می‌تواند بررسی ضرورت ادامه نگهداری یا حذف اطلاعات شخصی خود را درخواست کند. حذف از سامانه فعال و خروج اطلاعات از نسخه‌های پشتیبان ممکن است در زمان‌های متفاوت انجام شود؛ داده‌های پشتیبان برای بازیابی سامانه نگهداری می‌شوند و در دسترس عمومی قرار ندارند."] },
+        { title: "کوکی‌های ضروری و منابع بیرونی", paragraphs: ["بخش ورود از کوکی‌های ضروری برای نشست، احراز هویت و حفاظت درخواست‌ها استفاده می‌کند. مسدودکردن این کوکی‌ها می‌تواند ورود را مختل کند. لینک دانشگاه‌ها و منابع بیرونی تابع سیاست حریم خصوصی همان وب‌سایت‌هاست؛ کاربران باید پیش از ارائه اطلاعات به این وب‌سایت‌ها، سیاست حریم خصوصی مربوط را بررسی کنند."] },
+        { title: "درخواست دسترسی، اصلاح، حذف یا توقف تماس", paragraphs: ["متقاضی می‌تواند درخواست مرتبط با اطلاعات شخصی خود را از طریق قسمت توضیحات فرم درخواست مشاوره، همراه با موضوع درخواست و کد پیگیری قبلی، مطرح کند. اعلام درخواست در گفت‌وگوی جاری با تیم نیز امکان‌پذیر است. ارائه مدارک حساس در فرم عمومی ضروری نیست. پیش از افشا یا تغییر اطلاعات، هویت درخواست‌کننده بررسی می‌شود. درخواست حذف اطلاعات یا توقف تماس، با لحاظ تعهدات قانونی و وضعیت پرونده بررسی خواهد شد."] },
+        { title: "اصلاح و به‌روزرسانی سیاست", paragraphs: ["تغییرات این سیاست در همین صفحه منتشر می‌شود. در صورت تغییر اساسی در اهداف پردازش اطلاعات، توضیح مربوط و در صورت نیاز رضایت جداگانه در مسیر دریافت اطلاعات ارائه خواهد شد."] },
+      ],
+    },
+  },
+  en: {
+    privacy: {
+      title: "Privacy policy",
+      intro: "This policy sets out the collection, processing and protection of personal information submitted through the Jahan Academy website, including consultation requests and initial assessment forms.",
+      sections: [
+        { title: "Information we collect", paragraphs: ["Depending on the form, we collect your name, mobile number, email, occupation, preferred destination and study start date, and details such as age, gender, marital status and your message. Optional fields may be left blank. Your consent to processing and follow-up contact is also recorded.", "A tracking code, submission time and source page are stored for request management. The application and infrastructure may record technical information, including IP addresses and access or error logs, for security and detecting suspicious submissions. Do not include passwords, banking information or identity document images in public form messages."] },
+        { title: "Why we use information", paragraphs: ["Form information is used to review your initial circumstances, respond to the request, arrange a consultation and follow up on that subject. If provided, your annual budget range and currency help assess suitable options. A submission alone is neither a service contract nor an admission guarantee. Consent to follow-up contact does not mean consent to unrelated promotional messages."] },
+        { title: "Access and sharing", paragraphs: ["Form responses are not public. Staff access them through the administration panel with the relevant permissions. Hosting, database and backup infrastructure providers participate in processing as needed to operate the service.", "Sharing information with universities or other parties involved in a case should take place within a specified service and in coordination with you. A valid request from a competent authority may also require disclosure. Your personal information is not published as public website content."] },
+        { title: "Security and your responsibilities", paragraphs: ["The site uses administrative access controls, input validation and controls against suspicious submissions. Use HTTPS to access the main site, and keep tracking codes and login credentials private. No system offers absolute protection against errors or unauthorized access; report any suspected issue to the team."] },
+        { title: "Retention and backups", paragraphs: ["Retention depends on the status of your request, ongoing services and legal and operational requirements. You may ask for a review of continued retention or deletion. Removal from the active system and expiry from backups may occur at different times. Backups are retained for recovery and are not public."] },
+        { title: "Cookies and external websites", paragraphs: ["The login area uses essential cookies for sessions, authentication and request protection. Blocking these cookies may prevent login. University and other external links are governed by those websites’ privacy policies; review them before submitting information there."] },
+        { title: "Access, correction and deletion requests", paragraphs: ["Use the consultation request form’s message field to describe your privacy request and give your previous tracking code, or raise it when our team contacts you. Sensitive documents are not needed in the public form. We verify the requester’s identity before disclosing or changing personal information. Deletion and requests to stop contact are reviewed in light of legal obligations and the status of the case."] },
+        { title: "Policy updates", paragraphs: ["Updates appear on this page. If the purposes of processing change materially, the relevant explanation and, where needed, separate consent will be provided at the point where information is collected."] },
+      ],
+    },
+  },
+};
