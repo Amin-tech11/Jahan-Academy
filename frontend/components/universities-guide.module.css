@@ -50,3 +50,12 @@
 .criteria .typeIcon svg { width: 48px; height: 48px; }
 @media (max-width: 1000px) { .criteria { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 600px) { .criteria { grid-template-columns: 1fr; } }
+
+.showcase :global(.home-university-card) { transition: border-color .25s ease, box-shadow .25s ease; }
+.showcase :global(.home-university-card__media) img { transition: transform .55s cubic-bezier(.25,.1,.25,1); }
+.showcase :global(.home-university-card):hover, .showcase :global(.home-university-card):focus-visible { border-color: var(--color-brand-900); box-shadow: 0 0 0 1px var(--color-brand-900); }
+.showcase :global(.home-university-card):hover :global(.home-university-card__media) img, .showcase :global(.home-university-card):focus-visible :global(.home-university-card__media) img { transform: scale(1.045); }
+@media (prefers-reduced-motion: reduce) {
+  .showcase :global(.home-university-card), .showcase :global(.home-university-card__media) img { transition: none; }
+  .showcase :global(.home-university-card):hover :global(.home-university-card__media) img, .showcase :global(.home-university-card):focus-visible :global(.home-university-card__media) img { transform: none; }
+}
