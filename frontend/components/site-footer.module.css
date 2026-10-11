@@ -1,0 +1,141 @@
+.footer {
+  margin: 24px 20px 20px;
+  border: 1px solid #283e61;
+  border-radius: 24px;
+  background: linear-gradient(135deg, #071b3a 0%, #123b78 100%);
+  color: #f3f5f9;
+}
+
+.inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 240px;
+  gap: clamp(40px, 6vw, 92px);
+  padding-block: 56px;
+}
+
+.content h2 {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(23px, 2.3vw, 31px);
+  line-height: 1.65;
+  font-weight: 800;
+}
+
+.footer .description {
+  margin: 14px 0 32px;
+  max-width: 670px;
+  color: #ccd6e7;
+  font-size: 14px;
+  line-height: 1.95;
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: minmax(150px, 1fr) minmax(0, 1.4fr);
+  gap: 36px;
+}
+
+.columns h3 {
+  margin: 0 0 18px;
+  font-size: 15px;
+  color: #fff;
+  font-weight: 700;
+}
+
+.navigation ul {
+  display: grid;
+  gap: 12px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.navigation a {
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.contactLink {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.contactLink svg {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  color: #bdcbe0;
+}
+
+.footer .contactNote {
+  color: #b9c7dc;
+  font-size: 13px;
+  line-height: 1.9;
+  margin: 20px 0 0;
+  max-width: 340px;
+}
+
+.identity {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 24px;
+  padding-top: 8px;
+}
+
+.logo {
+  display: inline-flex;
+  background: #f3f5f9;
+  padding: 18px;
+  border-radius: 16px;
+  border: 1px solid #d0d9e6;
+}
+
+.logo img {
+  width: 180px;
+  height: auto;
+}
+
+.footer .tagline {
+  color: #ccd6e7;
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.9;
+}
+
+.action {
+  display: inline-flex;
+  align-items: center;
+  gap: 22px;
+  padding: 12px 18px;
+  border: 1px solid #899dbb;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.footer a {
+  overflow-wrap: anywhere;
+}
+
+@media (min-width: 1024px) {
+  .inner { padding-bottom: 160px; }
+}
+
+@media (max-width: 900px) {
+  .inner { grid-template-columns: 1fr; gap: 36px; }
+  .identity { flex-direction: row; align-items: center; flex-wrap: wrap; border-top: 1px solid #476087; padding-top: 28px; }
+  .tagline { max-width: 220px; }
+}
+
+@media (max-width: 600px) {
+  .footer { margin: 16px 8px 8px; border-radius: 18px; }
+  .inner { padding-block: 32px; }
+  .columns { grid-template-columns: 1fr; gap: 32px; }
+  .navigation ul { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 18px; }
+  .identity { align-items: flex-start; flex-direction: column; }
+}

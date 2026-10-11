@@ -1,7 +1,7 @@
-import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { SiteHeader } from "@/components/site-header";
+import { SiteFooter } from "@/components/site-footer";
 import { FloatingConsultation } from "@/components/floating-consultation";
 import { ButtonLink } from "@/components/ui";
 import { type Locale, siteCopy } from "@/lib/site-content";
@@ -13,11 +13,10 @@ export function ConsultationButton({ locale, source = "site" }: { locale: Locale
 }
 
 export function SiteShell({ locale, children, className }: { locale: Locale; children: ReactNode; className?: string }) {
-  const copy = siteCopy[locale];
   return <div className={className ? `site ${className}` : "site"} dir={locale === "fa" ? "rtl" : "ltr"} lang={locale}>
     <SiteHeader locale={locale} />
     {children}
-    <footer className="site-footer"><div className="shell footer-grid"><div><div className="footer-brand">JAHAN ACADEMY</div><p>{copy.footerText}</p></div><nav className="footer-links" aria-label={locale === "fa" ? "پیوندهای پایین صفحه" : "Footer links"}><Link href={localPath(locale, "/privacy")}>{locale === "fa" ? "حریم خصوصی" : "Privacy"}</Link></nav></div></footer>
+    <SiteFooter locale={locale} />
     <FloatingConsultation locale={locale} />
   </div>;
 }
