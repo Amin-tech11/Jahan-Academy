@@ -62,9 +62,9 @@ function AboutPage({ locale }: { locale: Locale }) {
   </main></SiteShell>;
 }
 
-function StaticPage({ locale, page }: { locale: Locale; page: "about" | "privacy" | "terms" }) {
+function StaticPage({ locale, page }: { locale: Locale; page: "about" | "privacy" }) {
   if (page === "about") return <AboutPage locale={locale} />;
   return <LegalPage locale={locale} page={page} />;
 }
 
-export async function RoutedPublicPage({ locale, segments, source }: { locale: Locale; segments: string[]; source: string }) { const [root, slug] = segments; if (root === "consultation" && !slug) return <ConsultationPage locale={locale} source={source} />; if (root === "countries") return <CountriesPage locale={locale} slug={slug} />; if (root === "universities") return <UniversitiesPage locale={locale} slug={slug} />; if (root === "services") return <ServicesPage locale={locale} slug={slug} />; if (root === "articles") return <ContentPage locale={locale} type="article" slug={slug} />; if (root === "news") return <ContentPage locale={locale} type="news" slug={slug} />; if (segments.length === 1 && ["about", "privacy", "terms"].includes(root)) return <StaticPage locale={locale} page={root as "about" | "privacy" | "terms"} />; notFound(); }
+export async function RoutedPublicPage({ locale, segments, source }: { locale: Locale; segments: string[]; source: string }) { const [root, slug] = segments; if (root === "consultation" && !slug) return <ConsultationPage locale={locale} source={source} />; if (root === "countries") return <CountriesPage locale={locale} slug={slug} />; if (root === "universities") return <UniversitiesPage locale={locale} slug={slug} />; if (root === "services") return <ServicesPage locale={locale} slug={slug} />; if (root === "articles") return <ContentPage locale={locale} type="article" slug={slug} />; if (root === "news") return <ContentPage locale={locale} type="news" slug={slug} />; if (segments.length === 1 && ["about", "privacy"].includes(root)) return <StaticPage locale={locale} page={root as "about" | "privacy"} />; notFound(); }

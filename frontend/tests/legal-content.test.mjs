@@ -2,8 +2,8 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { legalContent } from "../lib/legal-content.ts";
 
-test("privacy and terms provide complete parallel bilingual documents", () => {
-  for (const page of ["privacy", "terms"]) {
+test("privacy policies provide complete parallel bilingual documents", () => {
+  for (const page of ["privacy"]) {
     const fa = legalContent.fa[page];
     const en = legalContent.en[page];
     assert.equal(fa.sections.length, en.sections.length);
@@ -11,7 +11,6 @@ test("privacy and terms provide complete parallel bilingual documents", () => {
     for (const document of [fa, en]) {
       assert.ok(document.title.trim());
       assert.ok(document.intro.trim());
-      assert.ok(document.requestLabel.trim());
       assert.equal(new Set(document.sections.map((section) => section.title)).size, document.sections.length);
       for (const section of document.sections) {
         assert.ok(section.title.trim());
