@@ -1,5 +1,5 @@
 
-import Image from "next/image";
+import { PreparedImage as Image } from "@/components/prepared-image";
 
 import { SiteShell } from "@/components/site-shell";
 import { PublicPanelsMotion } from "./public-panels-motion";

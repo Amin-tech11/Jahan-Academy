@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { PreparedImage as Image } from "@/components/prepared-image";
 import { PublicPanelsMotion } from "./public-panels-motion";
 import { BlogArchive } from "@/components/blog-archive";
 import { BlogNavigation } from "@/components/blog-navigation";

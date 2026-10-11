@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
+import { PreparedImage as Image } from "@/components/prepared-image";
 import { usePathname } from "next/navigation";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { captureLocaleScroll, restoreLocaleScroll, type LocaleScrollPosition } from "@/lib/locale-scroll";

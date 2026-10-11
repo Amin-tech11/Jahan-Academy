@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { PreparedImage as Image } from "@/components/prepared-image";
 import { useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import type { Locale } from "@/lib/site-content";
 import type { UniversityPhoto } from "@/lib/university-info-model";

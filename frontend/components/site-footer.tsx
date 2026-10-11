@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { PreparedImage as Image } from "@/components/prepared-image";
 import Link from "next/link";
 import type { Locale } from "@/lib/site-content";
 import styles from "./site-footer.module.css";
