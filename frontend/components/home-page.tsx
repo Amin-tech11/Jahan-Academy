@@ -44,7 +44,7 @@ const processImages = [
   "profile-assessment", "profile-assessment", "document-preparation", "document-preparation",
   "study-options", "document-preparation", "study-options", "study-options", "study-options",
   "profile-assessment", "document-preparation", "document-preparation", "language-support",
-].map((name, index) => ["/journey/consultation-request.webp", "/journey/consultation-meeting.webp", "/journey/agreement-contract.webp", "/journey/document-checklist.webp", "/journey/university-program-selection.webp", "/journey/application-document-writing.webp", "/journey/admission-application.webp", "/journey/university-application-follow-up.webp"][index] ?? (index === 9 ? "/journey/visa-checklist-meeting.webp" : index === 10 ? "/journey/visa-document-review.webp" : index === 11 ? "/journey/visa-application-biometrics.webp" : index === 12 ? "/journey/visa-result-follow-up.webp" : `/journey/${name}.png`));
+].map((name, index) => ["/journey/consultation-request.webp", "/journey/consultation-meeting.webp", "/journey/agreement-contract.webp", "/journey/document-checklist.webp", "/journey/university-program-selection.webp", "/journey/application-document-writing.webp", "/journey/admission-application.webp", "/journey/university-application-follow-up.webp", "/journey/university-decision.webp"][index] ?? (index === 9 ? "/journey/visa-checklist-meeting.webp" : index === 10 ? "/journey/visa-document-review.webp" : index === 11 ? "/journey/visa-application-biometrics.webp" : index === 12 ? "/journey/visa-result-follow-up.webp" : `/journey/${name}.png`));
 
 function Arrow({ locale }: { locale: Locale }) {
   return <span aria-hidden="true">{locale === "fa" ? "↖" : "↗"}</span>;
@@ -130,7 +130,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
           </Link>
         </div>
         <div className="home-trust__media">
-          <Image src="/home-trust-consultation.webp" alt={locale === "fa" ? "گفت‌وگوی مشاور با دو متقاضی درباره مسیر تحصیلی" : "An advisor discussing study plans with two applicants"} fill sizes="(max-width: 760px) 100vw, 50vw" />
+          <Image src="/home-trust-office-meeting.webp" alt={locale === "fa" ? "گفت‌وگوی مشاور با دو متقاضی درباره مسیر تحصیلی" : "An advisor discussing study plans with two applicants"} fill sizes="(max-width: 760px) 100vw, 50vw" />
         </div>
       </div>
       <ul className="home-trust__values">{content.trustValues.map((value) => <li className="home-trust__value" key={value.number}>
