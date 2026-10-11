@@ -15,7 +15,7 @@ export function ServicesHero({ title }: { title: string }) {
   }, []);
 
   return <section ref={root} className="services-hero" aria-label={title}>
-    <Image src="/services-hero.png" alt="" fill sizes="100vw" preload className="services-hero__image" />
+    <Image src="/services-hero-consultation.webp" alt="" fill sizes="100vw" preload className="services-hero__image" />
     <div className="services-hero__brand">JAHAN ACADEMY</div>
   </section>;
 }
