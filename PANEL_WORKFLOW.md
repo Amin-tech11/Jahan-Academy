@@ -24,3 +24,11 @@ The existing `destination` branch owns individual country information; it is a s
 Run this panel from `F:\Jahan Academy\.worktrees\destinationS\frontend`. Its development
 command redirects `/` to `/fa/countries` using the server-only `JAHAN_PANEL` environment
 variable. Other development commands and production retain their existing home entry point.
+
+## Production release policy
+
+User decision (2026-10-11): `develop` is the workspace for changes and localhost:5000 previews. `main` is the sole source of the production site at https://jahanacademi.ir. Never deploy unmerged develop commits to production.
+
+Finalize changes on develop, push, open a develop-to-main PR, and wait for all applicable CI/CD checks to succeed. Merge only with user authorization. Deploy the resulting main commit to the independent Jahan Academy services, record its exact SHA, retain a rollback snapshot and database backup, and verify HTTPS, forms and admin access. Skip disabled deployment jobs explicitly; do not describe them as passed.
+
+Do not modify or restart the separate Niyayesh Seir project in /opt/niyayesh. Production deployment must retain Jahan Academy's separate database, services, network and HTTPS settings. Credentials belong only in private server configuration.

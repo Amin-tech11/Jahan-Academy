@@ -36,3 +36,7 @@ Requirement → Data/API/Permission Design → Implementation → Unit Tests →
 ## Develop integration
 
 `develop` is the full-site integration branch and uses port 5000 from its own checkout. Only when the user explicitly says to merge a branch into `develop`, inspect Git status and branch identity, compare with `develop`, run relevant tests, report conflicts or regression risks, obtain the user's instruction to proceed, then merge, verify `http://localhost:5000`, and report the result.
+
+## Production source
+
+The user designated `main` as the production source on 2026-10-11. Use `develop` for changes and localhost:5000. Release through an authorized develop-to-main PR after successful applicable CI/CD checks, then deploy the merged main commit to Jahan Academy's isolated server services. Never deploy unmerged develop directly. Preserve the unrelated Niyayesh Seir site and record the deployed main SHA and rollback instructions.
