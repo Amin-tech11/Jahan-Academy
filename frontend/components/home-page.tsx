@@ -44,7 +44,7 @@ const processImages = [
   "profile-assessment", "profile-assessment", "document-preparation", "document-preparation",
   "study-options", "document-preparation", "study-options", "study-options", "study-options",
   "profile-assessment", "document-preparation", "document-preparation", "language-support",
-].map((name, index) => ["/journey/consultation-request.webp", "/journey/consultation-meeting.webp", "/journey/agreement-contract.webp", "/journey/document-checklist.webp", "/journey/university-program-selection.webp", "/journey/application-document-writing.webp", "/journey/admission-application.webp", "/journey/university-application-follow-up.webp"][index] ?? (index === 9 ? "/journey/visa-checklist-meeting.webp" : index === 10 ? "/journey/visa-document-review.webp" : index === 11 ? "/journey/visa-application-biometrics.webp" : index === 12 ? "/journey/visa-result-follow-up.webp" : `/journey/${name}.png`));
+].map((name, index) => ["/journey/consultation-request.webp", "/journey/consultation-meeting.webp", "/journey/agreement-contract.webp", "/journey/document-checklist.webp", "/journey/university-program-selection.webp", "/journey/application-document-writing.webp", "/journey/admission-application.webp", "/journey/university-application-follow-up.webp", "/journey/university-decision.webp"][index] ?? (index === 9 ? "/journey/visa-checklist-meeting.webp" : index === 10 ? "/journey/visa-document-review.webp" : index === 11 ? "/journey/visa-application-biometrics.webp" : index === 12 ? "/journey/visa-result-follow-up.webp" : `/journey/${name}.png`));
 
 function Arrow({ locale }: { locale: Locale }) {
   return <span aria-hidden="true">{locale === "fa" ? "↖" : "↗"}</span>;
