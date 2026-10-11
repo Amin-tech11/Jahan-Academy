@@ -107,17 +107,6 @@
   line-height: 1.9;
 }
 
-.action {
-  display: inline-flex;
-  align-items: center;
-  gap: 22px;
-  padding: 12px 18px;
-  border: 1px solid #899dbb;
-  border-radius: 10px;
-  font-size: 14px;
-  font-weight: 700;
-}
-
 .footer a {
   overflow-wrap: anywhere;
 }

@@ -45,7 +45,6 @@ export function SiteFooter({ locale }: { locale: Locale }) {
           <Image src="/brand/jahan-academy-official.png" alt="" width={180} height={64} sizes="180px" />
         </Link>
         <p className={styles.tagline}>{fa ? "آینده‌ای روشن، با انتخابی آگاهانه" : "A brighter future begins with informed choices"}</p>
-        <Link className={styles.action} href={path("/free-consultation?source=footer-brand")}>{fa ? "شروع گفت‌وگو" : "Start a conversation"}<span aria-hidden="true">{fa ? "↖" : "↗"}</span></Link>
       </div>
     </div>
   </footer>;
