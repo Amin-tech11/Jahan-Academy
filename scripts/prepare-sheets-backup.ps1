@@ -38,6 +38,7 @@ $taskOutbox = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../.backup
 $taskOutput = Join-Path $taskOutbox ($taskPayload.day + '.json')
 [System.IO.File]::WriteAllText($taskOutput, $taskJson, [System.Text.UTF8Encoding]::new($false))
 [ordered]@{
+    status = $taskPayload.status
     day = $taskPayload.day
     rowCount = $taskPayload.rowCount
     sheetTitle = $taskPayload.sheetTitle
