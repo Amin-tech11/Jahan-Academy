@@ -1,0 +1,19 @@
+# Isolated main release
+
+Only reviewed `main` is deployed. `develop` remains the local integration preview on port 5000. No shared Caddy configuration or unrelated site is changed. Existing project `jahan-academy-test`, PostgreSQL 17 and `db_data` are preserved.
+
+CI builds both images, checks browser/API/integration/security regressions, publishes immutable commit tags, then passes registry digests to `release.sh`. Deployment is gated by repository variable `JAHAN_MAIN_DEPLOY_ENABLED=true` and the `production` environment. Configure `SSH_HOST`, `SSH_USER`, `SSH_PRIVATE_KEY`, `SSH_KNOWN_HOSTS`, optional `SSH_PORT`; never disable SSH host verification. Registry credentials are used in a temporary Docker config and removed after pulling. Missing deployment credentials keep automatic deployment disabled; they do not make CD successful.
+
+The script verifies OCI commit labels, available RAM/disk, backs up the database, snapshots runtime files, runs migrations, checks all container health probes and public HTTPS routes, and records the commit. On failure it restores application images/configuration. Database rollback is deliberately manual: restore only a verified backup after assessing newer writes. New schema migrations must be additive for application rollback. Port 5080 remains an HTTPS redirect for untrusted callers.
+
+Frontend receives only its BFF origin/URL and proxy credential. The credential is stripped at the API middleware and never printed. External forwarded-IP headers are ignored unless the isolated reverse proxy supplied the matching secret. The shared TLS proxy gateway is the only trusted forwarded-protocol/IP source. Verify this gateway when networking changes.
+
+SMTP is explicitly disabled until an actual service is available. Then set `JAHAN_EMAIL_DELIVERY_ENABLED=true`, a verified `JAHAN_EMAIL_FROM`, SMTP host, port and exactly one of STARTTLS/implicit TLS. Test verification/reset with a controlled account. Recovery pages exist; disabled delivery returns a consistent 503 without account enumeration.
+
+Daily maintenance executes retention separately from optional Celery integrations. `python -m app.modules.operational.maintenance` is a count-only dry run; `--apply` anonymizes eligible records in bounded batches. Review policy and dry run before initial production execution. Local PostgreSQL custom-format dumps retain 14 days. CI verifies restoring a dump in an isolated database. Offsite protection requires a genuinely separate destination; until configured logs explicitly show `not_configured`.
+
+For encrypted offsite copies, install `age`, configure a root-owned mode-0600 `/opt/jahan-academy-test/offsite-backup.env` with `OFFSITE_SSH_TARGET=user@separate-host:/absolute/path` and `AGE_RECIPIENT=age1...`, a restricted upload SSH key and verified host key. Keep the private decryption key outside this server. Perform a restore drill from an encrypted copy before considering offsite backup operational.
+
+Status/error logging uses `/opt/jahan-academy-test/operations.jsonl` and `maintenance.log`, rotated daily. It checks HTTPS, API readiness, service health, disk space and backup/retention freshness every five minutes. No external alert is sent. Monitor reports unavailable services/non-fresh jobs with a nonzero exit code. Do not store credentials, tokens, form contents or raw IPs in these logs.
+
+Optional MFA uses TOTP with replay protection and ten one-use recovery codes. Enrollment requires the account password and a valid authenticator code, and revokes existing sessions. Keep the stable `JAHAN_MFA_ENCRYPTION_KEY` in a separate encrypted secret backup; do not rotate it casually or expose it to the frontend. The release preparer generates this key only when absent. Accounts without enrollment continue normal login. Recovery without authenticator/recovery codes requires a verified operator process; SMTP alone does not remove MFA.

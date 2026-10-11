@@ -1,10 +1,25 @@
+import base64
 from functools import lru_cache
 
-from pydantic import Field, SecretStr, model_validator
+from pydantic import Field, SecretStr, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
+    mfa_encryption_key: SecretStr | None = None
+
+    @field_validator("mfa_encryption_key")
+    @classmethod
+    def validate_mfa_key(cls, value: SecretStr | None) -> SecretStr | None:
+        if value is not None:
+            try:
+                decoded = base64.b64decode(value.get_secret_value(), altchars=b"-_", validate=True)
+            except ValueError:
+                raise ValueError("Invalid MFA encryption key") from None
+            if len(decoded) != 32:
+                raise ValueError("MFA encryption key must encode 32 bytes")
+        return value
+
     model_config = SettingsConfigDict(env_file=".env", env_prefix="JAHAN_", extra="ignore")
 
     app_name: str = "Jahan Academy API"
@@ -33,6 +48,10 @@ class Settings(BaseSettings):
     smtp_username: str | None = None
     smtp_password: SecretStr | None = None
     smtp_start_tls: bool = False
+    smtp_use_tls: bool = False
+    smtp_timeout_seconds: float = Field(default=10, gt=0, le=30)
+    email_delivery_enabled: bool = True
+    trusted_proxy_secret: SecretStr | None = None
     email_from: str = "no-reply@jahanacademy.local"
     privacy_policy_version: str = "1.0"
     contact_consent_version: str = "1.0"
@@ -77,12 +96,28 @@ class Settings(BaseSettings):
     @model_validator(mode="after")
     def validate_production_secrets(self) -> "Settings":
         if self.environment == "production":
+            if (
+                self.session_secret.get_secret_value()
+                == "local-only-change-me-at-least-32-characters"
+            ):
+                raise ValueError("JAHAN_SESSION_SECRET must not use the development default")
             if len(self.session_secret.get_secret_value()) < 32:
                 raise ValueError("JAHAN_SESSION_SECRET must contain at least 32 characters")
             if not self.cookie_secure:
                 raise ValueError("JAHAN_COOKIE_SECURE must be true in production")
             if self.monitoring_token is None or len(self.monitoring_token.get_secret_value()) < 32:
                 raise ValueError("JAHAN_MONITORING_TOKEN must contain at least 32 characters")
+            if self.trusted_proxy_secret and len(self.trusted_proxy_secret.get_secret_value()) < 32:
+                raise ValueError("JAHAN_TRUSTED_PROXY_SECRET must contain at least 32 characters")
+            if self.email_delivery_enabled and (
+                self.smtp_host in {"localhost", "127.0.0.1"}
+                or not (self.smtp_start_tls or self.smtp_use_tls)
+            ):
+                raise ValueError(
+                    "Configure a TLS SMTP service or set JAHAN_EMAIL_DELIVERY_ENABLED=false"
+                )
+        if self.smtp_start_tls and self.smtp_use_tls:
+            raise ValueError("Select SMTP STARTTLS or implicit TLS, not both")
         return self
 
 

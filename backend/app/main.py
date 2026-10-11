@@ -7,6 +7,7 @@ from fastapi import FastAPI
 
 from app.api.errors import install_exception_handlers
 from app.api.router import api_router
+from app.core.client_ip import TrustedClientIPMiddleware
 from app.core.config import get_settings
 from app.core.database import dispose_database
 from app.core.logging import configure_logging
@@ -35,6 +36,7 @@ def create_app() -> FastAPI:
     )
     install_exception_handlers(application)
     application.add_middleware(OperationalMiddleware, settings=settings)
+    application.add_middleware(TrustedClientIPMiddleware, settings=settings)
     application.include_router(api_router)
     return application
 

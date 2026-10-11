@@ -56,9 +56,9 @@ while (pending.length) {
 const failures = pages.filter(p => p.status !== 200 || !p.title);
 // Detect accidentally shipping the complete country catalog in each detail bundle.
 // Set against a baseline from the same bundler; webpack and Turbopack split chunks differently.
-const budget = Number(process.env.AUDIT_MAX_DESTINATION_JS_GZIP_BYTES ?? Infinity);
+const budget = Number(process.env.AUDIT_MAX_DESTINATION_JS_GZIP_BYTES ?? 240000);
 if (!(budget > 0)) throw new Error('Invalid JavaScript budget');
-const budgetFailures = pages.filter(p => /^\/(fa|en)\/countries\/[^/]+$/.test(p.path) && p.jsGzipBytes > budget);
+const budgetFailures = pages.filter(p => p.jsGzipBytes > budget);
 const result = { base: base.origin, createdAt: new Date().toISOString(), pages, assets: Object.fromEntries(assets), criticalImages: Object.fromEntries(criticalImages), criticalImageFailures, failures, budgetFailures };
 await writeFile(process.env.AUDIT_OUTPUT ?? 'site-audit.json', JSON.stringify(result, null, 2));
 console.log(JSON.stringify({ pages: pages.length, failures, budgetFailures, slowest: [...pages].sort((a,b)=>b.ms-a.ms).slice(0,5), largestJs: [...pages].sort((a,b)=>b.jsGzipBytes-a.jsGzipBytes).slice(0,5) }, null, 2));

@@ -81,7 +81,7 @@
 @media(prefers-reduced-motion:reduce) { .journal-page *, .journal-page *::before, .journal-page *::after { transition:none!important; scroll-behavior:auto!important; } }
 
 /* The universities panel's full-width hero and section navigation. */
-.site:has(> .journal-page) { --navy:#123B78; --ink:#202833; --muted:#66717F; --paper:#F7F8FA; --line:#D6DCE4; --color-brand-950:#123B78; --color-brand-900:#123B78; --color-text:#202833; --color-muted:#66717F; }
+.site:has(.journal-page) { --navy:#123B78; --ink:#202833; --muted:#66717F; --paper:#F7F8FA; --line:#D6DCE4; --color-brand-950:#123B78; --color-brand-900:#123B78; --color-text:#202833; --color-muted:#66717F; }
 .journal-page { background:#F7F8FA; color:#202833; }
 .journal-campus-hero { position:relative; display:grid; min-height:clamp(380px,43vw,545px); place-items:center; padding:24px; overflow:hidden; background:#123B78; }
 .journal-campus-hero > img { object-fit:cover; object-position:center 45%; }

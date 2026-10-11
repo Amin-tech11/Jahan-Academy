@@ -1,13 +1,17 @@
 from __future__ import annotations
 
+import hmac
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
+from typing import Any
+from uuid import UUID
 
 import structlog
 from sqlalchemy.exc import IntegrityError
 
 from app.core.config import Settings
 from app.modules.identity.mailer import AuthMailer
+from app.modules.identity.mfa import MfaSecurity
 from app.modules.identity.repository import AccountRecord, AuthRepository
 from app.modules.identity.schemas import (
     LoginRequest,
@@ -42,6 +46,7 @@ class AuthService:
         self._settings = settings
 
     async def register(self, request: RegisterRequest) -> None:
+        self._require_email_delivery()
         validate_password_strength(request.password)
         email = self._normalize_email(str(request.email))
         if await self._repository.email_exists(email):
@@ -74,6 +79,7 @@ class AuthService:
         await self._send_verification(email, token)
 
     async def resend_email_verification(self, email_input: str) -> None:
+        self._require_email_delivery()
         email = self._normalize_email(email_input)
         account = await self._repository.get_account_by_email(email)
         if account is None or account.identity.verified_at is not None:
@@ -132,6 +138,16 @@ class AuthService:
                 message="The account is unavailable.",
                 status_code=403,
             )
+
+        mfa = await self._repository.mfa_record(account.user.id)
+        if mfa and mfa["enabled"]:
+            if not request.mfa_code:
+                raise ApplicationError(
+                    code="MFA_REQUIRED",
+                    message="Enter your authenticator or recovery code.",
+                    status_code=401,
+                )
+            await self._consume_mfa_proof(account, mfa, request.mfa_code)
 
         replacement_hash = None
         if self._security.password_needs_rehash(account.identity.password_hash):
@@ -216,6 +232,7 @@ class AuthService:
         return claims, self._user_view(account)
 
     async def request_password_reset(self, email_input: str) -> None:
+        self._require_email_delivery()
         email = self._normalize_email(email_input)
         account = await self._repository.get_account_by_email(email)
         if account is None or account.identity.verified_at is None:
@@ -229,8 +246,8 @@ class AuthService:
         await self._repository.session.commit()
         try:
             await self._mailer.send_password_reset(email, token)
-        except Exception:
-            logger.exception("password_reset_email_delivery_failed")
+        except Exception as error:
+            logger.error("password_reset_email_delivery_failed", error_type=type(error).__name__)
 
     async def reset_password(self, request: PasswordResetConfirmRequest) -> None:
         validate_password_strength(request.new_password)
@@ -245,6 +262,113 @@ class AuthService:
                 status_code=400,
             )
         await self._repository.revoke_all_user_sessions(account.user.id)
+        await self._repository.session.commit()
+
+    async def mfa_status(self, user_id: UUID) -> dict[str, object]:
+        record = await self._repository.mfa_record(user_id)
+        return {
+            "enabled": bool(record and record["enabled"]),
+            "recoveryCodesRemaining": len(record["recovery_hashes"])
+            if record and record["enabled"]
+            else 0,
+        }
+
+    async def _fresh_account(self, email: str, password: str) -> AccountRecord:
+        account = await self._repository.get_account_by_email(email)
+        if (
+            account is None
+            or account.user.status != "active"
+            or account.identity.password_hash is None
+        ):
+            raise self._invalid_credentials()
+        if account.user.locked_until and account.user.locked_until > datetime.now(UTC):
+            raise ApplicationError(
+                code="ACCOUNT_LOCKED", message="Account temporarily locked.", status_code=403
+            )
+        if not self._security.verify_password(account.identity.password_hash, password):
+            await self._record_mfa_failure(account)
+            raise self._invalid_credentials()
+        return account
+
+    async def _record_mfa_failure(self, account: AccountRecord) -> None:
+        await self._repository.register_failed_login(
+            account.user,
+            self._settings.login_max_attempts,
+            timedelta(minutes=self._settings.login_lock_minutes),
+        )
+        await self._repository.session.commit()
+
+    async def mfa_setup(self, email: str, password: str) -> dict[str, str]:
+        account = await self._fresh_account(email, password)
+        record = await self._repository.mfa_record(account.user.id)
+        if record and record["enabled"]:
+            raise ApplicationError(
+                code="MFA_ALREADY_ENABLED", message="MFA is already enabled.", status_code=409
+            )
+        security = MfaSecurity(self._settings)
+        secret = security.new_secret()
+        await self._repository.save_mfa_setup(account.user.id, security.encrypt(secret))
+        await self._repository.audit_mfa(account.user.id, "auth.mfa.setup")
+        await self._repository.session.commit()
+        return {"secret": secret, "otpauthUri": security.uri(secret, email)}
+
+    async def mfa_confirm(self, email: str, password: str, code: str) -> list[str]:
+        account = await self._fresh_account(email, password)
+        record = await self._repository.mfa_record(account.user.id)
+        if not record or record["enabled"] or record["setup_expires_at"] <= datetime.now(UTC):
+            raise ApplicationError(
+                code="MFA_SETUP_EXPIRED", message="Start a new MFA setup.", status_code=400
+            )
+        security = MfaSecurity(self._settings)
+        counter = security.verify(security.decrypt(record["secret_ciphertext"]), code, -1)
+        if counter is None:
+            await self._record_mfa_failure(account)
+            raise ApplicationError(
+                code="MFA_INVALID", message="The authenticator code is invalid.", status_code=401
+            )
+        codes = [self._security.new_opaque_token()[:32] for _ in range(10)]
+        await self._repository.update_mfa_proof(
+            account.user.id, counter, [self._security.token_hash(value) for value in codes]
+        )
+        await self._repository.revoke_all_user_sessions(account.user.id)
+        await self._repository.audit_mfa(account.user.id, "auth.mfa.enabled")
+        await self._repository.session.commit()
+        return codes
+
+    async def _consume_mfa_proof(
+        self, account: AccountRecord, record: dict[str, Any], code: str
+    ) -> None:
+        security = MfaSecurity(self._settings)
+        counter = security.verify(
+            security.decrypt(record["secret_ciphertext"]), code, record["last_counter"]
+        )
+        hashes: list[str] = list(record["recovery_hashes"])
+        if counter is None:
+            digest = self._security.token_hash(code)
+            matching = next((value for value in hashes if hmac.compare_digest(value, digest)), None)
+            if matching is None:
+                await self._record_mfa_failure(account)
+                raise ApplicationError(
+                    code="MFA_INVALID",
+                    message="The authenticator or recovery code is invalid.",
+                    status_code=401,
+                )
+            hashes.remove(matching)
+            counter = record["last_counter"]
+            await self._repository.audit_mfa(account.user.id, "auth.mfa.recovery_used")
+        await self._repository.update_mfa_proof(account.user.id, counter, hashes)
+
+    async def mfa_disable(self, email: str, password: str, code: str) -> None:
+        account = await self._fresh_account(email, password)
+        record = await self._repository.mfa_record(account.user.id)
+        if not record or not record["enabled"]:
+            raise ApplicationError(
+                code="MFA_NOT_ENABLED", message="MFA is not enabled.", status_code=409
+            )
+        await self._consume_mfa_proof(account, record, code)
+        await self._repository.delete_mfa(account.user.id)
+        await self._repository.revoke_all_user_sessions(account.user.id)
+        await self._repository.audit_mfa(account.user.id, "auth.mfa.disabled")
         await self._repository.session.commit()
 
     async def _new_email_challenge(self, account: AccountRecord) -> str:
@@ -305,8 +429,16 @@ class AuthService:
     async def _send_verification(self, email: str, token: str) -> None:
         try:
             await self._mailer.send_email_verification(email, token)
-        except Exception:
-            logger.exception("verification_email_delivery_failed")
+        except Exception as error:
+            logger.error("verification_email_delivery_failed", error_type=type(error).__name__)
+
+    def _require_email_delivery(self) -> None:
+        if not self._settings.email_delivery_enabled:
+            raise ApplicationError(
+                code="EMAIL_SERVICE_UNAVAILABLE",
+                message="Email recovery is temporarily unavailable. Contact the administrator.",
+                status_code=503,
+            )
 
     @staticmethod
     def _normalize_email(email: str) -> str:

@@ -52,19 +52,46 @@ def test_retention_anonymizes_expired_leads_and_removes_expired_idempotency() ->
                )"""
         )
 
+        cursor.execute(
+            "UPDATE leads SET age = 38, occupation = 'Private occupation', "
+            "archive_reason = 'Private reason' WHERE id = %s",
+            (lead_id,),
+        )
+        # Preserve old timestamps after deliberately adding sensitive fixture values.
+        cursor.execute(
+            "UPDATE leads SET updated_at = now() - interval '4 years' WHERE id = %s", (lead_id,)
+        )
+        cursor.execute(
+            "INSERT INTO lead_notes (lead_id, body) VALUES (%s, 'Private note')", (lead_id,)
+        )
+        cursor.execute(
+            "INSERT INTO lead_submission_events (lead_id, event_type, source_url, metadata_safe) "
+            "VALUES (%s, 'accepted', 'private-source', '{\"private\":true}')",
+            (lead_id,),
+        )
+
     try:
         anonymized, expired_keys = asyncio.run(_enforce_retention())
         assert anonymized >= 1
         assert expired_keys >= 1
         with psycopg.connect(_database_url()) as connection, connection.cursor() as cursor:
             cursor.execute(
-                "SELECT first_name, email, message, anonymized_at FROM leads WHERE id = %s",
+                "SELECT first_name, email, message, anonymized_at, age, occupation, archive_reason "
+                "FROM leads WHERE id = %s",
                 (lead_id,),
             )
             row = cursor.fetchone()
             assert row is not None
             assert row[:3] == ("Anonymized", None, None)
             assert row[3] is not None
+            assert row[4:] == (None, None, None)
+            cursor.execute("SELECT body FROM lead_notes WHERE lead_id = %s", (lead_id,))
+            assert cursor.fetchone() == ("[Anonymized]",)
+            cursor.execute(
+                "SELECT source_url, metadata_safe FROM lead_submission_events WHERE lead_id = %s",
+                (lead_id,),
+            )
+            assert cursor.fetchone() == (None, {})
             cursor.execute(
                 """SELECT count(*) FROM audit_logs
                    WHERE entity_id = %s AND action = 'lead.retention_anonymized'""",
@@ -73,6 +100,8 @@ def test_retention_anonymizes_expired_leads_and_removes_expired_idempotency() ->
             audit_count = cursor.fetchone()
             assert audit_count is not None
             assert audit_count[0] == 1
+        # Re-running is idempotent and does not add a second retention event.
+        assert asyncio.run(_enforce_retention())[0] == 0
     finally:
         with psycopg.connect(_database_url()) as connection, connection.cursor() as cursor:
             cursor.execute("DELETE FROM audit_logs WHERE entity_id = %s", (lead_id,))

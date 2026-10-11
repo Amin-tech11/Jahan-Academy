@@ -15,6 +15,7 @@ from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoin
 from starlette.types import ASGIApp
 
 from app.core.config import Settings
+from app.core.rate_limit import window_count
 from app.core.redis import get_redis
 
 logger = logging.getLogger(__name__)
@@ -36,7 +37,11 @@ def render_metrics() -> str:
 
 def monitoring_token_is_valid(value: str | None, settings: Settings) -> bool:
     expected = settings.monitoring_token
-    return bool(value and expected and hmac.compare_digest(value, expected.get_secret_value()))
+    return bool(
+        value
+        and expected
+        and hmac.compare_digest(value.encode(), expected.get_secret_value().encode())
+    )
 
 
 class OperationalMiddleware(BaseHTTPMiddleware):
@@ -51,11 +56,30 @@ class OperationalMiddleware(BaseHTTPMiddleware):
         request_id = request_id or str(uuid4())
         structlog.contextvars.bind_contextvars(request_id=request_id)
         started = time.perf_counter()
+        response: Response
         try:
-            limited = await self._is_limited(request)
-            if limited:
+            try:
+                limited = await self._is_limited(request)
+            except RedisError:
+                limited = None
+                await increment_metric("rate_limiter_unavailable_total")
+                response = JSONResponse(
+                    status_code=503,
+                    content={
+                        "error": {
+                            "code": "RATE_LIMITER_UNAVAILABLE",
+                            "message": "Please try again shortly.",
+                            "fieldErrors": {},
+                            "requestId": request_id,
+                        }
+                    },
+                    headers={"Retry-After": "30", "Cache-Control": "no-store"},
+                )
+            if limited is None:
+                pass  # The outage response follows the normal metrics/logging path.
+            elif limited:
                 await increment_metric("rate_limited_total")
-                response: Response = JSONResponse(
+                response = JSONResponse(
                     status_code=429,
                     content={
                         "error": {
@@ -88,15 +112,8 @@ class OperationalMiddleware(BaseHTTPMiddleware):
             return False
         client_host = request.client.host if request.client else "unknown"
         key = f"api:rate:{client_host}:{request.method}"
-        try:
-            redis = get_redis()
-            count = await redis.incr(key)
-            if count == 1:
-                await redis.expire(key, self._settings.api_rate_window_seconds)
-            return bool(count > self._settings.api_rate_limit)
-        except RedisError:
-            logger.warning("API rate limiter is unavailable; request allowed", exc_info=True)
-            return False
+        count = await window_count(get_redis(), key, self._settings.api_rate_window_seconds)
+        return count > self._settings.api_rate_limit
 
     def _apply_headers(self, response: Response) -> None:
         headers = response.headers

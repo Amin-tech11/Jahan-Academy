@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import type { Locale } from "@/lib/site-content";
 import { startHeroChat, type HeroChatFrame } from "@/lib/home-hero-chat";
 
@@ -30,7 +31,7 @@ export function HomeHeroChat({ locale }: { locale: Locale }) {
   return <div className="home-hero-chat" ref={root} dir={fa ? "rtl" : "ltr"} role="group" aria-label={fa ? "نمونه گفت‌وگو با مشاور جهان آکادمی" : "Example conversation with a Jahan Academy advisor"}>
     <header className="home-hero-chat__header">
       <span className="home-hero-chat__avatar" aria-hidden="true"><svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M4 13v-2a8 8 0 0 1 16 0v5a4 4 0 0 1-4 4h-3M4 11H2v6h4v-6H4Zm16 0h2v6h-4v-6h2Z" /><path d="M9 20h4" /></svg></span>
-      <div><strong>{fa ? "جهان آکادمی" : "Jahan Academy"}</strong></div>
+      <div><strong>{fa ? "جهان آکادمی" : "Jahan Academy"}</strong><small className="home-hero-chat__example">{fa ? "نمونه گفت‌وگو؛ این بخش چت زنده نیست" : "Example conversation · not a live chat"}</small></div>
     </header>
     <div className="home-hero-chat__body" aria-live="off" key={frame.scene}>
       <p className="home-hero-chat__topic">{conversation.topic}</p>
@@ -40,6 +41,6 @@ export function HomeHeroChat({ locale }: { locale: Locale }) {
         {frame.phase === 2 && <div className="home-hero-chat__message home-hero-chat__message--advisor"><span>{fa ? "مشاور جهان آکادمی" : "Jahan Academy advisor"}</span><p>{conversation.answer}</p></div>}
       </div>
     </div>
-    <div className="home-hero-chat__footer" aria-hidden="true"><span>{fa ? "هر مسیر، با یک گفت‌وگو شروع می‌شود" : "Every journey begins with a conversation"}</span><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="m21 3-7 18-4-7-7-4 18-7ZM10 14 21 3" /></svg></div>
+    <Link className="home-hero-chat__footer" href={`/${locale}/free-consultation?source=hero-example`}>{fa ? "ثبت درخواست مشاوره واقعی" : "Request a consultation"}<span aria-hidden="true">←</span></Link>
   </div>;
 }

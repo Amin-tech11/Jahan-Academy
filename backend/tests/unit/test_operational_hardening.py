@@ -33,6 +33,7 @@ def test_production_requires_monitoring_secret() -> None:
             environment="production",
             cookie_secure=True,
             session_secret=SecretStr("s" * 32),
+            email_delivery_enabled=False,
         )
     except ValueError as error:
         assert "JAHAN_MONITORING_TOKEN" in str(error)

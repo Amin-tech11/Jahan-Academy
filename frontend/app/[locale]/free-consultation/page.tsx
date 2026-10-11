@@ -1,3 +1,5 @@
+import "@/app/free-consultation.css";
+import "@/app/home.css";
 import type { Metadata } from "next";
 import { PreparedImage as Image } from "@/components/prepared-image";
 import { notFound } from "next/navigation";
@@ -5,6 +7,7 @@ import { notFound } from "next/navigation";
 import { HomeConsultation } from "@/components/home-consultation";
 import { SiteShell } from "@/components/site-shell";
 import { isLocale } from "@/lib/site-content";
+import { pageMetadata } from "@/lib/site-seo";
 
 type PageProps = {
   params: Promise<{ locale: string }>;
@@ -14,12 +17,9 @@ type PageProps = {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { locale } = await params;
   if (!isLocale(locale)) return {};
-  return {
-    title: `${locale === "fa" ? "درخواست مشاوره رایگان" : "Request a free consultation"} | Jahan Academy`,
-    description: locale === "fa"
+  return pageMetadata(locale, "/free-consultation", `${locale === "fa" ? "درخواست مشاوره رایگان" : "Request a free consultation"} | Jahan Academy`, locale === "fa"
       ? "اطلاعات کوتاهی ثبت کنید تا تیم جهان آکادمی برای هماهنگی مشاوره با شما تماس بگیرد."
-      : "Share a few details so the Jahan Academy team can contact you to arrange a consultation.",
-  };
+      : "Share a few details so the Jahan Academy team can contact you to arrange a consultation.");
 }
 
 export default async function FreeConsultationPage({ params, searchParams }: PageProps) {

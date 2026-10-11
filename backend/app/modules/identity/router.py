@@ -25,6 +25,8 @@ from app.modules.identity.schemas import (
     EmailRequest,
     EmailVerificationRequest,
     LoginRequest,
+    MfaPasswordRequest,
+    MfaProofRequest,
     PanelAccessEnvelope,
     PanelAccessUpdate,
     PanelAccessView,
@@ -49,6 +51,48 @@ router = APIRouter()
 auth_router = APIRouter(prefix="/auth", tags=["identity"])
 users_router = APIRouter(prefix="/users", tags=["identity"])
 staff_router = APIRouter(prefix="/admin/staff", tags=["staff-administration"])
+
+
+@auth_router.get("/mfa")
+async def mfa_status(
+    principal: Annotated[CurrentUser, Depends(current_user)],
+    service: Annotated[AuthService, Depends(auth_service)],
+) -> dict[str, object]:
+    return {"data": await service.mfa_status(principal.user.id)}
+
+
+@auth_router.post("/mfa/setup", dependencies=[Depends(csrf_protection)])
+async def mfa_setup(
+    payload: MfaPasswordRequest,
+    principal: Annotated[CurrentUser, Depends(current_user)],
+    service: Annotated[AuthService, Depends(auth_service)],
+) -> dict[str, object]:
+    return {"data": await service.mfa_setup(str(principal.user.email), payload.password)}
+
+
+@auth_router.post("/mfa/confirm", dependencies=[Depends(csrf_protection)])
+async def mfa_confirm(
+    payload: MfaProofRequest,
+    principal: Annotated[CurrentUser, Depends(current_user)],
+    service: Annotated[AuthService, Depends(auth_service)],
+) -> dict[str, object]:
+    return {
+        "data": {
+            "recoveryCodes": await service.mfa_confirm(
+                str(principal.user.email), payload.password, payload.code
+            )
+        }
+    }
+
+
+@auth_router.post("/mfa/disable", dependencies=[Depends(csrf_protection)])
+async def mfa_disable(
+    payload: MfaProofRequest,
+    principal: Annotated[CurrentUser, Depends(current_user)],
+    service: Annotated[AuthService, Depends(auth_service)],
+) -> dict[str, object]:
+    await service.mfa_disable(str(principal.user.email), payload.password, payload.code)
+    return {"data": {"accepted": True}}
 
 
 @auth_router.post(
@@ -313,7 +357,7 @@ def _clear_auth_cookies(response: Response, settings: Settings) -> None:
 
 
 def _client_ip(request: Request) -> str | None:
-    # Proxy headers are intentionally ignored until trusted-proxy middleware is configured.
+    # Only TrustedClientIPMiddleware may alter this value; ignore raw proxy headers.
     return request.client.host if request.client else None
 
 

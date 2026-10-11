@@ -10,6 +10,7 @@ import { ServicesMotion } from "@/components/services-motion";
 import { ServicesHero } from "@/components/services-hero";
 import { ServicesTitle } from "@/components/services-title";
 import { isLocale, type Locale } from "@/lib/site-content";
+import { pageMetadata } from "@/lib/site-seo";
 
 import "../../services.css";
 
@@ -87,7 +88,7 @@ const content = {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { locale } = await params;
   if (!isLocale(locale)) return {};
-  return { title: `${content[locale].title} | Jahan Academy` };
+  return pageMetadata(locale, "/services", `${content[locale].title} | Jahan Academy`, content[locale].services.map(service => service.title).join("، "));
 }
 
 export default async function ServicesPage({ params }: PageProps) {

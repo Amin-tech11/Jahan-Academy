@@ -1,0 +1,41 @@
+# @GATEWAY@ is validated and substituted by prepare-runtime.py.
+set_real_ip_from @GATEWAY@;
+real_ip_header X-Forwarded-For;
+real_ip_recursive on;
+map "$realip_remote_addr:$http_x_forwarded_proto" $jahan_https {
+  default 0;
+  "@GATEWAY@:https" 1;
+}
+server {
+  listen 80;
+  server_name jahanacademi.ir www.jahanacademi.ir;
+  if ($jahan_https = 0) { return 308 https://jahanacademi.ir$request_uri; }
+  if ($host = www.jahanacademi.ir) { return 308 https://jahanacademi.ir$request_uri; }
+  client_max_body_size 2m;
+  add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+  location ~ ^/(internal|docs|redoc|openapi\.json) { return 404; }
+  location ~ ^/health/(live|ready)$ {
+    proxy_pass http://backend:8000;
+    proxy_set_header Host jahanacademi.ir;
+    include /etc/nginx/jahan-proxy-headers.conf;
+  }
+  location /api/ {
+    proxy_pass http://backend:8000;
+    proxy_set_header Host jahanacademi.ir;
+    proxy_set_header X-Forwarded-Proto https;
+    include /etc/nginx/jahan-proxy-headers.conf;
+  }
+  location / {
+    proxy_pass http://frontend:3000;
+    proxy_set_header Host jahanacademi.ir;
+    proxy_set_header X-Forwarded-Host jahanacademi.ir;
+    proxy_set_header X-Forwarded-Proto https;
+    include /etc/nginx/jahan-proxy-headers.conf;
+  }
+}
+server {
+  listen 81;
+  server_name _;
+  location = /proxy-health { access_log off; return 200 'ok'; }
+  location / { return 308 https://jahanacademi.ir$request_uri; }
+}

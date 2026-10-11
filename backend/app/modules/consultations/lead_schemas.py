@@ -214,6 +214,8 @@ class LeadPageMeta(ApiModel):
     limit: int
     total: int
     total_pages: int
+    column_values: list[str] | None = None
+    column_values_truncated: bool | None = None
 
 
 class LeadPage(ApiModel):

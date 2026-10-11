@@ -13,9 +13,9 @@ const sources = new Set([
   "/home-hero-campus-v2.png", "/services-hero-interview.png",
   "/home-hero-documentary.png", "/blog/library-hero.webp",
   "/universities/hero/classical-campus.png", "/destinations/world-map-hero-wide.png",
-  "/free-consultation.webp", "/brand/jahan-academy-official.png",
+  "/free-consultation.webp", "/home-trust-office-meeting.webp", "/brand/jahan-academy-official.png",
 ]);
-for (const dir of ["destinations", "destinations/collage", "universities", "university-info"]) {
+for (const dir of ["journey", "services", "destinations", "destinations/collage", "universities", "university-info"]) {
   for (const item of await readdir(path.join(publicDir, dir), { withFileTypes: true })) {
     if (item.isFile() && /\.(png|jpe?g|webp)$/i.test(item.name) && !/logo/i.test(item.name)) sources.add(`/${dir}/${item.name}`);
   }
@@ -38,4 +38,5 @@ for (const src of [...sources].sort()) {
   manifest[src] = variants;
 }
 await writeFile(path.join(root, "lib/hero-image-assets.json"), JSON.stringify(manifest, null, 2) + "\n");
+await writeFile(path.join(root, "lib/hero-image-index.json"), JSON.stringify(Object.fromEntries(Object.entries(manifest).map(([src, variants]) => [src, [variants[0].url.split("/").at(-1).split("-")[0], variants.map(v => v.width)]]))) + "\n");
 console.log(`Prepared ${Object.keys(manifest).length} critical image sources as responsive WebP assets.`);

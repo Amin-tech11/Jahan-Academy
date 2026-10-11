@@ -19,14 +19,16 @@ class SmtpAuthMailer:
         self._settings = settings
 
     async def send_email_verification(self, email: str, token: str) -> None:
-        url = f"{self._settings.frontend_url}/verify-email?token={token}"
+        url = f"{self._settings.frontend_url.rstrip('/')}/verify-email#token={token}"
         await self._send(email, "Verify your Jahan Academy email", f"Verify your email: {url}")
 
     async def send_password_reset(self, email: str, token: str) -> None:
-        url = f"{self._settings.frontend_url}/reset-password?token={token}"
+        url = f"{self._settings.frontend_url.rstrip('/')}/reset-password#token={token}"
         await self._send(email, "Reset your Jahan Academy password", f"Reset password: {url}")
 
     async def _send(self, recipient: str, subject: str, body: str) -> None:
+        if not self._settings.email_delivery_enabled:
+            raise RuntimeError("Email delivery is not configured")
         message = EmailMessage()
         message["From"] = self._settings.email_from
         message["To"] = recipient
@@ -43,4 +45,6 @@ class SmtpAuthMailer:
                 else None
             ),
             start_tls=self._settings.smtp_start_tls,
+            use_tls=self._settings.smtp_use_tls,
+            timeout=self._settings.smtp_timeout_seconds,
         )

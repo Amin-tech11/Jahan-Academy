@@ -5,6 +5,9 @@ import logging
 from redis.asyncio import Redis
 from redis.exceptions import RedisError
 
+from app.core.rate_limit import window_count
+from app.shared.exceptions import ApplicationError
+
 logger = logging.getLogger(__name__)
 
 
@@ -17,12 +20,11 @@ class ConsultationRateLimiter:
     async def allow(self, subject_hash: str) -> bool:
         key = f"consultation:rate:{subject_hash}"
         try:
-            count = await self._redis.incr(key)
-            if count == 1:
-                await self._redis.expire(key, self.window_seconds)
+            count = await window_count(self._redis, key, self.window_seconds)
             return bool(count <= self._limit)
         except RedisError:
-            logger.warning(
-                "Consultation rate limiter is unavailable; request allowed", exc_info=True
-            )
-            return True
+            raise ApplicationError(
+                code="RATE_LIMITER_UNAVAILABLE",
+                message="Please try again shortly.",
+                status_code=503,
+            ) from None

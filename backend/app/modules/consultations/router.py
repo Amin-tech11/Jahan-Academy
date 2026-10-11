@@ -18,6 +18,7 @@ from app.modules.consultations.domain import (
     LeadStatus,
     SyncStatus,
 )
+from app.modules.consultations.lead_columns import column_expression, parse_column_filters
 from app.modules.consultations.lead_repository import LeadRepository
 from app.modules.consultations.lead_schemas import (
     LeadArchiveRequest,
@@ -137,8 +138,16 @@ async def list_leads(
     created_to: Annotated[datetime | None, Query(alias="to")] = None,
     archive: LeadArchiveFilter = LeadArchiveFilter.ACTIVE,
     sort: LeadSort = LeadSort.CREATED_DESC,
+    column_filters: Annotated[str | None, Query(alias="columnFilters", max_length=32768)] = None,
+    sort_column: Annotated[str | None, Query(alias="sortColumn", max_length=32)] = None,
+    sort_direction: Annotated[str, Query(alias="sortDirection", pattern="^(asc|desc)$")] = "asc",
+    facet: Annotated[str | None, Query(max_length=32)] = None,
 ) -> LeadPage:
     _validate_date_range(created_from, created_to)
+    if facet:
+        column_expression(facet)
+    if sort_column:
+        column_expression(sort_column)
     return await service.list(
         actor,
         locale=locale,
@@ -154,6 +163,10 @@ async def list_leads(
         created_to=created_to,
         archive=archive,
         sort=sort,
+        column_filters=parse_column_filters(column_filters),
+        sort_column=sort_column,
+        sort_direction=sort_direction,
+        facet=facet,
     )
 
 

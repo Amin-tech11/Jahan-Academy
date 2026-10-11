@@ -18,6 +18,11 @@ from app.modules.consultations.domain import (
     LeadStatus,
     SyncStatus,
 )
+from app.modules.consultations.lead_columns import (
+    apply_column_filters,
+    column_expression,
+    column_order,
+)
 
 
 class StaleLeadError(Exception):
@@ -75,6 +80,10 @@ class LeadRepository:
         sort: LeadSort,
         assigned_scope_user_id: UUID | None,
         search_field: LeadSearchField | None = None,
+        column_filters: dict[str, list[str]] | None = None,
+        sort_column: str | None = None,
+        sort_direction: str = "asc",
+        facet: str | None = None,
     ) -> tuple[list[dict[str, Any]], int]:
         where, params = self._filters(
             query=query,
@@ -89,15 +98,27 @@ class LeadRepository:
             assigned_scope_user_id=assigned_scope_user_id,
         )
         params.update({"locale": locale, "limit": limit, "offset": (page - 1) * limit})
+        where = apply_column_filters(where, params, column_filters or {}, exclude=facet)
         joins = self._joins()
+        if facet:
+            expression = column_expression(facet)
+            result = await self.session.execute(
+                text(
+                    f"SELECT DISTINCT {expression} AS value FROM leads l {joins} "  # nosec B608
+                    f"WHERE {where} ORDER BY value LIMIT 501"  # nosec B608
+                ),
+                params,
+            )  # nosec B608
+            return [dict(row) for row in result.mappings()], 0
         total = await self.session.scalar(
             text(f"SELECT count(*) FROM leads l {joins} WHERE {where}"),  # nosec B608
             params,
         )
+        ordering = column_order(sort_column, sort_direction) if sort_column else self.SORT_SQL[sort]
         rows = await self.session.execute(
             text(
                 f"SELECT {self._columns()} FROM leads l {joins} WHERE {where} "  # nosec B608
-                f"ORDER BY {self.SORT_SQL[sort]} LIMIT :limit OFFSET :offset"  # nosec B608
+                f"ORDER BY {ordering} LIMIT :limit OFFSET :offset"  # nosec B608
             ),
             params,
         )

@@ -632,6 +632,402 @@
       "bytes": 162636
     }
   ],
+  "/home-trust-office-meeting.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/facae891c7dae6af-480.webp",
+      "bytes": 23698
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/facae891c7dae6af-768.webp",
+      "bytes": 43764
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/facae891c7dae6af-1280.webp",
+      "bytes": 82318
+    },
+    {
+      "width": 1920,
+      "url": "/hero-assets/facae891c7dae6af-1920.webp",
+      "bytes": 134238
+    }
+  ],
+  "/journey/admission-application.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/cf45179764bb2b6a-480.webp",
+      "bytes": 24214
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/cf45179764bb2b6a-768.webp",
+      "bytes": 44266
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/cf45179764bb2b6a-1280.webp",
+      "bytes": 82062
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/cf45179764bb2b6a-1448.webp",
+      "bytes": 106328
+    }
+  ],
+  "/journey/agreement-contract.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/553d74d57bb67b40-480.webp",
+      "bytes": 22694
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/553d74d57bb67b40-768.webp",
+      "bytes": 40442
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/553d74d57bb67b40-1280.webp",
+      "bytes": 73220
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/553d74d57bb67b40-1448.webp",
+      "bytes": 98174
+    }
+  ],
+  "/journey/application-document-writing.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/a94c36f533aec3dc-480.webp",
+      "bytes": 20002
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/a94c36f533aec3dc-768.webp",
+      "bytes": 36192
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/a94c36f533aec3dc-1280.webp",
+      "bytes": 65158
+    },
+    {
+      "width": 1603,
+      "url": "/hero-assets/a94c36f533aec3dc-1603.webp",
+      "bytes": 97224
+    }
+  ],
+  "/journey/consultation-meeting.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/4f991d51887e40bf-480.webp",
+      "bytes": 20664
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/4f991d51887e40bf-768.webp",
+      "bytes": 37816
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/4f991d51887e40bf-1280.webp",
+      "bytes": 70296
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/4f991d51887e40bf-1448.webp",
+      "bytes": 93822
+    }
+  ],
+  "/journey/consultation-request.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/e71bcea652d141d4-480.webp",
+      "bytes": 19920
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/e71bcea652d141d4-768.webp",
+      "bytes": 35286
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/e71bcea652d141d4-1280.webp",
+      "bytes": 62688
+    },
+    {
+      "width": 1444,
+      "url": "/hero-assets/e71bcea652d141d4-1444.webp",
+      "bytes": 79470
+    }
+  ],
+  "/journey/document-checklist.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/4bfc54903678f498-480.webp",
+      "bytes": 22580
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/4bfc54903678f498-768.webp",
+      "bytes": 42238
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/4bfc54903678f498-1280.webp",
+      "bytes": 76600
+    },
+    {
+      "width": 1603,
+      "url": "/hero-assets/4bfc54903678f498-1603.webp",
+      "bytes": 113888
+    }
+  ],
+  "/journey/document-preparation.png": [
+    {
+      "width": 480,
+      "url": "/hero-assets/ed873190ac307637-480.webp",
+      "bytes": 22530
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/ed873190ac307637-768.webp",
+      "bytes": 40706
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/ed873190ac307637-1280.webp",
+      "bytes": 78808
+    },
+    {
+      "width": 1536,
+      "url": "/hero-assets/ed873190ac307637-1536.webp",
+      "bytes": 100656
+    }
+  ],
+  "/journey/language-support.png": [
+    {
+      "width": 480,
+      "url": "/hero-assets/95025486702730e2-480.webp",
+      "bytes": 22758
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/95025486702730e2-768.webp",
+      "bytes": 41654
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/95025486702730e2-1280.webp",
+      "bytes": 81720
+    },
+    {
+      "width": 1536,
+      "url": "/hero-assets/95025486702730e2-1536.webp",
+      "bytes": 102048
+    }
+  ],
+  "/journey/profile-assessment.png": [
+    {
+      "width": 480,
+      "url": "/hero-assets/a5e2ce35dfbe4498-480.webp",
+      "bytes": 22822
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/a5e2ce35dfbe4498-768.webp",
+      "bytes": 41602
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/a5e2ce35dfbe4498-1280.webp",
+      "bytes": 82262
+    },
+    {
+      "width": 1536,
+      "url": "/hero-assets/a5e2ce35dfbe4498-1536.webp",
+      "bytes": 105484
+    }
+  ],
+  "/journey/study-options.png": [
+    {
+      "width": 480,
+      "url": "/hero-assets/1b4fbebe664f0fe1-480.webp",
+      "bytes": 26892
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/1b4fbebe664f0fe1-768.webp",
+      "bytes": 50976
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/1b4fbebe664f0fe1-1280.webp",
+      "bytes": 95270
+    },
+    {
+      "width": 1536,
+      "url": "/hero-assets/1b4fbebe664f0fe1-1536.webp",
+      "bytes": 116540
+    }
+  ],
+  "/journey/university-application-follow-up.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/ea0ed7566444e0eb-480.webp",
+      "bytes": 15692
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/ea0ed7566444e0eb-768.webp",
+      "bytes": 27732
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/ea0ed7566444e0eb-1280.webp",
+      "bytes": 48852
+    },
+    {
+      "width": 1603,
+      "url": "/hero-assets/ea0ed7566444e0eb-1603.webp",
+      "bytes": 70682
+    }
+  ],
+  "/journey/university-decision.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/f8b9ecec3f7d667f-480.webp",
+      "bytes": 20890
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/f8b9ecec3f7d667f-768.webp",
+      "bytes": 37312
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/f8b9ecec3f7d667f-1280.webp",
+      "bytes": 65808
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/f8b9ecec3f7d667f-1448.webp",
+      "bytes": 79642
+    }
+  ],
+  "/journey/university-program-selection.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/61c67b5e6481fdc5-480.webp",
+      "bytes": 19474
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/61c67b5e6481fdc5-768.webp",
+      "bytes": 38284
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/61c67b5e6481fdc5-1280.webp",
+      "bytes": 77356
+    },
+    {
+      "width": 1586,
+      "url": "/hero-assets/61c67b5e6481fdc5-1586.webp",
+      "bytes": 119608
+    }
+  ],
+  "/journey/visa-application-biometrics.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/4f991d51887e40bf-480.webp",
+      "bytes": 20664
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/4f991d51887e40bf-768.webp",
+      "bytes": 37816
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/4f991d51887e40bf-1280.webp",
+      "bytes": 70296
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/4f991d51887e40bf-1448.webp",
+      "bytes": 93822
+    }
+  ],
+  "/journey/visa-checklist-meeting.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/553d74d57bb67b40-480.webp",
+      "bytes": 22694
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/553d74d57bb67b40-768.webp",
+      "bytes": 40442
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/553d74d57bb67b40-1280.webp",
+      "bytes": 73220
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/553d74d57bb67b40-1448.webp",
+      "bytes": 98174
+    }
+  ],
+  "/journey/visa-document-review.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/a94c36f533aec3dc-480.webp",
+      "bytes": 20002
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/a94c36f533aec3dc-768.webp",
+      "bytes": 36192
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/a94c36f533aec3dc-1280.webp",
+      "bytes": 65158
+    },
+    {
+      "width": 1603,
+      "url": "/hero-assets/a94c36f533aec3dc-1603.webp",
+      "bytes": 97224
+    }
+  ],
+  "/journey/visa-result-follow-up.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/ea0ed7566444e0eb-480.webp",
+      "bytes": 15692
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/ea0ed7566444e0eb-768.webp",
+      "bytes": 27732
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/ea0ed7566444e0eb-1280.webp",
+      "bytes": 48852
+    },
+    {
+      "width": 1603,
+      "url": "/hero-assets/ea0ed7566444e0eb-1603.webp",
+      "bytes": 70682
+    }
+  ],
   "/services-hero-interview.png": [
     {
       "width": 480,
@@ -652,6 +1048,204 @@
       "width": 1672,
       "url": "/hero-assets/defbce2f416c42c1-1672.webp",
       "bytes": 139930
+    }
+  ],
+  "/services/applicant-assessment-workspace.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/cf45179764bb2b6a-480.webp",
+      "bytes": 24214
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/cf45179764bb2b6a-768.webp",
+      "bytes": 44266
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/cf45179764bb2b6a-1280.webp",
+      "bytes": 82062
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/cf45179764bb2b6a-1448.webp",
+      "bytes": 106328
+    }
+  ],
+  "/services/document-preparation.png": [
+    {
+      "width": 480,
+      "url": "/hero-assets/ed873190ac307637-480.webp",
+      "bytes": 22530
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/ed873190ac307637-768.webp",
+      "bytes": 40706
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/ed873190ac307637-1280.webp",
+      "bytes": 78808
+    },
+    {
+      "width": 1536,
+      "url": "/hero-assets/ed873190ac307637-1536.webp",
+      "bytes": 100656
+    }
+  ],
+  "/services/document-preparation.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/4f991d51887e40bf-480.webp",
+      "bytes": 20664
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/4f991d51887e40bf-768.webp",
+      "bytes": 37816
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/4f991d51887e40bf-1280.webp",
+      "bytes": 70296
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/4f991d51887e40bf-1448.webp",
+      "bytes": 93822
+    }
+  ],
+  "/services/language-support.png": [
+    {
+      "width": 480,
+      "url": "/hero-assets/95025486702730e2-480.webp",
+      "bytes": 22758
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/95025486702730e2-768.webp",
+      "bytes": 41654
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/95025486702730e2-1280.webp",
+      "bytes": 81720
+    },
+    {
+      "width": 1536,
+      "url": "/hero-assets/95025486702730e2-1536.webp",
+      "bytes": 102048
+    }
+  ],
+  "/services/language-support.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/553d74d57bb67b40-480.webp",
+      "bytes": 22694
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/553d74d57bb67b40-768.webp",
+      "bytes": 40442
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/553d74d57bb67b40-1280.webp",
+      "bytes": 73220
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/553d74d57bb67b40-1448.webp",
+      "bytes": 98174
+    }
+  ],
+  "/services/profile-assessment.png": [
+    {
+      "width": 480,
+      "url": "/hero-assets/a5e2ce35dfbe4498-480.webp",
+      "bytes": 22822
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/a5e2ce35dfbe4498-768.webp",
+      "bytes": 41602
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/a5e2ce35dfbe4498-1280.webp",
+      "bytes": 82262
+    },
+    {
+      "width": 1536,
+      "url": "/hero-assets/a5e2ce35dfbe4498-1536.webp",
+      "bytes": 105484
+    }
+  ],
+  "/services/profile-assessment.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/4f991d51887e40bf-480.webp",
+      "bytes": 20664
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/4f991d51887e40bf-768.webp",
+      "bytes": 37816
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/4f991d51887e40bf-1280.webp",
+      "bytes": 70296
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/4f991d51887e40bf-1448.webp",
+      "bytes": 93822
+    }
+  ],
+  "/services/study-options.png": [
+    {
+      "width": 480,
+      "url": "/hero-assets/1b4fbebe664f0fe1-480.webp",
+      "bytes": 26892
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/1b4fbebe664f0fe1-768.webp",
+      "bytes": 50976
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/1b4fbebe664f0fe1-1280.webp",
+      "bytes": 95270
+    },
+    {
+      "width": 1536,
+      "url": "/hero-assets/1b4fbebe664f0fe1-1536.webp",
+      "bytes": 116540
+    }
+  ],
+  "/services/study-options.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/e71bcea652d141d4-480.webp",
+      "bytes": 19920
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/e71bcea652d141d4-768.webp",
+      "bytes": 35286
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/e71bcea652d141d4-1280.webp",
+      "bytes": 62688
+    },
+    {
+      "width": 1444,
+      "url": "/hero-assets/e71bcea652d141d4-1444.webp",
+      "bytes": 79470
     }
   ],
   "/universities/aalborg-university.jpg": [

@@ -5,27 +5,26 @@ import { destinations, destinationConsultationHref, findDestination } from "@/li
 import { destinationFaqs } from "@/lib/destination-faqs";
 import { homeUniversities } from "@/lib/home-universities";
 import { isLocale } from "@/lib/site-content";
+import { pageMetadata } from "@/lib/site-seo";
+import { BreadcrumbSchema } from "@/components/breadcrumb-schema";
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
+export function generateStaticParams() { return destinations.map(({ slug }) => ({ slug })); }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
   const destination = findDestination(slug);
   if (!isLocale(locale) || !destination) return {};
-  return {
-    title: `${locale === "fa" ? "تحصیل در" : "Study in"} ${destination.name[locale]} | Jahan Academy`,
-    description: destination.tagline[locale],
-    alternates: { languages: { fa: `/fa/countries/${slug}`, en: `/en/countries/${slug}` } },
-  };
+  return pageMetadata(locale, `/countries/${slug}`, `${locale === "fa" ? "تحصیل در" : "Study in"} ${destination.name[locale]} | Jahan Academy`, destination.tagline[locale]);
 }
 
 export default async function CountryPage({ params }: Props) {
   const { locale, slug } = await params;
   const destination = findDestination(slug);
   if (!isLocale(locale) || !destination) notFound();
-  return <DestinationPage key={`${locale}:${slug}`} locale={locale} destination={destination}
+  return <><BreadcrumbSchema locale={locale} items={[{ name: locale === "fa" ? "مقصدهای تحصیلی" : "Study destinations", path: "/countries" }, { name: destination.name[locale], path: `/countries/${slug}` }]} /><DestinationPage key={`${locale}:${slug}`} locale={locale} destination={destination}
     universities={homeUniversities.filter(university => university.country === slug)}
     relatedDestinations={destinations.filter(item => item.slug !== slug).map(({ slug, name }) => ({ slug, name }))}
     faqs={destinationFaqs[slug] ?? []}
-    consultation={destinationConsultationHref(locale, slug)} />;
+    consultation={destinationConsultationHref(locale, slug)} /></>;
 }
