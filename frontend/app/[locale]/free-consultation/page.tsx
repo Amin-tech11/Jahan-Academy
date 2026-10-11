@@ -40,7 +40,7 @@ export default async function FreeConsultationPage({ params, searchParams }: Pag
       </header>
       <div className="free-consultation-page__layout">
         <div className="free-consultation-page__media">
-          <Image src="/home-trust-consultation.png" alt={fa ? "گفت‌وگوی مشاور جهان آکادمی با متقاضیان" : "A Jahan Academy advisor speaking with prospective students"} fill sizes="(max-width: 800px) 100vw, 48vw" priority />
+          <Image src="/free-consultation.webp" alt={fa ? "گفت‌وگوی مشاور جهان آکادمی با متقاضیان" : "A Jahan Academy advisor speaking with prospective students"} fill sizes="(max-width: 800px) 100vw, 48vw" priority />
           <div className="free-consultation-page__media-caption">
             <strong>{fa ? "یک قدم تا گفت‌وگو" : "One step from a conversation"}</strong>
             <span>{fa ? "درخواستتان را ثبت کنید؛ برای ادامه با شما تماس می‌گیریم." : "Send your request and we will get in touch about what comes next."}</span>

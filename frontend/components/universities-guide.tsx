@@ -39,7 +39,7 @@ export function UniversitiesGuide({ locale }: { locale: Locale }) {
         <p>{locale === "fa" ? "از رشته و شرایط تحصیلی خود بگویید تا در بررسی دانشگاه‌ها و انتخاب گزینه‌های متناسب با هدفتان همراه شما باشیم." : "Tell us about your subject and academic background so we can help you explore universities that fit your goals."}</p>
       </header>
       <div className="home-closing__layout">
-        <div className="home-closing__image"><Image src="/journey/profile-assessment.png" alt={locale === "fa" ? "مشاوره برای انتخاب دانشگاه و مسیر تحصیلی" : "University selection consultation"} fill sizes="(max-width: 800px) 100vw, 50vw" /></div>
+        <div className="home-closing__image"><Image src="/consultation-specialist.webp" alt={locale === "fa" ? "مشاوره برای انتخاب دانشگاه و مسیر تحصیلی" : "University selection consultation"} fill sizes="(max-width: 800px) 100vw, 50vw" /></div>
         <HomeConsultation locale={locale} sourcePage={`/${locale}/universities#university-consultation`} />
       </div>
     </section>

@@ -25,25 +25,25 @@ const content = {
         id: "assessment", short: "بررسی شرایط", title: "بررسی تخصصی شرایط هر متقاضی",
         description: "مسیر تحصیلی با شناخت شما آغاز می‌شود. سوابق تحصیلی، سطح زبان، بودجه و هدف‌های شما را کنار هم می‌گذاریم تا نقطه شروع روشن باشد.",
         points: ["سوابق و مقطع تحصیلی", "سطح زبان و زمان‌بندی", "بودجه و هدف دانشجو"],
-        image: "/services/profile-assessment.png", imageAlt: "بررسی سوابق تحصیلی متقاضی در جلسه مشاوره",
+        image: "/services/applicant-assessment-workspace.webp", imageAlt: "بررسی سوابق تحصیلی متقاضی در جلسه مشاوره",
       },
       {
         id: "options", short: "پیشنهاد گزینه‌ها", title: "پیشنهاد گزینه‌های مناسب",
         description: "بر پایه شرایط و اولویت‌ها، کشور، دانشگاه و رشته‌های مرتبط را بررسی می‌کنیم؛ از جمله گزینه‌های تحصیل در آلمان، انگلستان، اسپانیا و فنلاند.",
         points: ["بررسی کشور و دانشگاه", "تناسب رشته با هدف", "مقایسه گزینه‌های قابل بررسی"],
-        image: "/services/study-options.png", imageAlt: "مقایسه دانشگاه‌ها و گزینه‌های تحصیلی مناسب",
+        image: "/services/study-options.webp", imageAlt: "مقایسه دانشگاه‌ها و گزینه‌های تحصیلی مناسب",
       },
       {
         id: "documents", short: "آماده‌سازی مدارک", title: "نگارش و ویرایش مدارک موردنیاز",
         description: "برای آماده شدن پرونده، در تنظیم و بازبینی رزومه تحصیلی، انگیزه‌نامه و دیگر مدارک موردنیاز همراهتان هستیم.",
         points: ["رزومه تحصیلی", "انگیزه‌نامه", "بازبینی مدارک پرونده"],
-        image: "/services/document-preparation.png", imageAlt: "نگارش و بازبینی مدارک پرونده تحصیلی",
+        image: "/services/document-preparation.webp", imageAlt: "نگارش و بازبینی مدارک پرونده تحصیلی",
       },
       {
         id: "language", short: "پشتیبانی زبان", title: "پشتیبانی در مسیر یادگیری زبان",
         description: "زبان بخشی از برنامه تحصیلی شماست. درباره مسیر یادگیری و امکان استفاده از پلتفرم آموزش انگلیسی Kalum و شرایط تخفیف ویژه راهنمایی می‌کنیم.",
         points: ["بررسی نیاز زبانی", "برنامه‌ریزی برای یادگیری", "آشنایی با Kalum"],
-        image: "/services/language-support.png", imageAlt: "جلسه پشتیبانی و برنامه‌ریزی یادگیری زبان",
+        image: "/services/language-support.webp", imageAlt: "جلسه پشتیبانی و برنامه‌ریزی یادگیری زبان",
       },
     ],
     ctaTitle: "بیایید درباره آینده تحصیلی‌تان گپ بزنیم.",
@@ -58,25 +58,25 @@ const content = {
         id: "assessment", short: "Your profile", title: "A thoughtful review of your profile",
         description: "Your academic path starts with understanding you. We look at your education, language level, budget, and goals together to establish a clear starting point.",
         points: ["Academic background", "Language level and timeline", "Budget and goals"],
-        image: "/services/profile-assessment.png", imageAlt: "An advisor reviewing a student's academic profile",
+        image: "/services/applicant-assessment-workspace.webp", imageAlt: "An advisor reviewing a student's academic profile",
       },
       {
         id: "options", short: "Suitable options", title: "Options suited to your goals",
         description: "Based on your priorities, we explore relevant countries, universities, and programs, including options in Germany, the UK, Spain, and Finland.",
         points: ["Country and university review", "Program fit", "Comparable options"],
-        image: "/services/study-options.png", imageAlt: "Comparing suitable universities and study options",
+        image: "/services/study-options.webp", imageAlt: "Comparing suitable universities and study options",
       },
       {
         id: "documents", short: "Documents", title: "Writing and reviewing documents",
         description: "We help you prepare and review your academic CV, statement of purpose, and other documents needed for your application.",
         points: ["Academic CV", "Statement of purpose", "Application document review"],
-        image: "/services/document-preparation.png", imageAlt: "Preparing and reviewing academic application documents",
+        image: "/services/document-preparation.webp", imageAlt: "Preparing and reviewing academic application documents",
       },
       {
         id: "language", short: "Language support", title: "Support for your language journey",
         description: "Language learning belongs in your study plan. We can discuss your learning path and access to the Kalum English learning platform, including any available discount terms.",
         points: ["Language needs", "Learning plan", "Introducing Kalum"],
-        image: "/services/language-support.png", imageAlt: "A personalized language support session",
+        image: "/services/language-support.webp", imageAlt: "A personalized language support session",
       },
     ],
     ctaTitle: "Let's talk about your study dreams.",
@@ -130,7 +130,7 @@ export default async function ServicesPage({ params }: PageProps) {
         <div className="services-container">
           <div className="services-cta__heading"><h2 id="services-cta-title">{copy.ctaTitle}</h2><p>{copy.ctaText}</p></div>
           <div className="services-cta__layout">
-            <div className="services-cta__photo"><Image src="/services/consultation-options/consultation-01.png" alt={locale === "fa" ? "مشاور جهان آکادمی در حال گفت‌وگو با متقاضی" : "A Jahan Academy advisor speaking with an applicant"} fill sizes="(max-width: 900px) 100vw, 600px" /></div>
+            <div className="services-cta__photo"><Image src="/consultation-specialist.webp" alt={locale === "fa" ? "مشاور جهان آکادمی در حال گفت‌وگو با متقاضی" : "A Jahan Academy advisor speaking with an applicant"} fill sizes="(max-width: 900px) 100vw, 600px" /></div>
             <div className="services-cta__card"><ServicesConsultationForm locale={locale} /></div>
           </div>
         </div>

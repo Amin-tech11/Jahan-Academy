@@ -169,7 +169,7 @@ export function DestinationPage({ destination: d, locale, universities, relatedD
         <p>{t("شرایط و هدف خود را با ما در میان بگذارید تا قدم بعدی روشن‌تر شود.", "Share your background and goals with us to clarify your next step.")}</p>
       </header>
       <div className={consultationStyles.layout}>
-        <div data-destination-motion="side" className={consultationStyles.photo}><Image src="/journey/profile-assessment.png" alt={t("مشاوره درباره مسیر تحصیلی", "Study pathway consultation")} fill sizes="(max-width: 800px) 100vw, 50vw" /></div>
+        <div data-destination-motion="side" className={consultationStyles.photo}><Image src="/consultation-specialist.webp" alt={t("مشاوره درباره مسیر تحصیلی", "Study pathway consultation")} fill sizes="(max-width: 800px) 100vw, 50vw" /></div>
         <DestinationConsultation key={`${locale}-${d.slug}`} destination={d} locale={locale} />
       </div>
     </section>
