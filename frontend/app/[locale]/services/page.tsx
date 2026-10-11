@@ -37,7 +37,7 @@ const content = {
         id: "documents", short: "آماده‌سازی مدارک", title: "نگارش و ویرایش مدارک موردنیاز",
         description: "برای آماده شدن پرونده، در تنظیم و بازبینی رزومه تحصیلی، انگیزه‌نامه و دیگر مدارک موردنیاز همراهتان هستیم.",
         points: ["رزومه تحصیلی", "انگیزه‌نامه", "بازبینی مدارک پرونده"],
-        image: "/services/document-preparation.png", imageAlt: "نگارش و بازبینی مدارک پرونده تحصیلی",
+        image: "/services/document-preparation.webp", imageAlt: "نگارش و بازبینی مدارک پرونده تحصیلی",
       },
       {
         id: "language", short: "پشتیبانی زبان", title: "پشتیبانی در مسیر یادگیری زبان",
@@ -70,7 +70,7 @@ const content = {
         id: "documents", short: "Documents", title: "Writing and reviewing documents",
         description: "We help you prepare and review your academic CV, statement of purpose, and other documents needed for your application.",
         points: ["Academic CV", "Statement of purpose", "Application document review"],
-        image: "/services/document-preparation.png", imageAlt: "Preparing and reviewing academic application documents",
+        image: "/services/document-preparation.webp", imageAlt: "Preparing and reviewing academic application documents",
       },
       {
         id: "language", short: "Language support", title: "Support for your language journey",
