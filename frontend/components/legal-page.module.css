@@ -1,0 +1,22 @@
+.content {
+  max-width: 880px;
+}
+
+.document > section + section {
+  margin-top: 36px;
+  padding-top: 28px;
+  border-top: 1px solid var(--line);
+}
+
+.document h2 {
+  font-size: clamp(22px, 2.5vw, 29px);
+  line-height: 1.5;
+}
+
+.document p {
+  overflow-wrap: anywhere;
+}
+
+.document > p {
+  margin-top: 36px;
+}

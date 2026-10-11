@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LegalPage } from "@/components/legal-page";
 import { EditorialDetail } from "@/components/editorial-detail";
 import { notFound } from "next/navigation";
 
@@ -48,15 +49,6 @@ function ServicesPage({ locale, slug }: { locale: Locale; slug?: string }) { con
 
 function ContentPage({ locale, type, slug }: { locale: Locale; type: "article" | "news"; slug?: string }) { const dictionary = siteCopy[locale]; const items = articles.filter((item) => item.type === type); const article = slug ? items.find((item) => item.slug === slug) : undefined; if (slug && !article) notFound(); const title = type === "news" ? (locale === "fa" ? "اخبار" : "News") : (locale === "fa" ? "مقالات و راهنماها" : "Articles and guides"); if (article) return <EditorialDetail locale={locale} title={article.title[locale]} date={article.date} excerpt={article.excerpt[locale]} />; return <SiteShell locale={locale}><main><Hero eyebrow="JAHAN ACADEMY" title={title} text={locale === "fa" ? "محتوای روشن برای کمک به شکل‌گیری پرسش‌های درست پیش از مشاوره." : "Clear editorial content to help you ask better questions before a consultation."} action={<ConsultationButton locale={locale} source={type} />} /><Section title={title}><div className="article-grid">{items.map((item) => <ArticleCard key={item.slug} locale={locale} article={item} />)}</div></Section></main></SiteShell>; }
 
-function BrandFaqPage({ locale }: { locale: Locale }) {
-  const dictionary = siteCopy[locale];
-  const brand = brandContent[locale];
-  return <SiteShell locale={locale}><main>
-    <Hero eyebrow="JAHAN ACADEMY" title={dictionary.faqTitle} text={brand.faqIntro} action={<ConsultationButton locale={locale} source="faq" />} />
-    <Section title={dictionary.faqTitle}><div className="faq-list">{brand.faqs.map((item) => <details key={item.question}><summary>{item.question}</summary><p>{item.answer}</p></details>)}</div></Section>
-  </main></SiteShell>;
-}
-
 function AboutPage({ locale }: { locale: Locale }) {
   const brand = brandContent[locale];
   return <SiteShell locale={locale}><main>
@@ -70,14 +62,9 @@ function AboutPage({ locale }: { locale: Locale }) {
   </main></SiteShell>;
 }
 
-function StaticPage({ locale, page }: { locale: Locale; page: "about" | "contact" | "faq" | "privacy" | "terms" }) {
+function StaticPage({ locale, page }: { locale: Locale; page: "about" | "privacy" | "terms" }) {
   if (page === "about") return <AboutPage locale={locale} />;
-  if (page === "faq") return <BrandFaqPage locale={locale} />;
-  const dictionary = siteCopy[locale];
-  if (page === "contact") return <SiteShell locale={locale}><main><Hero eyebrow="JAHAN ACADEMY" title={locale === "fa" ? "تماس با ما" : "Contact us"} text={locale === "fa" ? "برای شروع، درخواست مشاوره ثبت کنید تا تیم ما با شما در تماس باشد." : "Submit a consultation request to start the conversation with our team."} /><section className="section"><div className="shell form-layout"><aside><p className="eyebrow">CONTACT</p><h2>{locale === "fa" ? "برای شروع گفت‌وگو آماده‌اید؟" : "Ready to start a conversation?"}</h2><p>{dictionary.consultationText}</p></aside><ConsultationForm locale={locale} source="contact" /></div></section></main></SiteShell>;
-  const title = page === "privacy" ? (locale === "fa" ? "حریم خصوصی" : "Privacy") : (locale === "fa" ? "قوانین استفاده" : "Terms of use");
-  const text = locale === "fa" ? "نسخه نهایی این صفحه، پس از تأیید حقوقی و انتشار دوزبانه از CMS جایگزین می‌شود." : "The final legal copy will replace this version after bilingual legal approval and CMS publication.";
-  return <SiteShell locale={locale}><main><Hero eyebrow="JAHAN ACADEMY" title={title} text={text} /><section className="section"><article className="shell prose"><h2>{title}</h2><p>{text}</p></article></section></main></SiteShell>;
+  return <LegalPage locale={locale} page={page} />;
 }
 
-export async function RoutedPublicPage({ locale, segments, source }: { locale: Locale; segments: string[]; source: string }) { const [root, slug] = segments; if (root === "consultation" && !slug) return <ConsultationPage locale={locale} source={source} />; if (root === "countries") return <CountriesPage locale={locale} slug={slug} />; if (root === "universities") return <UniversitiesPage locale={locale} slug={slug} />; if (root === "services") return <ServicesPage locale={locale} slug={slug} />; if (root === "articles") return <ContentPage locale={locale} type="article" slug={slug} />; if (root === "news") return <ContentPage locale={locale} type="news" slug={slug} />; if (!slug && ["about", "contact", "faq", "privacy", "terms"].includes(root)) return <StaticPage locale={locale} page={root as "about" | "contact" | "faq" | "privacy" | "terms"} />; notFound(); }
+export async function RoutedPublicPage({ locale, segments, source }: { locale: Locale; segments: string[]; source: string }) { const [root, slug] = segments; if (root === "consultation" && !slug) return <ConsultationPage locale={locale} source={source} />; if (root === "countries") return <CountriesPage locale={locale} slug={slug} />; if (root === "universities") return <UniversitiesPage locale={locale} slug={slug} />; if (root === "services") return <ServicesPage locale={locale} slug={slug} />; if (root === "articles") return <ContentPage locale={locale} type="article" slug={slug} />; if (root === "news") return <ContentPage locale={locale} type="news" slug={slug} />; if (segments.length === 1 && ["about", "privacy", "terms"].includes(root)) return <StaticPage locale={locale} page={root as "about" | "privacy" | "terms"} />; notFound(); }

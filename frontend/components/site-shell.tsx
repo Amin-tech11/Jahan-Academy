@@ -17,7 +17,7 @@ export function SiteShell({ locale, children, className }: { locale: Locale; chi
   return <div className={className ? `site ${className}` : "site"} dir={locale === "fa" ? "rtl" : "ltr"} lang={locale}>
     <SiteHeader locale={locale} />
     {children}
-    <footer className="site-footer"><div className="shell footer-grid"><div><div className="footer-brand">JAHAN ACADEMY</div><p>{copy.footerText}</p></div><nav className="footer-links" aria-label={locale === "fa" ? "پیوندهای پایین صفحه" : "Footer links"}><Link href={localPath(locale, "/contact")}>{locale === "fa" ? "تماس با ما" : "Contact"}</Link><Link href={localPath(locale, "/faq")}>FAQ</Link><Link href={localPath(locale, "/privacy")}>{locale === "fa" ? "حریم خصوصی" : "Privacy"}</Link><Link href={localPath(locale, "/terms")}>{locale === "fa" ? "قوانین استفاده" : "Terms"}</Link></nav></div><div className="shell footer-bottom">© {new Date().getUTCFullYear()} Jahan Academy</div></footer>
+    <footer className="site-footer"><div className="shell footer-grid"><div><div className="footer-brand">JAHAN ACADEMY</div><p>{copy.footerText}</p></div><nav className="footer-links" aria-label={locale === "fa" ? "پیوندهای پایین صفحه" : "Footer links"}><Link href={localPath(locale, "/privacy")}>{locale === "fa" ? "حریم خصوصی" : "Privacy"}</Link><Link href={localPath(locale, "/terms")}>{locale === "fa" ? "قوانین استفاده" : "Terms"}</Link></nav></div><div className="shell footer-bottom">© {new Date().getUTCFullYear()} Jahan Academy</div></footer>
     <FloatingConsultation locale={locale} />
   </div>;
 }
