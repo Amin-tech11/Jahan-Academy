@@ -21,7 +21,8 @@ async function proxy(
   if (!allowed) return new NextResponse(null, { status: 404 });
   if (
     request.method !== "GET" &&
-    request.headers.get("origin") !== request.nextUrl.origin
+    request.headers.get("origin") !==
+      (process.env.ADMIN_PUBLIC_ORIGIN ?? request.nextUrl.origin)
   )
     return new NextResponse(null, { status: 403 });
   const base = (
