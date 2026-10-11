@@ -31,7 +31,7 @@ const content = {
         id: "options", short: "پیشنهاد گزینه‌ها", title: "پیشنهاد گزینه‌های مناسب",
         description: "بر پایه شرایط و اولویت‌ها، کشور، دانشگاه و رشته‌های مرتبط را بررسی می‌کنیم؛ از جمله گزینه‌های تحصیل در آلمان، انگلستان، اسپانیا و فنلاند.",
         points: ["بررسی کشور و دانشگاه", "تناسب رشته با هدف", "مقایسه گزینه‌های قابل بررسی"],
-        image: "/services/study-options.png", imageAlt: "مقایسه دانشگاه‌ها و گزینه‌های تحصیلی مناسب",
+        image: "/services/study-options.webp", imageAlt: "مقایسه دانشگاه‌ها و گزینه‌های تحصیلی مناسب",
       },
       {
         id: "documents", short: "آماده‌سازی مدارک", title: "نگارش و ویرایش مدارک موردنیاز",
@@ -64,7 +64,7 @@ const content = {
         id: "options", short: "Suitable options", title: "Options suited to your goals",
         description: "Based on your priorities, we explore relevant countries, universities, and programs, including options in Germany, the UK, Spain, and Finland.",
         points: ["Country and university review", "Program fit", "Comparable options"],
-        image: "/services/study-options.png", imageAlt: "Comparing suitable universities and study options",
+        image: "/services/study-options.webp", imageAlt: "Comparing suitable universities and study options",
       },
       {
         id: "documents", short: "Documents", title: "Writing and reviewing documents",
