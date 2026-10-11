@@ -6,6 +6,11 @@ const nextConfig: NextConfig = {
   output: "standalone",
   poweredByHeader: false,
   reactStrictMode: true,
+  async headers() {
+    return [{ source: "/hero-assets/:path*", headers: [
+      { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+    ] }];
+  },
   async rewrites() {
     const backend = (
       process.env.ADMIN_API_URL ?? process.env.API_INTERNAL_URL ?? "http://127.0.0.1:8000"

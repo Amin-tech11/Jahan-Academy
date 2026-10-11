@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { PreparedImage as Image } from "@/components/prepared-image";
 import type { CollagePhoto } from "@/lib/destination-collages";
 import type { Locale } from "@/lib/site-content";
 import styles from "./destination-collage.module.css";

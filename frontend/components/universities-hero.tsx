@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { PreparedImage as Image } from "@/components/prepared-image";
 import styles from "./universities-hero.module.css";
 
 export function UniversitiesHero() {

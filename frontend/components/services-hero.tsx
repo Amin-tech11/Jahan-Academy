@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { PreparedImage as Image } from "@/components/prepared-image";
 import { useEffect, useRef } from "react";
 import { startHomeMotion } from "@/lib/home-motion";
 

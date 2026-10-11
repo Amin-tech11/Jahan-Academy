@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Image from "next/image";
+import { PreparedImage as Image } from "@/components/prepared-image";
 import { notFound } from "next/navigation";
 
 import { HomeConsultation } from "@/components/home-consultation";

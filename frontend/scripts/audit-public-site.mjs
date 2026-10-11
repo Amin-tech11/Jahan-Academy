@@ -11,6 +11,8 @@ const pending = ['fa', 'en'].flatMap(locale => [
 const seen = new Set();
 const pages = [];
 const assets = new Map();
+const criticalImages = new Map();
+const criticalImageFailures = [];
 while (pending.length) {
   const path = pending.shift();
   if (seen.has(path)) continue;
@@ -18,6 +20,24 @@ while (pending.length) {
   const start = performance.now();
   const response = await fetch(new URL(path, base), { signal: AbortSignal.timeout(30000) });
   const html = await response.text();
+  for (const link of html.matchAll(/<link\b[^>]*\bas="image"[^>]*>/gi)) {
+    const set = link[0].match(/imageSrcSet="([^"]+)"/i)?.[1];
+    if (!set) continue;
+    for (const candidate of new Set(set.split(", ").map(item => item.split(" ")[0].replaceAll("&amp;", "&")))) {
+      if (!candidate.startsWith("/hero-assets/")) {
+        criticalImageFailures.push({ path, image: candidate, reason: "Critical image still needs request-time processing" });
+        continue;
+      }
+      if (criticalImages.has(candidate)) continue;
+      const image = await fetch(new URL(candidate, base));
+      const bytes = (await image.arrayBuffer()).byteLength;
+      const cache = image.headers.get("cache-control") ?? "";
+      criticalImages.set(candidate, { status: image.status, bytes, cache });
+      if (image.status !== 200 || !image.headers.get("content-type")?.includes("image/webp") || !cache.includes("immutable")) {
+        criticalImageFailures.push({ path, image: candidate, reason: "Prepared image is unavailable or lacks immutable caching" });
+      }
+    }
+  }
   const ms = Math.round(performance.now() - start);
   const scripts = [...new Set([...html.matchAll(/<script[^>]+src="([^"]+)"/g)].map(m => m[1]))];
   for (const script of scripts) {
@@ -39,7 +59,10 @@ const failures = pages.filter(p => p.status !== 200 || !p.title);
 const budget = Number(process.env.AUDIT_MAX_DESTINATION_JS_GZIP_BYTES ?? Infinity);
 if (!(budget > 0)) throw new Error('Invalid JavaScript budget');
 const budgetFailures = pages.filter(p => /^\/(fa|en)\/countries\/[^/]+$/.test(p.path) && p.jsGzipBytes > budget);
-const result = { base: base.origin, createdAt: new Date().toISOString(), pages, assets: Object.fromEntries(assets), failures, budgetFailures };
+const result = { base: base.origin, createdAt: new Date().toISOString(), pages, assets: Object.fromEntries(assets), criticalImages: Object.fromEntries(criticalImages), criticalImageFailures, failures, budgetFailures };
 await writeFile(process.env.AUDIT_OUTPUT ?? 'site-audit.json', JSON.stringify(result, null, 2));
 console.log(JSON.stringify({ pages: pages.length, failures, budgetFailures, slowest: [...pages].sort((a,b)=>b.ms-a.ms).slice(0,5), largestJs: [...pages].sort((a,b)=>b.jsGzipBytes-a.jsGzipBytes).slice(0,5) }, null, 2));
-if (failures.length || budgetFailures.length || [...assets.values()].some(a => a.status !== 200)) process.exitCode = 1;
+if (failures.length || budgetFailures.length || criticalImageFailures.length || [...assets.values()].some(a => a.status !== 200)) {
+  console.error(JSON.stringify({ criticalImageFailures }));
+  process.exitCode = 1;
+}

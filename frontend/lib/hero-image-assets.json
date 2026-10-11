@@ -1,0 +1,1330 @@
+{
+  "/blog/library-hero.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/e420ae948d51561a-480.webp",
+      "bytes": 23184
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/e420ae948d51561a-768.webp",
+      "bytes": 51058
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/e420ae948d51561a-1280.webp",
+      "bytes": 111672
+    },
+    {
+      "width": 1920,
+      "url": "/hero-assets/e420ae948d51561a-1920.webp",
+      "bytes": 190690
+    }
+  ],
+  "/brand/jahan-academy-official.png": [
+    {
+      "width": 480,
+      "url": "/hero-assets/0e80007240d7a72e-480.webp",
+      "bytes": 15884
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/0e80007240d7a72e-768.webp",
+      "bytes": 27302
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/0e80007240d7a72e-1280.webp",
+      "bytes": 53924
+    },
+    {
+      "width": 1774,
+      "url": "/hero-assets/0e80007240d7a72e-1774.webp",
+      "bytes": 78980
+    }
+  ],
+  "/destinations/australia-twilight.png": [
+    {
+      "width": 480,
+      "url": "/hero-assets/9e206b96510066d8-480.webp",
+      "bytes": 29952
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/9e206b96510066d8-768.webp",
+      "bytes": 68900
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/9e206b96510066d8-1280.webp",
+      "bytes": 156500
+    },
+    {
+      "width": 1774,
+      "url": "/hero-assets/9e206b96510066d8-1774.webp",
+      "bytes": 248160
+    }
+  ],
+  "/destinations/australia.png": [
+    {
+      "width": 480,
+      "url": "/hero-assets/8e27145c5c4013ff-480.webp",
+      "bytes": 34730
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/8e27145c5c4013ff-768.webp",
+      "bytes": 80616
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/8e27145c5c4013ff-1280.webp",
+      "bytes": 191590
+    },
+    {
+      "width": 1672,
+      "url": "/hero-assets/8e27145c5c4013ff-1672.webp",
+      "bytes": 284540
+    }
+  ],
+  "/destinations/canada.png": [
+    {
+      "width": 480,
+      "url": "/hero-assets/63428f07022b3380-480.webp",
+      "bytes": 26138
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/63428f07022b3380-768.webp",
+      "bytes": 62186
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/63428f07022b3380-1280.webp",
+      "bytes": 151008
+    },
+    {
+      "width": 1774,
+      "url": "/hero-assets/63428f07022b3380-1774.webp",
+      "bytes": 248528
+    }
+  ],
+  "/destinations/collage/graduate.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/0998644cabb30967-480.webp",
+      "bytes": 24652
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/0998644cabb30967-768.webp",
+      "bytes": 43090
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/0998644cabb30967-1280.webp",
+      "bytes": 77446
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/0998644cabb30967-1448.webp",
+      "bytes": 101178
+    }
+  ],
+  "/destinations/collage/life.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/9ed83f21c4fff505-480.webp",
+      "bytes": 33562
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/9ed83f21c4fff505-768.webp",
+      "bytes": 63548
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/9ed83f21c4fff505-1280.webp",
+      "bytes": 116700
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/9ed83f21c4fff505-1448.webp",
+      "bytes": 160138
+    }
+  ],
+  "/destinations/collage/planning.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/67fcb5e38d78c477-480.webp",
+      "bytes": 19798
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/67fcb5e38d78c477-768.webp",
+      "bytes": 35432
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/67fcb5e38d78c477-1280.webp",
+      "bytes": 64640
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/67fcb5e38d78c477-1448.webp",
+      "bytes": 80872
+    }
+  ],
+  "/destinations/collage/study.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/9ee32d6d3047da8a-480.webp",
+      "bytes": 27884
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/9ee32d6d3047da8a-768.webp",
+      "bytes": 50012
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/9ee32d6d3047da8a-1280.webp",
+      "bytes": 91568
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/9ee32d6d3047da8a-1448.webp",
+      "bytes": 121984
+    }
+  ],
+  "/destinations/collage/travel.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/208bc8bae22914b2-480.webp",
+      "bytes": 22776
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/208bc8bae22914b2-768.webp",
+      "bytes": 40748
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/208bc8bae22914b2-1280.webp",
+      "bytes": 73918
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/208bc8bae22914b2-1448.webp",
+      "bytes": 95128
+    }
+  ],
+  "/destinations/denmark-twilight.png": [
+    {
+      "width": 480,
+      "url": "/hero-assets/e2fb25de9d1e3bbc-480.webp",
+      "bytes": 32288
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/e2fb25de9d1e3bbc-768.webp",
+      "bytes": 75768
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/e2fb25de9d1e3bbc-1280.webp",
+      "bytes": 174364
+    },
+    {
+      "width": 1774,
+      "url": "/hero-assets/e2fb25de9d1e3bbc-1774.webp",
+      "bytes": 283422
+    }
+  ],
+  "/destinations/denmark.png": [
+    {
+      "width": 480,
+      "url": "/hero-assets/94de82428e66953b-480.webp",
+      "bytes": 40924
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/94de82428e66953b-768.webp",
+      "bytes": 94864
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/94de82428e66953b-1280.webp",
+      "bytes": 230854
+    },
+    {
+      "width": 1672,
+      "url": "/hero-assets/94de82428e66953b-1672.webp",
+      "bytes": 349588
+    }
+  ],
+  "/destinations/finland-twilight.png": [
+    {
+      "width": 480,
+      "url": "/hero-assets/8e52a7f1886797f3-480.webp",
+      "bytes": 29222
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/8e52a7f1886797f3-768.webp",
+      "bytes": 65118
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/8e52a7f1886797f3-1280.webp",
+      "bytes": 149914
+    },
+    {
+      "width": 1774,
+      "url": "/hero-assets/8e52a7f1886797f3-1774.webp",
+      "bytes": 236310
+    }
+  ],
+  "/destinations/finland.png": [
+    {
+      "width": 480,
+      "url": "/hero-assets/33ef7c907a5e9b23-480.webp",
+      "bytes": 35240
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/33ef7c907a5e9b23-768.webp",
+      "bytes": 82776
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/33ef7c907a5e9b23-1280.webp",
+      "bytes": 202920
+    },
+    {
+      "width": 1672,
+      "url": "/hero-assets/33ef7c907a5e9b23-1672.webp",
+      "bytes": 304076
+    }
+  ],
+  "/destinations/germany.png": [
+    {
+      "width": 480,
+      "url": "/hero-assets/71a504dd4ab0daa8-480.webp",
+      "bytes": 28308
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/71a504dd4ab0daa8-768.webp",
+      "bytes": 63030
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/71a504dd4ab0daa8-1280.webp",
+      "bytes": 146558
+    },
+    {
+      "width": 1774,
+      "url": "/hero-assets/71a504dd4ab0daa8-1774.webp",
+      "bytes": 236492
+    }
+  ],
+  "/destinations/italy-home-venice.png": [
+    {
+      "width": 480,
+      "url": "/hero-assets/6c41592144f3cfb6-480.webp",
+      "bytes": 34186
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/6c41592144f3cfb6-768.webp",
+      "bytes": 79728
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/6c41592144f3cfb6-1280.webp",
+      "bytes": 184738
+    },
+    {
+      "width": 1774,
+      "url": "/hero-assets/6c41592144f3cfb6-1774.webp",
+      "bytes": 296556
+    }
+  ],
+  "/destinations/italy-twilight.png": [
+    {
+      "width": 480,
+      "url": "/hero-assets/dca818a9a96034b8-480.webp",
+      "bytes": 34186
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/dca818a9a96034b8-768.webp",
+      "bytes": 79728
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/dca818a9a96034b8-1280.webp",
+      "bytes": 184738
+    },
+    {
+      "width": 1774,
+      "url": "/hero-assets/dca818a9a96034b8-1774.webp",
+      "bytes": 296556
+    }
+  ],
+  "/destinations/italy.png": [
+    {
+      "width": 480,
+      "url": "/hero-assets/e0f97e88db6cbdfe-480.webp",
+      "bytes": 34562
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/e0f97e88db6cbdfe-768.webp",
+      "bytes": 81916
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/e0f97e88db6cbdfe-1280.webp",
+      "bytes": 192232
+    },
+    {
+      "width": 1774,
+      "url": "/hero-assets/e0f97e88db6cbdfe-1774.webp",
+      "bytes": 307188
+    }
+  ],
+  "/destinations/netherlands.png": [
+    {
+      "width": 480,
+      "url": "/hero-assets/69b378aee03a89de-480.webp",
+      "bytes": 33240
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/69b378aee03a89de-768.webp",
+      "bytes": 78134
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/69b378aee03a89de-1280.webp",
+      "bytes": 193268
+    },
+    {
+      "width": 1774,
+      "url": "/hero-assets/69b378aee03a89de-1774.webp",
+      "bytes": 319494
+    }
+  ],
+  "/destinations/new-zealand-twilight.png": [
+    {
+      "width": 480,
+      "url": "/hero-assets/fb3c7fd1bb67ade5-480.webp",
+      "bytes": 30924
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/fb3c7fd1bb67ade5-768.webp",
+      "bytes": 71958
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/fb3c7fd1bb67ade5-1280.webp",
+      "bytes": 163294
+    },
+    {
+      "width": 1774,
+      "url": "/hero-assets/fb3c7fd1bb67ade5-1774.webp",
+      "bytes": 261410
+    }
+  ],
+  "/destinations/new-zealand.png": [
+    {
+      "width": 480,
+      "url": "/hero-assets/100e2b63b8f57003-480.webp",
+      "bytes": 27836
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/100e2b63b8f57003-768.webp",
+      "bytes": 65228
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/100e2b63b8f57003-1280.webp",
+      "bytes": 154524
+    },
+    {
+      "width": 1672,
+      "url": "/hero-assets/100e2b63b8f57003-1672.webp",
+      "bytes": 233792
+    }
+  ],
+  "/destinations/sweden-twilight.png": [
+    {
+      "width": 480,
+      "url": "/hero-assets/2809bb6a163676d3-480.webp",
+      "bytes": 30928
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/2809bb6a163676d3-768.webp",
+      "bytes": 69374
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/2809bb6a163676d3-1280.webp",
+      "bytes": 153936
+    },
+    {
+      "width": 1774,
+      "url": "/hero-assets/2809bb6a163676d3-1774.webp",
+      "bytes": 239572
+    }
+  ],
+  "/destinations/sweden.png": [
+    {
+      "width": 480,
+      "url": "/hero-assets/b1b27edc3610491c-480.webp",
+      "bytes": 35638
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/b1b27edc3610491c-768.webp",
+      "bytes": 83210
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/b1b27edc3610491c-1280.webp",
+      "bytes": 197242
+    },
+    {
+      "width": 1672,
+      "url": "/hero-assets/b1b27edc3610491c-1672.webp",
+      "bytes": 297598
+    }
+  ],
+  "/destinations/united-kingdom.png": [
+    {
+      "width": 480,
+      "url": "/hero-assets/7d173c8459e35e10-480.webp",
+      "bytes": 25232
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/7d173c8459e35e10-768.webp",
+      "bytes": 56400
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/7d173c8459e35e10-1280.webp",
+      "bytes": 128204
+    },
+    {
+      "width": 1774,
+      "url": "/hero-assets/7d173c8459e35e10-1774.webp",
+      "bytes": 204080
+    }
+  ],
+  "/destinations/world-map-hero-wide.png": [
+    {
+      "width": 480,
+      "url": "/hero-assets/7989fcc7a0bbd4bb-480.webp",
+      "bytes": 27076
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/7989fcc7a0bbd4bb-768.webp",
+      "bytes": 68740
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/7989fcc7a0bbd4bb-1280.webp",
+      "bytes": 182826
+    },
+    {
+      "width": 1920,
+      "url": "/hero-assets/7989fcc7a0bbd4bb-1920.webp",
+      "bytes": 366662
+    }
+  ],
+  "/destinations/world-map-hero.png": [
+    {
+      "width": 480,
+      "url": "/hero-assets/14a477e52a2d5a9d-480.webp",
+      "bytes": 35290
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/14a477e52a2d5a9d-768.webp",
+      "bytes": 89092
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/14a477e52a2d5a9d-1280.webp",
+      "bytes": 233528
+    },
+    {
+      "width": 1665,
+      "url": "/hero-assets/14a477e52a2d5a9d-1665.webp",
+      "bytes": 344886
+    }
+  ],
+  "/free-consultation.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/0ef26be5fb285d03-480.webp",
+      "bytes": 29082
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/0ef26be5fb285d03-768.webp",
+      "bytes": 50902
+    },
+    {
+      "width": 981,
+      "url": "/hero-assets/0ef26be5fb285d03-981.webp",
+      "bytes": 74360
+    }
+  ],
+  "/home-hero-campus-v2.png": [
+    {
+      "width": 480,
+      "url": "/hero-assets/887f574b73abfa9e-480.webp",
+      "bytes": 23878
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/887f574b73abfa9e-768.webp",
+      "bytes": 49272
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/887f574b73abfa9e-1280.webp",
+      "bytes": 95420
+    },
+    {
+      "width": 1920,
+      "url": "/hero-assets/887f574b73abfa9e-1920.webp",
+      "bytes": 156962
+    }
+  ],
+  "/home-hero-documentary.png": [
+    {
+      "width": 480,
+      "url": "/hero-assets/321c4389b5d70fee-480.webp",
+      "bytes": 16986
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/321c4389b5d70fee-768.webp",
+      "bytes": 39768
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/321c4389b5d70fee-1280.webp",
+      "bytes": 92022
+    },
+    {
+      "width": 1920,
+      "url": "/hero-assets/321c4389b5d70fee-1920.webp",
+      "bytes": 162636
+    }
+  ],
+  "/services-hero-interview.png": [
+    {
+      "width": 480,
+      "url": "/hero-assets/defbce2f416c42c1-480.webp",
+      "bytes": 24086
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/defbce2f416c42c1-768.webp",
+      "bytes": 48874
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/defbce2f416c42c1-1280.webp",
+      "bytes": 99006
+    },
+    {
+      "width": 1672,
+      "url": "/hero-assets/defbce2f416c42c1-1672.webp",
+      "bytes": 139930
+    }
+  ],
+  "/universities/aalborg-university.jpg": [
+    {
+      "width": 480,
+      "url": "/hero-assets/9cec013261bab97d-480.webp",
+      "bytes": 44936
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/9cec013261bab97d-768.webp",
+      "bytes": 119252
+    },
+    {
+      "width": 960,
+      "url": "/hero-assets/9cec013261bab97d-960.webp",
+      "bytes": 189774
+    }
+  ],
+  "/universities/aalto-university.jpg": [
+    {
+      "width": 480,
+      "url": "/hero-assets/a9fbad76c56633b7-480.webp",
+      "bytes": 34224
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/a9fbad76c56633b7-768.webp",
+      "bytes": 87990
+    },
+    {
+      "width": 960,
+      "url": "/hero-assets/a9fbad76c56633b7-960.webp",
+      "bytes": 141698
+    }
+  ],
+  "/universities/aarhus-university.jpg": [
+    {
+      "width": 480,
+      "url": "/hero-assets/364833b0bf66fab8-480.webp",
+      "bytes": 32792
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/364833b0bf66fab8-768.webp",
+      "bytes": 88932
+    },
+    {
+      "width": 960,
+      "url": "/hero-assets/364833b0bf66fab8-960.webp",
+      "bytes": 147500
+    }
+  ],
+  "/universities/adelaide-university.jpg": [
+    {
+      "width": 480,
+      "url": "/hero-assets/033fcb1223e3122a-480.webp",
+      "bytes": 36652
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/033fcb1223e3122a-768.webp",
+      "bytes": 96548
+    },
+    {
+      "width": 960,
+      "url": "/hero-assets/033fcb1223e3122a-960.webp",
+      "bytes": 158926
+    }
+  ],
+  "/universities/australian-national-university.jpg": [
+    {
+      "width": 480,
+      "url": "/hero-assets/a9211ddca93252ba-480.webp",
+      "bytes": 19106
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/a9211ddca93252ba-768.webp",
+      "bytes": 44546
+    },
+    {
+      "width": 960,
+      "url": "/hero-assets/a9211ddca93252ba-960.webp",
+      "bytes": 70288
+    }
+  ],
+  "/universities/braunschweig-university-of-technology.jpg": [
+    {
+      "width": 480,
+      "url": "/hero-assets/5896fb418ccc18f1-480.webp",
+      "bytes": 17334
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/5896fb418ccc18f1-768.webp",
+      "bytes": 43234
+    },
+    {
+      "width": 960,
+      "url": "/hero-assets/5896fb418ccc18f1-960.webp",
+      "bytes": 70418
+    }
+  ],
+  "/universities/cardiff-university.jpg": [
+    {
+      "width": 480,
+      "url": "/hero-assets/d0731775e3100090-480.webp",
+      "bytes": 39636
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/d0731775e3100090-768.webp",
+      "bytes": 100126
+    },
+    {
+      "width": 960,
+      "url": "/hero-assets/d0731775e3100090-960.webp",
+      "bytes": 160678
+    }
+  ],
+  "/universities/catholic-university-of-the-sacred-heart.jpg": [
+    {
+      "width": 480,
+      "url": "/hero-assets/50a24cf7f3ba2dae-480.webp",
+      "bytes": 64940
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/50a24cf7f3ba2dae-768.webp",
+      "bytes": 144562
+    },
+    {
+      "width": 800,
+      "url": "/hero-assets/50a24cf7f3ba2dae-800.webp",
+      "bytes": 164296
+    }
+  ],
+  "/universities/chalmers-university-of-technology.jpg": [
+    {
+      "width": 480,
+      "url": "/hero-assets/ff5a480f7b9e3193-480.webp",
+      "bytes": 37164
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/ff5a480f7b9e3193-768.webp",
+      "bytes": 89374
+    },
+    {
+      "width": 960,
+      "url": "/hero-assets/ff5a480f7b9e3193-960.webp",
+      "bytes": 140654
+    }
+  ],
+  "/universities/charite-universitatsmedizin-berlin.jpg": [
+    {
+      "width": 480,
+      "url": "/hero-assets/693df1be7f7dc8a1-480.webp",
+      "bytes": 33592
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/693df1be7f7dc8a1-768.webp",
+      "bytes": 84026
+    },
+    {
+      "width": 960,
+      "url": "/hero-assets/693df1be7f7dc8a1-960.webp",
+      "bytes": 135552
+    }
+  ],
+  "/universities/curtin-university.jpg": [
+    {
+      "width": 480,
+      "url": "/hero-assets/1d696a997cf81fc4-480.webp",
+      "bytes": 66730
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/1d696a997cf81fc4-768.webp",
+      "bytes": 180390
+    },
+    {
+      "width": 960,
+      "url": "/hero-assets/1d696a997cf81fc4-960.webp",
+      "bytes": 294636
+    }
+  ],
+  "/universities/dalhousie.jpg": [
+    {
+      "width": 480,
+      "url": "/hero-assets/8ea10140a8af8759-480.webp",
+      "bytes": 30668
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/8ea10140a8af8759-768.webp",
+      "bytes": 74856
+    },
+    {
+      "width": 960,
+      "url": "/hero-assets/8ea10140a8af8759-960.webp",
+      "bytes": 111358
+    }
+  ],
+  "/universities/delft-university-of-technology.jpg": [
+    {
+      "width": 480,
+      "url": "/hero-assets/ece2690573f3c393-480.webp",
+      "bytes": 33858
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/ece2690573f3c393-768.webp",
+      "bytes": 92048
+    },
+    {
+      "width": 960,
+      "url": "/hero-assets/ece2690573f3c393-960.webp",
+      "bytes": 150458
+    }
+  ],
+  "/universities/durham-university.jpg": [
+    {
+      "width": 480,
+      "url": "/hero-assets/55dcb9972b58fbb9-480.webp",
+      "bytes": 48212
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/55dcb9972b58fbb9-768.webp",
+      "bytes": 132898
+    },
+    {
+      "width": 960,
+      "url": "/hero-assets/55dcb9972b58fbb9-960.webp",
+      "bytes": 215682
+    }
+  ],
+  "/universities/eberhard-karls-university-of-tubingen.jpg": [
+    {
+      "width": 480,
+      "url": "/hero-assets/12458c5e6925aee9-480.webp",
+      "bytes": 34898
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/12458c5e6925aee9-768.webp",
+      "bytes": 86346
+    },
+    {
+      "width": 960,
+      "url": "/hero-assets/12458c5e6925aee9-960.webp",
+      "bytes": 135930
+    }
+  ],
+  "/universities/eindhoven-university-of-technology.jpg": [
+    {
+      "width": 480,
+      "url": "/hero-assets/13182995eb9ca8ee-480.webp",
+      "bytes": 30620
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/13182995eb9ca8ee-768.webp",
+      "bytes": 76712
+    },
+    {
+      "width": 960,
+      "url": "/hero-assets/13182995eb9ca8ee-960.webp",
+      "bytes": 121722
+    }
+  ],
+  "/universities/erasmus-university-rotterdam.jpg": [
+    {
+      "width": 480,
+      "url": "/hero-assets/bf3fe81313c3d5ac-480.webp",
+      "bytes": 24692
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/bf3fe81313c3d5ac-768.webp",
+      "bytes": 64640
+    },
+    {
+      "width": 960,
+      "url": "/hero-assets/bf3fe81313c3d5ac-960.webp",
+      "bytes": 108900
+    }
+  ],
+  "/universities/hero/classical-campus.png": [
+    {
+      "width": 480,
+      "url": "/hero-assets/5d22d15184558aa0-480.webp",
+      "bytes": 27084
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/5d22d15184558aa0-768.webp",
+      "bytes": 66602
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/5d22d15184558aa0-1280.webp",
+      "bytes": 173250
+    },
+    {
+      "width": 1920,
+      "url": "/hero-assets/5d22d15184558aa0-1920.webp",
+      "bytes": 341860
+    }
+  ],
+  "/universities/imperial-college-london.jpg": [
+    {
+      "width": 480,
+      "url": "/hero-assets/fcd1024416fb67fc-480.webp",
+      "bytes": 26196
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/fcd1024416fb67fc-768.webp",
+      "bytes": 52884
+    },
+    {
+      "width": 960,
+      "url": "/hero-assets/fcd1024416fb67fc-960.webp",
+      "bytes": 76982
+    }
+  ],
+  "/universities/karolinska-institute.jpg": [
+    {
+      "width": 480,
+      "url": "/hero-assets/ddc91bc19600a550-480.webp",
+      "bytes": 61684
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/ddc91bc19600a550-768.webp",
+      "bytes": 139688
+    },
+    {
+      "width": 960,
+      "url": "/hero-assets/ddc91bc19600a550-960.webp",
+      "bytes": 219304
+    }
+  ],
+  "/universities/kth-royal-institute-of-technology.jpg": [
+    {
+      "width": 480,
+      "url": "/hero-assets/26248543d4b904d6-480.webp",
+      "bytes": 24358
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/26248543d4b904d6-768.webp",
+      "bytes": 70606
+    },
+    {
+      "width": 960,
+      "url": "/hero-assets/26248543d4b904d6-960.webp",
+      "bytes": 112948
+    }
+  ],
+  "/universities/laval.jpg": [
+    {
+      "width": 480,
+      "url": "/hero-assets/33a6a3debd8ce964-480.webp",
+      "bytes": 17202
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/33a6a3debd8ce964-768.webp",
+      "bytes": 40152
+    },
+    {
+      "width": 960,
+      "url": "/hero-assets/33a6a3debd8ce964-960.webp",
+      "bytes": 61990
+    }
+  ],
+  "/universities/massey-university.jpg": [
+    {
+      "width": 480,
+      "url": "/hero-assets/cf16beb9d4d3ab1a-480.webp",
+      "bytes": 40082
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/cf16beb9d4d3ab1a-768.webp",
+      "bytes": 99180
+    },
+    {
+      "width": 960,
+      "url": "/hero-assets/cf16beb9d4d3ab1a-960.webp",
+      "bytes": 157364
+    }
+  ],
+  "/universities/mcgill.jpg": [
+    {
+      "width": 480,
+      "url": "/hero-assets/fbf710e66999dd9a-480.webp",
+      "bytes": 46122
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/fbf710e66999dd9a-768.webp",
+      "bytes": 111706
+    },
+    {
+      "width": 960,
+      "url": "/hero-assets/fbf710e66999dd9a-960.webp",
+      "bytes": 172300
+    }
+  ],
+  "/universities/personal-path-design.png": [
+    {
+      "width": 480,
+      "url": "/hero-assets/da5e4dcc424632c2-480.webp",
+      "bytes": 14282
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/da5e4dcc424632c2-768.webp",
+      "bytes": 29986
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/da5e4dcc424632c2-1280.webp",
+      "bytes": 65642
+    },
+    {
+      "width": 1672,
+      "url": "/hero-assets/da5e4dcc424632c2-1672.webp",
+      "bytes": 94914
+    }
+  ],
+  "/universities/polytechnic-university-of-milan.jpg": [
+    {
+      "width": 480,
+      "url": "/hero-assets/fe2944762436e592-480.webp",
+      "bytes": 43928
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/fe2944762436e592-768.webp",
+      "bytes": 105774
+    },
+    {
+      "width": 960,
+      "url": "/hero-assets/fe2944762436e592-960.webp",
+      "bytes": 167246
+    }
+  ],
+  "/universities/polytechnic-university-of-turin.jpg": [
+    {
+      "width": 480,
+      "url": "/hero-assets/b9e9957efb8b29fa-480.webp",
+      "bytes": 29418
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/b9e9957efb8b29fa-768.webp",
+      "bytes": 83048
+    },
+    {
+      "width": 960,
+      "url": "/hero-assets/b9e9957efb8b29fa-960.webp",
+      "bytes": 133946
+    }
+  ],
+  "/universities/tampere-university.jpg": [
+    {
+      "width": 480,
+      "url": "/hero-assets/a0e38f12fc48e216-480.webp",
+      "bytes": 19842
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/a0e38f12fc48e216-768.webp",
+      "bytes": 47646
+    },
+    {
+      "width": 960,
+      "url": "/hero-assets/a0e38f12fc48e216-960.webp",
+      "bytes": 75590
+    }
+  ],
+  "/universities/technical-university-of-denmark.jpg": [
+    {
+      "width": 480,
+      "url": "/hero-assets/f74953e5944245f0-480.webp",
+      "bytes": 23262
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/f74953e5944245f0-768.webp",
+      "bytes": 49122
+    },
+    {
+      "width": 960,
+      "url": "/hero-assets/f74953e5944245f0-960.webp",
+      "bytes": 76592
+    }
+  ],
+  "/universities/the-university-of-auckland.jpg": [
+    {
+      "width": 480,
+      "url": "/hero-assets/4054b84e79314cf9-480.webp",
+      "bytes": 27288
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/4054b84e79314cf9-768.webp",
+      "bytes": 68560
+    },
+    {
+      "width": 960,
+      "url": "/hero-assets/4054b84e79314cf9-960.webp",
+      "bytes": 110876
+    }
+  ],
+  "/universities/university-of-helsinki.jpg": [
+    {
+      "width": 480,
+      "url": "/hero-assets/5251a20620c99de0-480.webp",
+      "bytes": 38408
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/5251a20620c99de0-768.webp",
+      "bytes": 96510
+    },
+    {
+      "width": 960,
+      "url": "/hero-assets/5251a20620c99de0-960.webp",
+      "bytes": 155904
+    }
+  ],
+  "/universities/university-of-otago.jpg": [
+    {
+      "width": 480,
+      "url": "/hero-assets/5625de13ba9aa896-480.webp",
+      "bytes": 34612
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/5625de13ba9aa896-768.webp",
+      "bytes": 83238
+    },
+    {
+      "width": 960,
+      "url": "/hero-assets/5625de13ba9aa896-960.webp",
+      "bytes": 129448
+    }
+  ],
+  "/university-info/technical-university-of-munich.jpg": [
+    {
+      "width": 480,
+      "url": "/hero-assets/7850a5b746d6015a-480.webp",
+      "bytes": 30028
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/7850a5b746d6015a-768.webp",
+      "bytes": 61262
+    },
+    {
+      "width": 1024,
+      "url": "/hero-assets/7850a5b746d6015a-1024.webp",
+      "bytes": 91608
+    }
+  ],
+  "/university-info/university-of-bologna.jpg": [
+    {
+      "width": 480,
+      "url": "/hero-assets/078b8e4de54231ba-480.webp",
+      "bytes": 48590
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/078b8e4de54231ba-768.webp",
+      "bytes": 119736
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/078b8e4de54231ba-1280.webp",
+      "bytes": 298296
+    }
+  ],
+  "/university-info/university-of-toronto.jpg": [
+    {
+      "width": 480,
+      "url": "/hero-assets/88cbe5d109ea40d3-480.webp",
+      "bytes": 22686
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/88cbe5d109ea40d3-768.webp",
+      "bytes": 64908
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/88cbe5d109ea40d3-1280.webp",
+      "bytes": 205002
+    }
+  ],
+  "/university-info/western-campus.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/eeb876429e3ab241-480.webp",
+      "bytes": 67322
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/eeb876429e3ab241-768.webp",
+      "bytes": 166970
+    },
+    {
+      "width": 1080,
+      "url": "/hero-assets/eeb876429e3ab241-1080.webp",
+      "bytes": 346846
+    }
+  ],
+  "/university-info/western-gardens.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/904dd7f4e0b8dd04-480.webp",
+      "bytes": 54474
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/904dd7f4e0b8dd04-768.webp",
+      "bytes": 115146
+    },
+    {
+      "width": 1080,
+      "url": "/hero-assets/904dd7f4e0b8dd04-1080.webp",
+      "bytes": 207498
+    }
+  ],
+  "/university-info/western-ivey.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/7f8b7c47f8249931-480.webp",
+      "bytes": 27328
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/7f8b7c47f8249931-768.webp",
+      "bytes": 60580
+    },
+    {
+      "width": 1080,
+      "url": "/hero-assets/7f8b7c47f8249931-1080.webp",
+      "bytes": 116814
+    }
+  ],
+  "/university-info/western-students.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/72a0a410e418dd5b-480.webp",
+      "bytes": 25238
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/72a0a410e418dd5b-768.webp",
+      "bytes": 47382
+    },
+    {
+      "width": 1080,
+      "url": "/hero-assets/72a0a410e418dd5b-1080.webp",
+      "bytes": 74042
+    }
+  ]
+}
