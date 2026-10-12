@@ -21,6 +21,72 @@
       "bytes": 78730
     }
   ],
+  "/blog/guides/austria-collage.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/242632e5cc8a1ded-480.webp",
+      "bytes": 45122
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/242632e5cc8a1ded-768.webp",
+      "bytes": 112806
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/242632e5cc8a1ded-1280.webp",
+      "bytes": 229774
+    },
+    {
+      "width": 1536,
+      "url": "/hero-assets/242632e5cc8a1ded-1536.webp",
+      "bytes": 371922
+    }
+  ],
+  "/blog/guides/italy-collage.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/001ba119aaccf56f-480.webp",
+      "bytes": 45910
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/001ba119aaccf56f-768.webp",
+      "bytes": 111868
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/001ba119aaccf56f-1280.webp",
+      "bytes": 225346
+    },
+    {
+      "width": 1536,
+      "url": "/hero-assets/001ba119aaccf56f-1536.webp",
+      "bytes": 355562
+    }
+  ],
+  "/blog/guides/uk-collage.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/27e2df52943259c9-480.webp",
+      "bytes": 42344
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/27e2df52943259c9-768.webp",
+      "bytes": 106532
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/27e2df52943259c9-1280.webp",
+      "bytes": 217488
+    },
+    {
+      "width": 1536,
+      "url": "/hero-assets/27e2df52943259c9-1536.webp",
+      "bytes": 377930
+    }
+  ],
   "/blog/library-hero.webp": [
     {
       "width": 480,
@@ -1752,6 +1818,28 @@
       "width": 1920,
       "url": "/hero-assets/321c4389b5d70fee-1920.webp",
       "bytes": 162636
+    }
+  ],
+  "/home-trust-consultation.png": [
+    {
+      "width": 480,
+      "url": "/hero-assets/0f5a92d5a4eadda8-480.webp",
+      "bytes": 15700
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/0f5a92d5a4eadda8-768.webp",
+      "bytes": 27506
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/0f5a92d5a4eadda8-1280.webp",
+      "bytes": 50700
+    },
+    {
+      "width": 1604,
+      "url": "/hero-assets/0f5a92d5a4eadda8-1604.webp",
+      "bytes": 65414
     }
   ],
   "/home-trust-office-meeting.webp": [

@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { PreparedImage as Image } from "@/components/prepared-image";
 import Link from "next/link";
 import { destinationOverviews } from "@/lib/destinations-overview";
 import { destinationCountryFacts } from "@/lib/destination-country-facts";

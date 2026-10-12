@@ -1,5 +1,5 @@
 import { PanelConsultationCallout } from "@/components/panel-consultation-callout";
-import Image from "next/image";
+import { PreparedImage as Image } from "@/components/prepared-image";
 import Link from "next/link";
 import { SiteShell } from "@/components/site-shell";
 import { UniversityGallery, UniversityTabs } from "@/components/university-info-interactive";

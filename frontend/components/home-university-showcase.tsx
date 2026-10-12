@@ -1,6 +1,7 @@
 "use client";
 
-import Image from "next/image";
+import { PreparedImage as Image } from "@/components/prepared-image";
+import countryMaps from "@/lib/home-country-map-assets.json";
 import { useEffect, useRef, useState } from "react";
 import { animateHomeElement } from "@/lib/home-motion";
 
@@ -37,7 +38,7 @@ export function HomeUniversityShowcase({ locale }: { locale: Locale }) {
   return <>
     <div className="home-universities__filters" role="group" aria-label={locale === "fa" ? "انتخاب کشور دانشگاه‌ها" : "Choose a university country"} dir={locale === "fa" ? "rtl" : "ltr"}>
       {countries.map((country) => <button key={country.slug} type="button" className="home-universities__country" aria-pressed={activeCountry === country.slug} onClick={() => setActiveCountry(country.slug)}>
-        <Image src={`/home-country-maps/${country.slug}.svg`} alt="" width={64} height={64} />
+        <Image src={countryMaps[country.slug as keyof typeof countryMaps]} alt="" width={64} height={64} unoptimized />
         <span>{country[locale]}</span>
       </button>)}
     </div>

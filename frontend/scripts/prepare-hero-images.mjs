@@ -13,9 +13,9 @@ const sources = new Set([
   "/home-hero-campus-v2.png", "/services-hero-interview.png",
   "/home-hero-documentary.png", "/blog/library-hero.webp",
   "/universities/hero/classical-campus.png", "/destinations/world-map-hero-wide.png",
-  "/free-consultation.webp", "/home-trust-office-meeting.webp", "/brand/jahan-academy-official.png", "/assessment-hero-office.webp",
+  "/free-consultation.webp", "/home-trust-office-meeting.webp", "/brand/jahan-academy-official.png", "/assessment-hero-office.webp", "/home-trust-consultation.png",
 ]);
-for (const dir of ["journey", "services", "destinations", "destinations/collage", "universities", "university-info"]) {
+for (const dir of ["journey", "services", "destinations", "destinations/collage", "universities", "university-info", "blog/guides"]) {
   for (const item of await readdir(path.join(publicDir, dir), { withFileTypes: true })) {
     if (item.isFile() && /\.(png|jpe?g|webp)$/i.test(item.name) && !/logo/i.test(item.name)) sources.add(`/${dir}/${item.name}`);
   }
