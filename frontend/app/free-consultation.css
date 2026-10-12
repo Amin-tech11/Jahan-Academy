@@ -1,4 +1,4 @@
-.free-consultation-page { min-height: 100vh; padding: clamp(3rem, 6vw, 5.5rem) 0 clamp(4rem, 7vw, 7rem); background: #f7f8fa; }
+.free-consultation-page { min-height: 100vh; padding: clamp(1.5rem, 3vw, 2.5rem) 0 clamp(4rem, 7vw, 7rem); background: #f7f8fa; }
 .free-consultation-page__intro { max-width: 48rem; margin: 0 auto clamp(2rem, 4vw, 3.25rem); text-align: center; }
 .free-consultation-page__eyebrow { color: var(--color-brand-900); font-size: .8rem; font-weight: 800; }
 .free-consultation-page__intro h1 { margin: .65rem 0 .8rem; color: #202833; font-size: clamp(2rem, 4vw, 3.1rem); line-height: 1.4; }
