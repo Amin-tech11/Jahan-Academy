@@ -61,30 +61,59 @@ export function apiUrl(
 }
 
 export async function apiRequest<T>(path: string, options: ApiRequestOptions = {}): Promise<T> {
-  const { query, body, timeoutMs = 10000, headers, signal, ...rest } = options;
-  const timeout = AbortSignal.timeout(timeoutMs);
-  const requestSignal = signal ? AbortSignal.any([signal, timeout]) : timeout;
-  const response = await fetch(apiUrl(path, query), {
-    ...rest,
-    signal: requestSignal,
-    headers: {
-      Accept: "application/json",
-      ...(body !== undefined ? { "Content-Type": "application/json" } : {}),
-      ...headers,
-    },
-    ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
-  });
+  const { query, body, headers, signal, timeoutMs: configuredTimeout, ...rest } = options;
+  const consultation = path === "/consultation-requests" && options.method?.toUpperCase() === "POST";
+  const retryable = consultation && Boolean(new Headers(headers).get("Idempotency-Key"));
+  const timeoutMs = configuredTimeout ?? (consultation ? 30000 : 10000);
+  const serialized = body === undefined ? undefined : JSON.stringify(body);
+  const fa = body !== null && typeof body === "object" && "locale" in body && body.locale === "fa";
+  for (let attempt = 0; ; attempt += 1) {
+    const timeout = AbortSignal.timeout(timeoutMs);
+    const requestSignal = signal ? AbortSignal.any([signal, timeout]) : timeout;
+    try {
+      const response = await fetch(apiUrl(path, query), {
+        ...rest,
+        signal: requestSignal,
+        headers: {
+          Accept: "application/json",
+          ...(body !== undefined ? { "Content-Type": "application/json" } : {}),
+          ...Object.fromEntries(new Headers(headers)),
+        },
+        ...(serialized !== undefined ? { body: serialized } : {}),
+      });
 
-  if (response.status === 204) return undefined as T;
-  const payload: unknown = await response.json().catch(() => null);
-  if (!response.ok) {
-    const failure = payload as ApiFailure | null;
-    throw new ApiError(
-      response.status,
-      failure?.error?.code ?? "REQUEST_FAILED",
-      failure?.error?.message ?? `Request failed (${response.status}).`,
-      failure?.error?.fieldErrors,
-    );
+      if (response.status === 204 && !consultation) return undefined as T;
+      // Read errors (including a timeout after response headers) must not become a null success.
+      const responseText = await response.text();
+      let payload: unknown = null;
+      try { payload = JSON.parse(responseText); } catch { /* HTTP error pages may not be JSON. */ }
+      if (!response.ok) {
+        const failure = payload as ApiFailure | null;
+        throw new ApiError(
+          response.status,
+          failure?.error?.code ?? "REQUEST_FAILED",
+          failure?.error?.message ?? `Request failed (${response.status}).`,
+          failure?.error?.fieldErrors,
+        );
+      }
+      if (consultation && !(payload && typeof payload === "object" && "data" in payload &&
+        payload.data && typeof payload.data === "object" && "reference" in payload.data &&
+        typeof payload.data.reference === "string" && payload.data.reference.length > 0)) {
+        throw new TypeError("Consultation response is missing its receipt.");
+      }
+      return payload as T;
+    } catch (error) {
+      if (signal?.aborted) throw error;
+      const transportFailure = error instanceof TypeError ||
+        (error instanceof DOMException && ["TimeoutError", "AbortError"].includes(error.name));
+      // Only this endpoint's keyed POST is safe to replay; never retry arbitrary writes.
+      if (retryable && transportFailure && attempt === 0) continue;
+      if (consultation && transportFailure) {
+        throw new ApiError(0, "SUBMISSION_UNCONFIRMED", fa
+          ? "تأیید ثبت درخواست دریافت نشد. لطفاً با همین اطلاعات دوباره تلاش کنید؛ از ثبت تکراری جلوگیری می‌شود."
+          : "We could not confirm your submission. Retry with the same details; duplicate submissions are prevented.");
+      }
+      throw error;
+    }
   }
-  return payload as T;
 }

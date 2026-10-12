@@ -25,7 +25,7 @@ test("services consultation supplies the public API contract and keeps its retry
       if (name === "./consultation-success") return { ConsultationSuccess: () => null };
       if (name === "./consultation-form-heading") return { ConsultationFormHeading: () => null };
       if (name === "@/lib/consultation") return { normalizeMobile: value => value };
-      if (name === "@/lib/api-client") return { apiRequest: async (path, options) => { calls.push({ path, options }); throw new Error("network interruption"); } };
+      if (name === "@/lib/api-client") return { ApiError: class extends Error {}, apiRequest: async (path, options) => { calls.push({ path, options }); throw new Error("network interruption"); } };
       throw new Error(name);
     },
   });
