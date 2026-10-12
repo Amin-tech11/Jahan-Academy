@@ -249,6 +249,35 @@ async def google_token(client: httpx.AsyncClient, credentials_file: str) -> str:
     return str(response.json()["access_token"])
 
 
+async def verify_snapshot(
+    client: httpx.AsyncClient, url: str, title: str, values: list[list[str]]
+) -> None:
+    response = await client.get(
+        url,
+        params={
+            "ranges": f"'{title}'!A1:N{len(values) + 1}",
+            "includeGridData": "true",
+            "fields": "sheets(data(rowData(values(userEnteredValue,effectiveFormat(textFormat)))))",
+        },
+    )
+    response.raise_for_status()
+    rows = response.json()["sheets"][0]["data"][0].get("rowData", [])
+    expected = [HEADERS, *values]
+    if len(rows) != len(expected):
+        raise ValueError("Backup readback row count differs")
+    for row, cells in zip(rows, expected, strict=True):
+        actual = row.get("values", [])
+        if len(actual) != len(HEADERS):
+            raise ValueError("Backup readback column count differs")
+        for cell, value in zip(actual, cells, strict=True):
+            if (
+                cell.get("userEnteredValue", {}).get("stringValue") != value
+                or cell.get("effectiveFormat", {}).get("textFormat", {}).get("fontFamily")
+                != "B_Nazanin"
+            ):
+                raise ValueError("Backup readback values or font differ")
+
+
 async def write_snapshot(
     client: httpx.AsyncClient, spreadsheet_id: str, day: str, values: list[list[str]]
 ) -> str:
@@ -263,12 +292,14 @@ async def write_snapshot(
         props = sheet["properties"]
         if props["title"] == title or props["sheetId"] == target_id:
             if props["title"] == title and props["sheetId"] == target_id:
+                await verify_snapshot(client, url, title, values)
                 return "already_saved"
             raise ValueError("Backup tab conflicts with an existing sheet; no data overwritten")
     response = await client.post(
         url + ":batchUpdate", json={"requests": snapshot_requests(day, values)}
     )
     response.raise_for_status()
+    await verify_snapshot(client, url, title, values)
     return "saved"
 
 
