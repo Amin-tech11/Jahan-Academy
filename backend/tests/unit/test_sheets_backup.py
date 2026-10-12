@@ -24,6 +24,7 @@ from app.modules.operational.sheets_backup import (
     prepare_day,
     previous_day,
     row_values,
+    scheduled_through,
     snapshot_requests,
     write_snapshot,
 )
@@ -49,11 +50,17 @@ def test_dispatch_freezes_date_in_task_arguments() -> None:
             "app.modules.operational.tasks.get_settings",
             return_value=Settings(sheets_backup_enabled=True),
         ),
-        patch("app.modules.operational.tasks.previous_day", return_value="2026-10-07"),
+        patch("app.modules.operational.tasks.scheduled_through", return_value="2026-10-07"),
         patch("app.modules.operational.tasks.recover_sheets_task.delay") as queue,
     ):
         dispatch_sheets_backup_task()
     queue.assert_called_once_with("2026-10-07")
+
+
+def test_daily_eight_am_deadline_does_not_run_early_on_startup() -> None:
+    assert scheduled_through(datetime(2026, 10, 7, 4, 29, tzinfo=UTC)) == "2026-10-05"
+    assert scheduled_through(datetime(2026, 10, 7, 4, 30, tzinfo=UTC)) == "2026-10-06"
+    assert scheduled_through(datetime(2026, 10, 7, 20, 30, tzinfo=UTC)) == "2026-10-06"
 
 
 def test_assessment_values_match_export_columns_and_preserve_text() -> None:

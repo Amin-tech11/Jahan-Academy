@@ -13,7 +13,7 @@ celery_app.conf.update(
     beat_schedule={
         "recover-consultation-sheets": {
             "task": "jahan.operational.dispatch_sheets_backup",
-            "schedule": crontab(hour="*/4", minute=0, app=celery_app),
+            "schedule": crontab(hour=8, minute=0, app=celery_app),
         }
     },
 )

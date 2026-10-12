@@ -77,6 +77,12 @@ def previous_day(now: datetime | None = None) -> str:
     return ((now or datetime.now(UTC)).astimezone(TEHRAN).date() - timedelta(days=1)).isoformat()
 
 
+def scheduled_through(now: datetime | None = None) -> str:
+    """Last civil day whose daily 08:00 Tehran backup deadline has passed."""
+    local = (now or datetime.now(UTC)).astimezone(TEHRAN)
+    return (local.date() - timedelta(days=1 if local.hour >= 8 else 2)).isoformat()
+
+
 def row_values(row: dict[str, Any]) -> list[str]:
     message = str(row.get("message") or "")
     answers = {}

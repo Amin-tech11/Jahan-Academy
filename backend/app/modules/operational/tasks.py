@@ -11,7 +11,7 @@ from app.core.celery_app import celery_app
 from app.core.config import get_settings
 from app.core.database import dispose_database, session_factory
 from app.modules.operational.retention import RetentionRepository
-from app.modules.operational.sheets_backup import backup_day, previous_day
+from app.modules.operational.sheets_backup import backup_day, scheduled_through
 
 
 async def enforce_retention() -> dict[str, int]:
@@ -43,7 +43,7 @@ def enforce_retention_task() -> dict[str, int]:
 def dispatch_sheets_backup_task() -> None:
     if get_settings().sheets_backup_enabled:
         # Freeze the target day before queueing: retries after midnight keep the same day.
-        recover_sheets_task.delay(previous_day())
+        recover_sheets_task.delay(scheduled_through())
 
 
 @celery_app.task(  # type: ignore[untyped-decorator]
@@ -59,8 +59,8 @@ def recover_sheets_task(through: str) -> dict[str, int]:
     if not settings.sheets_backup_enabled:
         return {"processed": 0}
     last = date.fromisoformat(through)
-    if last > date.fromisoformat(previous_day()):
-        raise ValueError("Only complete Tehran days may be backed up")
+    if last > date.fromisoformat(scheduled_through()):
+        raise ValueError("Only days past their 08:00 Tehran deadline may be recovered")
     day = date(2026, 10, 7)
     processed = 0
     with Redis.from_url(settings.redis_url) as state:
