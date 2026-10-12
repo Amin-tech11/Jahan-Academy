@@ -1,15 +1,23 @@
-# Optional override. Activate only after sharing the target spreadsheet with the service account.
+# Add only the dedicated backup services to the existing application stack.
 services:
-  worker-integration:
+  backup-worker:
+    extends:
+      file: docker-compose.yml
+      service: worker-integration
+    image: jahan-academy-backup:local
+    command: [/app/.venv/bin/celery, -A, app.core.backup_celery:celery_app, worker, --loglevel=INFO, --concurrency=1, --queues=sheets-backup, --hostname=sheets-backup@%h]
     environment:
       JAHAN_SHEETS_BACKUP_ENABLED: "true"
       JAHAN_SHEETS_BACKUP_SPREADSHEET_ID: 1D-OEZf_lO8pym4ZYqBxCjsMYYfG-HG109jMmx2dBK4A
       JAHAN_SHEETS_BACKUP_CREDENTIALS_FILE: /run/secrets/google-service-account.json
     volumes:
       - ${JAHAN_GOOGLE_CREDENTIALS_FILE:?Set the absolute path to the service account JSON}:/run/secrets/google-service-account.json:ro
-    networks:
-      - application
-      - edge
-  beat:
+    networks: [application, edge]
+  backup-beat:
+    extends:
+      file: docker-compose.yml
+      service: beat
+    image: jahan-academy-backup:local
+    command: [/app/.venv/bin/celery, -A, app.core.backup_celery:celery_app, beat, --loglevel=INFO]
     environment:
       JAHAN_SHEETS_BACKUP_ENABLED: "true"
