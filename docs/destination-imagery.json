@@ -1,0 +1,1061 @@
+{
+  "created": "2026-10-12",
+  "generator": "OpenAI built-in image generation",
+  "purpose": "Original illustrative student scenes; not documentary photographs of actual students or named institutions.",
+  "referencePattern": [
+    "Human-first country-specific scenes",
+    "Learning, urban life, planning, arrival and graduation",
+    "Natural daylight and optimistic candid compositions",
+    "Rounded asymmetric photo collages"
+  ],
+  "references": [
+    {
+      "url": "https://www.applyboard.com/australia#australia-academics",
+      "images": [
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2020/09/ApplyBoard_Logo_Horizontal_Blue.svg",
+          "alt": "ApplyBoard Logo"
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/03/Frame-5011.svg",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/Fire-image.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/banner-australia-1024x791.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/australia_mob-901x1024.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/global_image-1024x973.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/IMG_small-town_b_australia-1024x926.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/experience-image_australia-992x1024.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/arrow_image.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/wave_aus_bnr-1024x1009.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/community_aus_bnr-1-1000x1024.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/student-aus_image-1024x785.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/australia-flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/canda_flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/germany_flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/ireland_flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/uk-flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/usa-flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/03/Group-2.png",
+          "alt": ""
+        },
+        {
+          "url": "https://cdn.cookielaw.org/logos/static/poweredBy_ot_logo.svg",
+          "alt": "Powered by Onetrust"
+        }
+      ]
+    },
+    {
+      "url": "https://www.applyboard.com/canada#canada-academics",
+      "images": [
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2020/09/ApplyBoard_Logo_Horizontal_Blue.svg",
+          "alt": "ApplyBoard Logo"
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/03/Frame-5011.svg",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/03/Fire-1.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/03/canda_bnr-1024x782-1.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/03/jurney_mob-1263x1536-1-842x1024.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/03/Group-10013dddd-1024x938-1.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/03/IMG_small-town_b-1024x924-1.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/03/experince_image-1024x1011-1.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/03/life_image-1024x964-1.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/03/community_image-999x1024-1.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/03/Group-10120-743x1024-1.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/03/C2-Flag-6.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/03/canda_flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/03/germany_flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/03/ireland_flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/03/uk.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/03/usa.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/03/Group-2.png",
+          "alt": ""
+        },
+        {
+          "url": "https://cdn.cookielaw.org/logos/static/poweredBy_ot_logo.svg",
+          "alt": "Powered by Onetrust"
+        }
+      ]
+    },
+    {
+      "url": "https://www.applyboard.com/ireland",
+      "images": [
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2020/09/ApplyBoard_Logo_Horizontal_Blue.svg",
+          "alt": "ApplyBoard Logo"
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/03/Frame-5011.svg",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/Fire-image.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/germany-bnr-1024x791.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/germany-mob-901x1024.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/acedmic-irelands-1024x977.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/IMG_small-town_b_ireland-1024x926.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/experience-image-ireland-914x1024.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/arrow_image.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/life-ireland-1024x1009.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/innovation-ireland-1024x989.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/student-irelands-1024x1021.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/australia-flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/canda_flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/germany_flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/ireland_flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/uk-flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/usa-flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/03/Group-2.png",
+          "alt": ""
+        },
+        {
+          "url": "https://cdn.cookielaw.org/logos/static/poweredBy_ot_logo.svg",
+          "alt": "Powered by Onetrust"
+        }
+      ]
+    },
+    {
+      "url": "https://www.applyboard.com/germany",
+      "images": [
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2020/09/ApplyBoard_Logo_Horizontal_Blue.svg",
+          "alt": "ApplyBoard Logo"
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/03/Frame-5011.svg",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/Fire-image.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/germany_dsk-1024x791.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/germany_mob-901x1024.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/academic-germany-1024x977.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/IMG_small-town_b_germany-1024x926.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/experience-germany-1021x1024.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/arrow_image.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/affordability-germany-1024x1005.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/community-germany-989x1024.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/student-germany-1024x1021.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/australia-flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/canda_flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/germany_flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/ireland_flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/uk-flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/usa-flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/03/Group-2.png",
+          "alt": ""
+        },
+        {
+          "url": "https://cdn.cookielaw.org/logos/static/poweredBy_ot_logo.svg",
+          "alt": "Powered by Onetrust"
+        }
+      ]
+    },
+    {
+      "url": "https://www.applyboard.com/malaysia",
+      "images": [
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2020/09/ApplyBoard_Logo_Horizontal_Blue.svg",
+          "alt": "ApplyBoard Logo"
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/03/Frame-5011.svg",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/Fire-image.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2026/10/Malaysia-Hero.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2026/10/Malaysia-Mobile-Hero.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2026/10/Malaysia-Academics.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2026/10/Malaysia-Satisfaction-1024x925.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2026/10/Experience-Malaysia-1-940x1024.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2026/10/Malaysia-Affordability-1024x1009.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2026/10/Malaysia-COMMUNITY.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2026/10/Malaysia-Visa.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/australia-flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/canda_flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/germany_flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/ireland_flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/uk-flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/usa-flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/03/Group-2.png",
+          "alt": ""
+        },
+        {
+          "url": "https://cdn.cookielaw.org/logos/static/poweredBy_ot_logo.svg",
+          "alt": "Powered by Onetrust"
+        }
+      ]
+    },
+    {
+      "url": "https://www.applyboard.com/malta",
+      "images": [
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2020/09/ApplyBoard_Logo_Horizontal_Blue.svg",
+          "alt": "ApplyBoard Logo"
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/03/Frame-5011.svg",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/Fire-image.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2026/09/Malta-Hero.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2026/09/Frame-32846.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2026/09/Academics-Malta.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2026/09/RECOGNITION-Malta-1024x925.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2026/09/Experience-Malta-1000x1024.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2026/09/Affordability-Malta-1024x1018.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2026/09/COMMUNITY-Malta-966x1024.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2026/09/Visa-Malta-1024x828.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/australia-flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/canda_flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/germany_flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/ireland_flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/uk-flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/usa-flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/03/Group-2.png",
+          "alt": ""
+        },
+        {
+          "url": "https://cdn.cookielaw.org/logos/static/poweredBy_ot_logo.svg",
+          "alt": "Powered by Onetrust"
+        }
+      ]
+    },
+    {
+      "url": "https://www.applyboard.com/spain",
+      "images": [
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2020/09/ApplyBoard_Logo_Horizontal_Blue.svg",
+          "alt": "ApplyBoard Logo"
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/03/Frame-5011.svg",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/Fire-image.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2026/09/Spain-Hero.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2026/09/Mobile-Hero-Spain.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2026/09/Academics-spain.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2026/09/Satisfaction-Spain-1024x925.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2026/09/Studnets-Icon.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2026/09/Uni-Icon.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2026/09/Post-Study-Icon.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2026/09/EU-Icon.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2026/09/Experince-Spain-1000x1024.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/arrow_image.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2026/09/Affordability-Spain-1-1024x1009.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2026/09/Community-Spain-1006x1024.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2026/09/Visa-Spain-1024x628.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/australia-flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/canda_flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/germany_flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/ireland_flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/uk-flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/usa-flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/03/Group-2.png",
+          "alt": ""
+        },
+        {
+          "url": "https://cdn.cookielaw.org/logos/static/poweredBy_ot_logo.svg",
+          "alt": "Powered by Onetrust"
+        }
+      ]
+    },
+    {
+      "url": "https://www.applyboard.com/uae",
+      "images": [
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2020/09/ApplyBoard_Logo_Horizontal_Blue.svg",
+          "alt": "ApplyBoard Logo"
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/03/Frame-5011.svg",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/Fire-image.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2026/10/UAE-Hero-Banner.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2026/10/Hero-UAE-mobile.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2026/10/uae-academics.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2026/10/UAE-Career.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2026/10/Uae-experience.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2026/10/UAE-scholarship.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2026/10/Uae-community.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2026/10/Visa-UAE.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/australia-flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/canda_flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/germany_flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/ireland_flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/uk-flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/usa-flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/03/Group-2.png",
+          "alt": ""
+        },
+        {
+          "url": "https://cdn.cookielaw.org/logos/static/poweredBy_ot_logo.svg",
+          "alt": "Powered by Onetrust"
+        }
+      ]
+    },
+    {
+      "url": "https://www.applyboard.com/uk",
+      "images": [
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2020/09/ApplyBoard_Logo_Horizontal_Blue.svg",
+          "alt": "ApplyBoard Logo"
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/03/Frame-5011.svg",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/Fire-image.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/uk_dsk.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/uk_mob-901x1024.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/acedmics-uk-1024x977.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/flexibility_uk.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/experience-image-977x1024.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/arrow_image.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/life-uk-1024x1009.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/community-uk-1015x1024.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/student-uk-1024x1021.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/australia-flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/canda_flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/germany_flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/ireland_flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/uk-flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/usa-flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/03/Group-2.png",
+          "alt": ""
+        },
+        {
+          "url": "https://cdn.cookielaw.org/logos/static/poweredBy_ot_logo.svg",
+          "alt": "Powered by Onetrust"
+        }
+      ]
+    },
+    {
+      "url": "https://www.applyboard.com/usa",
+      "images": [
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2020/09/ApplyBoard_Logo_Horizontal_Blue.svg",
+          "alt": "ApplyBoard Logo"
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/03/Frame-5011.svg",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/Fire-image.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/usa_bnr_desk-1024x791.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/usa_bnr_mob-878x1024.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/academic_imge-1024x961.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/opptunity-image-1024x926.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/experience-usa-991x1024.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/cuture_image_usa-1024x883.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/excelence_usa-965x1024.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/american_visa-1024x1021.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/australia-flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/canda_flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/germany_flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/ireland_flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/uk-flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/04/usa-flag.png",
+          "alt": ""
+        },
+        {
+          "url": "https://didmdw8v48h5q.cloudfront.net/wp-content/uploads/2025/03/Group-2.png",
+          "alt": ""
+        },
+        {
+          "url": "https://cdn.cookielaw.org/logos/static/poweredBy_ot_logo.svg",
+          "alt": "Powered by Onetrust"
+        }
+      ]
+    }
+  ],
+  "assets": [
+    {
+      "file": "frontend/public/destinations/collage/canada-study.webp",
+      "prompt": "Create a single original photorealistic editorial photograph for a study-abroad website, landscape 4:3. Two adult international university students in their early twenties collaboratively studying notebooks and an unbranded laptop at a bright modern public library in Toronto, Canada. Through generous windows show a geographically plausible distant Toronto CN Tower skyline, not exaggerated. Candid genuine concentration, diverse people, realistic hands and anatomy, natural daylight, subtly navy and neutral wardrobe, welcoming credible academic atmosphere. Medium-wide composition with faces and work materials safely inside central 70% for responsive crops. No text, no logos, no watermarks, no collage, no frames, no identifiable named university. This is an illustrative scene, not a documentary claim."
+    },
+    {
+      "file": "frontend/public/destinations/collage/canada-life.webp",
+      "prompt": "Single original photorealistic editorial photograph for a study-abroad website, landscape 4:3. Three adult international students walking together on a Montreal residential street in Canada, brick triplex houses with outdoor staircases and autumn maple trees, backpacks, relaxed conversation. Natural daylight, authentic textures, credible anatomy, candid warm human-first storytelling. People are fictional adults in their twenties. Medium-wide composition, key subjects safely inside central 70% for responsive crops. No text, logos, watermarks, frames, collage or named institution branding. Do not use stock stereotypes."
+    },
+    {
+      "file": "frontend/public/destinations/collage/canada-planning.webp",
+      "prompt": "Single original photorealistic editorial photograph for a study-abroad website, landscape 4:3. Adult international student at a small bright Montreal apartment desk carefully planning study expenses with notebook calculator laptop and closed plain document folder; Canadian brick streets and red maple foliage visible through the window, natural thoughtful moment. Natural daylight, authentic textures, credible anatomy, candid warm human-first storytelling. People are fictional adults in their twenties. Medium-wide composition, key subjects safely inside central 70% for responsive crops. No text, logos, watermarks, frames, collage or named institution branding. Do not use stock stereotypes."
+    },
+    {
+      "file": "frontend/public/destinations/collage/canada-travel.webp",
+      "prompt": "Single original photorealistic editorial photograph for a study-abroad website, landscape 4:3. Adult international student with a small suitcase and backpack arriving on a Toronto waterfront promenade in Canada, CN Tower visibly recognizable in the plausible distant skyline across water, hopeful candid moment. Natural daylight, authentic textures, credible anatomy, candid warm human-first storytelling. People are fictional adults in their twenties. Medium-wide composition, key subjects safely inside central 70% for responsive crops. No text, logos, watermarks, frames, collage or named institution branding. Do not use stock stereotypes."
+    },
+    {
+      "file": "frontend/public/destinations/collage/canada-graduate.webp",
+      "prompt": "Single original photorealistic editorial photograph for a study-abroad website, landscape 4:3. Two adult graduates wearing plain dark graduation robes holding blank closed diploma folders, celebrating quietly in a landscaped Canadian park with maple leaves and a distant Ottawa Parliament roofline; no university logos. Natural daylight, authentic textures, credible anatomy, candid warm human-first storytelling. People are fictional adults in their twenties. Medium-wide composition, key subjects safely inside central 70% for responsive crops. No text, logos, watermarks, frames, collage or named institution branding. Do not use stock stereotypes."
+    },
+    {
+      "file": "frontend/public/destinations/collage/germany-study.webp",
+      "prompt": "Original photorealistic editorial study-abroad website photograph, landscape 4:3. Germany. Two adult international students collaborating over notes and an unbranded laptop in a bright Berlin library, wide windows reveal Berlin Fernsehturm and the city's restrained urban roofline in a plausible distant view. Fictional diverse adults in their twenties, authentic natural daylight, credible human anatomy, warm candid expression, medium-wide framing with main subjects central for crops. No text, no logos, no named university, no watermark, no collage or frame. Country-specific illustrative scene."
+    },
+    {
+      "file": "frontend/public/destinations/collage/germany-life.webp",
+      "prompt": "Original photorealistic editorial study-abroad website photograph, landscape 4:3. Germany. Three adult international students with backpacks and one bicycle chatting along a leafy Berlin canal towpath, characteristic Berlin apartment facades and a distant Fernsehturm, relaxed everyday student life. Fictional diverse adults in their twenties, authentic natural daylight, credible human anatomy, warm candid expression, medium-wide framing with main subjects central for crops. No text, no logos, no named university, no watermark, no collage or frame. Country-specific illustrative scene."
+    },
+    {
+      "file": "frontend/public/destinations/collage/germany-planning.webp",
+      "prompt": "Original photorealistic editorial study-abroad website photograph, landscape 4:3. Germany. Adult student preparing a budget with calculator notebook and plain document folder at a shared Berlin apartment desk, characteristic Berlin Altbau window and urban courtyard outside. Fictional diverse adults in their twenties, authentic natural daylight, credible human anatomy, warm candid expression, medium-wide framing with main subjects central for crops. No text, no logos, no named university, no watermark, no collage or frame. Country-specific illustrative scene."
+    },
+    {
+      "file": "frontend/public/destinations/collage/germany-travel.webp",
+      "prompt": "Original photorealistic editorial study-abroad website photograph, landscape 4:3. Germany. Adult international student with a modest suitcase and backpack in a Berlin public square, recognisable Brandenburg Gate in background at realistic scale, candid arrival moment. Fictional diverse adults in their twenties, authentic natural daylight, credible human anatomy, warm candid expression, medium-wide framing with main subjects central for crops. No text, no logos, no named university, no watermark, no collage or frame. Country-specific illustrative scene."
+    },
+    {
+      "file": "frontend/public/destinations/collage/germany-graduate.webp",
+      "prompt": "Original photorealistic editorial study-abroad website photograph, landscape 4:3. Germany. Two adult university graduates in smart everyday clothing holding blank closed thesis folders, celebrating on a Munich park path with recognisable Frauenkirche twin towers in the distant background, no ceremonial robes. Fictional diverse adults in their twenties, authentic natural daylight, credible human anatomy, warm candid expression, medium-wide framing with main subjects central for crops. No text, no logos, no named university, no watermark, no collage or frame. Country-specific illustrative scene."
+    },
+    {
+      "file": "frontend/public/destinations/collage/united-kingdom-study.webp",
+      "prompt": "Single original photorealistic editorial study-abroad photograph, landscape 4:3. United Kingdom. Two international adult students in a bright London reading room, books and unbranded laptop, overcast daylight through tall windows with a plausible distant view of St Paul's Cathedral. Fictional adults in their twenties, varied natural faces and hairstyles, candid medium-wide scene, realistic anatomy, gentle natural light, subjects safely central for crops. No text, logos, watermark, collage, frames or named institution branding."
+    },
+    {
+      "file": "frontend/public/destinations/collage/united-kingdom-life.webp",
+      "prompt": "Single original photorealistic editorial study-abroad photograph, landscape 4:3. United Kingdom. Three international adult students chatting while walking along London's South Bank by the Thames, Westminster and Elizabeth Tower in background, casual backpacks, one holding a closed sketchbook. Fictional adults in their twenties, varied natural faces and hairstyles, candid medium-wide scene, realistic anatomy, gentle natural light, subjects safely central for crops. No text, logos, watermark, collage, frames or named institution branding."
+    },
+    {
+      "file": "frontend/public/destinations/collage/united-kingdom-planning.webp",
+      "prompt": "Single original photorealistic editorial study-abroad photograph, landscape 4:3. United Kingdom. Adult student budgeting at a compact London shared-flat desk with calculator notebook closed plain document folder and unbranded laptop, Victorian brick terrace houses visible outside a sash window. Fictional adults in their twenties, varied natural faces and hairstyles, candid medium-wide scene, realistic anatomy, gentle natural light, subjects safely central for crops. No text, logos, watermark, collage, frames or named institution branding."
+    },
+    {
+      "file": "frontend/public/destinations/collage/united-kingdom-travel.webp",
+      "prompt": "Single original photorealistic editorial study-abroad photograph, landscape 4:3. United Kingdom. International adult student with suitcase and backpack arriving by a London riverside walkway, recognisable Tower Bridge across the Thames in background, natural candid hopeful moment. Fictional adults in their twenties, varied natural faces and hairstyles, candid medium-wide scene, realistic anatomy, gentle natural light, subjects safely central for crops. No text, logos, watermark, collage, frames or named institution branding."
+    },
+    {
+      "file": "frontend/public/destinations/collage/united-kingdom-graduate.webp",
+      "prompt": "Single original photorealistic editorial study-abroad photograph, landscape 4:3. United Kingdom. Two happy adult graduates in plain black gowns holding blank closed diploma folders outside a generic British stone academic courtyard, distant Oxford-style spires, no specific institution signage. Fictional adults in their twenties, varied natural faces and hairstyles, candid medium-wide scene, realistic anatomy, gentle natural light, subjects safely central for crops. No text, logos, watermark, collage, frames or named institution branding."
+    },
+    {
+      "file": "frontend/public/destinations/collage/italy-study.webp",
+      "prompt": "Single original photorealistic editorial study-abroad photograph, landscape 4:3. Italy. Two international adult students discussing an open architecture sketchbook at a bright Bologna reading room, terracotta arcades and red tiled rooftops visible outside. One student wears round glasses and has short straight hair, the other has dark braided hair. Fictional diverse adults in their twenties, natural authentic daylight, credible hands and anatomy, warm candid mood, central crop-safe medium-wide composition. No text, branding, logos, watermarks, collage or frame."
+    },
+    {
+      "file": "frontend/public/destinations/collage/italy-life.webp",
+      "prompt": "Single original photorealistic editorial study-abroad photograph, landscape 4:3. Italy. Three adult university friends sharing conversation in a Bologna portico-lined square, warm ochre and terracotta architecture, backpacks and books, relaxed Italian city student life. Fictional diverse adults in their twenties, natural authentic daylight, credible hands and anatomy, warm candid mood, central crop-safe medium-wide composition. No text, branding, logos, watermarks, collage or frame."
+    },
+    {
+      "file": "frontend/public/destinations/collage/italy-planning.webp",
+      "prompt": "Single original photorealistic editorial study-abroad photograph, landscape 4:3. Italy. An adult male international student at a compact Bologna apartment desk budgeting with notebook calculator laptop and plain folder, cream shutters and red tiled rooftops through the window. Fictional diverse adults in their twenties, natural authentic daylight, credible hands and anatomy, warm candid mood, central crop-safe medium-wide composition. No text, branding, logos, watermarks, collage or frame."
+    },
+    {
+      "file": "frontend/public/destinations/collage/italy-travel.webp",
+      "prompt": "Single original photorealistic editorial study-abroad photograph, landscape 4:3. Italy. An adult international student with a small suitcase and backpack in a Florence public square, recognisable cathedral dome in the realistic distant background, bright morning arrival scene. Fictional diverse adults in their twenties, natural authentic daylight, credible hands and anatomy, warm candid mood, central crop-safe medium-wide composition. No text, branding, logos, watermarks, collage or frame."
+    },
+    {
+      "file": "frontend/public/destinations/collage/italy-graduate.webp",
+      "prompt": "Single original photorealistic editorial study-abroad photograph, landscape 4:3. Italy. Two adult graduates in smart ordinary clothing wearing traditional small Italian laurel wreaths, holding closed blank thesis folders, celebrating in a Bologna terracotta arcade courtyard, no academic robes. Fictional diverse adults in their twenties, natural authentic daylight, credible hands and anatomy, warm candid mood, central crop-safe medium-wide composition. No text, branding, logos, watermarks, collage or frame."
+    },
+    {
+      "file": "frontend/public/destinations/collage/netherlands-study.webp",
+      "prompt": "Single original photorealistic editorial study-abroad website photograph, landscape 4:3. Country: Netherlands. Two adult international students collaborating on a design project in a light-filled Delft reading room, Delft canal and stepped Dutch gables visible beyond windows. Fictional diverse adults in their twenties, vary faces from other countries, natural daylight, authentic textures, credible hands and anatomy, candid warm mood, medium-wide crop-safe central subjects. No text, no logos, no branded devices, no watermark, no collage, no frames, no named institution signage. Illustrative country scene, not documentary photography."
+    },
+    {
+      "file": "frontend/public/destinations/collage/netherlands-life.webp",
+      "prompt": "Single original photorealistic editorial study-abroad website photograph, landscape 4:3. Country: Netherlands. Three adult students walking with their bicycles beside a Leiden canal, Dutch brick gabled houses reflected in water, candid conversation. Fictional diverse adults in their twenties, vary faces from other countries, natural daylight, authentic textures, credible hands and anatomy, candid warm mood, medium-wide crop-safe central subjects. No text, no logos, no branded devices, no watermark, no collage, no frames, no named institution signage. Illustrative country scene, not documentary photography."
+    },
+    {
+      "file": "frontend/public/destinations/collage/netherlands-planning.webp",
+      "prompt": "Single original photorealistic editorial study-abroad website photograph, landscape 4:3. Country: Netherlands. Adult student budgeting with notebook calculator laptop and closed folder at a compact Leiden apartment desk with tall window overlooking Dutch canal houses. Fictional diverse adults in their twenties, vary faces from other countries, natural daylight, authentic textures, credible hands and anatomy, candid warm mood, medium-wide crop-safe central subjects. No text, no logos, no branded devices, no watermark, no collage, no frames, no named institution signage. Illustrative country scene, not documentary photography."
+    },
+    {
+      "file": "frontend/public/destinations/collage/netherlands-travel.webp",
+      "prompt": "Single original photorealistic editorial study-abroad website photograph, landscape 4:3. Country: Netherlands. Adult student with backpack and small suitcase on an Amsterdam canal bridge, recognisable narrow Dutch gables and parked bicycles, morning arrival. Fictional diverse adults in their twenties, vary faces from other countries, natural daylight, authentic textures, credible hands and anatomy, candid warm mood, medium-wide crop-safe central subjects. No text, no logos, no branded devices, no watermark, no collage, no frames, no named institution signage. Illustrative country scene, not documentary photography."
+    },
+    {
+      "file": "frontend/public/destinations/collage/netherlands-graduate.webp",
+      "prompt": "Single original photorealistic editorial study-abroad website photograph, landscape 4:3. Country: Netherlands. Two adult graduates in smart everyday clothes holding closed blank thesis folders in Delft, old brick facades and a Gothic church tower in background, quiet celebration without robes. Fictional diverse adults in their twenties, vary faces from other countries, natural daylight, authentic textures, credible hands and anatomy, candid warm mood, medium-wide crop-safe central subjects. No text, no logos, no branded devices, no watermark, no collage, no frames, no named institution signage. Illustrative country scene, not documentary photography."
+    },
+    {
+      "file": "frontend/public/destinations/collage/australia-study.webp",
+      "prompt": "Single original photorealistic editorial study-abroad website photograph, landscape 4:3. Country: Australia. Two adult international students collaborating on notebooks and a laptop in an airy Sydney reading room, eucalyptus trees and distant Sydney harbour visible. Fictional diverse adults in their twenties, vary faces from other countries, natural daylight, authentic textures, credible hands and anatomy, candid warm mood, medium-wide crop-safe central subjects. No text, no logos, no branded devices, no watermark, no collage, no frames, no named institution signage. Illustrative country scene, not documentary photography."
+    },
+    {
+      "file": "frontend/public/destinations/collage/australia-life.webp",
+      "prompt": "Single original photorealistic editorial study-abroad website photograph, landscape 4:3. Country: Australia. Three adult students with backpacks on a Sydney harbour walking path, eucalyptus foliage and recognisable Opera House in distant background, casual everyday conversation. Fictional diverse adults in their twenties, vary faces from other countries, natural daylight, authentic textures, credible hands and anatomy, candid warm mood, medium-wide crop-safe central subjects. No text, no logos, no branded devices, no watermark, no collage, no frames, no named institution signage. Illustrative country scene, not documentary photography."
+    },
+    {
+      "file": "frontend/public/destinations/collage/australia-planning.webp",
+      "prompt": "Single original photorealistic editorial study-abroad website photograph, landscape 4:3. Country: Australia. Adult student budgeting with calculator notebook laptop and plain folder at a Melbourne shared-flat desk, Victorian terrace houses and gum trees outside. Fictional diverse adults in their twenties, vary faces from other countries, natural daylight, authentic textures, credible hands and anatomy, candid warm mood, medium-wide crop-safe central subjects. No text, no logos, no branded devices, no watermark, no collage, no frames, no named institution signage. Illustrative country scene, not documentary photography."
+    },
+    {
+      "file": "frontend/public/destinations/collage/australia-travel.webp",
+      "prompt": "Single original photorealistic editorial study-abroad website photograph, landscape 4:3. Country: Australia. Adult international student with a backpack and compact suitcase near Sydney harbour, recognisable Opera House in background at realistic scale, hopeful arrival. Fictional diverse adults in their twenties, vary faces from other countries, natural daylight, authentic textures, credible hands and anatomy, candid warm mood, medium-wide crop-safe central subjects. No text, no logos, no branded devices, no watermark, no collage, no frames, no named institution signage. Illustrative country scene, not documentary photography."
+    },
+    {
+      "file": "frontend/public/destinations/collage/australia-graduate.webp",
+      "prompt": "Single original photorealistic editorial study-abroad website photograph, landscape 4:3. Country: Australia. Two adult graduates in plain dark robes holding closed blank diploma folders on a Sydney park path, eucalyptus and distant Harbour Bridge, understated celebration. Fictional diverse adults in their twenties, vary faces from other countries, natural daylight, authentic textures, credible hands and anatomy, candid warm mood, medium-wide crop-safe central subjects. No text, no logos, no branded devices, no watermark, no collage, no frames, no named institution signage. Illustrative country scene, not documentary photography."
+    },
+    {
+      "file": "frontend/public/destinations/collage/sweden-study.webp",
+      "prompt": "Single original photorealistic editorial study-abroad website photograph, landscape 4:3. Country: Sweden. Two adult international students collaborating on notebooks and an unbranded laptop in a Scandinavian Stockholm reading room, pale oak furniture and Stockholm waterfront buildings through windows. Fictional diverse adults in their twenties, vary faces from other countries, natural daylight, authentic textures, credible hands and anatomy, candid warm mood, medium-wide crop-safe central subjects. No text, no logos, no branded devices, no watermark, no collage, no frames, no named institution signage. Illustrative country scene, not documentary photography."
+    },
+    {
+      "file": "frontend/public/destinations/collage/sweden-life.webp",
+      "prompt": "Single original photorealistic editorial study-abroad website photograph, landscape 4:3. Country: Sweden. Three adult students chatting beside Stockholm's waterfront, warm ochre Gamla Stan facades across the water, backpacks and autumn jackets. Fictional diverse adults in their twenties, vary faces from other countries, natural daylight, authentic textures, credible hands and anatomy, candid warm mood, medium-wide crop-safe central subjects. No text, no logos, no branded devices, no watermark, no collage, no frames, no named institution signage. Illustrative country scene, not documentary photography."
+    },
+    {
+      "file": "frontend/public/destinations/collage/sweden-planning.webp",
+      "prompt": "Single original photorealistic editorial study-abroad website photograph, landscape 4:3. Country: Sweden. Adult student budgeting with notebook calculator laptop and plain folder at a compact Stockholm shared apartment desk, Swedish tiled stove in room and ochre city facades outside. Fictional diverse adults in their twenties, vary faces from other countries, natural daylight, authentic textures, credible hands and anatomy, candid warm mood, medium-wide crop-safe central subjects. No text, no logos, no branded devices, no watermark, no collage, no frames, no named institution signage. Illustrative country scene, not documentary photography."
+    },
+    {
+      "file": "frontend/public/destinations/collage/sweden-travel.webp",
+      "prompt": "Single original photorealistic editorial study-abroad website photograph, landscape 4:3. Country: Sweden. Adult international student with backpack and small suitcase on a Stockholm waterfront walkway, recognisable Stockholm City Hall brick tower in distance, arrival in soft Nordic daylight. Fictional diverse adults in their twenties, vary faces from other countries, natural daylight, authentic textures, credible hands and anatomy, candid warm mood, medium-wide crop-safe central subjects. No text, no logos, no branded devices, no watermark, no collage, no frames, no named institution signage. Illustrative country scene, not documentary photography."
+    },
+    {
+      "file": "frontend/public/destinations/collage/sweden-graduate.webp",
+      "prompt": "Single original photorealistic editorial study-abroad website photograph, landscape 4:3. Country: Sweden. Two adult graduates in smart casual clothes holding closed blank thesis folders on a Stockholm waterfront, historic Swedish city facades and distant City Hall tower, quiet celebration without robes. Fictional diverse adults in their twenties, vary faces from other countries, natural daylight, authentic textures, credible hands and anatomy, candid warm mood, medium-wide crop-safe central subjects. No text, no logos, no branded devices, no watermark, no collage, no frames, no named institution signage. Illustrative country scene, not documentary photography."
+    },
+    {
+      "file": "frontend/public/destinations/collage/finland-study.webp",
+      "prompt": "Single original photorealistic editorial study-abroad website photograph, landscape 4:3. Country: Finland. Two adult international students collaborating in a Helsinki public reading room, pale birch wood contemporary Finnish interior, Helsinki Cathedral's white dome visible beyond windows at plausible distance. Fictional diverse adults in their twenties, vary faces from other countries, natural daylight, authentic textures, credible hands and anatomy, candid warm mood, medium-wide crop-safe central subjects. No text, no logos, no branded devices, no watermark, no collage, no frames, no named institution signage. Illustrative country scene, not documentary photography."
+    },
+    {
+      "file": "frontend/public/destinations/collage/finland-life.webp",
+      "prompt": "Single original photorealistic editorial study-abroad website photograph, landscape 4:3. Country: Finland. Three adult students chatting on a Helsinki waterfront path, Baltic harbour and pale neoclassical Finnish city buildings, backpacks and light jackets, fresh cool daylight. Fictional diverse adults in their twenties, vary faces from other countries, natural daylight, authentic textures, credible hands and anatomy, candid warm mood, medium-wide crop-safe central subjects. No text, no logos, no branded devices, no watermark, no collage, no frames, no named institution signage. Illustrative country scene, not documentary photography."
+    },
+    {
+      "file": "frontend/public/destinations/collage/finland-planning.webp",
+      "prompt": "Single original photorealistic editorial study-abroad website photograph, landscape 4:3. Country: Finland. Adult student budgeting with notebook calculator laptop and plain folder at a small Helsinki apartment desk, Nordic birch furniture and pastel Helsinki facades outside. Fictional diverse adults in their twenties, vary faces from other countries, natural daylight, authentic textures, credible hands and anatomy, candid warm mood, medium-wide crop-safe central subjects. No text, no logos, no branded devices, no watermark, no collage, no frames, no named institution signage. Illustrative country scene, not documentary photography."
+    },
+    {
+      "file": "frontend/public/destinations/collage/finland-travel.webp",
+      "prompt": "Single original photorealistic editorial study-abroad website photograph, landscape 4:3. Country: Finland. Adult international student with backpack and small suitcase in a Helsinki square, recognisable white Helsinki Cathedral and wide stone steps in background, hopeful arrival. Fictional diverse adults in their twenties, vary faces from other countries, natural daylight, authentic textures, credible hands and anatomy, candid warm mood, medium-wide crop-safe central subjects. No text, no logos, no branded devices, no watermark, no collage, no frames, no named institution signage. Illustrative country scene, not documentary photography."
+    },
+    {
+      "file": "frontend/public/destinations/collage/finland-graduate.webp",
+      "prompt": "Single original photorealistic editorial study-abroad website photograph, landscape 4:3. Country: Finland. Two adult graduates in smart everyday clothes holding closed blank thesis folders by Helsinki harbour, white cathedral dome and Baltic waterfront in distance, understated celebration without robes. Fictional diverse adults in their twenties, vary faces from other countries, natural daylight, authentic textures, credible hands and anatomy, candid warm mood, medium-wide crop-safe central subjects. No text, no logos, no branded devices, no watermark, no collage, no frames, no named institution signage. Illustrative country scene, not documentary photography."
+    },
+    {
+      "file": "frontend/public/destinations/collage/denmark-study.webp",
+      "prompt": "Single original photorealistic editorial study-abroad website photograph, landscape 4:3. Country: Denmark. Two adult international students discussing an open project notebook and laptop in a Copenhagen reading room, Danish oak furniture, canal and colourful Danish townhouses beyond windows. Fictional diverse adults in their twenties, vary faces from other countries, natural daylight, authentic textures, credible hands and anatomy, candid warm mood, medium-wide crop-safe central subjects. No text, no logos, no branded devices, no watermark, no collage, no frames, no named institution signage. Illustrative country scene, not documentary photography."
+    },
+    {
+      "file": "frontend/public/destinations/collage/denmark-life.webp",
+      "prompt": "Single original photorealistic editorial study-abroad website photograph, landscape 4:3. Country: Denmark. Three adult students walking their bicycles beside a Copenhagen canal, Nyhavn-style colourful facades and moored small boats, relaxed student conversation. Fictional diverse adults in their twenties, vary faces from other countries, natural daylight, authentic textures, credible hands and anatomy, candid warm mood, medium-wide crop-safe central subjects. No text, no logos, no branded devices, no watermark, no collage, no frames, no named institution signage. Illustrative country scene, not documentary photography."
+    },
+    {
+      "file": "frontend/public/destinations/collage/denmark-planning.webp",
+      "prompt": "Single original photorealistic editorial study-abroad website photograph, landscape 4:3. Country: Denmark. Adult student budgeting with calculator notebook laptop and plain folder at a compact Copenhagen apartment desk, Danish wooden furniture and red brick townhouses outside. Fictional diverse adults in their twenties, vary faces from other countries, natural daylight, authentic textures, credible hands and anatomy, candid warm mood, medium-wide crop-safe central subjects. No text, no logos, no branded devices, no watermark, no collage, no frames, no named institution signage. Illustrative country scene, not documentary photography."
+    },
+    {
+      "file": "frontend/public/destinations/collage/denmark-travel.webp",
+      "prompt": "Single original photorealistic editorial study-abroad website photograph, landscape 4:3. Country: Denmark. Adult international student with backpack and compact suitcase beside Copenhagen's Nyhavn canal, recognisable colourful narrow townhouses and sailboats, candid arrival. Fictional diverse adults in their twenties, vary faces from other countries, natural daylight, authentic textures, credible hands and anatomy, candid warm mood, medium-wide crop-safe central subjects. No text, no logos, no branded devices, no watermark, no collage, no frames, no named institution signage. Illustrative country scene, not documentary photography."
+    },
+    {
+      "file": "frontend/public/destinations/collage/denmark-graduate.webp",
+      "prompt": "Single original photorealistic editorial study-abroad website photograph, landscape 4:3. Country: Denmark. Two adult graduates in smart everyday clothes with closed blank thesis folders in a Copenhagen park with distant Rosenborg Castle, quiet joyful celebration without robes. Fictional diverse adults in their twenties, vary faces from other countries, natural daylight, authentic textures, credible hands and anatomy, candid warm mood, medium-wide crop-safe central subjects. No text, no logos, no branded devices, no watermark, no collage, no frames, no named institution signage. Illustrative country scene, not documentary photography."
+    },
+    {
+      "file": "frontend/public/destinations/collage/new-zealand-study.webp",
+      "prompt": "Single original photorealistic editorial study-abroad website photograph, landscape 4:3. Country: New Zealand. Two adult international students discussing a project with notebooks and laptop in a light-filled Auckland reading room, Auckland Sky Tower visible in distant plausible skyline beyond windows. Fictional diverse adults in their twenties, vary faces from other countries, natural daylight, authentic textures, credible hands and anatomy, candid warm mood, medium-wide crop-safe central subjects. No text, no logos, no branded devices, no watermark, no collage, no frames, no named institution signage. Illustrative country scene, not documentary photography."
+    },
+    {
+      "file": "frontend/public/destinations/collage/new-zealand-life.webp",
+      "prompt": "Single original photorealistic editorial study-abroad website photograph, landscape 4:3. Country: New Zealand. Three adult students with backpacks walking along a Wellington harbour path, green hills and waterfront timber buildings, gentle coastal breeze, relaxed conversation. Fictional diverse adults in their twenties, vary faces from other countries, natural daylight, authentic textures, credible hands and anatomy, candid warm mood, medium-wide crop-safe central subjects. No text, no logos, no branded devices, no watermark, no collage, no frames, no named institution signage. Illustrative country scene, not documentary photography."
+    },
+    {
+      "file": "frontend/public/destinations/collage/new-zealand-planning.webp",
+      "prompt": "Single original photorealistic editorial study-abroad website photograph, landscape 4:3. Country: New Zealand. Adult student budgeting with notebook calculator laptop and plain folder at a compact Wellington shared-flat desk, timber weatherboard houses and green hills outside. Fictional diverse adults in their twenties, vary faces from other countries, natural daylight, authentic textures, credible hands and anatomy, candid warm mood, medium-wide crop-safe central subjects. No text, no logos, no branded devices, no watermark, no collage, no frames, no named institution signage. Illustrative country scene, not documentary photography."
+    },
+    {
+      "file": "frontend/public/destinations/collage/new-zealand-travel.webp",
+      "prompt": "Single original photorealistic editorial study-abroad website photograph, landscape 4:3. Country: New Zealand. Adult international student with backpack and small suitcase on Auckland's waterfront, recognisable Sky Tower in the distant city skyline, hopeful arrival. Fictional diverse adults in their twenties, vary faces from other countries, natural daylight, authentic textures, credible hands and anatomy, candid warm mood, medium-wide crop-safe central subjects. No text, no logos, no branded devices, no watermark, no collage, no frames, no named institution signage. Illustrative country scene, not documentary photography."
+    },
+    {
+      "file": "frontend/public/destinations/collage/new-zealand-graduate.webp",
+      "prompt": "Single original photorealistic editorial study-abroad website photograph, landscape 4:3. Country: New Zealand. Two adult graduates in plain dark robes holding closed blank diploma folders in an Auckland park, native tree ferns and distant Sky Tower, understated celebration. Fictional diverse adults in their twenties, vary faces from other countries, natural daylight, authentic textures, credible hands and anatomy, candid warm mood, medium-wide crop-safe central subjects. No text, no logos, no branded devices, no watermark, no collage, no frames, no named institution signage. Illustrative country scene, not documentary photography."
+    }
+  ]
+}

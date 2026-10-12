@@ -109,6 +109,556 @@
       "bytes": 248528
     }
   ],
+  "/destinations/collage/australia-graduate.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/f6400a06f4cb8a9a-480.webp",
+      "bytes": 35662
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/f6400a06f4cb8a9a-768.webp",
+      "bytes": 64646
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/f6400a06f4cb8a9a-1280.webp",
+      "bytes": 117266
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/f6400a06f4cb8a9a-1448.webp",
+      "bytes": 148854
+    }
+  ],
+  "/destinations/collage/australia-life.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/14f0280b830f1e48-480.webp",
+      "bytes": 37332
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/14f0280b830f1e48-768.webp",
+      "bytes": 70604
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/14f0280b830f1e48-1280.webp",
+      "bytes": 131578
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/14f0280b830f1e48-1448.webp",
+      "bytes": 173136
+    }
+  ],
+  "/destinations/collage/australia-planning.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/a0dde3f516766eef-480.webp",
+      "bytes": 35342
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/a0dde3f516766eef-768.webp",
+      "bytes": 69854
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/a0dde3f516766eef-1280.webp",
+      "bytes": 127404
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/a0dde3f516766eef-1448.webp",
+      "bytes": 168684
+    }
+  ],
+  "/destinations/collage/australia-study.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/6a70d0647197196f-480.webp",
+      "bytes": 37754
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/6a70d0647197196f-768.webp",
+      "bytes": 70160
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/6a70d0647197196f-1280.webp",
+      "bytes": 123030
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/6a70d0647197196f-1448.webp",
+      "bytes": 160158
+    }
+  ],
+  "/destinations/collage/australia-travel.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/7d3389f712386b5f-480.webp",
+      "bytes": 31624
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/7d3389f712386b5f-768.webp",
+      "bytes": 58272
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/7d3389f712386b5f-1280.webp",
+      "bytes": 107192
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/7d3389f712386b5f-1448.webp",
+      "bytes": 142840
+    }
+  ],
+  "/destinations/collage/canada-graduate.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/926801ca51ade02f-480.webp",
+      "bytes": 44532
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/926801ca51ade02f-768.webp",
+      "bytes": 85890
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/926801ca51ade02f-1280.webp",
+      "bytes": 156448
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/926801ca51ade02f-1448.webp",
+      "bytes": 203910
+    }
+  ],
+  "/destinations/collage/canada-life.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/b1d21e1a2491bb8c-480.webp",
+      "bytes": 46328
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/b1d21e1a2491bb8c-768.webp",
+      "bytes": 89148
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/b1d21e1a2491bb8c-1280.webp",
+      "bytes": 164572
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/b1d21e1a2491bb8c-1448.webp",
+      "bytes": 218638
+    }
+  ],
+  "/destinations/collage/canada-planning.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/73bad1185483f22d-480.webp",
+      "bytes": 37486
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/73bad1185483f22d-768.webp",
+      "bytes": 73236
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/73bad1185483f22d-1280.webp",
+      "bytes": 130676
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/73bad1185483f22d-1448.webp",
+      "bytes": 169698
+    }
+  ],
+  "/destinations/collage/canada-study.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/87c89d929faa566b-480.webp",
+      "bytes": 23882
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/87c89d929faa566b-768.webp",
+      "bytes": 42680
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/87c89d929faa566b-1280.webp",
+      "bytes": 76914
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/87c89d929faa566b-1448.webp",
+      "bytes": 100236
+    }
+  ],
+  "/destinations/collage/canada-travel.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/460d5f4fe2def11a-480.webp",
+      "bytes": 32442
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/460d5f4fe2def11a-768.webp",
+      "bytes": 59440
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/460d5f4fe2def11a-1280.webp",
+      "bytes": 109710
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/460d5f4fe2def11a-1448.webp",
+      "bytes": 147268
+    }
+  ],
+  "/destinations/collage/denmark-graduate.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/5d4946dda87f9a4c-480.webp",
+      "bytes": 38554
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/5d4946dda87f9a4c-768.webp",
+      "bytes": 72162
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/5d4946dda87f9a4c-1280.webp",
+      "bytes": 130412
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/5d4946dda87f9a4c-1448.webp",
+      "bytes": 169500
+    }
+  ],
+  "/destinations/collage/denmark-life.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/fb95e0e0dacc542c-480.webp",
+      "bytes": 44732
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/fb95e0e0dacc542c-768.webp",
+      "bytes": 86074
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/fb95e0e0dacc542c-1280.webp",
+      "bytes": 158586
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/fb95e0e0dacc542c-1448.webp",
+      "bytes": 217406
+    }
+  ],
+  "/destinations/collage/denmark-planning.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/5b2289219dc664f7-480.webp",
+      "bytes": 32242
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/5b2289219dc664f7-768.webp",
+      "bytes": 61776
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/5b2289219dc664f7-1280.webp",
+      "bytes": 112604
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/5b2289219dc664f7-1448.webp",
+      "bytes": 148122
+    }
+  ],
+  "/destinations/collage/denmark-study.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/e6e48750c3a5650d-480.webp",
+      "bytes": 28654
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/e6e48750c3a5650d-768.webp",
+      "bytes": 54334
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/e6e48750c3a5650d-1280.webp",
+      "bytes": 101994
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/e6e48750c3a5650d-1448.webp",
+      "bytes": 134808
+    }
+  ],
+  "/destinations/collage/denmark-travel.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/1c128c39f6d310ce-480.webp",
+      "bytes": 43108
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/1c128c39f6d310ce-768.webp",
+      "bytes": 81582
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/1c128c39f6d310ce-1280.webp",
+      "bytes": 142294
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/1c128c39f6d310ce-1448.webp",
+      "bytes": 187126
+    }
+  ],
+  "/destinations/collage/finland-graduate.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/a90406d52be07483-480.webp",
+      "bytes": 24666
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/a90406d52be07483-768.webp",
+      "bytes": 44980
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/a90406d52be07483-1280.webp",
+      "bytes": 81562
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/a90406d52be07483-1448.webp",
+      "bytes": 107076
+    }
+  ],
+  "/destinations/collage/finland-life.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/0815676031ae598e-480.webp",
+      "bytes": 30850
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/0815676031ae598e-768.webp",
+      "bytes": 59822
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/0815676031ae598e-1280.webp",
+      "bytes": 112824
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/0815676031ae598e-1448.webp",
+      "bytes": 158036
+    }
+  ],
+  "/destinations/collage/finland-planning.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/40c257e2fdd3b409-480.webp",
+      "bytes": 27954
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/40c257e2fdd3b409-768.webp",
+      "bytes": 53158
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/40c257e2fdd3b409-1280.webp",
+      "bytes": 97738
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/40c257e2fdd3b409-1448.webp",
+      "bytes": 131544
+    }
+  ],
+  "/destinations/collage/finland-study.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/98f9a6af069b1026-480.webp",
+      "bytes": 26110
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/98f9a6af069b1026-768.webp",
+      "bytes": 49058
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/98f9a6af069b1026-1280.webp",
+      "bytes": 90706
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/98f9a6af069b1026-1448.webp",
+      "bytes": 117876
+    }
+  ],
+  "/destinations/collage/finland-travel.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/b2050229b309f8e0-480.webp",
+      "bytes": 31830
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/b2050229b309f8e0-768.webp",
+      "bytes": 58724
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/b2050229b309f8e0-1280.webp",
+      "bytes": 109618
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/b2050229b309f8e0-1448.webp",
+      "bytes": 144392
+    }
+  ],
+  "/destinations/collage/germany-graduate.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/20973c0b0b091ae4-480.webp",
+      "bytes": 38454
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/20973c0b0b091ae4-768.webp",
+      "bytes": 70416
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/20973c0b0b091ae4-1280.webp",
+      "bytes": 125190
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/20973c0b0b091ae4-1448.webp",
+      "bytes": 161662
+    }
+  ],
+  "/destinations/collage/germany-life.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/0c02f75c9691f1d3-480.webp",
+      "bytes": 47080
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/0c02f75c9691f1d3-768.webp",
+      "bytes": 95554
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/0c02f75c9691f1d3-1280.webp",
+      "bytes": 183114
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/0c02f75c9691f1d3-1448.webp",
+      "bytes": 241134
+    }
+  ],
+  "/destinations/collage/germany-planning.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/b649896ca4684207-480.webp",
+      "bytes": 30140
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/b649896ca4684207-768.webp",
+      "bytes": 55892
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/b649896ca4684207-1280.webp",
+      "bytes": 100680
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/b649896ca4684207-1448.webp",
+      "bytes": 131764
+    }
+  ],
+  "/destinations/collage/germany-study.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/a484b974f70f5aeb-480.webp",
+      "bytes": 26912
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/a484b974f70f5aeb-768.webp",
+      "bytes": 49812
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/a484b974f70f5aeb-1280.webp",
+      "bytes": 89866
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/a484b974f70f5aeb-1448.webp",
+      "bytes": 116418
+    }
+  ],
+  "/destinations/collage/germany-travel.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/ef70b4d281e23886-480.webp",
+      "bytes": 30770
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/ef70b4d281e23886-768.webp",
+      "bytes": 57658
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/ef70b4d281e23886-1280.webp",
+      "bytes": 103452
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/ef70b4d281e23886-1448.webp",
+      "bytes": 135702
+    }
+  ],
   "/destinations/collage/graduate.webp": [
     {
       "width": 480,
@@ -131,6 +681,116 @@
       "bytes": 101178
     }
   ],
+  "/destinations/collage/italy-graduate.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/348022df1d8c1b8f-480.webp",
+      "bytes": 27456
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/348022df1d8c1b8f-768.webp",
+      "bytes": 48486
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/348022df1d8c1b8f-1280.webp",
+      "bytes": 88946
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/348022df1d8c1b8f-1448.webp",
+      "bytes": 116118
+    }
+  ],
+  "/destinations/collage/italy-life.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/a347676b06e0a440-480.webp",
+      "bytes": 29832
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/a347676b06e0a440-768.webp",
+      "bytes": 55088
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/a347676b06e0a440-1280.webp",
+      "bytes": 98236
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/a347676b06e0a440-1448.webp",
+      "bytes": 131592
+    }
+  ],
+  "/destinations/collage/italy-planning.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/3d64a498523f4901-480.webp",
+      "bytes": 25302
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/3d64a498523f4901-768.webp",
+      "bytes": 46162
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/3d64a498523f4901-1280.webp",
+      "bytes": 84254
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/3d64a498523f4901-1448.webp",
+      "bytes": 107906
+    }
+  ],
+  "/destinations/collage/italy-study.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/dc5e1d5c52ce7131-480.webp",
+      "bytes": 30452
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/dc5e1d5c52ce7131-768.webp",
+      "bytes": 57192
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/dc5e1d5c52ce7131-1280.webp",
+      "bytes": 105754
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/dc5e1d5c52ce7131-1448.webp",
+      "bytes": 139232
+    }
+  ],
+  "/destinations/collage/italy-travel.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/dd42961f9b3dc9e0-480.webp",
+      "bytes": 38070
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/dd42961f9b3dc9e0-768.webp",
+      "bytes": 71236
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/dd42961f9b3dc9e0-1280.webp",
+      "bytes": 129374
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/dd42961f9b3dc9e0-1448.webp",
+      "bytes": 173258
+    }
+  ],
   "/destinations/collage/life.webp": [
     {
       "width": 480,
@@ -151,6 +811,226 @@
       "width": 1448,
       "url": "/hero-assets/9ed83f21c4fff505-1448.webp",
       "bytes": 160138
+    }
+  ],
+  "/destinations/collage/netherlands-graduate.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/08e650f05eb3e4c1-480.webp",
+      "bytes": 37626
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/08e650f05eb3e4c1-768.webp",
+      "bytes": 71668
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/08e650f05eb3e4c1-1280.webp",
+      "bytes": 129028
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/08e650f05eb3e4c1-1448.webp",
+      "bytes": 165642
+    }
+  ],
+  "/destinations/collage/netherlands-life.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/ede643b03503d6da-480.webp",
+      "bytes": 51626
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/ede643b03503d6da-768.webp",
+      "bytes": 101800
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/ede643b03503d6da-1280.webp",
+      "bytes": 193682
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/ede643b03503d6da-1448.webp",
+      "bytes": 260712
+    }
+  ],
+  "/destinations/collage/netherlands-planning.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/7e5b995c0fc4b300-480.webp",
+      "bytes": 34974
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/7e5b995c0fc4b300-768.webp",
+      "bytes": 67346
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/7e5b995c0fc4b300-1280.webp",
+      "bytes": 124564
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/7e5b995c0fc4b300-1448.webp",
+      "bytes": 161126
+    }
+  ],
+  "/destinations/collage/netherlands-study.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/c24fbca19e0de46c-480.webp",
+      "bytes": 32728
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/c24fbca19e0de46c-768.webp",
+      "bytes": 61818
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/c24fbca19e0de46c-1280.webp",
+      "bytes": 110766
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/c24fbca19e0de46c-1448.webp",
+      "bytes": 141738
+    }
+  ],
+  "/destinations/collage/netherlands-travel.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/65d8186453720c20-480.webp",
+      "bytes": 47892
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/65d8186453720c20-768.webp",
+      "bytes": 94760
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/65d8186453720c20-1280.webp",
+      "bytes": 177432
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/65d8186453720c20-1448.webp",
+      "bytes": 233938
+    }
+  ],
+  "/destinations/collage/new-zealand-graduate.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/3550800c7f6927c0-480.webp",
+      "bytes": 37138
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/3550800c7f6927c0-768.webp",
+      "bytes": 72126
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/3550800c7f6927c0-1280.webp",
+      "bytes": 132294
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/3550800c7f6927c0-1448.webp",
+      "bytes": 169038
+    }
+  ],
+  "/destinations/collage/new-zealand-life.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/3bb8fe0946d71d11-480.webp",
+      "bytes": 34674
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/3bb8fe0946d71d11-768.webp",
+      "bytes": 66836
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/3bb8fe0946d71d11-1280.webp",
+      "bytes": 127768
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/3bb8fe0946d71d11-1448.webp",
+      "bytes": 173626
+    }
+  ],
+  "/destinations/collage/new-zealand-planning.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/d049d62168cdb7f4-480.webp",
+      "bytes": 32914
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/d049d62168cdb7f4-768.webp",
+      "bytes": 62766
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/d049d62168cdb7f4-1280.webp",
+      "bytes": 117134
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/d049d62168cdb7f4-1448.webp",
+      "bytes": 155860
+    }
+  ],
+  "/destinations/collage/new-zealand-study.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/0fbd77ac9e8dbac2-480.webp",
+      "bytes": 27512
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/0fbd77ac9e8dbac2-768.webp",
+      "bytes": 51000
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/0fbd77ac9e8dbac2-1280.webp",
+      "bytes": 93232
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/0fbd77ac9e8dbac2-1448.webp",
+      "bytes": 121750
+    }
+  ],
+  "/destinations/collage/new-zealand-travel.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/dd2d0e6f6a1b7e77-480.webp",
+      "bytes": 31534
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/dd2d0e6f6a1b7e77-768.webp",
+      "bytes": 59704
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/dd2d0e6f6a1b7e77-1280.webp",
+      "bytes": 112112
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/dd2d0e6f6a1b7e77-1448.webp",
+      "bytes": 153232
     }
   ],
   "/destinations/collage/planning.webp": [
@@ -197,6 +1077,116 @@
       "bytes": 121984
     }
   ],
+  "/destinations/collage/sweden-graduate.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/271941b7ca24e972-480.webp",
+      "bytes": 29008
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/271941b7ca24e972-768.webp",
+      "bytes": 53720
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/271941b7ca24e972-1280.webp",
+      "bytes": 96404
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/271941b7ca24e972-1448.webp",
+      "bytes": 125526
+    }
+  ],
+  "/destinations/collage/sweden-life.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/03bb051f069e3ba4-480.webp",
+      "bytes": 33598
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/03bb051f069e3ba4-768.webp",
+      "bytes": 62404
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/03bb051f069e3ba4-1280.webp",
+      "bytes": 112966
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/03bb051f069e3ba4-1448.webp",
+      "bytes": 148448
+    }
+  ],
+  "/destinations/collage/sweden-planning.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/54f88c8ab4bf3b12-480.webp",
+      "bytes": 27928
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/54f88c8ab4bf3b12-768.webp",
+      "bytes": 52042
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/54f88c8ab4bf3b12-1280.webp",
+      "bytes": 98778
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/54f88c8ab4bf3b12-1448.webp",
+      "bytes": 127956
+    }
+  ],
+  "/destinations/collage/sweden-study.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/0da3cf93e4059282-480.webp",
+      "bytes": 29286
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/0da3cf93e4059282-768.webp",
+      "bytes": 53556
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/0da3cf93e4059282-1280.webp",
+      "bytes": 96462
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/0da3cf93e4059282-1448.webp",
+      "bytes": 127534
+    }
+  ],
+  "/destinations/collage/sweden-travel.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/006d66896eae6908-480.webp",
+      "bytes": 30870
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/006d66896eae6908-768.webp",
+      "bytes": 58320
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/006d66896eae6908-1280.webp",
+      "bytes": 106934
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/006d66896eae6908-1448.webp",
+      "bytes": 145156
+    }
+  ],
   "/destinations/collage/travel.webp": [
     {
       "width": 480,
@@ -217,6 +1207,116 @@
       "width": 1448,
       "url": "/hero-assets/208bc8bae22914b2-1448.webp",
       "bytes": 95128
+    }
+  ],
+  "/destinations/collage/united-kingdom-graduate.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/debd317f8a7b0fa2-480.webp",
+      "bytes": 22650
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/debd317f8a7b0fa2-768.webp",
+      "bytes": 39110
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/debd317f8a7b0fa2-1280.webp",
+      "bytes": 68962
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/debd317f8a7b0fa2-1448.webp",
+      "bytes": 89436
+    }
+  ],
+  "/destinations/collage/united-kingdom-life.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/071109a95f8eee67-480.webp",
+      "bytes": 33492
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/071109a95f8eee67-768.webp",
+      "bytes": 65102
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/071109a95f8eee67-1280.webp",
+      "bytes": 121126
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/071109a95f8eee67-1448.webp",
+      "bytes": 161178
+    }
+  ],
+  "/destinations/collage/united-kingdom-planning.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/dbfbaf4e2f1cd804-480.webp",
+      "bytes": 31490
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/dbfbaf4e2f1cd804-768.webp",
+      "bytes": 61330
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/dbfbaf4e2f1cd804-1280.webp",
+      "bytes": 112834
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/dbfbaf4e2f1cd804-1448.webp",
+      "bytes": 147952
+    }
+  ],
+  "/destinations/collage/united-kingdom-study.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/d8b26c5aa25c6aa2-480.webp",
+      "bytes": 21324
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/d8b26c5aa25c6aa2-768.webp",
+      "bytes": 38056
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/d8b26c5aa25c6aa2-1280.webp",
+      "bytes": 68154
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/d8b26c5aa25c6aa2-1448.webp",
+      "bytes": 88232
+    }
+  ],
+  "/destinations/collage/united-kingdom-travel.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/0fb21c95458d9918-480.webp",
+      "bytes": 37126
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/0fb21c95458d9918-768.webp",
+      "bytes": 72362
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/0fb21c95458d9918-1280.webp",
+      "bytes": 135700
+    },
+    {
+      "width": 1448,
+      "url": "/hero-assets/0fb21c95458d9918-1448.webp",
+      "bytes": 185524
     }
   ],
   "/destinations/denmark-twilight.png": [
