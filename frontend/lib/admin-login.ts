@@ -31,5 +31,6 @@ export function loginPayload(
     : username.includes("@")
       ? username
       : null;
-  return email ? { email, password: body.password } : null;
+  if (body.mfaCode != null && (typeof body.mfaCode !== "string" || body.mfaCode.length > 64)) return null;
+  return email ? { email, password: body.password, ...(body.mfaCode ? { mfaCode: body.mfaCode } : {}) } : null;
 }

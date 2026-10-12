@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { loginPayload } from "../../../../lib/admin-login";
+import { trustedClientHeaders } from "@/lib/proxy-client-ip";
 
 export const dynamic = "force-dynamic";
 async function proxy(
@@ -15,7 +16,8 @@ async function proxy(
     relative === "users/me" ||
     relative === "users/me/panel-access" ||
     relative === "reporting/dashboard" ||
-    /^auth\/(login|refresh|logout|password-reset-requests|password-resets)$/.test(
+    /^auth\/mfa(?:\/(setup|confirm|disable))?$/.test(relative) ||
+    /^auth\/(login|refresh|logout|password-reset-requests|password-resets|email-verifications)$/.test(
       relative,
     );
   if (!allowed) return new NextResponse(null, { status: 404 });
@@ -33,6 +35,7 @@ async function proxy(
   const headers = new Headers({
     Accept: "application/json",
     "Content-Type": "application/json",
+    ...trustedClientHeaders(request.headers, process.env.JAHAN_TRUSTED_PROXY_SECRET),
   });
   for (const name of ["authorization", "cookie", "if-match"]) {
     const value = request.headers.get(name);
@@ -86,6 +89,10 @@ async function proxy(
       },
     );
     const etag = upstream.headers.get("etag");
+    for (const key of ["Retry-After", "X-Request-ID"]) {
+      const value = upstream.headers.get(key);
+      if (value) response.headers.set(key, value);
+    }
     if (etag) response.headers.set("etag", etag);
     for (const cookie of upstream.headers.getSetCookie())
       response.headers.append(

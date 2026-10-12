@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
+from typing import Any
 from uuid import UUID, uuid4
 
 from sqlalchemy import select, text, update
@@ -29,6 +30,50 @@ class SessionRecord:
 
 
 class AuthRepository:
+    async def mfa_record(self, user_id: UUID) -> dict[str, Any] | None:
+        row = (
+            (
+                await self.session.execute(
+                    text("SELECT * FROM user_mfa WHERE user_id = :id FOR UPDATE"), {"id": user_id}
+                )
+            )
+            .mappings()
+            .one_or_none()
+        )
+        return dict(row) if row else None
+
+    async def save_mfa_setup(self, user_id: UUID, ciphertext: str) -> None:
+        await self.session.execute(
+            text("""INSERT INTO user_mfa (user_id, secret_ciphertext, setup_expires_at)
+                 VALUES (:id, :secret, now() + interval '15 minutes')
+                 ON CONFLICT (user_id) DO UPDATE SET secret_ciphertext = :secret,
+                 setup_expires_at = now() + interval '15 minutes', last_counter = -1,
+                 recovery_hashes = '{}', updated_at = now() WHERE NOT user_mfa.enabled"""),
+            {"id": user_id, "secret": ciphertext},
+        )
+
+    async def update_mfa_proof(
+        self, user_id: UUID, counter: int, recovery_hashes: list[str], *, enable: bool = True
+    ) -> None:
+        await self.session.execute(
+            text("""UPDATE user_mfa SET last_counter = :counter,
+                 recovery_hashes = CAST(:hashes AS text[]), enabled = :enabled,
+                 updated_at = now() WHERE user_id = :id"""),
+            {"id": user_id, "counter": counter, "hashes": recovery_hashes, "enabled": enable},
+        )
+
+    async def delete_mfa(self, user_id: UUID) -> None:
+        await self.session.execute(
+            text("DELETE FROM user_mfa WHERE user_id = :id"), {"id": user_id}
+        )
+
+    async def audit_mfa(self, user_id: UUID, action: str) -> None:
+        await self.session.execute(
+            text("""INSERT INTO audit_logs (actor_user_id, action, entity_type, entity_id)
+                 VALUES (:id, :action, 'user', :id)"""),
+            {"id": user_id, "action": action},
+        )
+
     def __init__(self, session: AsyncSession) -> None:
         self.session = session
 
@@ -122,6 +167,8 @@ class AuthRepository:
                 UserIdentityModel.normalized_value == normalized_email,
                 UserModel.deleted_at.is_(None),
             )
+            .with_for_update(of=UserModel)
+            .execution_options(populate_existing=True)
         )
         row = (await self.session.execute(statement)).one_or_none()
         return None if row is None else AccountRecord(user=row[0], identity=row[1], profile=row[2])
@@ -187,6 +234,9 @@ class AuthRepository:
                 AuthChallengeModel.secret_hash == secret_hash,
                 AuthChallengeModel.consumed_at.is_(None),
                 AuthChallengeModel.expires_at > now,
+                UserIdentityModel.verified_at.is_(None),
+                UserModel.status == "pending",
+                UserModel.deleted_at.is_(None),
             )
             .with_for_update()
         )
@@ -205,11 +255,16 @@ class AuthRepository:
         self, user: UserModel, maximum: int, lock_for: timedelta
     ) -> None:
         now = datetime.now(UTC)
-        user.failed_login_count += 1
-        if user.failed_login_count >= maximum:
-            user.failed_login_count = 0
-            user.locked_until = now + lock_for
-        user.updated_at = now
+        await self.session.execute(
+            text("""UPDATE users SET
+                 locked_until = CASE WHEN failed_login_count + 1 >= :maximum
+                   THEN :locked_until ELSE locked_until END,
+                 failed_login_count = CASE WHEN failed_login_count + 1 >= :maximum
+                   THEN 0 ELSE failed_login_count + 1 END,
+                 updated_at = :now WHERE id = :id"""),
+            {"id": user.id, "maximum": maximum, "locked_until": now + lock_for, "now": now},
+        )
+        await self.session.refresh(user)
 
     async def register_successful_login(
         self, account: AccountRecord, password_hash: str | None
@@ -267,6 +322,14 @@ class AuthRepository:
         return session
 
     async def get_refresh_session_for_update(self, token_hash: str) -> SessionRecord | None:
+        # Match login/MFA's lock order: account first, then session. This serializes
+        # enrollment/revocation with refresh, including sessions created concurrently.
+        await self.session.execute(
+            select(UserModel)
+            .join(SessionModel, SessionModel.user_id == UserModel.id)
+            .where(SessionModel.token_hash == token_hash)
+            .with_for_update(of=UserModel)
+        )
         statement = (
             select(SessionModel, UserModel)
             .join(UserModel, UserModel.id == SessionModel.user_id)

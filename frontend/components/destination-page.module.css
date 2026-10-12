@@ -1,7 +1,7 @@
 /* Official palette from the current home page. Destination scope only.
    60: light canvas; 30: white content surfaces; 10: navy/silver emphasis.
    Photography, university logos and national flags retain their own colors. */
-:global(.site):has(> .page) {
+:global(.site):has(.page) {
   --color-brand-950: #123B78;
   --color-brand-900: #123B78;
   --color-brand-700: #123B78;
@@ -201,11 +201,11 @@
 .page .more a { transition: border-color .25s ease, box-shadow .25s ease; }
 .page .more a:hover, .page .more a:focus-visible { border-color: #123b78; box-shadow: 0 0 0 1px #123b78; color: var(--brand); }
 /* Shared header appearance is scoped to this destination page. */
-:global(.site):has(> .page) :global(.site-header) { background: var(--color-surface); }
-:global(.site):has(> .page) :global(.site-header) a:hover,
-:global(.site):has(> .page) :global(.site-header) a:focus-visible { color: var(--color-brand-900); }
-:global(.site):has(> .page) :global(.site-header) :global(.ui-button--primary):hover,
-:global(.site):has(> .page) :global(.site-header) :global(.ui-button--primary):focus-visible { color: var(--color-surface); background: var(--color-brand-900); box-shadow: inset 0 0 0 2px var(--color-accent); }
+:global(.site):has(.page) :global(.site-header) { background: var(--color-surface); }
+:global(.site):has(.page) :global(.site-header) a:hover,
+:global(.site):has(.page) :global(.site-header) a:focus-visible { color: var(--color-brand-900); }
+:global(.site):has(.page) :global(.site-header) :global(.ui-button--primary):hover,
+:global(.site):has(.page) :global(.site-header) :global(.ui-button--primary):focus-visible { color: var(--color-surface); background: var(--color-brand-900); box-shadow: inset 0 0 0 2px var(--color-accent); }
 @media(max-width:760px) {
   .page :is(.editorial, .visa) { padding: 26px 20px; margin-block: 32px; }
 }

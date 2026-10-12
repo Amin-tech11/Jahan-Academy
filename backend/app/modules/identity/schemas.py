@@ -48,6 +48,15 @@ class EmailVerificationRequest(ApiModel):
 class LoginRequest(ApiModel):
     email: EmailStr
     password: str = Field(min_length=1, max_length=128)
+    mfa_code: str | None = Field(default=None, max_length=64)
+
+
+class MfaPasswordRequest(ApiModel):
+    password: str = Field(min_length=1, max_length=128)
+
+
+class MfaProofRequest(MfaPasswordRequest):
+    code: str = Field(min_length=6, max_length=64)
 
 
 class PasswordResetConfirmRequest(ApiModel):

@@ -15,7 +15,7 @@ permissions:
 
 concurrency:
   group: ci-cd-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 env:
   UV_VERSION: "0.12.17"
@@ -97,12 +97,13 @@ jobs:
         working-directory: frontend
         env:
           AUDIT_OUTPUT: ${{ runner.temp }}/public-site-audit.json
+          AUDIT_MAX_DESTINATION_JS_GZIP_BYTES: "240000"
         run: |
           node node_modules/next/dist/bin/next start --port 5100 > "$RUNNER_TEMP/public-site-server.log" 2>&1 &
           server_pid=$!
           trap 'kill "$server_pid" 2>/dev/null || true' EXIT
           ready=0
-          for attempt in $(seq 1 60); do
+          for _ in $(seq 1 60); do
             if curl --silent --fail http://localhost:5100/en > /dev/null; then ready=1; break; fi
             sleep 1
           done
@@ -117,6 +118,60 @@ jobs:
           path: |
             ${{ runner.temp }}/public-site-audit.json
             ${{ runner.temp }}/public-site-server.log
+          if-no-files-found: ignore
+
+  browser-tests:
+    name: Browser and Accessibility Tests
+    needs: lint
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6.1.0
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Install Node.js
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+          cache-dependency-path: frontend/pnpm-lock.yaml
+
+      - name: Install locked frontend dependencies
+        working-directory: frontend
+        run: pnpm install --frozen-lockfile
+
+
+      - name: Build browser test site
+        run: pnpm build
+      - name: Install Chromium
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Test browser journeys and accessibility
+        run: |
+          pnpm exec next start --port 5100 > "$RUNNER_TEMP/browser-server.log" 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          for _ in $(seq 1 60); do
+            if curl --silent --fail http://localhost:5100/fa > /dev/null; then break; fi
+            sleep 1
+          done
+          pnpm test:browser
+      - name: Upload browser evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: browser-tests
+          path: |
+            frontend/playwright-report
+            frontend/test-results
+            ${{ runner.temp }}/browser-server.log
           if-no-files-found: ignore
 
   unit-tests:
@@ -216,6 +271,8 @@ jobs:
           JAHAN_DATABASE_URL: postgresql+asyncpg://jahan:jahan_ci@localhost:${{ job.services.postgres.ports['5432'] }}/jahan_academy
           JAHAN_REDIS_URL: redis://localhost:${{ job.services.redis.ports['6379'] }}/0
           JAHAN_SESSION_SECRET: ci-only-secret-that-is-longer-than-32-characters
+          # Isolated functional tests share TestClient's synthetic peer address.
+          JAHAN_API_RATE_LIMIT: "10000"
         run: uv run pytest tests/integration -v
 
       - name: Verify latest migration rollback and re-upgrade
@@ -225,9 +282,27 @@ jobs:
           uv run alembic -c alembic.ini downgrade -1
           uv run alembic -c alembic.ini upgrade head
 
+      - name: Restore backup in an isolated database
+        env:
+          POSTGRES_CONTAINER: ${{ job.services.postgres.id }}
+        run: |
+          docker exec "$POSTGRES_CONTAINER" pg_dump -U jahan -d jahan_academy -Fc > "$RUNNER_TEMP/restore-test.dump"
+          docker exec "$POSTGRES_CONTAINER" createdb -U jahan jahan_restore_test
+          docker exec -i "$POSTGRES_CONTAINER" pg_restore -U jahan -d jahan_restore_test --exit-on-error < "$RUNNER_TEMP/restore-test.dump"
+          docker exec "$POSTGRES_CONTAINER" psql -U jahan -d jahan_restore_test -v ON_ERROR_STOP=1 -c 'SELECT version_num FROM alembic_version; SELECT count(*) FROM users;'
+          docker exec "$POSTGRES_CONTAINER" dropdb -U jahan jahan_restore_test
+
+      - name: Verify production operations tooling
+        working-directory: .
+        env:
+          DOCKER_PRODUCTION_TEST: "1"
+        run: |
+          python3 -m unittest discover -s deploy/production -p 'test_*.py' -v
+          for file in deploy/production/*.sh; do bash -n "$file"; done
+
   build:
     name: Build
-    needs: integration-tests
+    needs: [integration-tests, browser-tests]
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     steps:
@@ -352,7 +427,8 @@ jobs:
       contents: read
       packages: write
     outputs:
-      image: ${{ steps.image.outputs.value }}
+      backend: ${{ steps.registry.outputs.image }}@${{ steps.build-backend.outputs.digest }}
+      frontend: ${{ steps.registry.outputs.frontend }}@${{ steps.build-frontend.outputs.digest }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
@@ -371,11 +447,7 @@ jobs:
         shell: bash
         run: |
           echo "image=ghcr.io/${GITHUB_REPOSITORY,,}/backend" >> "$GITHUB_OUTPUT"
-
-      - name: Set immutable image reference
-        id: image
-        shell: bash
-        run: echo "value=ghcr.io/${GITHUB_REPOSITORY,,}/backend:${GITHUB_SHA}" >> "$GITHUB_OUTPUT"
+          echo "frontend=ghcr.io/${GITHUB_REPOSITORY,,}/frontend" >> "$GITHUB_OUTPUT"
 
       - name: Generate image metadata
         id: meta
@@ -383,12 +455,14 @@ jobs:
         with:
           images: ${{ steps.registry.outputs.image }}
           tags: |
+            type=raw,value=${{ github.sha }}
             type=sha,format=long
             type=ref,event=branch
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
 
-      - name: Build and publish production image
+      - name: Build and publish backend image
+        id: build-backend
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -397,74 +471,68 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
+      - name: Build and publish frontend image
+        id: build-frontend
+        uses: docker/build-push-action@v6
+        with:
+          context: frontend
+          file: frontend/Dockerfile
+          push: true
+          tags: ${{ steps.registry.outputs.frontend }}:${{ github.sha }}
+          labels: |
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+
       - name: Log out of GitHub Container Registry
         if: always()
         run: docker logout ghcr.io
 
-  deploy-staging:
-    name: Deploy Staging
-    needs: publish
-    if: github.ref == 'refs/heads/develop' && vars.DEPLOY_ENABLED == 'true'
-    runs-on: ubuntu-24.04
-    timeout-minutes: 45
-    environment:
-      name: staging
-      url: ${{ vars.APP_URL }}
-    steps:
-      - name: Deploy immutable image over SSH
-        uses: appleboy/ssh-action@v1.2.2
-        env:
-          BACKEND_IMAGE: ${{ needs.publish.outputs.image }}
-          DEPLOY_PATH: ${{ vars.DEPLOY_PATH }}
-          HEALTHCHECK_URL: ${{ vars.HEALTHCHECK_URL }}
-          DEPLOY_REF: origin/develop
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.SSH_PORT || 22 }}
-          envs: BACKEND_IMAGE,DEPLOY_PATH,HEALTHCHECK_URL,DEPLOY_REF
-          script_stop: true
-          script: |
-            cd "$DEPLOY_PATH"
-            git fetch --prune origin develop
-            git checkout --detach "$DEPLOY_REF"
-            export BACKEND_IMAGE
-            docker compose -f deploy/compose.yml pull
-            docker compose -f deploy/compose.yml run --rm migrate
-            docker compose -f deploy/compose.yml up -d --remove-orphans api worker
-            curl --fail --retry 12 --retry-delay 5 "$HEALTHCHECK_URL"
-
   deploy-production:
-    name: Deploy Production
+    name: Deploy Main
     needs: publish
-    if: startsWith(github.ref, 'refs/tags/v') && vars.DEPLOY_ENABLED == 'true'
+    if: github.ref == 'refs/heads/main' && vars.JAHAN_MAIN_DEPLOY_ENABLED == 'true'
     runs-on: ubuntu-24.04
-    timeout-minutes: 45
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      packages: read
     environment:
       name: production
-      url: ${{ vars.APP_URL }}
+      url: https://jahanacademi.ir
     steps:
-      - name: Deploy immutable image over SSH
-        uses: appleboy/ssh-action@v1.2.2
-        env:
-          BACKEND_IMAGE: ${{ needs.publish.outputs.image }}
-          DEPLOY_PATH: ${{ vars.DEPLOY_PATH }}
-          HEALTHCHECK_URL: ${{ vars.HEALTHCHECK_URL }}
-          DEPLOY_REF: ${{ github.ref_name }}
+      - uses: actions/checkout@v7
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.SSH_PORT || 22 }}
-          envs: BACKEND_IMAGE,DEPLOY_PATH,HEALTHCHECK_URL,DEPLOY_REF
-          script_stop: true
-          script: |
-            cd "$DEPLOY_PATH"
-            git fetch --prune --tags origin
-            git checkout --detach "$DEPLOY_REF"
-            export BACKEND_IMAGE
-            docker compose -f deploy/compose.yml pull
-            docker compose -f deploy/compose.yml run --rm migrate
-            docker compose -f deploy/compose.yml up -d --remove-orphans api worker
-            curl --fail --retry 12 --retry-delay 5 "$HEALTHCHECK_URL"
+          persist-credentials: false
+      - name: Deploy verified main digests to the isolated stack
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PORT: ${{ secrets.SSH_PORT || '22' }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+          REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REGISTRY_USER: ${{ github.actor }}
+          MAIN_SHA: ${{ github.sha }}
+          BACKEND_DIGEST: ${{ needs.publish.outputs.backend }}
+          FRONTEND_DIGEST: ${{ needs.publish.outputs.frontend }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$SSH_HOST" =~ ^[a-zA-Z0-9.-]+$ && "$SSH_USER" =~ ^[a-zA-Z0-9_-]+$ && "$SSH_PORT" =~ ^[0-9]+$ ]]
+          [[ "$MAIN_SHA" =~ ^[0-9a-f]{40}$ ]]
+          [[ "$REGISTRY_USER" =~ ^[a-zA-Z0-9_\[\]-]+$ ]]
+          test -n "$SSH_PRIVATE_KEY" && test -n "$SSH_KNOWN_HOSTS"
+          umask 077
+          key="$RUNNER_TEMP/jahan-deploy-key"
+          hosts="$RUNNER_TEMP/jahan-known-hosts"
+          printf '%s\n' "$SSH_PRIVATE_KEY" > "$key"
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > "$hosts"
+          trap 'rm -f "$key" "$hosts"' EXIT
+          options=(-i "$key" -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$hosts" -o ConnectTimeout=15)
+          remote="$SSH_USER@$SSH_HOST"
+          path="/opt/jahan-academy-test/releases/$MAIN_SHA"
+          git archive --format=tar.gz --output="$RUNNER_TEMP/main-release.tar.gz" HEAD
+          ssh "${options[@]}" -p "$SSH_PORT" "$remote" "mkdir -p '$path'"
+          scp "${options[@]}" -P "$SSH_PORT" "$RUNNER_TEMP/main-release.tar.gz" "$remote:$path/source.tar.gz"
+          ssh "${options[@]}" -p "$SSH_PORT" "$remote" "tar -xzf '$path/source.tar.gz' -C '$path'"
+          printf '%s' "$REGISTRY_TOKEN" | ssh "${options[@]}" -p "$SSH_PORT" "$remote" "set -eu; umask 077; export DOCKER_CONFIG=\$(mktemp -d); trap 'rm -rf \"\$DOCKER_CONFIG\"' EXIT; docker login ghcr.io -u '$REGISTRY_USER' --password-stdin > /dev/null; bash '$path/deploy/production/release.sh' '$MAIN_SHA' '$BACKEND_DIGEST' '$FRONTEND_DIGEST'"

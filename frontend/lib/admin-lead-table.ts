@@ -4,6 +4,23 @@ import { labels } from "./admin-resources";
 
 export type ColumnFilters = Record<string, string[]>;
 export type ColumnSort = { column: string; direction: "asc" | "desc" };
+export function serverColumnParams(filters: ColumnFilters, sort: ColumnSort | null): Record<string, string> {
+  return { ...(Object.keys(filters).length ? { columnFilters: JSON.stringify(filters) } : {}), ...(sort ? { sortColumn: sort.column, sortDirection: sort.direction } : {}) };
+}
+export function facetLabel(column: string, value: string): string {
+  if (value === "—") return value;
+  if (column === "fullName") return value;
+  if (column === "requestType") return value === "assessment" ? "ارزیابی" : "مشاوره";
+  if (column === "requestCreatedAt") return columnText({ createdAt: value }, column);
+  if (["education", "englishProficiency"].includes(column)) {
+    return columnText({ message: `${column === "education" ? "Education" : "English proficiency"}: ${value}` }, column);
+  }
+  if (column === "investmentBudget") {
+    const [code, currency] = value.split(" · ");
+    return columnText(currency ? { investmentRangeCode: code, investmentCurrency: currency } : { message: `Migration budget: ${value}` }, column);
+  }
+  return columnText({ [column]: value }, column);
+}
 const sortCollator = new Intl.Collator("fa", { numeric: true, sensitivity: "base" });
 export function sortLeadRows(rows: RecordData[], sort: ColumnSort | null): RecordData[] {
   if (!sort) return rows;

@@ -63,6 +63,10 @@ class LeadService:
         archive: LeadArchiveFilter,
         sort: LeadSort,
         search_field: LeadSearchField | None = None,
+        column_filters: dict[str, list[str]] | None = None,
+        sort_column: str | None = None,
+        sort_direction: str = "asc",
+        facet: str | None = None,
     ) -> LeadPage:
         assigned_scope = self._assigned_scope(actor)
         rows, total = await self._repository.list(
@@ -80,14 +84,20 @@ class LeadService:
             archive=archive,
             sort=sort,
             assigned_scope_user_id=assigned_scope,
+            column_filters=column_filters,
+            sort_column=sort_column,
+            sort_direction=sort_direction,
+            facet=facet,
         )
         return LeadPage(
-            data=[self._summary(row) for row in rows],
+            data=[] if facet else [self._summary(row) for row in rows],
             meta=LeadPageMeta(
                 page=page,
                 limit=limit,
                 total=total,
                 total_pages=(total + limit - 1) // limit,
+                column_values=[str(row["value"]) for row in rows[:500]] if facet else None,
+                column_values_truncated=len(rows) > 500 if facet else None,
             ),
         )
 

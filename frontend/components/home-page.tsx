@@ -1,3 +1,4 @@
+import "@/app/home.css";
 import { PreparedImage as Image } from "@/components/prepared-image";
 import { HomeHeroChat } from "@/components/home-hero-chat";
 import { HomeMotion } from "@/components/home-motion";
@@ -74,6 +75,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
   const visibleArticles = [...articles].sort((a, b) => b.date.localeCompare(a.date));
 
   return <SiteShell locale={locale}><HomeMotion>
+    <h1 className="sr-only">{locale === "fa" ? "جهان آکادمی؛ راهنمای مسیر تحصیل بین‌المللی" : "Jahan Academy: guidance for your international study journey"}</h1>
     <div className={`home-hero home-hero--${locale}`}>
       <Image src="/home-hero-campus-v2.png" alt="" fill sizes="100vw" preload className="home-hero__image" />
       <div className="home-hero__shade" aria-hidden="true" />

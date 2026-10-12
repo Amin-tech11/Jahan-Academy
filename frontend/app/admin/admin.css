@@ -924,3 +924,9 @@
   .adm-date-filter { flex: 1 1 100%; }
   .adm-calendar { width: min(350px, calc(100vw - 64px)); }
 }
+.adm-mfa-dialog { width: min(36rem, 90vw); border: 1px solid #aeb7c2; border-radius: 1rem; padding: 2rem; color: #202833; background: #fff; }
+.adm-mfa-dialog::backdrop { background: rgb(12 24 45 / 60%); }
+.adm-mfa-dialog form, .adm-mfa-dialog label { display: grid; gap: .7rem; margin-block: 1rem; }
+.adm-mfa-dialog input { min-height: 2.7rem; padding: .6rem; border: 1px solid #aeb7c2; border-radius: .5rem; }
+.adm-mfa-dialog button { padding: .6rem 1rem; border-radius: .5rem; }
+.adm-mfa-dialog code, .adm-mfa-dialog pre { display: block; overflow-wrap: anywhere; white-space: pre-wrap; padding: 1rem; background: #f7f8fa; }

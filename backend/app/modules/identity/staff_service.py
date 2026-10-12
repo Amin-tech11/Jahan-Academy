@@ -81,6 +81,7 @@ class StaffManagementService:
 
     async def create(self, actor: AuthorizationContext, payload: StaffCreateRequest) -> StaffView:
         self._require_super_admin(actor)
+        self._require_email_delivery()
         email = str(payload.email).strip().casefold()
         if await self._repository.email_exists(email):
             raise ApplicationError(
@@ -266,6 +267,7 @@ class StaffManagementService:
         expected_version: int,
     ) -> StaffView:
         self._require_super_admin(actor)
+        self._require_email_delivery()
         row = await self._repository.get_staff(staff_id, for_update=True)
         if row is None:
             raise self._not_found()
@@ -320,14 +322,22 @@ class StaffManagementService:
                 status_code=409,
             )
 
+    def _require_email_delivery(self) -> None:
+        if not self._settings.email_delivery_enabled:
+            raise ApplicationError(
+                code="EMAIL_SERVICE_UNAVAILABLE",
+                message="Email recovery is temporarily unavailable. Contact the administrator.",
+                status_code=503,
+            )
+
     def _password_reset_expiry(self) -> datetime:
         return datetime.now(UTC) + timedelta(minutes=self._settings.password_reset_minutes)
 
     async def _send_recovery_email(self, email: str, token: str) -> None:
         try:
             await self._mailer.send_password_reset(email, token)
-        except Exception:
-            logger.exception("staff_access_recovery_email_failed")
+        except Exception as error:
+            logger.error("staff_access_recovery_email_failed (%s)", type(error).__name__)
 
     @staticmethod
     def _view(values: Mapping[str, Any]) -> StaffView:

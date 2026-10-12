@@ -74,6 +74,13 @@ export async function adminRequest(
       412: "این رکورد هم‌زمان تغییر کرده است. فرم را ببندید و دوباره باز کنید.",
       429: "تعداد درخواست‌ها زیاد است؛ کمی بعد تلاش کنید.",
       502: "ارتباط با سرور برقرار نشد. اتصال API را بررسی کنید.",
+      503: "سرویس موردنیاز موقتاً در دسترس نیست؛ کمی بعد تلاش کنید.",
+    };
+    const codes: Record<string, string> = {
+      MFA_REQUIRED: "کد اپ احراز هویت یا یکی از کدهای بازیابی را وارد کنید.",
+      MFA_INVALID: "کد احراز هویت معتبر نیست یا قبلاً مصرف شده است.",
+      EMAIL_SERVICE_UNAVAILABLE: "بازیابی ایمیلی فعلاً فعال نیست. با مدیر سایت تماس بگیرید.",
+      INVALID_CREDENTIALS: "نام کاربری یا رمز عبور صحیح نیست.",
     };
     const details = payload.error?.fieldErrors
       ? Object.entries(payload.error.fieldErrors)
@@ -85,7 +92,7 @@ export async function adminRequest(
       : "";
     throw new AdminError(
       response.status,
-      (messages[response.status] ??
+      (codes[String(payload.error?.code)] ?? messages[response.status] ??
         payload.error?.message ??
         "ذخیره یا دریافت اطلاعات انجام نشد.") + (details ? ` ${details}` : ""),
     );

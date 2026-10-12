@@ -6,7 +6,7 @@ import Link from "next/link";
 import { ConsultationSuccess } from "./consultation-success";
 import { ConsultationFormHeading } from "./consultation-form-heading";
 import { type FormEvent, useId, useRef, useState } from "react";
-import { apiRequest, type ApiEnvelope } from "@/lib/api-client";
+import { ApiError, apiRequest, type ApiEnvelope } from "@/lib/api-client";
 import { normalizeMobile } from "@/lib/consultation";
 import type { Locale } from "@/lib/site-content";
 
@@ -49,8 +49,8 @@ export function ServicesConsultationForm({ locale }: { locale: Locale }) {
       });
       if (!response.data?.reference) throw new Error("Missing receipt");
       setReceipt(response.data);
-    } catch {
-      setError(t("درخواست ثبت نشد. اطلاعات را بررسی کنید و کمی بعد دوباره تلاش کنید.", "Your request could not be submitted. Check your details and try again shortly."));
+    } catch (cause) {
+      setError(cause instanceof ApiError ? cause.message : t("تأیید ثبت درخواست دریافت نشد. لطفاً دوباره تلاش کنید.", "We could not confirm your submission. Please try again."));
     } finally { setBusy(false); }
   }
 

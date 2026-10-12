@@ -1,3 +1,4 @@
+import "@/app/consultation.css";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
@@ -5,6 +6,7 @@ import { AssessmentForm } from "@/components/assessment-form";
 import { SiteShell } from "@/components/site-shell";
 import { sourcePageUrl } from "@/lib/consultation";
 import { isLocale, siteCopy } from "@/lib/site-content";
+import { pageMetadata } from "@/lib/site-seo";
 
 type PageProps = {
   params: Promise<{ locale: string }>;
@@ -15,7 +17,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const title = locale === "fa" ? "فرم ارزیابی اولیه" : "Initial assessment form";
-  return { title: `${title} | Jahan Academy` };
+  return pageMetadata(locale, "/consultation", `${title} | Jahan Academy`);
 }
 
 export default async function ConsultationPage({ params, searchParams }: PageProps) {
@@ -27,7 +29,8 @@ export default async function ConsultationPage({ params, searchParams }: PagePro
   const fa = locale === "fa";
   return <SiteShell locale={locale}><main className="assessment-page">
     <section className="assessment-page__hero" aria-labelledby="consultation-title">
-      <h1 className="assessment-page__wordmark" id="consultation-title" dir="ltr">JAHAN ACADEMY</h1>
+      <div className="assessment-page__wordmark" dir="ltr">JAHAN ACADEMY</div>
+      <h1 className="sr-only" id="consultation-title">{fa ? "فرم ارزیابی اولیه" : "Initial assessment form"}</h1>
     </section>
     <div className="assessment-page__body">
       <aside className="assessment-page__sidebar" aria-label={fa ? "مراحل درخواست" : "Request steps"}>

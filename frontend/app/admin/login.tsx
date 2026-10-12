@@ -29,6 +29,7 @@ export default function AdminLogin({
         const result = await adminRequest("/auth/login", "POST", {
           username: String(data.get("username") ?? "").trim(),
           password: data.get("password"),
+          mfaCode: String(data.get("mfaCode") ?? "").trim(),
         });
         const session = result.data as RecordData;
         acceptAdminSession(session);
@@ -201,6 +202,7 @@ export default function AdminLogin({
                 </div>
               </div>
             )}
+            {mode === "login" && <label htmlFor="adm-mfa-code"><span>کد اپ احراز هویت یا بازیابی (در صورت فعال‌سازی)</span><input id="adm-mfa-code" name="mfaCode" dir="ltr" autoComplete="one-time-code" maxLength={64} /></label>}
             <button type="submit" className="adm-entry-submit" disabled={busy}>
               {busy
                 ? "در حال بررسی…"

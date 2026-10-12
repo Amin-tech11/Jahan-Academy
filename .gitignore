@@ -5,6 +5,7 @@
 **/.mypy_cache/
 **/.pytest_cache/
 **/.ruff_cache/
+**/.uv-cache/
 
 # Environment and secrets
 **/.env
@@ -33,5 +34,15 @@ Thumbs.db
 **/.coverage
 **/coverage.xml
 **/htmlcov/
+**/test-results/
+**/playwright-report/
+**/test-hardening.log
+**/browser-hardening.log
+**/build-hardening.log
+**/site-audit.json
 **/dist/
 **/build/
+lint-hardening.log
+.pytest-hardening-*/
+.operations-hardening/
+requirements-hardening-audit.txt
