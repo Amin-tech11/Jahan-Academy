@@ -13,7 +13,7 @@ const sources = new Set([
   "/home-hero-campus-v2.png", "/services-hero-interview.png",
   "/home-hero-documentary.png", "/blog/library-hero.webp",
   "/universities/hero/classical-campus.png", "/destinations/world-map-hero-wide.png",
-  "/free-consultation.webp", "/home-trust-office-meeting.webp", "/brand/jahan-academy-official.png",
+  "/free-consultation.webp", "/home-trust-office-meeting.webp", "/brand/jahan-academy-official.png", "/assessment-hero-office.webp",
 ]);
 for (const dir of ["journey", "services", "destinations", "destinations/collage", "universities", "university-info"]) {
   for (const item of await readdir(path.join(publicDir, dir), { withFileTypes: true })) {

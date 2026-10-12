@@ -1,4 +1,26 @@
 {
+  "/assessment-hero-office.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/b1d8ef21bdf35117-480.webp",
+      "bytes": 13860
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/b1d8ef21bdf35117-768.webp",
+      "bytes": 26014
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/b1d8ef21bdf35117-1280.webp",
+      "bytes": 49388
+    },
+    {
+      "width": 1920,
+      "url": "/hero-assets/b1d8ef21bdf35117-1920.webp",
+      "bytes": 78730
+    }
+  ],
   "/blog/library-hero.webp": [
     {
       "width": 480,
