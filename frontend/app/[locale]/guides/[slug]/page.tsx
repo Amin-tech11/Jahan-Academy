@@ -15,5 +15,5 @@ export default async function GuideDetail({ params }: Props) {
   if (!isLocale(locale)) notFound();
   const guide = blogGuides.find(item=>item.slug===slug);
   if (!guide) notFound();
-  return <EditorialDetail locale={locale} title={guide.title[locale]} date={guide.date} excerpt={guide.excerpt[locale]} sections={guide.sections[locale]} />;
+  return <EditorialDetail locale={locale} title={guide.title[locale]} date={guide.date} excerpt={guide.excerpt[locale]} sections={guide.sections[locale]} sources={guide.sources} />;
 }

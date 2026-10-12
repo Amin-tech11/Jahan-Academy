@@ -1,0 +1,19 @@
+{
+  "generator": "OpenAI built-in image generation",
+  "style": "Approved editorial paper collage",
+  "reference": "F:/DevData/Temp/codex-clipboard-15c28deb-0d89-49f7-b913-dd927583aae1.png",
+  "assets": [
+    {
+      "file": "frontend/public/blog/guides/uk-collage.webp",
+      "prompt": "User-approved UK cover used unchanged; converted to WebP."
+    },
+    {
+      "file": "frontend/public/blog/guides/italy-collage.webp",
+      "prompt": "Create a coordinated LANDSCAPE 3:2 Jahan Academy journal cover using the attached image as the approved STYLE AND LAYOUT reference. Preserve its premium editorial torn-paper collage language: navy and silver paper layers, ivory central title area, halftone grain, photographic architectural cutouts, fictional adult student with backpack on left, graduation cap near top, curved airplane journey line, generous bold correctly joined Persian typography, small JAHAN ACADEMY wordmark upper left. Keep exactly this visual family and relative hierarchy, but replace every UK-specific flag, landmark and bus with the destination country's own motifs. No UK landmarks or Union Jack. Main title must be beautifully readable and accurate. No immigration guarantees, no amounts, no watermark. Preserve all important elements inside central 85% suitable for journal cards. The output is a finished cover, not a website screenshot. Destination: ITALY. On right a tall photographic cutout of Florence Cathedral dome, lower panorama of Rome Colosseum and warm Italian urban architecture; Italian green-white-red flag integrated into torn paper bottom right. Main title EXACT Persian: \"راهنمای تحصیل و ویزای ایتالیا\". Subtitle EXACT: \"پذیرش • زبان • بورسیه\". Small English decorative words only \"STUDY EXPLORE BELONG\". Country-specific believable architecture, sophisticated muted natural ochre stone harmonizing with navy paper."
+    },
+    {
+      "file": "frontend/public/blog/guides/austria-collage.webp",
+      "prompt": "Create a coordinated LANDSCAPE 3:2 Jahan Academy journal cover using the attached image as the approved STYLE AND LAYOUT reference. Preserve its premium editorial torn-paper collage language: navy and silver paper layers, ivory central title area, halftone grain, photographic architectural cutouts, fictional adult student with backpack on left, graduation cap near top, curved airplane journey line, generous bold correctly joined Persian typography, small JAHAN ACADEMY wordmark upper left. Keep exactly this visual family and relative hierarchy, but replace every UK-specific flag, landmark and bus with the destination country's own motifs. No UK landmarks or Union Jack. Main title must be beautifully readable and accurate. No immigration guarantees, no amounts, no watermark. Preserve all important elements inside central 85% suitable for journal cards. The output is a finished cover, not a website screenshot. Destination: AUSTRIA. On right a tall photographic cutout of St. Stephen’s Cathedral in Vienna with its distinctive patterned tiled roof; lower panoramic Vienna Ringstrasse historic buildings with subtle distant Alpine mountains as layered collage. Austrian red-white-red flag integrated into torn paper bottom right. Main title EXACT Persian: \"راهنمای تحصیل و ویزای اتریش\". Subtitle EXACT: \"پذیرش • زبان • مسیر تحصیل\". Small English decorative words only \"STUDY EXPLORE BELONG\". Country-specific believable architecture and refined muted stone colors harmonizing with navy paper."
+    }
+  ]
+}
