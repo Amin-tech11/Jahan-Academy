@@ -63,7 +63,10 @@ export function apiUrl(
 export async function apiRequest<T>(path: string, options: ApiRequestOptions = {}): Promise<T> {
   const { query, body, headers, signal, timeoutMs: configuredTimeout, ...rest } = options;
   const consultation = path === "/consultation-requests" && options.method?.toUpperCase() === "POST";
-  const retryable = consultation && Boolean(new Headers(headers).get("Idempotency-Key"));
+  const requestHeaders = new Headers(headers);
+  if (!requestHeaders.has("Accept")) requestHeaders.set("Accept", "application/json");
+  if (body !== undefined && !requestHeaders.has("Content-Type")) requestHeaders.set("Content-Type", "application/json");
+  const retryable = consultation && Boolean(requestHeaders.get("Idempotency-Key"));
   const timeoutMs = configuredTimeout ?? (consultation ? 30000 : 10000);
   const serialized = body === undefined ? undefined : JSON.stringify(body);
   const fa = body !== null && typeof body === "object" && "locale" in body && body.locale === "fa";
@@ -74,11 +77,7 @@ export async function apiRequest<T>(path: string, options: ApiRequestOptions = {
       const response = await fetch(apiUrl(path, query), {
         ...rest,
         signal: requestSignal,
-        headers: {
-          Accept: "application/json",
-          ...(body !== undefined ? { "Content-Type": "application/json" } : {}),
-          ...Object.fromEntries(new Headers(headers)),
-        },
+        headers: Object.fromEntries(requestHeaders),
         ...(serialized !== undefined ? { body: serialized } : {}),
       });
 

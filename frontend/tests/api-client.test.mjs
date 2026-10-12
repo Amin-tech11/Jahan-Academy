@@ -106,12 +106,14 @@ test("a successful status without a receipt is verified again using Headers inpu
     let calls = 0;
     globalThis.fetch = async (_url, options) => {
       assert.equal(new Headers(options.headers).get("Idempotency-Key"), "stable-receipt-key");
+      assert.equal(new Headers(options.headers).get("Content-Type"), "application/json");
+      assert.equal(new Headers(options.headers).get("Accept"), "application/json");
       calls += 1;
       return calls === 1
         ? new Response(status === 204 ? null : "<html>Unexpected proxy response</html>", { status })
         : new Response(JSON.stringify({ data: { reference: "JA-VERIFIED" } }), { status: 201 });
     };
-    const result = await apiRequest("/consultation-requests", { method: "POST", headers: new Headers({ "Idempotency-Key": "stable-receipt-key" }) });
+    const result = await apiRequest("/consultation-requests", { method: "POST", headers: new Headers({ "Idempotency-Key": "stable-receipt-key", "Content-Type": "application/json", Accept: "application/json" }) });
     assert.equal(result.data.reference, "JA-VERIFIED");
     assert.equal(calls, 2);
   }
