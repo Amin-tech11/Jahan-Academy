@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { AssessmentForm } from "@/components/assessment-form";
+import { PreparedImage } from "@/components/prepared-image";
 import { SiteShell } from "@/components/site-shell";
 import { sourcePageUrl } from "@/lib/consultation";
 import { isLocale, siteCopy } from "@/lib/site-content";
@@ -29,6 +30,7 @@ export default async function ConsultationPage({ params, searchParams }: PagePro
   const fa = locale === "fa";
   return <SiteShell locale={locale}><main className="assessment-page">
     <section className="assessment-page__hero" aria-labelledby="consultation-title">
+      <PreparedImage className="assessment-page__hero-image" src="/assessment-hero-office.webp" alt="" fill sizes="100vw" preload />
       <div className="assessment-page__wordmark" dir="ltr">JAHAN ACADEMY</div>
       <h1 className="sr-only" id="consultation-title">{fa ? "فرم ارزیابی اولیه" : "Initial assessment form"}</h1>
     </section>
