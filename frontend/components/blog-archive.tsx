@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
+import { PreparedImage as Image } from "@/components/prepared-image";
 import { useState } from "react";
 import { blogCopy, blogDate, blogHref, blogImage, selectBlogPosts, type BlogFilter, type BlogPost } from "@/lib/blog-content";
 import type { Locale } from "@/lib/site-content";

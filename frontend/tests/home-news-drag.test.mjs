@@ -19,6 +19,7 @@ function setup(items = [], locale = "fa") {
       if (name === "react") return { useRef: (value) => ({ current: [viewport, track][refIndex++] ?? value }) };
       if (name === "react/jsx-runtime") return { jsx: (type, props) => ({ type, props }), jsxs: (type, props) => ({ type, props }) };
       if (name === "next/image" || name === "next/link") return { default: () => null };
+      if (name === "@/components/prepared-image") return { PreparedImage: () => null };
       if (name === "@/lib/blog-content") return { blogHref };
       throw new Error(name);
     },

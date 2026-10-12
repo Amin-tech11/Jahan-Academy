@@ -18,6 +18,7 @@ function mount(sectionType, posts) {
     if (name === "react") return { useState: () => [page, value => { page = value; }] };
     if (name === "@/lib/blog-content") return content;
     if (name === "next/link" || name === "next/image") return { default: name };
+    if (name === "@/components/prepared-image") return { PreparedImage: "img" };
     return require(name);
   } });
   return () => module.exports.BlogArchive({ posts, locale: "en", sectionType });

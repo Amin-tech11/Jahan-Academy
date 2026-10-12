@@ -1,7 +1,7 @@
 "use client";
 import { PanelConsultationCallout } from "@/components/panel-consultation-callout";
 
-import Image from "next/image";
+import { PreparedImage as Image } from "@/components/prepared-image";
 import { DestinationConsultation } from "./destination-consultation";
 import consultationStyles from "./destination-consultation.module.css";
 import { DestinationFaq } from "./destination-faq";

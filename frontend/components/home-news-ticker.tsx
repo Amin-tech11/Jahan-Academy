@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { PreparedImage as Image } from "@/components/prepared-image";
 import Link from "next/link";
 import { useRef, type PointerEvent } from "react";
 import type { Locale } from "@/lib/site-content";

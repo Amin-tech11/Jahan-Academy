@@ -1,6 +1,6 @@
 import { PanelConsultationCallout } from "@/components/panel-consultation-callout";
 import type { Locale } from "@/lib/site-content";
-import Image from "next/image";
+import { PreparedImage as Image } from "@/components/prepared-image";
 import { HomeConsultation } from "./home-consultation";
 import { universityContent, universityRankingSources } from "@/lib/universities-content";
 import { HomeUniversityShowcase } from "./home-university-showcase";

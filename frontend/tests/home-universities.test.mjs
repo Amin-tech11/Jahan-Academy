@@ -45,3 +45,16 @@ test("university country maps have local SVG assets and source credits", () => {
     assert.ok(sources.some((source) => source.slug === slug && source.url && source.license));
   }
 });
+
+test("country controls serve small content-addressed maps for every destination", () => {
+  const maps = JSON.parse(readFileSync(new URL("../lib/home-country-map-assets.json", import.meta.url), "utf8"));
+  let bytes = 0;
+  for (const { slug } of headerDestinations) {
+    assert.match(maps[slug], /^\/hero-assets\/[a-f0-9]{16}-map-128\.webp$/);
+    const file = readFileSync(new URL(`../public${maps[slug]}`, import.meta.url));
+    assert.equal(file.toString("ascii", 8, 12), "WEBP");
+    assert.ok(file.length < 10000, `${slug} exceeds icon payload budget`);
+    bytes += file.length;
+  }
+  assert.ok(bytes < 50000, "Country controls should not download large source vectors");
+});
