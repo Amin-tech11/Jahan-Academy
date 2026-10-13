@@ -97,3 +97,16 @@ test("map queries cannot inject iframe URL parameters", () => {
   assert.deepEqual(url.searchParams.getAll("output"), ["embed"]);
   assert.equal(url.hash, "");
 });
+
+
+test("public CSP permits both the map URL and its Google embed redirect without wildcard frames", async () => {
+  const { default: config } = await import("../next.config.ts");
+  const rules = await config.headers();
+  const policy = rules.find(rule => rule.source === "/:path*").headers.find(header => header.key === "Content-Security-Policy").value;
+  const frames = policy.split(";").map(value => value.trim()).find(value => value.startsWith("frame-src ")).split(/\s+/).slice(1);
+  assert.ok(frames.includes(new URL(universityMapEmbedUrl(westernUniversity)).origin));
+  assert.ok(frames.includes("https://www.google.com/maps/"), "Google redirects map embeds to this path");
+  assert.equal(frames.some(value => value.includes("*") || value === "https:"), false);
+  assert.ok(policy.includes("object-src 'none'"));
+  assert.ok(policy.includes("frame-ancestors 'none'"));
+});
