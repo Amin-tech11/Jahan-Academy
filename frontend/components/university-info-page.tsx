@@ -108,7 +108,6 @@ export function UniversityInfoPage({ university: u, locale }: { university: Univ
   const features = <>
     <h2>{fa ? `امکانات و ویژگی‌های ${u.name.fa}` : `What we offer at ${u.englishName}`}</h2>
     {offerings.length ? <div className={styles.featureList}>{offerings.map((feature, index) => {
-      const url = safeUniversityUrl(feature.url);
       return <details className={styles.featureItem} key={feature.title.en}>
         <summary className={styles.featureSummary}>
           <span className={styles.featureIcon}>{feature.icon ? <OfferingIcon icon={feature.icon} /> : <CampusLifeIcon index={index} />}</span>
@@ -116,7 +115,7 @@ export function UniversityInfoPage({ university: u, locale }: { university: Univ
           {feature.status && <span className={styles.featureStatus}>{feature.status[locale]}</span>}
           <svg className={styles.featureChevron} aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="m6 9 6 6 6-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
         </summary>
-        <div className={styles.featureDescription}><p>{feature.text[locale]}</p>{url && <a href={url} target="_blank" rel="noopener noreferrer">{fa ? "جزئیات در وب‌سایت رسمی" : "Details on the official website"} ↗</a>}</div>
+        <div className={styles.featureDescription}><p>{feature.text[locale]}</p></div>
       </details>;
     })}</div> : <p className={styles.prose}>{fa ? "جزئیات ویژگی‌های این دانشگاه هنوز منتشر نشده است." : "Campus feature details have not yet been published for this university."}</p>}
   </>;
