@@ -1,5 +1,7 @@
 "use client";
 
+import "./home-university-showcase.css";
+
 import { PreparedImage as Image } from "@/components/prepared-image";
 import countryMaps from "@/lib/home-country-map-assets.json";
 import { useEffect, useRef, useState } from "react";
