@@ -5,7 +5,7 @@ import SiteSelect from "../../components/site-select";
 import Login from "./login";
 import DateFilter from "./date-filter";
 import ColumnFilter from "./column-filter";
-import { facetLabel, serverColumnParams, loadAllLeadRows, type ColumnFilters, type ColumnSort } from "../../lib/admin-lead-table";
+import { columnValues, filterLeadRows, sortLeadRows, loadAllLeadRows, type ColumnFilters, type ColumnSort } from "../../lib/admin-lead-table";
 import { dateRangeParams, type Calendar } from "../../lib/admin-calendar";
 import AccessManager from "./access-manager";
 import { visibleSections, type PanelAccess } from "../../lib/admin-access";
@@ -835,17 +835,13 @@ function ResourceList({ resource }: { resource: Resource }) {
   const [columnFilters, setColumnFilters] = useState<ColumnFilters>({});
   const [columnSort, setColumnSort] = useState<ColumnSort | null>(null);
   const [filterColumn, setFilterColumn] = useState<string | null>(null);
-  const [facetValues, setFacetValues] = useState<string[]>([]);
-  const [facetBusy, setFacetBusy] = useState(false);
-  const [facetError, setFacetError] = useState("");
-  const [facetTruncated, setFacetTruncated] = useState(false);
+  const [allColumnsMode, setAllColumnsMode] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [exportError, setExportError] = useState("");
-  const pageForRequest = page;
+  const pageForRequest = allColumnsMode ? 1 : page;
   const leadParams = () => new URLSearchParams({
     ...dateRangeParams(fromDate, toDate), ...leadSearchParams(query, searchField),
     sort: "created_desc", ...(status ? { status } : {}),
-    ...serverColumnParams(columnFilters, columnSort),
   });
   async function exportExcel() {
     setExporting(true);
@@ -853,7 +849,7 @@ function ResourceList({ resource }: { resource: Resource }) {
     try {
       const allRows = await loadAllLeadRows(leadParams(), params => adminRequest(`${resource.path}?${params}`));
       const { leadWorkbook } = await import("../../lib/admin-lead-export");
-      const buffer = await leadWorkbook(allRows, resource.columns);
+      const buffer = await leadWorkbook(sortLeadRows(filterLeadRows(allRows, columnFilters), columnSort), resource.columns);
       const url = URL.createObjectURL(new Blob([new Uint8Array(buffer)], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }));
       const link = document.createElement("a");
       link.href = url;
@@ -892,7 +888,6 @@ function ResourceList({ resource }: { resource: Resource }) {
     });
     if (resource.id === "leads") {
       params.set("sort", "created_desc");
-      for (const [key, value] of Object.entries(serverColumnParams(columnFilters, columnSort))) params.set(key, value);
       for (const [key, value] of Object.entries(leadSearchParams(query, searchField))) params.set(key, value);
     } else if (query.trim().length >= 2)
       params.set(resource.id === "audit" ? "action" : "q", query.trim());
@@ -902,13 +897,17 @@ function ResourceList({ resource }: { resource: Resource }) {
       live = startLiveRefresh({
         load: async (signal) => {
           const load = (query: URLSearchParams) => adminRequest(`${resource.path}?${query}`, "GET", undefined, undefined, signal);
+          if (resource.id === "leads" && allColumnsMode) {
+            const rows = await loadAllLeadRows(params, load);
+            return { data: rows, meta: { total: rows.length } };
+          }
           return load(params);
         },
         active: () => document.visibilityState !== "hidden" && navigator.onLine,
         interval: resource.id === "leads" ? 15000 : 30000,
         onData: (result) => {
           const lastPage = Math.max(1, Math.ceil(totalOf(result) / 20));
-          if (pageForRequest > lastPage) { setPage(lastPage); return; }
+          if (!allColumnsMode && pageForRequest > lastPage) { setPage(lastPage); return; }
           const nextRows = rowsOf(result);
           const added = newLeadIds(previousRows, nextRows);
           if (added.length) {
@@ -943,22 +942,11 @@ function ResourceList({ resource }: { resource: Resource }) {
       window.removeEventListener("online", resume);
       window.removeEventListener("offline", offline);
     };
-  }, [resource.path, resource.id, pageForRequest, columnFilters, columnSort, query, searchField, status, refresh, filters, fromDate, toDate]);
-  const rows = rowsOf(data);
-  const total = totalOf(data);
-  useEffect(() => {
-    if (!filterColumn) return;
-    const controller = new AbortController();
-    setFacetBusy(true); setFacetError(""); setFacetValues([]);
-    const params = new URLSearchParams({ ...dateRangeParams(fromDate, toDate), ...leadSearchParams(query, searchField), ...serverColumnParams(columnFilters, null), ...(status ? { status } : {}), facet: filterColumn });
-    void adminRequest(`${resource.path}?${params}`, "GET", undefined, undefined, controller.signal).then(result => {
-      if (controller.signal.aborted) return;
-      const meta = result.meta as RecordData;
-      setFacetValues([...new Set([...(meta.columnValues as string[] ?? []), ...(columnFilters[filterColumn] ?? [])])]);
-      setFacetTruncated(Boolean(meta.columnValuesTruncated)); setFacetBusy(false);
-    }).catch(err => { if (!controller.signal.aborted) { setFacetError(describe(err)); setFacetBusy(false); } });
-    return () => controller.abort();
-  }, [resource.path, filterColumn, columnFilters, query, searchField, status, fromDate, toDate]);
+  }, [resource.path, resource.id, pageForRequest, allColumnsMode, query, searchField, status, refresh, filters, fromDate, toDate]);
+  const matchingRows = resource.id === "leads" && allColumnsMode ? sortLeadRows(filterLeadRows(rowsOf(data), columnFilters), columnSort) : rowsOf(data);
+  const rows = allColumnsMode ? matchingRows.slice((page - 1) * 20, page * 20) : matchingRows;
+  const total = allColumnsMode ? matchingRows.length : totalOf(data);
+  useEffect(() => { if (allColumnsMode && page > Math.max(1, Math.ceil(total / 20))) setPage(Math.max(1, Math.ceil(total / 20))); }, [allColumnsMode, page, total]);
   return (
     <>
       <div className="adm-section-title">
@@ -1056,6 +1044,7 @@ function ResourceList({ resource }: { resource: Resource }) {
               setFilters({});
               setColumnFilters({});
               setColumnSort(null);
+              setAllColumnsMode(false);
               setFilterColumn(null);
               setExportError("");
               setFromDate("");
@@ -1117,9 +1106,8 @@ function ResourceList({ resource }: { resource: Resource }) {
         )}
         <ErrorBox message={error} />
         <ErrorBox message={exportError} />
-        {filterColumn && facetBusy && <p role="status">در حال دریافت مقادیر ستون…</p>}{facetError && <ErrorBox message={facetError} />}
         {Object.keys(columnFilters).length > 0 && <p className="adm-list-hint">{Object.keys(columnFilters).length.toLocaleString("fa-IR")} فیلتر ستون فعال است.</p>}
-        {filterColumn && !facetBusy && !facetError && <ColumnFilter key={filterColumn} title={labels[filterColumn] ?? filterColumn} values={facetValues} formatValue={value => facetLabel(filterColumn, value)} truncated={facetTruncated} selected={columnFilters[filterColumn]} sortDirection={columnSort?.column === filterColumn ? columnSort.direction : undefined} onSort={direction => { setColumnSort(direction ? { column: filterColumn, direction } : null); setPage(1); }} onClose={() => setFilterColumn(null)} onApply={values => { setColumnFilters(current => { const next = { ...current }; if (values === undefined) delete next[filterColumn]; else next[filterColumn] = values; return next; }); setPage(1); }} />}
+        {filterColumn && !busy && !error && <ColumnFilter key={filterColumn} title={labels[filterColumn] ?? filterColumn} values={columnValues(rowsOf(data), filterColumn, columnFilters)} selected={columnFilters[filterColumn]} sortDirection={columnSort?.column === filterColumn ? columnSort.direction : undefined} onSort={direction => { setColumnSort(direction ? { column: filterColumn, direction } : null); setPage(1); }} onClose={() => setFilterColumn(null)} onApply={values => { setColumnFilters(current => { const next = { ...current }; if (values === undefined) delete next[filterColumn]; else next[filterColumn] = values; return next; }); setPage(1); }} />}
         {busy ? (
           <div className="adm-empty" role="status">
             در حال دریافت اطلاعات…
@@ -1130,7 +1118,7 @@ function ResourceList({ resource }: { resource: Resource }) {
               <thead>
                 <tr>
                   {resource.columns.map((column) => (
-                    <th scope="col" key={column} aria-sort={resource.id === "leads" && columnSort?.column === column ? columnSort.direction === "asc" ? "ascending" : "descending" : undefined}><span className="adm-column-heading">{labels[column] ?? column}{resource.id === "leads" && columnSort?.column === column && <span aria-hidden="true">{columnSort.direction === "asc" ? "↑" : "↓"}</span>}{resource.id === "leads" && <button className="adm-column-trigger" aria-label={`فیلتر ${labels[column] ?? column}`} aria-pressed={column in columnFilters} onClick={() => { setFilterColumn(column); setPage(1); }}><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M2 3h12L9 8v5l-2-1V8z" fill="currentColor" /></svg></button>}</span></th>
+                    <th scope="col" key={column} aria-sort={resource.id === "leads" && columnSort?.column === column ? columnSort.direction === "asc" ? "ascending" : "descending" : undefined}><span className="adm-column-heading">{labels[column] ?? column}{resource.id === "leads" && columnSort?.column === column && <span aria-hidden="true">{columnSort.direction === "asc" ? "↑" : "↓"}</span>}{resource.id === "leads" && <button className="adm-column-trigger" aria-label={`فیلتر ${labels[column] ?? column}`} aria-pressed={column in columnFilters} onClick={() => { setAllColumnsMode(true); setFilterColumn(column); setPage(1); }}><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M2 3h12L9 8v5l-2-1V8z" fill="currentColor" /></svg></button>}</span></th>
                   ))}
                   {resource.id !== "leads" && <th scope="col">عملیات</th>}
                 </tr>

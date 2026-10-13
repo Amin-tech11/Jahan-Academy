@@ -2,9 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 
-export default function ColumnFilter({ title, values, selected, sortDirection, onSort, onApply, onClose, formatValue = value => value, truncated = false }: {
+export default function ColumnFilter({ title, values, selected, sortDirection, onSort, onApply, onClose }: {
   title: string; values: string[]; selected?: string[];
-  formatValue?: (value: string) => string; truncated?: boolean;
   sortDirection?: "asc" | "desc"; onSort: (direction: "asc" | "desc" | null) => void;
   onApply: (values: string[] | undefined) => void; onClose: () => void;
 }) {
@@ -17,7 +16,7 @@ export default function ColumnFilter({ title, values, selected, sortDirection, o
     input.current?.focus();
     return () => { opener?.focus(); };
   }, []);
-  const shown = values.filter(value => formatValue(value).toLocaleLowerCase().includes(query.toLocaleLowerCase()));
+  const shown = values.filter(value => value.toLocaleLowerCase().includes(query.toLocaleLowerCase()));
   return <div className="adm-column-overlay" onClick={onClose} onKeyDown={event => { if (event.key === "Escape") onClose(); }}>
     <section ref={menu} className="adm-column-menu" role="dialog" aria-modal="true" aria-label={`فیلتر ${title}`} onClick={event => event.stopPropagation()} onKeyDown={event => {
       if (event.key !== "Tab") return;
@@ -34,10 +33,9 @@ export default function ColumnFilter({ title, values, selected, sortDirection, o
         {sortDirection && <button onClick={() => { onSort(null); onClose(); }}>پاک کردن مرتب‌سازی</button>}
       </div>
       <input ref={input} aria-label="جست‌وجو در مقادیر ستون" placeholder="جست‌وجو در مقادیر…" value={query} onChange={event => setQuery(event.target.value)} />
-      {truncated && <p>۵۰۰ مقدار نخست نمایش داده می‌شود. برای محدود کردن نتیجه، ابتدا جست‌وجو یا بازه تاریخ جدول را تنظیم کنید.</p>}
       <label><input type="checkbox" checked={shown.length > 0 && shown.every(value => draft.includes(value))} onChange={event => setDraft(event.target.checked ? [...new Set([...draft, ...shown])] : draft.filter(value => !shown.includes(value)))} />انتخاب همه مقادیر نمایش‌داده‌شده</label>
-      <div className="adm-column-values">{shown.map(value => <label key={value}><input type="checkbox" checked={draft.includes(value)} onChange={event => setDraft(event.target.checked ? [...draft, value] : draft.filter(item => item !== value))} /><span dir="auto">{formatValue(value)}</span></label>)}{!shown.length && <p>مقداری پیدا نشد.</p>}</div>
-      <footer><button className="adm-primary" onClick={() => { onApply(!truncated && draft.length === values.length && values.every(value => draft.includes(value)) ? undefined : draft); onClose(); }}>اعمال فیلتر</button><button onClick={() => { onApply(undefined); onClose(); }}>پاک کردن فیلتر ستون</button><button onClick={onClose}>انصراف</button></footer>
+      <div className="adm-column-values">{shown.map(value => <label key={value}><input type="checkbox" checked={draft.includes(value)} onChange={event => setDraft(event.target.checked ? [...draft, value] : draft.filter(item => item !== value))} /><span dir="auto">{value}</span></label>)}{!shown.length && <p>مقداری پیدا نشد.</p>}</div>
+      <footer><button className="adm-primary" onClick={() => { onApply(draft.length === values.length && values.every(value => draft.includes(value)) ? undefined : draft); onClose(); }}>اعمال فیلتر</button><button onClick={() => { onApply(undefined); onClose(); }}>پاک کردن فیلتر ستون</button><button onClick={onClose}>انصراف</button></footer>
     </section>
   </div>;
 }
