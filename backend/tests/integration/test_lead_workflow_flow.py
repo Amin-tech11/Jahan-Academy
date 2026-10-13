@@ -245,3 +245,55 @@ def test_assignment_transfer_status_workflow_and_history() -> None:
     finally:
         app.dependency_overrides.clear()
         _cleanup(user_ids, reference)
+
+
+def test_call_statuses_persist_filter_and_record_history() -> None:
+    actor = _create_staff(consultant=True)
+    context = _context(actor, "support", {"lead.read.all", "lead.write.all", "lead.assign"})
+
+    async def override() -> AuthorizationContext:
+        return context
+
+    app.dependency_overrides[authorization_context] = override
+    reference = None
+    try:
+        with TestClient(app) as client:
+            submitted = client.post(
+                "/api/v1/consultation-requests",
+                json=_payload(f"09{uuid4().int % 1_000_000_000:09d}"),
+            )
+            assert submitted.status_code == 201, submitted.text
+            reference = submitted.json()["data"]["reference"]
+            lead_id = _lead_id(reference)
+            assigned = client.post(
+                f"/api/v1/admin/leads/{lead_id}/assignments",
+                headers={"If-Match": '"1"'},
+                json={"consultantId": str(actor)},
+            )
+            assert assigned.status_code == 200, assigned.text
+            for version, status in enumerate(("initial_contact", "unanswered", "contacted"), 2):
+                response = client.post(
+                    f"/api/v1/admin/leads/{lead_id}/status-transitions",
+                    headers={"If-Match": f'"{version}"'},
+                    json={"toStatus": status},
+                )
+                assert response.status_code == 200, response.text
+                assert response.json()["data"]["status"] == status
+                filtered = client.get(
+                    "/api/v1/admin/leads",
+                    params={"q": reference, "searchField": "reference", "status": status},
+                )
+                assert filtered.status_code == 200, filtered.text
+                assert [row["id"] for row in filtered.json()["data"]] == [str(lead_id)]
+            history = client.get(f"/api/v1/admin/leads/{lead_id}/history")
+            assert history.status_code == 200, history.text
+            assert [row["newStatus"] for row in history.json()["data"]["statuses"]] == [
+                "contacted",
+                "unanswered",
+                "initial_contact",
+                "assigned",
+                "new",
+            ]
+    finally:
+        app.dependency_overrides.clear()
+        _cleanup([actor], reference)

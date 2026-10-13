@@ -53,6 +53,8 @@ CHOICES = {
     "40k_plus": "بیش از ۴۰٬۰۰۰",
     "new": "جدید",
     "assigned": "ارجاع‌شده",
+    "initial_contact": "تماس اولیه",
+    "unanswered": "تماس بی‌پاسخ",
     "contacted": "تماس گرفته‌شده",
     "qualified": "واجد شرایط",
     "not_qualified": "فاقد شرایط",
