@@ -103,7 +103,7 @@ export function DestinationPage({ destination: d, locale, universities, relatedD
 
 <section id="universities" data-destination-section className={`${styles.section} ${styles.universitySection}`}><div className={styles.container}>
       <div className={styles.sectionHeading} data-destination-motion="up"><div><h2>{t(`دانشگاه‌های ${d.name.fa} را بشناسید`, `Discover universities in ${d.name.en}`)}</h2></div></div>
-      <div className={styles.universityGrid}>{universities.map((university, index) => <article data-destination-motion="up" data-destination-delay={index * 60} className={styles.universityCard} key={university.slug}>
+      <div className={styles.universityGrid}>{universities.map((university, index) => <Link href={`/${locale}/universities/${university.slug}`} aria-label={t(`مشاهده دانشگاه ${university.name}`, `View ${university.name}`)} data-destination-motion="up" data-destination-delay={index * 60} className={styles.universityCard} key={university.slug}>
         <div className={styles.cardPhoto}><Image src={university.image} alt={university.name} fill sizes="(max-width: 760px) 100vw, 33vw" /></div>
         <div className={styles.cardBody}>
           <div className={styles.schoolIdentity} dir="ltr">
@@ -113,7 +113,7 @@ export function DestinationPage({ destination: d, locale, universities, relatedD
           </div>
           <p>{university.summary[locale]}</p>
         </div>
-      </article>)}</div>
+      </Link>)}</div>
     </div></section>
 
     <section id="life" data-destination-section className={`${styles.container} ${styles.section} ${styles.editorial} ${styles.life}`}>
