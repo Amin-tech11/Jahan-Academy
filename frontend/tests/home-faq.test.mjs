@@ -12,6 +12,7 @@ test("FAQ toggles one answer at a time and exposes accessible state", () => {
   vm.runInNewContext(ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX } }).outputText, {
     module, exports: module.exports,
     require(name) {
+      if (name === "./home-faq.css") return {}; // Layout is exercised by the browser regression suite.
       if (name === "react") return { useId: () => "faq", useState: () => [state, (update) => { state = update(state); }] };
       if (name === "react/jsx-runtime") return { jsx: (type, props) => ({ type, props }), jsxs: (type, props) => ({ type, props }) };
       throw new Error(name);
