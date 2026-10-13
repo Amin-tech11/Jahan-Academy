@@ -50,6 +50,8 @@ const active = { ...f("active", "فعال", "checkbox"), initial: true };
 const states = ["draft", "published", "archived"];
 export const leadStatuses = [
   "new",
+  "initial_contact",
+  "unanswered",
   "contacted",
   "qualified",
   "not_qualified",
@@ -107,6 +109,8 @@ export const labels: Record<string, string> = {
   version: "نسخه",
   new: "جدید",
   assigned: "ارجاع‌شده",
+  initial_contact: "تماس اولیه",
+  unanswered: "تماس بی‌پاسخ",
   contacted: "تماس گرفته‌شده",
   qualified: "واجد شرایط",
   not_qualified: "فاقد شرایط",

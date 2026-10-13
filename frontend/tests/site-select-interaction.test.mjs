@@ -12,9 +12,10 @@ function nodes(node) {
   if (!node || typeof node !== 'object') return [];
   return [node, ...nodes(node.props?.children)];
 }
-function setup({ disabled = false, rtl = false, noEnabled = false } = {}) {
+function setup({ disabled = false, rtl = false, noEnabled = false, inDialog = false } = {}) {
   const values = [], refs = [], effects = [], changes = [], listeners = new Map();
-  let stateIndex = 0, refIndex = 0, tree, focused = 0;
+  let stateIndex = 0, refIndex = 0, tree, focused = 0, portalTarget;
+  const dialog = {};
   const select = {
     value: '', options: [
       { value: '', text: 'Choose', disabled: true },
@@ -25,7 +26,7 @@ function setup({ disabled = false, rtl = false, noEnabled = false } = {}) {
     form: { addEventListener: (name, cb) => listeners.set(name, cb), removeEventListener() {} },
     dispatchEvent: () => find('select').props.onChange({ target: select, currentTarget: select }),
   };
-  const button = { closest: () => null, focus: () => focused++, contains: () => false, getBoundingClientRect: () => ({ left: 20, top: 400, bottom: 448, width: 250 }) };
+  const button = { closest: selector => selector === "dialog[open]" && inDialog ? dialog : null, focus: () => focused++, contains: () => false, getBoundingClientRect: () => ({ left: 20, top: 400, bottom: 448, width: 250 }) };
   const menu = { contains: () => false, querySelector: () => ({ scrollIntoView() {} }) };
   const module = { exports: {} };
   vm.runInNewContext(ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX } }).outputText, {
@@ -41,7 +42,7 @@ function setup({ disabled = false, rtl = false, noEnabled = false } = {}) {
         useState: initial => { const i = stateIndex++; if (!(i in values)) values[i] = initial; return [values[i], next => { values[i] = typeof next === 'function' ? next(values[i]) : next; }]; },
         useEffect: cb => effects.push(cb),
       };
-      if (name === 'react-dom') return { createPortal: node => node };
+      if (name === 'react-dom') return { createPortal: (node, target) => { portalTarget = target; return node; } };
       if (name === 'react/jsx-runtime') return { jsx: (type, props) => ({ type, props }), jsxs: (type, props) => ({ type, props }) };
       if (name.endsWith('.module.css')) return { default: {} };
       throw new Error(name);
@@ -54,7 +55,7 @@ function setup({ disabled = false, rtl = false, noEnabled = false } = {}) {
   }
   function find(type) { return nodes(tree).find(node => node.type === type); }
   const fallback = render(); effects[0](); render();
-  return { select, changes, listeners, fallback, render, find, get focused() { return focused; },
+  return { select, changes, listeners, fallback, render, find, dialog, get portalTarget() { return portalTarget; }, get focused() { return focused; },
     key(key) { find('button').props.onKeyDown({ key, preventDefault() {} }); render(); },
     click() { find('button').props.onClick(); render(); effects[1](); render(); },
   };
@@ -116,4 +117,13 @@ test('menus with only disabled options never select a value', () => {
   app.key('ArrowDown'); app.key('ArrowDown'); app.key('Enter');
   assert.deepEqual(app.changes, []);
   assert.equal(app.select.value, '');
+});
+
+test('dropdown inside an open dialog is portalled into its top layer, not the background page', () => {
+  const app = setup({ inDialog: true }); app.click();
+  assert.equal(app.portalTarget, app.dialog);
+  app.key('End'); app.key('Enter');
+  assert.equal(app.select.value, 'winter');
+  const outside = setup(); outside.click();
+  assert.notEqual(outside.portalTarget, outside.dialog);
 });

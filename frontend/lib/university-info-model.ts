@@ -198,6 +198,5 @@ export const westernUniversity: UniversityInfo = {
   ],
   sources: [
     { label: "Western University", url: "https://www.uwo.ca/about/visit/index.html" },
-    { label: "ApplyBoard", url: "https://www.applyboard.com/schools/western-university" },
   ],
 };

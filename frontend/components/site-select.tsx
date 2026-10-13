@@ -103,6 +103,6 @@ export default function SiteSelect(props: SelectHTMLAttributes<HTMLSelectElement
     {invalid && <span className="site-select__error" role="alert">{position.direction === "ltr" ? "Please select an option." : "لطفاً یک گزینه انتخاب کنید."}</span>}
     {open && createPortal(<div ref={list} id={`${id}-list`} className="site-select__list" role="listbox" aria-label={props["aria-label"] ?? (label || undefined)} dir={position.direction === "ltr" ? "ltr" : "rtl"} style={{ top: position.top, left: position.left, width: position.width, maxHeight: position.maxHeight }} onMouseDown={event => event.preventDefault()}>
       {options.map((option, index) => <div key={`${option.value}-${index}`} id={`${id}-option-${index}`} role="option" aria-selected={index === selected} aria-disabled={option.disabled} data-active={index === active} onPointerMove={() => { if (!option.disabled) setActive(index); }} onClick={event => { event.preventDefault(); event.stopPropagation(); choose(index); }}><span>{option.text}</span>{index === selected && <span aria-hidden="true">✓</span>}</div>)}
-    </div>, document.body)}
+    </div>, trigger.current?.closest("dialog[open]") ?? document.body)}
   </span>;
 }

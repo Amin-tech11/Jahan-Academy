@@ -92,3 +92,17 @@ test("unchanged status does not transition, invalid selection saves nothing", as
   await assert.rejects(saveLeadChanges(request, lead, { occupation: "Engineer" }, "converted", () => assert.fail()));
   assert.equal(calls.length, 1);
 });
+
+test("call statuses are available, save with versions, and preserve assignment/archive restrictions", async () => {
+  for (const status of ["initial_contact", "unanswered"]) {
+    assert.ok(leadStatuses.includes(status)); assert.ok(labels[status]);
+    assert.equal(canChangeLeadStatus(lead, status), true);
+    assert.equal(canChangeLeadStatus({ ...lead, assignee: null }, status), false);
+    assert.equal(canChangeLeadStatus({ ...lead, archived: true }, status), false);
+    const calls = [];
+    await saveLeadChanges(async (...args) => { calls.push(args); return {}; }, lead, undefined, status, () => {});
+    assert.equal(calls[0][2].toStatus, status); assert.equal(calls[0][3], 3);
+  }
+  assert.ok(canChangeLeadStatus({ ...lead, status: "unanswered" }, "initial_contact"));
+  assert.ok(canChangeLeadStatus({ ...lead, status: "initial_contact" }, "contacted"));
+});

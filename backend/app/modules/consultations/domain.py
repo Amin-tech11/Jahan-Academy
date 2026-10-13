@@ -44,6 +44,8 @@ class MaritalStatusCode(StrEnum):
 class LeadStatus(StrEnum):
     NEW = "new"
     ASSIGNED = "assigned"
+    INITIAL_CONTACT = "initial_contact"
+    UNANSWERED = "unanswered"
     CONTACTED = "contacted"
     QUALIFIED = "qualified"
     NOT_QUALIFIED = "not_qualified"
@@ -77,9 +79,29 @@ class LeadSearchField(StrEnum):
 
 LEAD_STATUS_TRANSITIONS: dict[LeadStatus, frozenset[LeadStatus]] = {
     LeadStatus.NEW: frozenset({LeadStatus.ASSIGNED, LeadStatus.CLOSED}),
-    LeadStatus.ASSIGNED: frozenset({LeadStatus.CONTACTED, LeadStatus.CLOSED}),
+    LeadStatus.ASSIGNED: frozenset(
+        {LeadStatus.INITIAL_CONTACT, LeadStatus.UNANSWERED, LeadStatus.CONTACTED, LeadStatus.CLOSED}
+    ),
+    LeadStatus.INITIAL_CONTACT: frozenset(
+        {
+            LeadStatus.UNANSWERED,
+            LeadStatus.CONTACTED,
+            LeadStatus.QUALIFIED,
+            LeadStatus.NOT_QUALIFIED,
+            LeadStatus.CLOSED,
+        }
+    ),
+    LeadStatus.UNANSWERED: frozenset(
+        {LeadStatus.INITIAL_CONTACT, LeadStatus.CONTACTED, LeadStatus.CLOSED}
+    ),
     LeadStatus.CONTACTED: frozenset(
-        {LeadStatus.QUALIFIED, LeadStatus.NOT_QUALIFIED, LeadStatus.CLOSED}
+        {
+            LeadStatus.INITIAL_CONTACT,
+            LeadStatus.UNANSWERED,
+            LeadStatus.QUALIFIED,
+            LeadStatus.NOT_QUALIFIED,
+            LeadStatus.CLOSED,
+        }
     ),
     LeadStatus.QUALIFIED: frozenset(
         {LeadStatus.CONVERTED, LeadStatus.NOT_QUALIFIED, LeadStatus.CLOSED}
@@ -90,6 +112,8 @@ LEAD_STATUS_TRANSITIONS: dict[LeadStatus, frozenset[LeadStatus]] = {
         {
             LeadStatus.NEW,
             LeadStatus.ASSIGNED,
+            LeadStatus.INITIAL_CONTACT,
+            LeadStatus.UNANSWERED,
             LeadStatus.CONTACTED,
             LeadStatus.QUALIFIED,
             LeadStatus.NOT_QUALIFIED,
@@ -102,6 +126,8 @@ LEAD_STATUS_TRANSITIONS: dict[LeadStatus, frozenset[LeadStatus]] = {
 STATUSES_REQUIRING_ASSIGNEE = frozenset(
     {
         LeadStatus.ASSIGNED,
+        LeadStatus.INITIAL_CONTACT,
+        LeadStatus.UNANSWERED,
         LeadStatus.CONTACTED,
         LeadStatus.QUALIFIED,
         LeadStatus.NOT_QUALIFIED,

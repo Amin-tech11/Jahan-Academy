@@ -22,6 +22,8 @@ def test_lead_transition_matrix_reaches_closed_and_allows_reopening() -> None:
         {
             LeadStatus.NEW,
             LeadStatus.ASSIGNED,
+            LeadStatus.INITIAL_CONTACT,
+            LeadStatus.UNANSWERED,
             LeadStatus.CONTACTED,
             LeadStatus.QUALIFIED,
             LeadStatus.NOT_QUALIFIED,
@@ -65,3 +67,14 @@ def test_assigned_writer_can_change_only_own_lead() -> None:
     with pytest.raises(ApplicationError) as caught:
         service._require_status_write(actor, uuid4())  # noqa: SLF001
     assert caught.value.status_code == 403
+
+
+@pytest.mark.parametrize("status", [LeadStatus.INITIAL_CONTACT, LeadStatus.UNANSWERED])
+def test_call_statuses_are_valid_and_require_assignment(status: LeadStatus) -> None:
+    from app.modules.consultations.domain import STATUSES_REQUIRING_ASSIGNEE
+
+    assert status in LEAD_STATUS_TRANSITIONS[LeadStatus.ASSIGNED]
+    assert status in LEAD_STATUS_TRANSITIONS[LeadStatus.CLOSED]
+    assert status in STATUSES_REQUIRING_ASSIGNEE
+    assert LeadStatus.CONTACTED in LEAD_STATUS_TRANSITIONS[status]
+    assert LeadStatusTransitionRequest.model_validate({"toStatus": status}).to_status == status
