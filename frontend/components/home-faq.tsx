@@ -1,5 +1,7 @@
 "use client";
 
+import "./home-faq.css";
+
 import { useId, useState } from "react";
 
 export function HomeFaq({ items }: { items: Array<{ question: string; answer: string }> }) {
