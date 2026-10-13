@@ -35,7 +35,8 @@
 .services-cta__layout { display: grid; grid-template-columns: 1fr 1fr; align-items: center; direction: ltr; }
 .services-cta__photo { position: relative; min-height: 650px; border-radius: 24px; overflow: hidden; }
 .services-cta__photo img { object-fit: cover; object-position: 64% center; }
-.services-cta__card { position: relative; margin-inline-start: -3rem; padding: 2.25rem; border: 1px solid var(--services-border); border-radius: 24px; background: var(--services-surface); box-shadow: 0 18px 60px rgba(32, 40, 51, .08); direction: ltr; }
+/* The photo stays on the left in both locales, so overlap its physical edge. */
+.services-cta__card { position: relative; margin-left: -1.5rem; padding: 2.25rem; border: 1px solid var(--services-border); border-radius: 24px; background: var(--services-surface); box-shadow: 0 18px 60px rgba(32, 40, 51, .08); direction: ltr; }
 [dir="rtl"] .services-cta__card { direction: rtl; }
 .services-request .consultation-form-heading h3 { margin: 0; color: var(--services-text); font-size: 1.35rem; line-height: 1.6; text-align: center; }
 .services-request .consultation-form-heading p { margin: .5rem auto 1.5rem; color: var(--services-muted); font-size: .9rem; line-height: 1.9; text-align: center; }
