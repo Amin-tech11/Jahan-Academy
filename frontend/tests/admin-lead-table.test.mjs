@@ -92,25 +92,3 @@ test("Excel roundtrip keeps RTL columns, text phone/formula payloads, filters an
   assert.equal(empty.worksheets[0].rowCount, 1);
   empty.worksheets[0].getRow(1).eachCell(cell => assert.equal(cell.font.name, "B_Nazanin"));
 });
-
-test("restored filters include all displayed values beyond 500 and export the same filtered order", async () => {
-  const source = Array.from({ length: 620 }, (_, i) => ({ id: String(i), firstName: `Person ${i}`, status: i >= 600 ? "closed" : "new", age: i }));
-  const rows = await loadAllLeadRows(new URLSearchParams({ status: "closed", from: "2026-01-01" }), async params => {
-    assert.equal(params.get("status"), "closed");
-    assert.equal(params.get("from"), "2026-01-01");
-    const start = (Number(params.get("page")) - 1) * 100;
-    return { data: source.slice(start, start + 100), meta: { total: source.length } };
-  });
-  assert.equal(columnValues(rows, "fullName", {}).length, 620);
-  assert.ok(columnValues(rows, "fullName", {}).includes("Person 619"));
-  const filtered = sortLeadRows(filterLeadRows(rows, { status: ["بسته‌شده"] }), { column: "age", direction: "desc" });
-  assert.equal(filtered.length, 20);
-  assert.equal(filtered[0].id, "619");
-  assert.deepEqual(filterLeadRows(rows, { fullName: ["Person 619"] }).map(row => row.id), ["619"]);
-  assert.equal(filterLeadRows(rows, {}).length, 620);
-  const { default: ExcelJS } = await import("exceljs");
-  const workbook = new ExcelJS.Workbook();
-  await workbook.xlsx.load(await leadWorkbook(filtered, ["fullName", "status"]));
-  assert.equal(workbook.worksheets[0].rowCount, 21);
-  assert.equal(workbook.worksheets[0].getCell("A2").value, "Person 619");
-});

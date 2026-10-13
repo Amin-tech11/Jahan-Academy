@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import "@fontsource-variable/vazirmatn";
 import "../globals.css";
 import "../accessibility.css";
+import "../dropdowns.css";
 import "./admin.css";
 import "./login.css";
 
