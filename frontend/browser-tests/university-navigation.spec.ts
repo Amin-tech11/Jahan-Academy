@@ -8,7 +8,8 @@ for (const locale of ["fa", "en"]) {
     const profile = await popupPromise;
     await profile.emulateMedia({ reducedMotion: "reduce" });
     await profile.waitForURL(new RegExp(`/${locale}/universities/[^/]+$`));
-    await profile.locator(`header a[href="/${locale}/universities"]`).click();
+    await profile.getByRole("navigation", { name: locale === "fa" ? "ناوبری اصلی" : "Main navigation", exact: true })
+      .locator(`a[href="/${locale}/universities"]`).click();
     await expect(profile).toHaveURL(new RegExp(`/${locale}/universities$`));
     await profile.locator('a[href="#university-countries"]').click();
 
