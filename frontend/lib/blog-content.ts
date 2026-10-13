@@ -68,6 +68,7 @@ export const blogCopy = {
 } as const;
 
 export function blogImage(post: BlogPost) {
+  if (post.slug === "netherlands-study-residence-guide") return "/blog/guides/netherlands-collage.webp";
   if (post.slug === "uk-study-visa-guide") return "/blog/guides/uk-collage.webp";
   if (post.slug === "italy-study-guide") return "/blog/guides/italy-collage.webp";
   if (post.slug === "austria-study-guide") return "/blog/guides/austria-collage.webp";
