@@ -39,7 +39,7 @@ test("Danish work FAQ links the current SIRI correction instead of the outdated 
 const require = createRequire(import.meta.url);
 const ts = require("typescript");
 const source = readFileSync(new URL("../components/destination-faq.tsx", import.meta.url), "utf8");
-for (const locale of ["fa", "en"]) test(`destination FAQ supports one open answer, closing and linked accessible sources in ${locale}`, () => {
+for (const locale of ["fa", "en"]) test(`destination FAQ supports one open answer, closing and official verification links in ${locale}`, () => {
   let state = null;
   const module = { exports: {} };
   vm.runInNewContext(ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX, esModuleInterop: true } }).outputText, {
@@ -66,8 +66,7 @@ for (const locale of ["fa", "en"]) test(`destination FAQ supports one open answe
   assert.equal(answer(rows[0])["aria-labelledby"], button(rows[0]).id);
   const copy = answer(rows[0]).children.props.children.props.children;
   assert.equal(copy[0].props.children, items[0].answer[locale]);
-  assert.equal(copy[1].props.href, items[0].source.url);
-  assert.equal(copy[1].props.rel, "noopener noreferrer");
+  assert.equal(copy[1], undefined);
   button(rows[1]).onClick();
   rows = render();
   assert.equal(answer(rows[0]).inert, true);
@@ -77,7 +76,6 @@ for (const locale of ["fa", "en"]) test(`destination FAQ supports one open answe
   const danishRows = render(destinationFaqs.denmark);
   button(danishRows[0]).onClick();
   const corrected = answer(render(destinationFaqs.denmark)[0]).children.props.children.props.children;
-  assert.equal(corrected[1].props.href, destinationFaqs.denmark[0].source.url);
-  assert.equal(corrected[2].props.href, destinationFaqs.denmark[0].verification.url);
-  assert.equal(corrected[2].props.rel, "noopener noreferrer");
+  assert.equal(corrected[1].props.href, destinationFaqs.denmark[0].verification.url);
+  assert.equal(corrected[1].props.rel, "noopener noreferrer");
 });
