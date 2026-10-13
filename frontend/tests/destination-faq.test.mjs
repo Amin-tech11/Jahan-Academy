@@ -6,9 +6,8 @@ import vm from "node:vm";
 import { destinations } from "../lib/destination-content.ts";
 import { destinationFaqs } from "../lib/destination-faqs.ts";
 
-test("all ten destination guides use country-matched bilingual GO2TR FAQs", () => {
+test("all ten destination guides use country-matched bilingual FAQs", () => {
   assert.deepEqual(Object.keys(destinationFaqs).sort(), destinations.map(({ slug }) => slug).sort());
-  const paths = { "united-kingdom": "uk", netherlands: "netherland", "new-zealand": "newzealand" };
   for (const [slug, items] of Object.entries(destinationFaqs)) {
     assert.equal(items.length, ["sweden", "denmark"].includes(slug) ? 3 : 5, slug);
     for (const locale of ["fa", "en"]) {
@@ -19,13 +18,7 @@ test("all ten destination guides use country-matched bilingual GO2TR FAQs", () =
         assert.notEqual(item.answer.fa, item.answer.en);
       }
     }
-    for (const { source } of items) {
-      const url = new URL(source.url);
-      assert.equal(url.protocol, "https:");
-      assert.equal(url.hostname, "go2tr.com");
-      assert.equal(url.pathname, `/${paths[slug] || slug}/study`);
-      assert.equal(source.name, "GO2TR");
-    }
+    assert.doesNotMatch(JSON.stringify(items), /go2tr|applyca|applyboard/i);
   }
 });
 
