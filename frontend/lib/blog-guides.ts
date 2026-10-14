@@ -4,6 +4,37 @@ import type { Localized } from "./site-content";
 export type BlogGuide = BlogPost & { sections: Localized<Array<{ title: string; body: string }>>; sources: Array<{ title: string; url: string }> };
 export const blogGuides: BlogGuide[] = [
   {
+    slug: "germany-study-residence-guide",
+    type: "guide",
+    date: "2026-10-14",
+    title: { fa: "راهنمای تحصیل و اقامت آلمان", en: "Germany study and residence guide" },
+    excerpt: { fa: "هزینه دانشگاه، تمکن مالی، کار دانشجویی و فرصت‌های پس از فارغ‌التحصیلی؛ هفت نکته برای برنامه‌ریزی تحصیل در آلمان.", en: "University costs, financial evidence, student work and opportunities after graduation: seven steps to planning your studies in Germany." },
+    sections: {
+      fa: [
+        { title: "آلمان برای تحصیل؛ چه چیزهایی باید بدانید؟", body: "انتخاب مقصد فقط به شهریه وابسته نیست. این راهنمای هفت‌بخشی، بر اساس تصاویر جهان آکادمی، هزینه دانشگاه، بودجه زندگی و مسیر بعد از تحصیل را کنار هم قرار می‌دهد تا تصمیم را با شرایط خودتان بسنجید." },
+        { title: "تحصیل رایگان، به معنی بدون هزینه نیست", body: "در بسیاری از دوره‌های کارشناسی و کارشناسی ارشد دانشگاه‌های دولتی شهریه دریافت نمی‌شود؛ اما سهم خدمات دانشجویی هر ترم (Semester Contribution) جداست. دانشگاه‌های خصوصی و بعضی دوره‌ها یا دانشگاه‌های دولتی شهریه دارند. هزینه رشته و دانشگاه هدف را جداگانه بررسی کنید." },
+        { title: "هزینه دانشگاه و استثناهای شهریه", body: "بازه راهنمای سهم هر ترم حدود ۷۰ تا ۴۳۰ یورو است و مبلغ دقیق را دانشگاه اعلام می‌کند. در بادن‌وورتمبرگ، بسیاری از دانشجویان خارج از اتحادیه اروپا با شهریه ۱٬۵۰۰ یورو در هر ترم روبه‌رو هستند؛ معافیت‌ها و نوع دوره مهم‌اند. برخی دانشگاه‌های بایرن نیز برای دانشجویان خارج از EU/EEA شهریه تعیین می‌کنند." },
+        { title: "تمکن مالی ویزای تحصیلی در سال ۲۰۲۶", body: "برای مسیر تحصیل با پذیرش، حداقل تمکن اعلام‌شده سال ۲۰۲۶ معادل ۱۱٬۹۰۴ یورو برای یک سال، یا ۹۹۲ یورو در ماه است. حساب مسدودشده (Sperrkonto) یکی از روش‌های اثبات است. این پول برای زندگی است، نه شهریه؛ آن را دوباره روی همان بودجه زندگی جمع نزنید. شرایط و مبلغ روز را پیش از درخواست از مرجع رسمی ویزا بررسی کنید." },
+        { title: "کار در حین تحصیل", body: "برای دانشجویان مشمول مقررات اقامت تحصیلی، امکان کار تا ۱۴۰ روز کامل یا ۲۸۰ نیم‌روز در سال، یا تا ۲۰ ساعت در هفته پیش‌بینی شده است. این‌ها سهمیه‌های قابل جمع نیستند؛ شرایط مجوز و نوع کار را بررسی کنید. درآمد احتمالی کار دانشجویی را تنها پشتوانه مالی برنامه تحصیل قرار ندهید." },
+        { title: "بعد از فارغ‌التحصیلی", body: "پس از اتمام موفق تحصیل در آلمان، در صورت احراز شرایط می‌توان برای اقامت جست‌وجوی کار تخصصی تا ۱۸ ماه اقدام کرد. یافتن شغل واجد شرایط می‌تواند مسیر درخواست اقامت کاری یا EU Blue Card را باز کند؛ تبدیل اقامت خودکار نیست و شرایط مجوز جدید باید احراز شود." },
+        { title: "از کجا شروع کنید؟", body: "ابتدا بودجه دانشگاه، زندگی، بیمه، سفر و هزینه‌های اولیه را بنویسید و امکان ارائه تمکن را بسنجید. سپس رشته‌ها، زبان تدریس، مدارک و مهلت‌های دانشگاه‌های هدف را بررسی کنید. برای ارزیابی اولیه رایگان، شرایط خود را از طریق فرم مشاوره جهان آکادمی ارسال کنید." }
+      ],
+      en: [
+        { title: "Germany for study: what should you know?", body: "Tuition is only one part of choosing a destination. Based on Jahan Academy’s seven-part series, this guide brings university costs, living budgets and post-study plans together so you can assess the route against your circumstances." },
+        { title: "Tuition-free does not mean cost-free", body: "Many Bachelor’s and Master’s courses at public universities do not charge tuition. A semester contribution is separate. Private institutions and some public programmes or universities charge fees, so check your chosen course individually." },
+        { title: "University costs and tuition exceptions", body: "Semester contributions are roughly €70–430; your university sets the actual amount. Many non-EU students in Baden-Württemberg pay €1,500 tuition per semester, subject to exemptions and course type. Some Bavarian institutions also charge non-EU/EEA students tuition." },
+        { title: "Financial evidence for a study visa in 2026", body: "For studying with admission, the stated 2026 minimum is €11,904 for a year, equivalent to €992 monthly. A blocked account (Sperrkonto) is one proof option. This funds living costs, not tuition; do not count it twice in the same living budget. Confirm current requirements with the visa authority before applying." },
+        { title: "Working during your studies", body: "Students covered by study-residence rules may work up to 140 full or 280 half days annually, or up to 20 hours weekly. These are not cumulative allowances: check your permit and employment category. Do not rely solely on prospective student earnings to fund your studies." },
+        { title: "After graduation", body: "Eligible graduates of German institutions can apply for up to 18 months to seek skilled employment. A qualifying job may enable an application for a skilled-worker permit or EU Blue Card. Conversion is not automatic; the new permit’s conditions must be met." },
+        { title: "Where to begin", body: "Plan university and living costs, insurance, travel and initial expenses, and check how you will demonstrate your funds. Then review courses, teaching languages, documents and university deadlines. Send your circumstances through Jahan Academy’s consultation form for a free initial assessment." }
+      ]
+    },
+    sources: [
+      { title: "DAAD — Costs of education and living", url: "https://www.daad.de/en/studying-in-germany/living-in-germany/finances/" },
+      { title: "German Federal Government — Visa for studying", url: "https://www.make-it-in-germany.com/en/visa-residence/types/studying" }
+    ]
+  },
+  {
     slug: "netherlands-study-residence-guide",
     type: "guide",
     date: "2026-10-13",
