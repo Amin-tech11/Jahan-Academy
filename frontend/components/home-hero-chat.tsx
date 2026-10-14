@@ -41,6 +41,6 @@ export function HomeHeroChat({ locale }: { locale: Locale }) {
         {frame.phase === 2 && <div className="home-hero-chat__message home-hero-chat__message--advisor"><span>{fa ? "مشاور جهان آکادمی" : "Jahan Academy advisor"}</span><p>{conversation.answer}</p></div>}
       </div>
     </div>
-    <Link className="home-hero-chat__footer" href={`/${locale}/free-consultation?source=hero-example`}>{fa ? "ثبت درخواست مشاوره واقعی" : "Request a consultation"}<span aria-hidden="true">←</span></Link>
+    <Link className="home-hero-chat__footer" href={`/${locale}/free-consultation?source=hero-example`}>{fa ? "ثبت درخواست مشاوره واقعی" : "Request a consultation"}<svg className="home-hero-chat__arrow" aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d={fa ? "M19 12H5m6 6-6-6 6-6" : "M5 12h14m-6-6 6 6-6 6"} /></svg></Link>
   </div>;
 }
