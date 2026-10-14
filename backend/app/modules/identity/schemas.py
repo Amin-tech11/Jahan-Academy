@@ -46,9 +46,18 @@ class EmailVerificationRequest(ApiModel):
 
 
 class LoginRequest(ApiModel):
-    email: EmailStr
+    email: EmailStr | None = None
+    username: str | None = Field(
+        default=None, min_length=1, max_length=64, pattern=r"^[A-Za-z][A-Za-z0-9_.-]*$"
+    )
     password: str = Field(min_length=1, max_length=128)
     mfa_code: str | None = Field(default=None, max_length=64)
+
+    @model_validator(mode="after")
+    def require_login_identity(self) -> LoginRequest:
+        if (self.email is None) == (self.username is None):
+            raise ValueError("Provide either email or username.")
+        return self
 
 
 class MfaPasswordRequest(ApiModel):

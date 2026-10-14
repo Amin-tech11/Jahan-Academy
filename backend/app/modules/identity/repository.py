@@ -173,6 +173,26 @@ class AuthRepository:
         row = (await self.session.execute(statement)).one_or_none()
         return None if row is None else AccountRecord(user=row[0], identity=row[1], profile=row[2])
 
+    async def get_staff_account_by_username(self, username: str) -> AccountRecord | None:
+        user_id = await self.session.scalar(
+            text("""
+            SELECT a.user_id FROM staff_login_names a
+            WHERE a.username = :username AND EXISTS (
+                SELECT 1 FROM user_roles ur JOIN roles r ON r.id = ur.role_id
+                WHERE ur.user_id = a.user_id AND ur.scope_type = 'global'
+                  AND ur.revoked_at IS NULL
+                  AND r.code IN ('super_admin', 'support', 'consultant', 'content_editor')
+            )
+        """),
+            {"username": username},
+        )
+        if user_id is None:
+            return None
+        account = await self.get_account_by_user_id(user_id)
+        if account is None:
+            return None
+        return await self.get_account_by_email(account.identity.provider_subject)
+
     async def get_account_by_user_id(self, user_id: UUID) -> AccountRecord | None:
         statement = (
             select(UserModel, UserIdentityModel, UserProfileModel)

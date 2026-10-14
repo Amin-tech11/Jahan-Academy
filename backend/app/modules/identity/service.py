@@ -105,8 +105,13 @@ class AuthService:
     async def login(
         self, request: LoginRequest, ip_address: str | None, user_agent: str | None
     ) -> IssuedTokens:
-        email = self._normalize_email(str(request.email))
-        account = await self._repository.get_account_by_email(email)
+        if request.username is not None:
+            account = await self._repository.get_staff_account_by_username(
+                request.username.casefold()
+            )
+        else:
+            email = self._normalize_email(str(request.email))
+            account = await self._repository.get_account_by_email(email)
         if account is None or account.identity.password_hash is None:
             self._security.perform_dummy_password_check(request.password)
             raise self._invalid_credentials()
