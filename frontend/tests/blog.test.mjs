@@ -36,8 +36,8 @@ test("Persian dates use the Persian calendar and links preserve type and locale"
 
 test("guides are independently filterable, chronological and have bilingual reading pages", () => {
   const selected = selectBlogPosts([...posts, ...blogGuides], "fa", { now: Date.parse("2026-10-13T00:00:00Z"), type: "guide" });
-  assert.equal(selected.length, 3);
-  assert.deepEqual(selected.map(p=>p.slug).sort(), ["austria-study-guide", "italy-study-guide", "uk-study-visa-guide"]);
+  assert.equal(selected.length, 4);
+  assert.deepEqual(selected.map(p=>p.slug).sort(), ["austria-study-guide", "italy-study-guide", "netherlands-study-residence-guide", "uk-study-visa-guide"]);
   for (const guide of selected) {
     assert.equal(blogHref(guide,"fa"), `/fa/guides/${guide.slug}`);
     for (const locale of ["fa","en"]) {

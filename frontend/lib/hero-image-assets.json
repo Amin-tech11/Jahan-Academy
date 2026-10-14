@@ -65,6 +65,28 @@
       "bytes": 355562
     }
   ],
+  "/blog/guides/netherlands-collage.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/16ca698adee0a462-480.webp",
+      "bytes": 48484
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/16ca698adee0a462-768.webp",
+      "bytes": 120762
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/16ca698adee0a462-1280.webp",
+      "bytes": 253468
+    },
+    {
+      "width": 1536,
+      "url": "/hero-assets/16ca698adee0a462-1536.webp",
+      "bytes": 408902
+    }
+  ],
   "/blog/guides/uk-collage.webp": [
     {
       "width": 480,

@@ -4,6 +4,36 @@ import type { Localized } from "./site-content";
 export type BlogGuide = BlogPost & { sections: Localized<Array<{ title: string; body: string }>>; sources: Array<{ title: string; url: string }> };
 export const blogGuides: BlogGuide[] = [
   {
+    slug: "netherlands-study-residence-guide",
+    type: "guide",
+    date: "2026-10-13",
+    title: { fa: "راهنمای تحصیل و اقامت هلند", en: "Netherlands study and residence guide" },
+    excerpt: { fa: "از انتخاب دانشگاه پژوهش‌محور یا علوم کاربردی تا پذیرش، تمکن مالی و مسیر ویزا و اقامت تحصیلی هلند.", en: "Choosing a research or applied sciences university, applying, proving financial resources and preparing for student residence." },
+    sections: {
+      fa: [
+        { title: "برای تحصیل در هلند، فقط پذیرش کافی نیست", body: "پیش از اپلای، سه موضوع را کنار هم بررسی کنید: نوع دانشگاه، بودجه و تمکن مالی، و مسیر ویزا و اقامت. پذیرش تحصیلی به‌تنهایی به معنی صدور اجازه اقامت نیست. این راهنما بر اساس مجموعه پنج‌قسمتی جهان آکادمی، مراحل اصلی تصمیم‌گیری را مرور می‌کند." },
+        { title: "دانشگاه‌های WO و HBO و مسیر پذیرش", body: "دانشگاه‌های پژوهش‌محور (WO) بر آموزش آکادمیک و پژوهش تمرکز دارند؛ دانشگاه‌های علوم کاربردی (HBO) بر آموزش حرفه‌ای و عملی تأکید می‌کنند. برنامه‌های انگلیسی‌زبان هم وجود دارند، اما شرایط زبان، مدارک و مهلت هر رشته متفاوت است. ثبت درخواست برای بسیاری از برنامه‌ها از طریق Studielink انجام می‌شود؛ دستورالعمل دانشگاه و صفحه همان برنامه را بررسی کنید و شرایط یک دانشگاه را به همه دانشگاه‌ها تعمیم ندهید." },
+        { title: "تمکن مالی؛ مبلغ و روش‌های اثبات در سال ۲۰۲۶", body: "مبلغ ماهانه study norm برای دانشگاه و آموزش عالی حرفه‌ای در سال ۲۰۲۶ برابر ۱٬۱۳۰٫۷۷ یورو است؛ برای ۱۲ ماه، ۱۳٬۵۶۹٫۲۴ یورو. شهریه جدا از این مبلغ است و این رقم، برآورد کامل هزینه زندگی شخصی شما نیست. روش‌های اثبات می‌تواند شامل حساب شخصی، واریز به حساب مؤسسه آموزشی، بورسیه یا حمایت مالی شخص یا شرکت باشد. مدارک و روش قابل قبول را با دانشگاه هماهنگ کنید. مبلغ هر سال تغییر می‌کند؛ پیش از اقدام، رقم مربوط به سال درخواست را در IND بررسی کنید." },
+        { title: "مسیر ویزا و اقامت تحصیلی", body: "برای متقاضیانی که به اجازه اقامت تحصیلی نیاز دارند، ابتدا پذیرش و شرایط دانشگاه بررسی می‌شود. مؤسسه آموزشیِ دارای تأییدیه اسپانسر IND، درخواست اقامت را ارائه می‌کند. مدارک هویتی، مالی و سایر مدارک لازم را پیش از ارسال پرونده آماده کنید. نیاز به ویزای ورود MVV به تابعیت و شرایط فرد بستگی دارد؛ در صورت نیاز، مؤسسه درخواست MVV و اقامت را هم‌زمان ثبت می‌کند. پس از تأیید، مراحل دریافت ویزا، سفر و تحویل کارت اقامت را طبق دستورالعمل رسمی انجام دهید. تصمیم نهایی با مراجع رسمی هلند است." },
+        { title: "آیا هلند انتخاب مناسبی برای شماست؟", body: "انتخاب مناسب به سوابق تحصیلی، بودجه، توان ارائه تمکن و هدف تحصیلی و شغلی شما بستگی دارد. نوع آموزش WO یا HBO را با مسیر آینده خود هماهنگ کنید و علاوه بر شهریه، هزینه مسکن، بیمه، سفر و مراحل اداری را در نظر بگیرید. برای ارزیابی اولیه رایگان، اطلاعات و شرایط خود را از طریق فرم مشاوره جهان آکادمی ارسال کنید." }
+      ],
+      en: [
+        { title: "Admission is only one part of studying in the Netherlands", body: "Before applying, consider the institution type, your budget and financial evidence, and the visa and residence process together. Admission alone does not grant a residence permit. This guide follows Jahan Academy’s five-part series to help you plan your next steps." },
+        { title: "WO, HBO and university applications", body: "Research universities (WO) focus on academic education and research. Universities of applied sciences (HBO) emphasise professional and practical education. English-taught programmes are available, but each programme sets its own language, document and deadline requirements. Many applications begin through Studielink; follow the institution’s instructions and the specific programme page. Do not assume one university’s conditions apply everywhere." },
+        { title: "Financial resources: the 2026 study norm", body: "The 2026 study norm for university or higher professional education is €1,130.77 per month, or €13,569.24 for 12 months. Tuition is additional, and this figure is not a complete personal living-cost estimate. Evidence may include your own bank account, a deposit with the institution, a scholarship, or financial support from a person or company. Confirm acceptable documents and arrangements with your institution. The amount changes annually; check the IND figure for your application year before proceeding." },
+        { title: "The student visa and residence process", body: "If you need a student residence permit, first meet the institution’s admission requirements. An educational institution recognised by the IND as a sponsor submits the residence application. Prepare identity, financial and other required documents before submission. Whether you need an MVV entry visa depends on nationality and circumstances; where required, the institution applies for the MVV and residence permit together. After approval, follow official instructions for the visa, travel and collecting your residence document. Dutch authorities make the final decision." },
+        { title: "Is the Netherlands right for you?", body: "Your academic background, budget, financial evidence and study and career goals should guide the decision. Match WO or HBO education to your future plans, and budget for housing, insurance, travel and administrative costs as well as tuition. Submit your circumstances through Jahan Academy’s consultation form for a free initial assessment." }
+      ]
+    },
+    sources: [
+      { title: "Study in NL — Dutch education", url: "https://www.studyinnl.org/dutch-education/bachelors" },
+      { title: "Study in NL — How to apply", url: "https://www.studyinnl.org/plan-your-stay/how-to-apply" },
+      { title: "IND — Required amounts", url: "https://ind.nl/en/required-amounts-income-requirements" },
+      { title: "IND — Income requirements for study", url: "https://ind.nl/en/income-requirements-study" },
+      { title: "IND — Student residence permit", url: "https://ind.nl/en/residence-permits/study/student-residence-permit-for-university-or-higher-professional-education" }
+    ]
+  },
+  {
     "slug": "uk-study-visa-guide",
     "type": "guide",
     "date": "2026-10-12",
