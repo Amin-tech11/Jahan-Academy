@@ -32,5 +32,6 @@ export function loginPayload(
       ? username
       : null;
   if (body.mfaCode != null && (typeof body.mfaCode !== "string" || body.mfaCode.length > 64)) return null;
-  return email ? { email, password: body.password, ...(body.mfaCode ? { mfaCode: body.mfaCode } : {}) } : null;
+  const identity = email ? { email } : /^[A-Za-z][A-Za-z0-9_.-]{0,63}$/.test(username) ? { username } : null;
+  return identity ? { ...identity, password: body.password, ...(body.mfaCode ? { mfaCode: body.mfaCode } : {}) } : null;
 }

@@ -29,20 +29,20 @@ test("both username and password are required by the server adapter", () => {
   ])
     assert.equal(loginPayload(input, configuration), null);
 });
-test("development alias cannot authenticate in production or test environments", () => {
+test("production names go to the backend without resolving the development alias", () => {
   for (const environment of ["production", "test", undefined])
-    assert.equal(
+    assert.deepEqual(
       loginPayload(
         { username: "ExampleAdmin", password: "x" },
         { ...configuration, environment },
       ),
-      null,
+      { username: "ExampleAdmin", password: "x" },
     );
 });
-test("unknown names do not resolve and existing email login remains available", () => {
-  assert.equal(
+test("names require backend authentication and existing email login remains available", () => {
+  assert.deepEqual(
     loginPayload({ username: "SomeoneElse", password: "x" }, configuration),
-    null,
+    { username: "SomeoneElse", password: "x" },
   );
   assert.deepEqual(
     loginPayload(
