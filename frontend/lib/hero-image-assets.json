@@ -43,6 +43,28 @@
       "bytes": 371922
     }
   ],
+  "/blog/guides/germany-collage.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/b891ca8d5bda4f42-480.webp",
+      "bytes": 45152
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/b891ca8d5bda4f42-768.webp",
+      "bytes": 109276
+    },
+    {
+      "width": 1280,
+      "url": "/hero-assets/b891ca8d5bda4f42-1280.webp",
+      "bytes": 223854
+    },
+    {
+      "width": 1536,
+      "url": "/hero-assets/b891ca8d5bda4f42-1536.webp",
+      "bytes": 354306
+    }
+  ],
   "/blog/guides/italy-collage.webp": [
     {
       "width": 480,
