@@ -1,0 +1,20 @@
+@media (max-width: 1199px) {
+  .home-process .home-process__steps { display: grid; gap: 12px; }
+  .home-process .home-process__dot { display: none; }
+  .home-process .home-process__step { grid-template-columns: 44px minmax(0, 1fr); gap: 0 12px; align-items: start; direction: inherit; min-height: 0; padding: 16px; border: 1px solid var(--color-border); border-radius: 14px; background: #fff; }
+  .home-process .home-process__rail { position: static; width: 44px; height: 44px; transform: none; grid-column: 1; grid-row: 1; display: grid; place-items: center; }
+  .home-process .home-process__rail svg { display: none; }
+  .home-process .home-process__number { position: static; transform: none; width: 40px; height: 40px; box-shadow: none; background: #fff; color: var(--color-brand-900); }
+  .home-process .home-process__step:nth-child(n) .home-process__copy { grid-column: 2; grid-row: 1; padding: 0; }
+  .home-process .home-process__step:nth-child(n) .home-process__media { grid-column: 2; grid-row: 2; width: 100%; max-width: 34rem; min-width: 0; margin-block-start: 16px; }
+  .home-process .home-process__step h3 { min-height: 44px; display: flex; align-items: center; margin: 0; font-size: 18px; line-height: 1.7; }
+  .home-process .home-process__step p { margin-block-start: 12px; font-size: 16px; line-height: 2; }
+  .home-process__toggle { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; min-height: 44px; padding: 0; border: 0; background: transparent; color: inherit; font: inherit; text-align: start; cursor: pointer; }
+  .home-process__toggle svg { flex: none; transition: transform .18s ease; }
+  .home-process__toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
+  .home-process__toggle:focus-visible { outline: 3px solid var(--color-brand-900); outline-offset: 4px; border-radius: 4px; }
+  .home-process .home-process__step[data-step-expanded="false"] :is(.home-process__media, .home-process__detail) { display: none; }
+  .home-process .home-process__step[data-step-expanded="true"] { border-color: var(--color-brand-900); }
+  .home-process .home-process__step[data-step-expanded="true"] .home-process__number { background: var(--color-brand-900); color: #fff; }
+}
+@media (prefers-reduced-motion: reduce) { .home-process__toggle svg { transition: none; } }

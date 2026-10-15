@@ -1,0 +1,5 @@
+.public-field-error { display: block; color: #a72525; font-size: 16px; font-weight: 500; line-height: 1.7; overflow-wrap: anywhere; }
+.site :is(input, textarea, .site-select__trigger)[aria-invalid="true"] { border-color: #a72525; }
+.assessment-form__consents label:has(.public-field-error) { flex-wrap: wrap; }
+.assessment-form__consents .public-field-error { flex-basis: 100%; }
+.site-select:has(.site-select__trigger[aria-describedby^="public-field-error-"]) .site-select__error { display: none; }

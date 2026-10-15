@@ -33,7 +33,7 @@ export function HomeHeroChat({ locale }: { locale: Locale }) {
       <span className="home-hero-chat__avatar" aria-hidden="true"><svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M4 13v-2a8 8 0 0 1 16 0v5a4 4 0 0 1-4 4h-3M4 11H2v6h4v-6H4Zm16 0h2v6h-4v-6h2Z" /><path d="M9 20h4" /></svg></span>
       <div><strong>{fa ? "جهان آکادمی" : "Jahan Academy"}</strong><small className="home-hero-chat__example">{fa ? "نمونه گفت‌وگو؛ این بخش چت زنده نیست" : "Example conversation · not a live chat"}</small></div>
     </header>
-    <div className="home-hero-chat__body" aria-live="off" key={frame.scene}>
+    <div className="home-hero-chat__body" aria-live="off" role="region" aria-label={fa ? "پیام‌های نمونه" : "Example messages"} tabIndex={0} key={frame.scene}>
       <p className="home-hero-chat__topic">{conversation.topic}</p>
       <div className="home-hero-chat__message home-hero-chat__message--visitor"><span>{fa ? "شما" : "You"}</span><p>{conversation.question}</p></div>
       <div className="home-hero-chat__reply">

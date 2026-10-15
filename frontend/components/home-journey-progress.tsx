@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, type ReactNode } from "react";
+import "./home-journey-responsive.css";
 
 /** Find the point at a viewport Y coordinate on the actual rendered SVG curve. */
 export function journeyPoint(path: SVGPathElement, viewportY: number) {
@@ -30,6 +31,7 @@ export function HomeJourneyProgress({ children }: { children: ReactNode }) {
     const list = listRef.current;
     const dot = dotRef.current;
     if (!list || !dot) return;
+    const compact = window.matchMedia("(max-width: 1199px)");
     const steps = Array.from(list.querySelectorAll<HTMLElement>(".home-process__step")).map((step) => ({
       step,
       rail: step.querySelector<HTMLElement>(".home-process__rail"),
@@ -39,6 +41,11 @@ export function HomeJourneyProgress({ children }: { children: ReactNode }) {
     let frame: number | null = null;
     const update = () => {
       frame = null;
+      if (compact.matches) {
+        dot.dataset.ready = "false";
+        for (const { step } of steps) if (step.dataset.active) delete step.dataset.active;
+        return;
+      }
       const focusLine = window.innerHeight * 0.5;
       const segments = steps.flatMap((entry) => entry.rail && entry.path && entry.marker
         ? [{ ...entry, bounds: entry.rail.getBoundingClientRect() }] : []);
@@ -77,11 +84,13 @@ export function HomeJourneyProgress({ children }: { children: ReactNode }) {
     update();
     window.addEventListener("scroll", schedule, { passive: true });
     window.addEventListener("resize", schedule);
+    compact.addEventListener("change", schedule);
     const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(schedule);
     observer?.observe(list);
     return () => {
       window.removeEventListener("scroll", schedule);
       window.removeEventListener("resize", schedule);
+      compact.removeEventListener("change", schedule);
       observer?.disconnect();
       if (frame !== null) window.cancelAnimationFrame(frame);
     };

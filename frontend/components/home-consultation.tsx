@@ -1,5 +1,6 @@
 "use client";
 import SiteSelect from "./site-select";
+import { usePublicFormFeedback } from "./use-public-form-feedback";
 import { createRequestKey } from "@/lib/request-key";
 
 import Link from "next/link";
@@ -12,6 +13,7 @@ import type { Locale } from "@/lib/site-content";
 
 export function HomeConsultation({ locale, sourcePage }: { locale: Locale; sourcePage?: string }) {
   const id = useId();
+  const feedback = usePublicFormFeedback(locale);
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [error, setError] = useState("");
   const [reference, setReference] = useState("");
@@ -22,7 +24,7 @@ export function HomeConsultation({ locale, sourcePage }: { locale: Locale; sourc
     if (status === "sending") return;
     const form = new FormData(event.currentTarget);
     const mobile = normalizeMobile(String(form.get("mobile") ?? ""));
-    if (!mobile) { setError(t("لطفاً شماره موبایل معتبر وارد کنید.", "Please enter a valid mobile number.")); setStatus("error"); return; }
+    if (!mobile) { feedback.mark("mobile", t("لطفاً شماره موبایل معتبر وارد کنید.", "Please enter a valid mobile number.")); setError(t("لطفاً شماره موبایل معتبر وارد کنید.", "Please enter a valid mobile number.")); setStatus("error"); return; }
     const payload = {
       firstName: String(form.get("firstName")).trim(), lastName: String(form.get("lastName")).trim(),
       mobile, occupation: String(form.get("occupation")), desiredCountryText: t("هنوز انتخاب نشده؛ بررسی در مشاوره", "Undecided; discuss during consultation"),
@@ -38,23 +40,24 @@ export function HomeConsultation({ locale, sourcePage }: { locale: Locale; sourc
       const response = await apiRequest<ApiEnvelope<{ reference: string }>>("/consultation-requests", { method: "POST", headers: { "Idempotency-Key": request.current.key }, body: payload });
       setReference(response.data.reference); setStatus("success");
     } catch (cause) {
+      if (cause instanceof ApiError) feedback.serverErrors(cause.fieldErrors);
       setError(cause instanceof ApiError ? cause.message : t("ثبت درخواست انجام نشد. لطفاً دوباره تلاش کنید.", "Could not submit your request. Please try again."));
       setStatus("error");
     }
   }
   if (status === "success") return <div className="home-closing__card"><ConsultationSuccess locale={locale} reference={reference} /></div>;
-  return <form className="home-closing__card home-consultation__form" onSubmit={submit} aria-label={t("درخواست مشاوره تخصصی رایگان", "Request a free consultation")}>
+  return <form {...feedback.formProps} className="home-closing__card home-consultation__form" onSubmit={submit} aria-label={t("درخواست مشاوره تخصصی رایگان", "Request a free consultation")}>
     <ConsultationFormHeading locale={locale} />
     <div className="home-consultation__fields">
-      <label htmlFor={id + "-first"}>{t("نام *", "First name *")}<input id={id + "-first"} name="firstName" required maxLength={100} autoComplete="given-name" /></label>
-      <label htmlFor={id + "-last"}>{t("نام خانوادگی *", "Last name *")}<input id={id + "-last"} name="lastName" required maxLength={100} autoComplete="family-name" /></label>
-      <label htmlFor={id + "-mobile"}>{t("شماره موبایل *", "Mobile number *")}<input id={id + "-mobile"} name="mobile" type="tel" required maxLength={30} autoComplete="tel" placeholder="0912 000 0000" dir="ltr" /></label>
-      <label htmlFor={id + "-occupation"}>{t("حوزه فعالیت *", "Occupation *")}<SiteSelect id={id + "-occupation"} name="occupation" required defaultValue=""><option value="" disabled>{t("حوزه فعالیت خود را انتخاب کنید", "Select your occupation")}</option>{[["دانش‌آموز", "School student"], ["دانشجو", "University student"], ["شاغل", "Employed"], ["سایر", "Other"]].map(([fa, en]) => <option key={en} value={t(fa, en)}>{t(fa, en)}</option>)}</SiteSelect></label>
-      <label className="home-consultation__wide" htmlFor={id + "-time"}>{t("زمان مناسب تماس (اختیاری)", "Preferred contact time (optional)")}<SiteSelect id={id + "-time"} name="contactTime">{[["فرقی ندارد", "Any time"], ["صبح", "Morning"], ["بعدازظهر", "Afternoon"], ["عصر", "Evening"]].map(([fa, en]) => <option key={en} value={t(fa, en)}>{t(fa, en)}</option>)}</SiteSelect></label>
+      <label htmlFor={id + "-first"}>{t("نام *", "First name *")}<input id={id + "-first"} {...feedback.fieldProps("firstName")} name="firstName" required maxLength={100} autoComplete="given-name" />{feedback.message("firstName")}</label>
+      <label htmlFor={id + "-last"}>{t("نام خانوادگی *", "Last name *")}<input id={id + "-last"} {...feedback.fieldProps("lastName")} name="lastName" required maxLength={100} autoComplete="family-name" />{feedback.message("lastName")}</label>
+      <label htmlFor={id + "-mobile"}>{t("شماره موبایل *", "Mobile number *")}<input id={id + "-mobile"} {...feedback.fieldProps("mobile")} name="mobile" type="tel" required maxLength={30} autoComplete="tel" placeholder="0912 000 0000" dir="ltr" />{feedback.message("mobile")}</label>
+      <label htmlFor={id + "-occupation"}>{t("حوزه فعالیت *", "Occupation *")}<SiteSelect id={id + "-occupation"} {...feedback.fieldProps("occupation")} name="occupation" required defaultValue=""><option value="" disabled>{t("حوزه فعالیت خود را انتخاب کنید", "Select your occupation")}</option>{[["دانش‌آموز", "School student"], ["دانشجو", "University student"], ["شاغل", "Employed"], ["سایر", "Other"]].map(([fa, en]) => <option key={en} value={t(fa, en)}>{t(fa, en)}</option>)}</SiteSelect>{feedback.message("occupation")}</label>
+      <label className="home-consultation__wide" htmlFor={id + "-time"}>{t("زمان مناسب تماس (اختیاری)", "Preferred contact time (optional)")}<SiteSelect id={id + "-time"} {...feedback.fieldProps("contactTime")} name="contactTime">{[["فرقی ندارد", "Any time"], ["صبح", "Morning"], ["بعدازظهر", "Afternoon"], ["عصر", "Evening"]].map(([fa, en]) => <option key={en} value={t(fa, en)}>{t(fa, en)}</option>)}</SiteSelect>{feedback.message("contactTime")}</label>
     </div>
-    <label className="home-consultation__consent"><input type="checkbox" name="privacyConsent" required /><span>{t("با ثبت اطلاعاتم طبق ", "I agree to the processing of my information under the ")}<Link href={`/${locale}/privacy`}>{t("سیاست حریم خصوصی", "privacy policy")}</Link>{t(" موافقم.", ".")}</span></label>
-    <label className="home-consultation__consent"><input type="checkbox" name="contactConsent" required /><span>{t("با تماس تیم جهان آکادمی برای این درخواست موافقم.", "I agree to be contacted by Jahan Academy about this request.")}</span></label>
+    <label className="home-consultation__consent"><input type="checkbox" {...feedback.fieldProps("privacyConsent")} name="privacyConsent" required /><span>{t("با ثبت اطلاعاتم طبق ", "I agree to the processing of my information under the ")}<Link href={`/${locale}/privacy`}>{t("سیاست حریم خصوصی", "privacy policy")}</Link>{t(" موافقم.", ".")}{feedback.message("privacyConsent")}</span></label>
+    <label className="home-consultation__consent"><input type="checkbox" {...feedback.fieldProps("contactConsent")} name="contactConsent" required /><span>{t("با تماس تیم جهان آکادمی برای این درخواست موافقم.", "I agree to be contacted by Jahan Academy about this request.")}{feedback.message("contactConsent")}</span></label>
     {status === "error" && <p role="alert">{error}</p>}
-    <button type="submit" className="ui-button ui-button--primary" disabled={status === "sending"} aria-busy={status === "sending"}>{status === "sending" ? t("در حال ثبت…", "Submitting…") : t("ثبت درخواست مشاوره", "Submit consultation request")}</button>
+    <button type="submit" className="ui-button ui-button--primary" disabled={!feedback.ready || status === "sending"} aria-busy={status === "sending"}>{status === "sending" ? t("در حال ثبت…", "Submitting…") : t("ثبت درخواست مشاوره", "Submit consultation request")}</button>
   </form>;
 }

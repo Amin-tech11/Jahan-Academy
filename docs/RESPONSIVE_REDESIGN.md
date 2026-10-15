@@ -65,7 +65,58 @@ to the shared components, because they render on every public template.
   the component consumes the URL token in an effect rerun by development Strict Mode.
 - CI results must be recorded on the PR, not inferred from local results.
 
-## Remaining acceptance gates
+## Released shared shell
+
+PR 159 was approved, merged and deployed at main commit
+`9b4e1f9691c34b54912c29431aa96cef4b151070`. Main CI and image publication
+completed successfully; the disabled deployment job was skipped, followed by
+the approved manual release. Production verification covered 20 localized paths,
+compact navigation/focus/action suppression, HTTPS health and anonymous admin
+access denial. All five Jahan Academy containers were healthy. A rollback
+snapshot and database backup were retained. No unrelated server project was changed.
+
+## Conversion delivery
+
+Home cards and the compact journey now follow the requested width ranges. All
+13 journey descriptions remain in the HTML; compact headings expand by touch or
+keyboard, while the desktop timeline remains available from 1200px.
+
+Free consultation, assessment and consultation blocks on home, destination index,
+country, university index, services, about and journal stack image/form under
+1200px. Fields use one column below 768px and two short-field columns above it.
+Existing native/custom validation appears beside fields and focuses the first
+error within the visible area below sticky navigation. Backend field errors map
+to existing controls; request payloads, validation rules, consent requirements,
+idempotent retries and separate form routes remain unchanged. No form values
+are persisted in browser storage.
+
+Dropdown placement observes visual viewport resize/scroll so an on-screen
+keyboard or rotation cannot push the list outside the viewport. The shared
+select keeps admin styling intact; compact 16px popup text applies only to
+public-site controls. Form submission and select triggers wait for hydration.
+
+Validation so far: TypeScript and optimized production build (123 pages) passed;
+207 local unit/integration tests passed (including two preserved, unrelated SEO
+tests). All 32 new browser journeys passed in Chromium and WebKit. Firefox
+passed 31 in the batch; one browser-context teardown crashed after its assertions,
+and that case passed independently. The final chat refinement was checked again
+in both engines at 320 and 1194px in both languages (four cases per engine).
+The complete optimized production Chromium suite passed all 96 cases, including
+FAQ animation, university return navigation, recovery, header and form journeys.
+
+Controlled desktop comparison covered all 78 baseline/candidate pairs (13 public
+templates, two languages, widths 1280/1440/1920). Page dimensions matched in all
+pairs. After decoding cold lazy images, 65 pairs had no differences above the
+8/255 channel threshold; the other 13 had at most 0.031% differing pixels, confined
+to image rasterization or isolated edge pixels on visual inspection. There was no
+observed desktop layout regression. Dynamic chat messages, news and map frames
+were masked in both versions; these captures do not validate their changing
+contents. Unrelated paused SEO edits were held constant for this comparison and
+are excluded from the delivery commit.
+No actual iPhone, iPad or Android device was used. These browser checks are
+emulation, not field Core Web Vitals evidence.
+
+## Outstanding acceptance work
 
 Test widths 320, 360, 390, 430, 600, 768, 820, 1024, 1194, 1280, 1440 and 1920,
 both locales. Test Chromium, Firefox and WebKit for main template families.

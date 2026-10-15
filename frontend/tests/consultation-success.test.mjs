@@ -20,6 +20,7 @@ function load(file, dependencies, globals = {}) {
     module, exports: module.exports, ...globals,
     require(name) {
       if (name === "./site-select") return { default: "select" };
+      if (name === "./use-public-form-feedback") return { usePublicFormFeedback: () => ({ ready: true, formProps: {}, fieldProps: () => ({}), message: () => null, mark() {}, serverErrors() {} }) };
       if (name === "@/lib/request-key") return { createRequestKey };
       if (name === "react/jsx-runtime") return jsx;
       if (name in dependencies) return dependencies[name];

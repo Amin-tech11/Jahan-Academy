@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 
 for (const locale of ["fa", "en"]) {
-  test(`${locale}: services consultation overlaps the photo without overflowing`, async ({ page }) => {
+  test(`${locale}: services preserves desktop overlap and stacks compact consultation`, async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto(`/${locale}/services`);
     const layout = page.locator(".services-cta__layout");
@@ -14,8 +14,10 @@ for (const locale of ["fa", "en"]) {
     expect((await geometry()).overlap).toBeCloseTo(24, 0);
     expect((await geometry()).contained).toBe(true);
     await expect(page.locator(".services-request")).toBeVisible();
-    await page.setViewportSize({ width: 390, height: 844 });
-    expect((await geometry()).verticalOverlap).toBeCloseTo(24, 0);
-    expect((await geometry()).contained).toBe(true);
+    for (const width of [390, 820, 1194]) {
+      await page.setViewportSize({ width, height: 844 });
+      expect((await geometry()).verticalOverlap).toBeCloseTo(-24, 0);
+      expect((await geometry()).contained).toBe(true);
+    }
   });
 }
