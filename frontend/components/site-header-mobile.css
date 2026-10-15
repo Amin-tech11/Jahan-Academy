@@ -6,6 +6,7 @@
   .site-header .brand, .site-header .brand-image { width: clamp(112px, 19vw, 170px); min-width: 0; height: 56px; }
   .site-header .header-actions { gap: 8px; flex: none; }
   .site-header .mobile-menu-toggle { display: inline-flex; align-items: center; justify-content: center; }
+  .site-header .mobile-menu-toggle:disabled { opacity: .55; cursor: wait; }
   .site-header .language-switch { flex-direction: row; gap: 0; padding: 2px; }
   .site-header .language-switch__icon { display: none; }
   .site-header .language-switch :is(.locale-link, .language-switch__active) { display: inline-flex; width: auto; min-width: 44px; min-height: 44px; padding: 4px 7px; font-size: 12px; }

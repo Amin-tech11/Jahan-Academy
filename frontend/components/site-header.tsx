@@ -16,6 +16,8 @@ export function SiteHeader({ locale }: { locale: Locale }) {
   const copy = siteCopy[locale];
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [ready, setReady] = useState(false);
+  const previousPath = useRef(pathname);
   const headerRef = useRef<HTMLElement>(null);
   const menuRef = useRef<HTMLDialogElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
@@ -28,6 +30,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
     if (!header) return;
     const measure = () => document.documentElement.style.setProperty("--site-header-height", `${header.getBoundingClientRect().height}px`);
     measure();
+    setReady(true);
     const observer = new ResizeObserver(measure);
     observer.observe(header);
     return () => observer.disconnect();
@@ -53,7 +56,10 @@ export function SiteHeader({ locale }: { locale: Locale }) {
       events.forEach(event => window.removeEventListener(event, stop));
     };
   }, [pathname]);
-  useEffect(() => setOpen(false), [pathname]);
+  useEffect(() => {
+    if (previousPath.current !== pathname) setOpen(false);
+    previousPath.current = pathname;
+  }, [pathname]);
   useEffect(() => {
     if (!open) return;
     const menu = menuRef.current;
@@ -123,7 +129,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
           : <Link key={language} className="locale-link" href={alternatePath || `/${alternateLocale}`} scroll={false} onNavigate={() => { pendingLocaleScroll = captureLocaleScroll(alternatePath || `/${alternateLocale}`); }} lang={language} hrefLang={language} aria-label={language === "fa" ? "تغییر زبان به فارسی" : "Switch language to English"}>{language === "fa" ? "فارسی" : "English"}</Link>)}
       </div>
       <ButtonLink size="sm" href={consultationPath}>{copy.consultation}</ButtonLink>
-      <button ref={toggleRef} className="mobile-menu-toggle" type="button" aria-label={locale === "fa" ? "باز کردن منو" : "Toggle menu"} aria-controls="mobile-navigation" aria-haspopup="dialog" aria-expanded={open} onClick={() => setOpen(!open)}><span aria-hidden="true">{open ? "×" : "☰"}</span></button>
+      <button ref={toggleRef} className="mobile-menu-toggle" type="button" disabled={!ready} aria-label={locale === "fa" ? "باز کردن منو" : "Toggle menu"} aria-controls="mobile-navigation" aria-haspopup="dialog" aria-expanded={open} onClick={() => setOpen(!open)}><span aria-hidden="true">{open ? "×" : "☰"}</span></button>
     </div>
   </div><dialog ref={menuRef} id="mobile-navigation" className="mobile-nav" data-open={open} aria-labelledby="mobile-navigation-title" onCancel={() => setOpen(false)} onClick={(event) => {
     if (event.target !== event.currentTarget) return;

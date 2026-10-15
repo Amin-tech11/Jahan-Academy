@@ -1,6 +1,25 @@
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
+test("slow scripts do not expose an unresponsive menu button", async ({ page }) => {
+  await page.setViewportSize({ width: 768, height: 1000 });
+  let release!: () => void;
+  const scripts = new Promise<void>(resolve => { release = resolve; });
+  await page.route(/\/_next\/static\/.*\.js(?:\?|$)/, async route => {
+    await scripts;
+    await route.continue();
+  });
+  try {
+    await page.goto("/en/privacy", { waitUntil: "commit" });
+    const toggle = page.locator(".mobile-menu-toggle");
+    await expect(toggle).toBeDisabled();
+    release();
+    await expect(toggle).toBeEnabled();
+    await toggle.click();
+    await expect(page.locator("dialog.mobile-nav")).toBeVisible();
+  } finally { release(); }
+});
+
 for (const locale of ["fa", "en"]) {
   for (const width of [320, 360, 390, 430, 600, 768, 820, 1024, 1194]) {
     test(`${locale} ${width}: touch menu fits and restores focus`, async ({ page }) => {
