@@ -1,0 +1,12 @@
+/* Shared public-site primitives; page compositions remain component-owned. */
+@media (max-width: 1199px) {
+  :root { --public-gutter: 32px; }
+  .site .shell { width: min(1160px, calc(100% - 2 * var(--public-gutter))); }
+  .site :is(input:not([type="checkbox"]):not([type="radio"]), select, textarea) { font-size: 16px; }
+  .site :is(.ui-button, .button, .site-select__trigger) { min-height: 44px; }
+  .site :is(input, select, textarea, button, a) { touch-action: manipulation; }
+  :where(.site [id]) { scroll-margin-block-start: calc(var(--site-header-height, 76px) + 24px); }
+  body:has([data-mobile-consultation-visible="true"]) .site { padding-bottom: var(--mobile-consultation-height, calc(90px + env(safe-area-inset-bottom))); }
+}
+@media (max-width: 767px) { :root { --public-gutter: 24px; } }
+@media (max-width: 599px) { :root { --public-gutter: 16px; } }

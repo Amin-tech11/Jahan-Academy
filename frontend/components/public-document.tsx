@@ -7,6 +7,7 @@ import "@/app/accessibility.css";
 import "@/app/dropdowns.css";
 import "@/app/consultation-heading.css";
 import "@/app/shared-consultation.css";
+import "@/app/public-responsive.css";
 
 export function PublicDocument({ children, locale }: { children: ReactNode; locale: Locale }) {
   return <html lang={locale} dir={locale === "fa" ? "rtl" : "ltr"}><body>{children}</body></html>;

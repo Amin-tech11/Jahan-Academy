@@ -1,7 +1,7 @@
 .card { display:none; }
 .close { position:absolute; top:3px; inset-inline-end:3px; border:0; background:transparent; color:#fff; font-size:22px; width:32px; height:32px; cursor:pointer; }
 .close:focus-visible { outline:2px solid #fff; outline-offset:2px; }
-@media (min-width:1024px) {
+@media (min-width:1200px) {
   .card { display:block; position:fixed; right:24px; bottom:24px; z-index:35; width:252px; padding:16px; border:1px solid #bac6d7; border-radius:16px; background:linear-gradient(135deg,#071b3a 0%,#123b78 100%); color:#fff; box-shadow:0 8px 28px rgb(9 37 59 / 24%); animation:consultation-float 7s ease-in-out infinite; }
   .heading { display:flex; align-items:center; gap:12px; }
   .icon { display:grid; place-items:center; flex:0 0 38px; height:38px; border:1px solid rgb(214 220 228 / 35%); border-radius:11px; background:rgb(214 220 228 / 12%); color:#e1e6ee; }
