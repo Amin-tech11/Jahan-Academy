@@ -120,8 +120,14 @@
   overflow-wrap: anywhere;
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1200px) {
   .inner { padding-bottom: 128px; }
+}
+
+@media (max-width: 1199px) {
+  .contactLink { min-height: 44px; font-size: 16px; }
+  .inner { min-width: 0; }
+  .columns > * { min-width: 0; }
 }
 
 @media (max-width: 900px) {

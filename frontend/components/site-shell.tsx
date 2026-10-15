@@ -4,6 +4,7 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { FloatingConsultation } from "@/components/floating-consultation";
 import { GoogleAnalytics } from "@/components/google-analytics";
+import { MobileConsultation } from "@/components/mobile-consultation";
 import { ButtonLink } from "@/components/ui";
 import { type Locale, siteCopy } from "@/lib/site-content";
 import { organizationSchema } from "@/lib/site-seo";
@@ -22,6 +23,7 @@ export function SiteShell({ locale, children, className }: { locale: Locale; chi
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema()).replaceAll("<", "\\u003c") }} />
     <SiteFooter locale={locale} />
     <FloatingConsultation locale={locale} />
+    <MobileConsultation locale={locale} />
     <GoogleAnalytics />
   </div>;
 }

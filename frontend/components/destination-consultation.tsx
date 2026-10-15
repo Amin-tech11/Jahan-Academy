@@ -50,7 +50,7 @@ export function DestinationConsultation({ locale, destination }: { locale: Local
     } finally { sending.current = false; }
   }
   if (status === "success") return <div className={styles.card} role="status" dir={locale === "fa" ? "rtl" : "ltr"}><h3>{t("درخواست شما ثبت شد", "Your request has been received")}</h3><p>{t("تیم جهان آکادمی برای هماهنگی مشاوره با شما تماس می‌گیرد.", "Jahan Academy will contact you to arrange your consultation.")}</p><strong>{t("کد پیگیری: ", "Reference: ")}{reference}</strong></div>;
-  return <form data-destination-motion="side" data-destination-delay="60" className={styles.card} onSubmit={submit} dir={locale === "fa" ? "rtl" : "ltr"} aria-label={t("درخواست مشاوره تخصصی رایگان", "Request a free consultation")}>
+  return <form data-consultation-form data-destination-motion="side" data-destination-delay="60" className={styles.card} onSubmit={submit} dir={locale === "fa" ? "rtl" : "ltr"} aria-label={t("درخواست مشاوره تخصصی رایگان", "Request a free consultation")}>
     <ConsultationFormHeading locale={locale} />
     <div className={styles.fields}>
       <label htmlFor={id + "-first"}>{t("نام *", "First name *")}<input id={id + "-first"} name="firstName" required maxLength={100} autoComplete="given-name" /></label>

@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { PreparedImage as Image } from "@/components/prepared-image";
 import { usePathname } from "next/navigation";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import "./site-header-mobile.css";
 import { captureLocaleScroll, restoreLocaleScroll, type LocaleScrollPosition } from "@/lib/locale-scroll";
 
 import { ButtonLink } from "@/components/ui";
@@ -15,9 +16,22 @@ export function SiteHeader({ locale }: { locale: Locale }) {
   const copy = siteCopy[locale];
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const headerRef = useRef<HTMLElement>(null);
+  const menuRef = useRef<HTMLDialogElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
   const alternateLocale: Locale = locale === "fa" ? "en" : "fa";
   const alternatePath = pathname.replace(/^\/(fa|en)(?=\/|$)/, `/${alternateLocale}`);
   const consultationPath = `/${locale}/consultation?source=header`;
+  useEffect(() => {
+    const header = headerRef.current;
+    if (!header) return;
+    const measure = () => document.documentElement.style.setProperty("--site-header-height", `${header.getBoundingClientRect().height}px`);
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(header);
+    return () => observer.disconnect();
+  }, []);
   useLayoutEffect(() => {
     const position = pendingLocaleScroll;
     if (!position || position.path !== pathname) return;
@@ -42,9 +56,38 @@ export function SiteHeader({ locale }: { locale: Locale }) {
   useEffect(() => setOpen(false), [pathname]);
   useEffect(() => {
     if (!open) return;
-    const closeOnEscape = (event: KeyboardEvent) => { if (event.key === "Escape") setOpen(false); };
-    document.addEventListener("keydown", closeOnEscape);
-    return () => document.removeEventListener("keydown", closeOnEscape);
+    const menu = menuRef.current;
+    const root = document.documentElement;
+    const media = window.matchMedia("(max-width: 1199px)");
+    if (!menu || !media.matches) { setOpen(false); return; }
+    const previousOverflow = root.style.overflow;
+    root.style.overflow = "hidden";
+    root.dataset.mobileMenuOpen = "true";
+    menu.showModal();
+    closeRef.current?.focus({ preventScroll: true });
+    const trapFocus = (event: KeyboardEvent) => {
+      if (event.key !== "Tab") return;
+      const controls = [...menu.querySelectorAll<HTMLElement>('a[href], button:not([disabled]), summary, [tabindex="0"]')]
+        .filter(element => element.getClientRects().length > 0);
+      const first = controls[0];
+      const last = controls.at(-1);
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault(); last?.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault(); first?.focus();
+      }
+    };
+    menu.addEventListener("keydown", trapFocus);
+    const resize = () => { if (!media.matches) setOpen(false); };
+    media.addEventListener("change", resize);
+    return () => {
+      menu.close();
+      menu.removeEventListener("keydown", trapFocus);
+      delete root.dataset.mobileMenuOpen;
+      root.style.overflow = previousOverflow;
+      media.removeEventListener("change", resize);
+      toggleRef.current?.focus({ preventScroll: true });
+    };
   }, [open]);
 
   const links = (desktop: boolean) => copy.nav.map((item) => {
@@ -67,7 +110,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
     return <Link key={href} href={href} aria-current={active ? "page" : undefined} onClick={() => setOpen(false)}>{item.label}</Link>;
   });
 
-  return <header className="site-header"><div className="shell header-inner">
+  return <header ref={headerRef} className="site-header"><div className="shell header-inner">
     <Link className="brand" href={`/${locale}`} aria-label={locale === "fa" ? "جهان آکادمی، صفحه اصلی" : "Jahan Academy, home"}>
       <span className="brand-image"><Image src="/brand/jahan-academy-official.png" alt="" fill sizes="(max-width: 600px) 180px, (max-width: 900px) 240px, 150px" preload /></span>
     </Link>
@@ -80,7 +123,17 @@ export function SiteHeader({ locale }: { locale: Locale }) {
           : <Link key={language} className="locale-link" href={alternatePath || `/${alternateLocale}`} scroll={false} onNavigate={() => { pendingLocaleScroll = captureLocaleScroll(alternatePath || `/${alternateLocale}`); }} lang={language} hrefLang={language} aria-label={language === "fa" ? "تغییر زبان به فارسی" : "Switch language to English"}>{language === "fa" ? "فارسی" : "English"}</Link>)}
       </div>
       <ButtonLink size="sm" href={consultationPath}>{copy.consultation}</ButtonLink>
-      <button className="mobile-menu-toggle" type="button" aria-label={locale === "fa" ? "باز کردن منو" : "Toggle menu"} aria-controls="mobile-navigation" aria-expanded={open} onClick={() => setOpen(!open)}><span aria-hidden="true">{open ? "×" : "☰"}</span></button>
+      <button ref={toggleRef} className="mobile-menu-toggle" type="button" aria-label={locale === "fa" ? "باز کردن منو" : "Toggle menu"} aria-controls="mobile-navigation" aria-haspopup="dialog" aria-expanded={open} onClick={() => setOpen(!open)}><span aria-hidden="true">{open ? "×" : "☰"}</span></button>
     </div>
-  </div><nav id="mobile-navigation" className="mobile-nav" data-open={open} aria-label={locale === "fa" ? "ناوبری موبایل" : "Mobile navigation"} inert={!open}>{links(false)}<ButtonLink href={consultationPath}>{copy.consultation}</ButtonLink></nav></header>;
+  </div><dialog ref={menuRef} id="mobile-navigation" className="mobile-nav" data-open={open} aria-labelledby="mobile-navigation-title" onCancel={() => setOpen(false)} onClick={(event) => {
+    if (event.target !== event.currentTarget) return;
+    const bounds = event.currentTarget.getBoundingClientRect();
+    if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) setOpen(false);
+  }}>
+    <div className="mobile-nav__heading"><h2 id="mobile-navigation-title">{locale === "fa" ? "منوی سایت" : "Explore Jahan Academy"}</h2><button ref={closeRef} className="mobile-nav__close" type="button" aria-label={locale === "fa" ? "بستن منو" : "Close menu"} onClick={() => setOpen(false)}>×</button></div>
+    <nav aria-label={locale === "fa" ? "ناوبری موبایل" : "Mobile navigation"}>{links(false)}
+      <ButtonLink href={`/${locale}/free-consultation?source=mobile-menu`} onClick={() => setOpen(false)}>{locale === "fa" ? "مشاوره رایگان" : "Free consultation"}</ButtonLink>
+      <Link href={consultationPath} onClick={() => setOpen(false)}>{copy.consultation}</Link>
+    </nav>
+  </dialog></header>;
 }
