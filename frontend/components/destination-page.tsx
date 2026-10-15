@@ -62,7 +62,7 @@ export function DestinationPage({ destination: d, locale, universities, relatedD
         <div className={styles.studySnapshot} aria-label={t(`اطلاعات تحصیل در ${d.name.fa}`, `Study facts for ${d.name.en}`)}>
           {([
             [t("هزینه زندگی دانشجویی", "Student living costs"), d.studySnapshot.living[locale]],
-            [t("شهریه سالانه", "Annual tuition"), d.studySnapshot.tuition[locale]],
+            [d.snapshotTuitionLabel?.[locale] ?? t("شهریه سالانه", "Annual tuition"), d.studySnapshot.tuition[locale]],
             [t("امکان کار دانشجویی", "Work while studying"), d.studySnapshot.work[locale]],
             [t("اقامت پس از تحصیل", "Post-study stay"), d.studySnapshot.postStudy[locale]],
           ] as const).map(([label, value]) => <p className={styles.studyFact} key={label}><span>{label}:</span> <strong>{value}</strong></p>)}
@@ -151,6 +151,11 @@ export function DestinationPage({ destination: d, locale, universities, relatedD
       </div>
     </section>
     </div>
+
+    {d.guideSlug && <section className={`${styles.container} ${styles.section}`}>
+      <h2>{t("راهنمای هزینه‌ها و مسیر تحصیل", "Study costs and pathway guide")}</h2>
+      <Link href={`/${locale}/guides/${d.guideSlug}`}>{t(`راهنمای تحصیل و اقامت ${d.name.fa}`, `${d.name.en} study and residence guide`)}</Link>
+    </section>}
 
     <section aria-labelledby="more-destinations-title" className={`${styles.container} ${styles.section} ${styles.more}`}>
       <h2 data-destination-motion="up" id="more-destinations-title">{t("مقصدهای دیگر را کشف کنید", "More Study Destinations to Explore")}</h2>

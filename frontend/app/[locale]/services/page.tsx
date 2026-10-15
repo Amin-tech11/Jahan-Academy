@@ -1,4 +1,5 @@
 import { PanelConsultationCallout } from "@/components/panel-consultation-callout";
+import Link from "next/link";
 import type { Metadata } from "next";
 import { PreparedImage as Image } from "@/components/prepared-image";
 import { notFound } from "next/navigation";
@@ -119,6 +120,8 @@ export default async function ServicesPage({ params }: PageProps) {
                 <h2 id={`${service.id}-title`}>{service.title}</h2>
                 <p>{service.description}</p>
                 <ul>{service.points.map((point) => <li key={point}>{point}</li>)}</ul>
+                {service.id === "assessment" && <Link href={`/${locale}/services/education-consultation`}>{locale === "fa" ? "جزئیات مشاوره مسیر تحصیلی" : "Academic consultation details"}</Link>}
+                {service.id === "documents" && <Link href={`/${locale}/services/document-review`}>{locale === "fa" ? "جزئیات بررسی مدارک" : "Document review details"}</Link>}
               </div>
             </div>
           </section>

@@ -22,12 +22,14 @@ export type Destination = {
   imageLabel: Localized;
   source: string;
   sourceName: string;
+  snapshotTuitionLabel?: Localized;
+  guideSlug?: string;
 };
 
 export const destinations: Destination[] = [
   {
     slug: "canada", name: text("کانادا", "Canada"),
-    studySnapshot: { living: text("از ۱٬۵۰۰ دلار در ماه", "From $1,500 per month"), tuition: text("از حدود ۸ هزار دلار در سال", "From about $8,000 per year"), work: text("۲۰ ساعت در هفته", "20 hours per week"), postStudy: text("تا ۳۶ ماه", "Up to 36 months") },
+    studySnapshot: { living: text("از ۱٬۵۰۰ دلار در ماه", "From $1,500 per month"), tuition: text("از حدود ۸ هزار دلار در سال", "From about $8,000 per year"), work: text("تا ۲۴ ساعت در هفته خارج از دانشگاه در طول ترم، با احراز شرایط مجوز تحصیل", "Up to 24 hours per week off campus during term, subject to study-permit eligibility"), postStudy: text("تا ۳۶ ماه", "Up to 36 months") },
     tagline: text("فصل تازه‌ای از یادگیری، در سرزمین فرصت‌ها", "A new chapter of learning, a world of possibilities"),
     academics: text("از دانشگاه‌های پژوهشی تا کالج‌های کاربردی، مسیرهای گوناگونی برای ادامه تحصیل در کانادا وجود دارد. زبان تدریس، محتوای دوره و امکانات پژوهشی را در وب‌سایت هر دانشگاه بررسی کنید.", "From research universities to applied colleges, Canada offers different routes through higher education. Compare the teaching language, course content and research facilities on each institution’s website."),
     life: text("زندگی دانشجویی در کانادا می‌تواند از یک جمع کوچک در خوابگاه شروع شود؛ جایی که آشنایی با هم‌دانشگاهی‌ها و دسترسی به کلاس و کتابخانه آسان‌تر است. برخی اقامتگاه‌ها اتاق مشترک، آشپزخانه و برنامه غذایی دارند. زندگی بیرون از دانشگاه استقلال بیشتری می‌دهد، اما خرید وسایل، پخت‌وپز و هزینه‌های رفت‌وآمد هم به برنامه روزانه اضافه می‌شود. انجمن دانشجویی دانشگاه می‌تواند برای شناخت گزینه‌های مسکن راهنمای خوبی باشد.", "In Canada, a campus residence can be a starting point for friendships, with classes and the library close by. Some residences offer shared rooms, kitchens and optional meal plans. Living off campus brings more independence, alongside responsibilities such as furnishing a room, cooking and commuting. Your university’s student association can help you explore housing options and settle into everyday student life."),
@@ -51,13 +53,15 @@ export const destinations: Destination[] = [
   },
   {
     slug: "germany", name: text("آلمان", "Germany"),
-    studySnapshot: { living: text("از ۱٬۰۳۰ دلار در ماه", "From $1,030 per month"), tuition: text("از حدود ۳۰۰ دلار در دانشگاه‌های دولتی", "From about $300 at public universities"), work: text("۲۰ ساعت در هفته", "20 hours per week"), postStudy: text("۱۸ ماه", "18 months") },
+    studySnapshot: { living: text("حدود ۹۰۰ تا ۱٬۲۰۰ یورو در ماه؛ بسته به شهر و مسکن", "About EUR 900–1,200 per month, depending on city and housing"), tuition: text("سهم ترمی حدود ۷۰ تا ۴۳۰ یورو؛ شهریه جدا و وابسته به دانشگاه و دوره", "Semester contribution about EUR 70–430; tuition is separate and depends on institution and programme"), work: text("۲۰ ساعت در هفته", "20 hours per week"), postStudy: text("۱۸ ماه", "18 months") },
+    snapshotTuitionLabel: text("شهریه و سهم ترمی", "Tuition & semester contribution"),
+    guideSlug: "germany-study-residence-guide",
     tagline: text("ایده‌های بزرگ، از اینجا آغاز می‌شوند", "Where your next big idea begins"),
     academics: text("دانشگاه‌های پژوهشی و دانشگاه‌های علوم کاربردی، دو مسیر مهم آموزش عالی در آلمان هستند. تناسب مدرک قبلی و زبان موردنیاز هر دوره را پیش از انتخاب بررسی کنید.", "Research universities and universities of applied sciences offer distinct study routes in Germany. Check how your prior qualification and language skills match each course."),
     life: text("در آلمان، زندگی در خوابگاه یا آپارتمان اشتراکی موسوم به «WG» از گزینه‌های رایج دانشجویی است. هم‌خانه شدن فرصتی برای پیدا کردن دوست، تمرین زبان و تقسیم کارهای روزمره فراهم می‌کند. مسکن معمولاً همراه با پذیرش دانشگاه تضمین نمی‌شود، بنابراین جست‌وجو را زود شروع کنید و از دفتر بین‌الملل دانشگاه کمک بگیرید. در کنار درس، می‌توانید زمانی برای ورزش، دیدار دوستان در کافه‌ها و گشت‌وگذار در پارک‌های شهر در نظر بگیرید.", "In Germany, student residences and shared flats, known as WGs, are common housing choices. Sharing a home creates opportunities to make friends, practise the language and share everyday responsibilities. Accommodation is generally not automatic with university admission, so start looking early and ask the international office for guidance. Alongside your studies, make room for sports, meeting friends in cafés and exploring the city’s parks."),
     planning: {
       summary: text("در آلمان، شهریه و سهم خدمات ترمی دو هزینه متفاوت‌اند. برآورد DAAD برای زندگی حدود ۹۰۰ تا ۱۲۰۰ یورو در ماه است؛ اجاره و شهر انتخابی نقش مهمی دارند.", "In Germany, tuition and semester contributions are separate. DAAD estimates living costs at roughly EUR 900–1,200 monthly, with rent and location making a substantial difference."),
-      tuition: text("بسیاری از دوره‌های دولتی شهریه ندارند، اما استثناهای ایالتی، دانشگاهی و رشته‌ای وجود دارد؛ مبلغ دوره خود را بررسی کنید.", "Many public programmes have no tuition, but state, institution and programme exceptions apply; check your own course."),
+      tuition: text("بسیاری از دوره‌های دولتی شهریه ندارند، اما استثناهای ایالتی، دانشگاهی و رشته‌ای وجود دارد. سهم ترمی معمولاً حدود ۷۰ تا ۴۳۰ یورو در هر ترم و جدا از شهریه است؛ مبلغ دوره خود را بررسی کنید.", "Many public programmes have no tuition, but state, institution and programme exceptions apply. Semester contributions are generally about EUR 70–430 per semester, separate from tuition; check your own course."),
       living: text("سهم ترمی، بیمه، خوراک و حمل‌ونقل را کنار اجاره بنویسید؛ پوشش بلیت حمل‌ونقل در سهم ترمی یکسان نیست.", "Budget for semester contributions, insurance, food and transport alongside rent; transport-ticket coverage varies."),
       arrival: text("هزینه منابع درسی و مخارج شروع اقامت را جدا کنید؛ بودجه واقعی زندگی با مبلغ اثبات تمکن الزاماً برابر نیست.", "Keep study materials and arrival costs separate; actual spending and proof-of-funds requirements are not necessarily equal."),
       funding: text("بورسیه‌ها را زود بررسی کنید و پوشش همه مخارج زندگی را به درآمد احتمالی کار دانشجویی وابسته نکنید.", "Research scholarships early; do not depend on prospective student work to cover all living expenses."),
@@ -118,6 +122,7 @@ export const destinations: Destination[] = [
   },
   {
     slug: "netherlands", name: text("هلند", "Netherlands"), tagline: text("نگاهی بین‌المللی به آینده شما", "An international outlook for your future"),
+    guideSlug: "netherlands-study-residence-guide",
     studySnapshot: { living: text("از ۱٬۱۰۰ دلار در ماه", "From $1,100 per month"), tuition: text("از حدود ۱۰ هزار دلار در سال", "From about $10,000 per year"), work: text("۱۶ ساعت در هفته", "16 hours per week"), postStudy: text("۱۲ ماه", "12 months") },
     academics: text("هلند امکان بررسی دوره‌های انگلیسی‌زبان و مسیرهای پژوهشی و کاربردی را فراهم می‌کند. تفاوت نوع دانشگاه و شیوه یادگیری را هنگام انتخاب دوره در نظر بگیرید.", "Explore English-taught programmes and research or applied study routes in the Netherlands. Consider institution type and learning approach when choosing a course."),
     life: text("در هلند، بخش زیادی از زندگی دانشجویی در خود شهر و بیرون از پردیس جریان دارد. انجمن‌های علمی، ورزشی و بین‌المللی مانند ESN فرصت آشنایی با دانشجویان دیگر و شرکت در برنامه‌های جمعی را فراهم می‌کنند. دوچرخه برای مسیرهای کوتاه و قطار برای سفر بین شهرها از گزینه‌های کاربردی‌اند. موزه‌ها، کانال‌ها و فضاهای طبیعی هم انتخاب‌هایی برای اوقات فراغت هستند. به‌دلیل کمبود مسکن دانشجویی، پیدا کردن محل اقامت را به روزهای آخر موکول نکنید.", "In the Netherlands, much of student life takes place in the city rather than on a separate campus. Academic, sports and international associations such as ESN bring students together. Cycling works well for short journeys, while trains connect city centres. Museums, canals and natural spaces offer ways to spend your free time. Student housing is in short supply, so start arranging accommodation well before your arrival."),
