@@ -67,10 +67,6 @@ export function DestinationPage({ destination: d, locale, universities, relatedD
             [t("اقامت پس از تحصیل", "Post-study stay"), d.studySnapshot.postStudy[locale]],
           ] as const).map(([label, value]) => <p className={styles.studyFact} key={label}><span>{label}:</span> <strong>{value}</strong></p>)}
         </div>
-        {d.factSources && <p className={styles.planningNote}>
-          {t("منبع اطلاعات بازبینی‌شده", "Source for reviewed facts")}: {d.factSources.links.map((source, index) => <span key={source.url}>{index > 0 && " · "}<a href={source.url} target="_blank" rel="noopener noreferrer">{source.title}</a></span>)}
-          {" · "}{t("تاریخ بازبینی", "Reviewed")}: <time dateTime={d.factSources.reviewedAt}>{d.factSources.reviewedAt}</time>
-        </p>}
         <div className={styles.actions}><Link className={styles.primary} href={consultation}>
           <span>{t("شروع مسیر با مشاوره", "Start your journey with a")}</span>
           <strong className={styles.primaryEmphasis}>
