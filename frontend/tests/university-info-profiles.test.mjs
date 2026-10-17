@@ -45,7 +45,7 @@ test("every listed university has localized content, its own imagery and the com
 });
 
 test("discipline shares have an auditable population, year and complete numeric distribution", () => {
-  assert.equal(Object.keys(statistics).length, 23);
+  assert.equal(Object.keys(statistics).length, 26);
   for (const [slug, record] of Object.entries(statistics)) {
     assert.ok(Object.hasOwn(universityProfiles, slug), slug);
     assert.ok(record.year && record.basis.fa && record.basis.en && safeUniversityUrl(record.source), slug);
@@ -74,6 +74,9 @@ test("calculation uses each university's own denominator and puts the remainder 
   for (const slug of ["adelaide-university", "unknown", "__proto__", "constructor"]) {
     assert.deepEqual(universityDisciplineData(slug), {});
   }
+  assert.deepEqual(universityDisciplineData("laval-university").topDisciplines.map((d) => d.percentage), [19.8, 15.9, 13, 51.3]);
+  assert.deepEqual(universityDisciplineData("catholic-university-of-the-sacred-heart").topDisciplines.map((d) => d.percentage), [22.2, 13.6, 13.1, 51.2]);
+  assert.deepEqual(universityDisciplineData("polytechnic-university-of-turin").topDisciplines.map((d) => d.percentage), [22.7, 17.6, 11.9, 47.8]);
   assert.equal(westernUniversity.topDisciplines.reduce((sum, d) => sum + d.percentage, 0), 99, "Preserve published Western shares without normalization");
   assert.equal(profiles.find((u) => u.slug === "adelaide-university").foundedYear, 2024);
 });
