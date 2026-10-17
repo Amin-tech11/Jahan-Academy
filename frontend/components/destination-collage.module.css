@@ -1,7 +1,7 @@
 .collage{display:grid;direction:ltr;gap:12px;width:100%;min-width:0;aspect-ratio:1.18;isolation:isolate}
 .tile{position:relative;min-width:0;min-height:0;overflow:hidden;border-radius:20px;background:#f0f2f5}
 .tile img{object-fit:cover}
-.hero{aspect-ratio:1.15;grid-template-columns:1.4fr 1fr;grid-template-rows:1.05fr .85fr}
+.hero{position:relative;aspect-ratio:1.15;grid-template-columns:1.4fr 1fr;grid-template-rows:1.05fr .85fr}
 .hero .tile:first-child{grid-row:span 2;border-radius:24px 24px 24px 54px}
 .hero .tile:nth-child(2) img{object-position:56% center}
 .academics{grid-template-columns:repeat(5,1fr);grid-template-rows:1.6fr 1fr}

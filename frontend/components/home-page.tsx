@@ -85,6 +85,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
         <Image src="/home-hero-campus-v2.png" alt="" fill sizes="100vw" loading="eager" fetchPriority="high" className="home-hero__image" />
       </picture>
       <div className="home-hero__shade" aria-hidden="true" />
+      <div className="public-hero-brand public-hero-brand--mobile" lang="en" dir="ltr" aria-hidden="true">JAHAN ACADEMY</div>
       <HomeHeroChat locale={locale} />
     </div>
 

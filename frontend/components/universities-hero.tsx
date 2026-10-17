@@ -6,6 +6,6 @@ export function UniversitiesHero({ locale = "fa" }: { locale?: "fa" | "en" }) {
     <Image src="/universities/hero/classical-campus.png" alt="" fill sizes="100vw" preload className={styles.image} />
     <div className={styles.overlay} aria-hidden="true" />
     <h1 className="sr-only">{locale === "fa" ? "دانشگاه‌های جهان آکادمی" : "Explore universities with Jahan Academy"}</h1>
-    <div className={styles.wordmark} id="universities-wordmark" dir="ltr">JAHAN ACADEMY</div>
+    <div className={`${styles.wordmark} public-hero-brand`} lang="en" id="universities-wordmark" dir="ltr">JAHAN ACADEMY</div>
   </section>;
 }

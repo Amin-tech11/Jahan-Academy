@@ -64,7 +64,7 @@ export function AboutPage({ locale }: { locale: Locale }) {
       <section className={styles.banner} aria-label={c.label}>
         <Image src="/home-hero-documentary.png" alt={c.imageAlt} fill sizes="100vw" preload />
         <div className={styles.bannerOverlay} />
-        <p className={styles.wordmark} aria-hidden="true">JAHAN ACADEMY</p>
+        <p className={`${styles.wordmark} public-hero-brand`} lang="en" aria-hidden="true">JAHAN ACADEMY</p>
       </section>
       <div className={styles.container}>
         <section className={styles.hero} aria-labelledby="about-title">
