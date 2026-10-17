@@ -45,6 +45,13 @@ class Settings(BaseSettings):
     password_reset_minutes: int = Field(default=30, ge=10, le=120)
     login_max_attempts: int = Field(default=5, ge=3, le=20)
     login_lock_minutes: int = Field(default=15, ge=1, le=1440)
+    login_failure_window_seconds: int = Field(default=900, ge=1, le=86400)
+    auth_rate_window_seconds: int = Field(default=900, ge=1, le=86400)
+    auth_ip_limit: int = Field(default=30, ge=1, le=10000)
+    auth_identifier_limit: int = Field(default=10, ge=1, le=10000)
+    auth_email_identifier_limit: int = Field(default=3, ge=1, le=100)
+    auth_refresh_ip_limit: int = Field(default=120, ge=1, le=10000)
+    auth_refresh_identifier_limit: int = Field(default=60, ge=1, le=10000)
     cookie_secure: bool = False
     frontend_url: str = "http://localhost:3000"
     smtp_host: str = "localhost"

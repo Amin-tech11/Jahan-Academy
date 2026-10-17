@@ -10,6 +10,8 @@ import structlog
 from sqlalchemy.exc import IntegrityError
 
 from app.core.config import Settings
+from app.core.redis import get_redis
+from app.modules.identity.abuse import AuthAbuseControl
 from app.modules.identity.mailer import AuthMailer
 from app.modules.identity.mfa import MfaSecurity
 from app.modules.identity.repository import AccountRecord, AuthRepository, SessionRecord
@@ -40,11 +42,13 @@ class AuthService:
         security: AuthSecurity,
         mailer: AuthMailer,
         settings: Settings,
+        abuse: AuthAbuseControl | None = None,
     ) -> None:
         self._repository = repository
         self._security = security
         self._mailer = mailer
         self._settings = settings
+        self._abuse = abuse if abuse is not None else AuthAbuseControl(get_redis(), settings)
 
     async def register(self, request: RegisterRequest) -> None:
         self._require_email_delivery()
@@ -118,19 +122,12 @@ class AuthService:
             raise self._invalid_credentials()
 
         now = datetime.now(UTC)
+        await self._abuse.check_account("login", account.user.id)
         if account.user.locked_until and account.user.locked_until > now:
-            raise ApplicationError(
-                code="ACCOUNT_LOCKED",
-                message="The account is temporarily locked. Try again later.",
-                status_code=403,
-            )
+            self._security.perform_dummy_password_check(request.password)
+            raise self._invalid_credentials()
         if not self._security.verify_password(account.identity.password_hash, request.password):
-            await self._repository.register_failed_login(
-                account.user,
-                self._settings.login_max_attempts,
-                timedelta(minutes=self._settings.login_lock_minutes),
-            )
-            await self._repository.session.commit()
+            await self._record_mfa_failure(account)
             raise self._invalid_credentials()
         if account.identity.verified_at is None or account.user.status == "pending":
             raise ApplicationError(
@@ -159,6 +156,7 @@ class AuthService:
         if self._security.password_needs_rehash(account.identity.password_hash):
             replacement_hash = self._security.hash_password(request.password)
         await self._repository.register_successful_login(account, replacement_hash)
+        await self._abuse.clear_failures(account.user.id)
         issued = await self._issue_session(account, ip_address, user_agent)
         await self._repository.audit_login(
             user_id=account.user.id,
@@ -194,6 +192,7 @@ class AuthService:
         account = await self._repository.get_account_by_user_id(record.user.id)
         if account is None:
             raise self._invalid_refresh_token()
+        await self._abuse.check_account("refresh", account.user.id)
         record.session.revoked_at = now
         record.session.rotated_at = now
         new_refresh = self._security.new_opaque_token()
@@ -321,6 +320,7 @@ class AuthService:
                 status_code=400,
             )
         await self._repository.revoke_all_user_sessions(account.user.id)
+        await self._abuse.clear_failures(account.user.id)
         await self._repository.session.commit()
 
     async def mfa_status(self, user_id: UUID) -> dict[str, object]:
@@ -351,10 +351,11 @@ class AuthService:
         return account
 
     async def _record_mfa_failure(self, account: AccountRecord) -> None:
+        count, lock_seconds = await self._abuse.register_failure(account.user.id)
         await self._repository.register_failed_login(
             account.user,
-            self._settings.login_max_attempts,
-            timedelta(minutes=self._settings.login_lock_minutes),
+            count,
+            timedelta(seconds=lock_seconds),
         )
         await self._repository.session.commit()
 

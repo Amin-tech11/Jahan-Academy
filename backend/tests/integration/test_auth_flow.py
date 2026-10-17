@@ -47,7 +47,7 @@ def test_complete_email_authentication_lifecycle() -> None:
     app.dependency_overrides[auth_service] = service_override
     email = f"auth-flow-{uuid4().hex}@example.com"
     original_password = "Secure-Password-2026"
-    replacement_password = "Replacement-Password-2027"
+    replacement_password = "🌏" * 128
 
     try:
         with TestClient(app) as client:
@@ -107,12 +107,33 @@ def test_complete_email_authentication_lifecycle() -> None:
             assert reused.status_code == 401
             assert reused.json()["error"]["code"] == "REFRESH_TOKEN_REUSED"
 
+            # Failures persist even though the HTTP request is rejected.
+            for _ in range(5):
+                failed = client.post(
+                    "/api/v1/auth/login", json={"email": email, "password": "wrong"},
+                )
+                assert failed.status_code == 401
+            locked = client.post(
+                "/api/v1/auth/login", json={"email": email, "password": original_password},
+            )
+            assert locked.status_code == 401
+            assert locked.json()["error"]["code"] == "INVALID_CREDENTIALS"
+
             reset_request = client.post(
                 "/api/v1/auth/password-reset-requests",
                 json={"email": email},
             )
             assert reset_request.status_code == 202
             assert mailer.password_reset_token is not None
+
+            blocked_password = client.post(
+                "/api/v1/auth/password-resets",
+                json={"token": mailer.password_reset_token, "newPassword": "passwordpassword"},
+            )
+            assert blocked_password.status_code == 422
+            assert blocked_password.json()["error"]["fieldErrors"]["password"] == [
+                "PASSWORD_COMMON_OR_COMPROMISED"
+            ]
 
             reset = client.post(
                 "/api/v1/auth/password-resets",

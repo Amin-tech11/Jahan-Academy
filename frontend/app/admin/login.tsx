@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { newPasswordError, passwordPolicyHint } from "../../lib/password-policy";
 import {
   acceptAdminSession,
   adminRequest,
@@ -35,6 +36,8 @@ export default function AdminLogin({
         acceptAdminSession(session);
         onLogin({ ...(session.user as RecordData), mfaEnrollmentRequired: session.mfaEnrollmentRequired });
       } else if (mode === "reset") {
+        const validationError = newPasswordError(String(data.get("password") ?? ""));
+        if (validationError) throw new Error(validationError);
         await adminRequest("/auth/password-resets", "POST", {
           token: data.get("token"),
           newPassword: data.get("password"),
@@ -116,6 +119,7 @@ export default function AdminLogin({
               {notice}
             </div>
           )}
+          {mode === "reset" && <p>{passwordPolicyHint}</p>}
           <form onSubmit={submit} aria-busy={busy}>
             {mode === "login" && (
               <label htmlFor="adm-username">
@@ -179,8 +183,6 @@ export default function AdminLogin({
                     type={visible ? "text" : "password"}
                     dir="ltr"
                     required
-                    minLength={mode === "reset" ? 12 : 1}
-                    maxLength={128}
                     autoComplete={
                       mode === "reset" ? "new-password" : "current-password"
                     }

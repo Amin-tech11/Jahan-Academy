@@ -7,9 +7,12 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, Header, Query, Request, Response, status
 
 from app.core.config import Settings, get_settings
+from app.modules.identity.abuse import AuthAbuseControl
 from app.modules.identity.authorization import AuthorizationContext
 from app.modules.identity.dependencies import (
     CurrentUser,
+    auth_abuse,
+    auth_security,
     auth_service,
     authorization_context,
     csrf_protection,
@@ -44,12 +47,66 @@ from app.modules.identity.schemas import (
     TokenEnvelope,
     UserEnvelope,
 )
+from app.modules.identity.security import AuthSecurity
 from app.modules.identity.service import AuthService, IssuedTokens
 from app.modules.identity.staff_service import StaffManagementService
 from app.shared.exceptions import ApplicationError
 
 router = APIRouter()
-auth_router = APIRouter(prefix="/auth", tags=["identity"])
+
+
+async def auth_request_limit(
+    request: Request,
+    abuse: Annotated[AuthAbuseControl, Depends(auth_abuse)],
+    security: Annotated[AuthSecurity, Depends(auth_security)],
+    settings: Annotated[Settings, Depends(get_settings)],
+) -> None:
+    if request.method != "POST" or request.url.path.endswith("/logout"):
+        return
+    endpoint = request.url.path.removeprefix("/api/v1/auth/")
+    operation = endpoint
+    identifier = "invalid"
+    if endpoint.startswith("mfa/"):
+        operation = "mfa"
+        authorization = request.headers.get("authorization", "")
+        if authorization.lower().startswith("bearer "):
+            try:
+                identifier = str(security.decode_access_token(authorization[7:]).user_id)
+            except ApplicationError:
+                pass  # Rate limiting cannot authenticate an invalid bearer token.
+    elif endpoint == "refresh":
+        identifier = request.cookies.get(settings.refresh_cookie_name, "invalid")
+    else:
+        try:
+            body = await request.json()
+        except ValueError:
+            body = None
+        if isinstance(body, dict):
+            if endpoint in {
+                "login",
+                "register",
+                "password-reset-requests",
+                "email-verification-requests",
+            }:
+                value = body.get("email") or body.get("username")
+                if isinstance(value, str) and len(value) <= 320:
+                    identifier = value.strip().casefold()
+            else:
+                value = body.get("token")
+                if isinstance(value, str) and len(value) <= 256:
+                    identifier = value
+        if endpoint in {"password-reset-requests", "email-verification-requests"}:
+            operation = "email"
+    await abuse.check_request(
+        operation,
+        request.client.host if request.client else "unknown",
+        identifier,
+    )
+
+
+auth_router = APIRouter(
+    prefix="/auth", tags=["identity"], dependencies=[Depends(auth_request_limit)]
+)
 users_router = APIRouter(prefix="/users", tags=["identity"])
 staff_router = APIRouter(prefix="/admin/staff", tags=["staff-administration"])
 

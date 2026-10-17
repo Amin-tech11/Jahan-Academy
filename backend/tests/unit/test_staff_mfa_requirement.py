@@ -9,6 +9,7 @@ from fastapi import Request
 from fastapi.security import HTTPAuthorizationCredentials
 
 from app.core.config import Settings
+from app.modules.identity.abuse import AuthAbuseControl
 from app.modules.identity.dependencies import current_user
 from app.modules.identity.repository import AccountRecord, AuthRepository
 from app.modules.identity.schemas import LoginRequest
@@ -52,7 +53,9 @@ def auth() -> tuple[AuthService, Mock, AccountRecord]:
     repository.create_session.return_value = SimpleNamespace(id=uuid4())
     repository.requires_staff_mfa.return_value = True
     repository.mfa_record.return_value = None
-    return AuthService(repository, security, Mock(), settings), repository, account
+    abuse = AsyncMock(spec=AuthAbuseControl)
+    abuse.register_failure.return_value = (1, 0)
+    return AuthService(repository, security, Mock(), settings, abuse), repository, account
 
 
 @pytest.mark.parametrize("identifier", [{"username": "staff"}, {"email": "staff@example.com"}])

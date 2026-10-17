@@ -78,7 +78,7 @@ def test_opaque_tokens_are_random_and_only_hashes_are_stable(security: AuthSecur
 
 @pytest.mark.parametrize(
     "password",
-    ["short", "all-lowercase-2026", "ALL-UPPERCASE-2026", "NoDigitsAllowed"],
+    ["short", "x" * 14, "x" * 129, "passwordpassword", "123456789012345"],
 )
 def test_weak_passwords_are_rejected(password: str) -> None:
     with pytest.raises(ApplicationError) as caught:
@@ -86,5 +86,16 @@ def test_weak_passwords_are_rejected(password: str) -> None:
     assert caught.value.code == "VALIDATION_ERROR"
 
 
-def test_strong_password_is_accepted() -> None:
-    validate_password_strength("Jahan-Academy-2026")
+@pytest.mark.parametrize(
+    "password",
+    [
+        "Jahan-Academy-2026",
+        "all-lowercase-2026",
+        "ALL-UPPERCASE-2026",
+        "یک عبارت فارسی طولانی و ویژه",
+        "  unique long passphrase  ",
+        "🌏" * 128,
+    ],
+)
+def test_long_unique_password_is_accepted(password: str) -> None:
+    validate_password_strength(password)

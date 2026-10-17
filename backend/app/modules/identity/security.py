@@ -2,9 +2,12 @@ from __future__ import annotations
 
 import hashlib
 import hmac
+import json
 import secrets
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
+from functools import lru_cache
+from pathlib import Path
 from uuid import UUID, uuid4
 
 import jwt
@@ -117,16 +120,41 @@ class AuthSecurity:
             ) from exc
 
 
+@lru_cache(maxsize=1)
+def _common_password_hashes() -> frozenset[str]:
+    try:
+        document = json.loads(
+            Path(__file__).with_name("password_blocklist.json").read_text(encoding="utf-8")
+        )
+        values = document["hashes"]
+        if (
+            not isinstance(values, list)
+            or len(values) < 10000
+            or any(
+                not isinstance(value, str)
+                or len(value) != 64
+                or any(char not in "0123456789abcdef" for char in value)
+                for value in values
+            )
+        ):
+            raise ValueError("Invalid password blocklist")
+        return frozenset(values)
+    except (OSError, ValueError, KeyError, TypeError) as error:
+        raise ApplicationError(
+            "PASSWORD_POLICY_UNAVAILABLE",
+            "Password validation is temporarily unavailable.",
+            503,
+        ) from error
+
+
 def validate_password_strength(password: str) -> None:
     field_errors: dict[str, list[str]] = {}
-    if not 12 <= len(password) <= 128:
+    if not 15 <= len(password) <= 128:
         field_errors.setdefault("password", []).append("PASSWORD_LENGTH")
-    if not any(character.islower() for character in password):
-        field_errors.setdefault("password", []).append("PASSWORD_LOWERCASE_REQUIRED")
-    if not any(character.isupper() for character in password):
-        field_errors.setdefault("password", []).append("PASSWORD_UPPERCASE_REQUIRED")
-    if not any(character.isdigit() for character in password):
-        field_errors.setdefault("password", []).append("PASSWORD_DIGIT_REQUIRED")
+    elif (
+        hashlib.sha256(password.casefold().encode("utf-8")).hexdigest() in _common_password_hashes()
+    ):
+        field_errors.setdefault("password", []).append("PASSWORD_COMMON_OR_COMPROMISED")
     if field_errors:
         raise ApplicationError(
             code="VALIDATION_ERROR",

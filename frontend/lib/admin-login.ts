@@ -18,7 +18,7 @@ export function loginPayload(
     !username ||
     username.length > 320 ||
     !body.password ||
-    body.password.length > 128
+    Array.from(body.password).length > 128
   )
     return null;
   const localAlias =

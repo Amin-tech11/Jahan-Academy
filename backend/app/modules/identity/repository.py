@@ -285,17 +285,16 @@ class AuthRepository:
         return AccountRecord(user=user, identity=identity, profile=profile)
 
     async def register_failed_login(
-        self, user: UserModel, maximum: int, lock_for: timedelta
+        self, user: UserModel, failure_count: int, lock_for: timedelta
     ) -> None:
         now = datetime.now(UTC)
         await self.session.execute(
             text("""UPDATE users SET
-                 locked_until = CASE WHEN failed_login_count + 1 >= :maximum
-                   THEN :locked_until ELSE locked_until END,
-                 failed_login_count = CASE WHEN failed_login_count + 1 >= :maximum
-                   THEN 0 ELSE failed_login_count + 1 END,
+                 locked_until = :locked_until,
+                 failed_login_count = :failure_count,
                  updated_at = :now WHERE id = :id"""),
-            {"id": user.id, "maximum": maximum, "locked_until": now + lock_for, "now": now},
+            {"id": user.id, "failure_count": 0 if lock_for else failure_count,
+             "locked_until": now + lock_for if lock_for else None, "now": now},
         )
         await self.session.refresh(user)
 

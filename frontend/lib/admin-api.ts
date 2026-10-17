@@ -77,6 +77,10 @@ export async function adminRequest(
       503: "سرویس موردنیاز موقتاً در دسترس نیست؛ کمی بعد تلاش کنید.",
     };
     const codes: Record<string, string> = {
+      PASSWORD_LENGTH: "رمز جدید باید بین ۱۵ و ۱۲۸ کاراکتر باشد.",
+      PASSWORD_COMMON_OR_COMPROMISED: "این رمز رایج است؛ یک عبارت منحصربه‌فرد انتخاب کنید.",
+      PASSWORD_POLICY_UNAVAILABLE: "بررسی امنیت رمز موقتاً در دسترس نیست؛ کمی بعد تلاش کنید.",
+      AUTH_LIMITER_UNAVAILABLE: "ورود موقتاً در دسترس نیست؛ کمی بعد تلاش کنید.",
       MFA_REQUIRED: "کد اپ احراز هویت یا یکی از کدهای بازیابی را وارد کنید.",
       MFA_INVALID: "کد احراز هویت معتبر نیست یا قبلاً مصرف شده است.",
       MFA_ENROLLMENT_REQUIRED: "پیش از دسترسی به پنل، ورود دومرحله‌ای را فعال کنید.",
@@ -88,7 +92,7 @@ export async function adminRequest(
       ? Object.entries(payload.error.fieldErrors)
           .map(
             ([field, values]) =>
-              `${field}: ${Array.isArray(values) ? values.join("، ") : values}`,
+              `${field}: ${Array.isArray(values) ? values.map((value) => codes[String(value)] ?? value).join("، ") : values}`,
           )
           .join(" · ")
       : "";

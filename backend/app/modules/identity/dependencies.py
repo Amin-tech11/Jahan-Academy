@@ -11,6 +11,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.dependencies import database_session
 from app.core.config import Settings, get_settings
+from app.core.redis import get_redis
+from app.modules.identity.abuse import AuthAbuseControl
 from app.modules.identity.authorization import (
     AuthorizationContext,
     AuthorizationRepository,
@@ -49,15 +51,23 @@ def auth_security() -> AuthSecurity:
     return AuthSecurity(get_settings())
 
 
+def auth_abuse(
+    settings: Annotated[Settings, Depends(get_settings)],
+) -> AuthAbuseControl:
+    return AuthAbuseControl(get_redis(), settings)
+
+
 def auth_service(
     session: Annotated[AsyncSession, Depends(database_session)],
     settings: Annotated[Settings, Depends(get_settings)],
+    abuse: Annotated[AuthAbuseControl, Depends(auth_abuse)],
 ) -> AuthService:
     return AuthService(
         repository=AuthRepository(session),
         security=auth_security(),
         mailer=SmtpAuthMailer(settings),
         settings=settings,
+        abuse=abuse,
     )
 
 
