@@ -1,0 +1,14 @@
+title = "Jahan Academy secret scanning"
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "generic-api-key"
+
+[[rules.allowlists]]
+description = "Public RFC 6238/4226 test vector, never a real enrollment credential"
+condition = "AND"
+regexTarget = "secret"
+regexes = ['''^GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ$''']
+paths = ['''^frontend/browser-tests/mfa-enrollment\.spec\.ts$''']
