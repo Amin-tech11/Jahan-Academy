@@ -111,3 +111,9 @@
 @media (max-width: 1000px) { .countryGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 600px) { .countryGrid { grid-template-columns: 1fr; } .countryPhoto { height: 200px; } }
 @media (prefers-reduced-motion: reduce) { .countryPhoto img { transition: none; } }
+
+@media (max-width: 767px) {
+  .navigation { position: static; }
+  .navigationTrack { display: none; }
+  .navigation h2 { margin-bottom: 0; }
+}

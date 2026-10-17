@@ -154,3 +154,9 @@
   .page { padding-bottom: 32px; }
 }
 @media (prefers-reduced-motion: reduce) { .page * { transition: none !important; scroll-behavior: auto !important; } }
+
+@media (max-width: 767px) {
+  .navigation { position: static; }
+  .sectionNav { display: none; }
+  .navigation h2 { margin-bottom: 0; }
+}

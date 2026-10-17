@@ -92,3 +92,8 @@
   .services-cta .services-cta__photo { min-height: 0; }
   .services-cta__layout[data-motion="ready"] > :is(.services-cta__photo, .services-cta__card) { opacity: 1; transform: none; }
 }
+
+@media (max-width: 767px) {
+  .services-intro { position: static; }
+  .services-navigation { display: none; }
+}
