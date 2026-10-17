@@ -137,7 +137,12 @@ class MediaService:
             await self._scanner.scan(content)
             target_key = f"public/{asset_id}/{Path(row['object_key']).name}"
             await self._storage.promote(
-                row["bucket"], row["object_key"], self._settings.media_public_bucket, target_key
+                row["bucket"],
+                row["object_key"],
+                self._settings.media_public_bucket,
+                target_key,
+                content,
+                result.detected_mime_type,
             )
             ready = await self._repository.mark_ready(
                 asset_id,

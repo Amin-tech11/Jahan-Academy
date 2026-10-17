@@ -50,9 +50,16 @@ class FakeStorage:
         return content
 
     async def promote(
-        self, source_bucket: str, source_key: str, target_bucket: str, target_key: str
+        self,
+        source_bucket: str,
+        source_key: str,
+        target_bucket: str,
+        target_key: str,
+        content: bytes,
+        content_type: str,
     ) -> None:
-        self.objects[(target_bucket, target_key)] = self.objects.pop((source_bucket, source_key))
+        self.objects[(target_bucket, target_key)] = content, content_type
+        self.objects.pop((source_bucket, source_key), None)
 
     async def delete(self, bucket: str, object_key: str) -> None:
         self.objects.pop((bucket, object_key), None)
@@ -61,6 +68,18 @@ class FakeStorage:
         del expires_seconds
         assert (bucket, object_key) in self.objects
         return f"https://cdn.test/{bucket}/{object_key}"
+
+
+class ReplacingScanner(DisabledMalwareScanner):
+    """Simulate a still-valid upload URL overwriting quarantine during the scan."""
+
+    def __init__(self, storage: FakeStorage) -> None:
+        self.storage = storage
+
+    async def scan(self, content: bytes) -> None:
+        assert self.storage.pending is not None
+        bucket, key, mime_type = self.storage.pending
+        self.storage.objects[(bucket, key)] = b"unscanned replacement", mime_type
 
 
 def _sync_database_url() -> str:
@@ -114,7 +133,7 @@ def test_media_upload_management_and_public_delivery() -> None:
         return storage
 
     def scanner_override() -> DisabledMalwareScanner:
-        return DisabledMalwareScanner()
+        return ReplacingScanner(storage)
 
     app.dependency_overrides[authorization_context] = actor_override
     app.dependency_overrides[media_storage] = storage_override
@@ -146,6 +165,8 @@ def test_media_upload_management_and_public_delivery() -> None:
             assert confirmed.json()["data"]["uploadStatus"] == "ready"
             assert confirmed.json()["data"]["scanStatus"] == "clean"
             assert confirmed.json()["data"]["width"] == 120
+            assert any(stored == (content, "image/png") for stored in storage.objects.values())
+            assert all(stored[0] != b"unscanned replacement" for stored in storage.objects.values())
             etag = confirmed.headers["etag"]
 
             listing = client.get(
