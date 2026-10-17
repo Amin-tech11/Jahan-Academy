@@ -110,11 +110,13 @@ def test_complete_email_authentication_lifecycle() -> None:
             # Failures persist even though the HTTP request is rejected.
             for _ in range(5):
                 failed = client.post(
-                    "/api/v1/auth/login", json={"email": email, "password": "wrong"},
+                    "/api/v1/auth/login",
+                    json={"email": email, "password": "wrong"},
                 )
                 assert failed.status_code == 401
             locked = client.post(
-                "/api/v1/auth/login", json={"email": email, "password": original_password},
+                "/api/v1/auth/login",
+                json={"email": email, "password": original_password},
             )
             assert locked.status_code == 401
             assert locked.json()["error"]["code"] == "INVALID_CREDENTIALS"

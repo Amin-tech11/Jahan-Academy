@@ -293,8 +293,12 @@ class AuthRepository:
                  locked_until = :locked_until,
                  failed_login_count = :failure_count,
                  updated_at = :now WHERE id = :id"""),
-            {"id": user.id, "failure_count": 0 if lock_for else failure_count,
-             "locked_until": now + lock_for if lock_for else None, "now": now},
+            {
+                "id": user.id,
+                "failure_count": 0 if lock_for else failure_count,
+                "locked_until": now + lock_for if lock_for else None,
+                "now": now,
+            },
         )
         await self.session.refresh(user)
 
