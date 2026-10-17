@@ -2,6 +2,7 @@ import "@/app/home.css";
 import { PreparedImage as Image } from "@/components/prepared-image";
 import { HomeFeatureIcon } from "@/components/home-feature-icon";
 import { HomeHeroChat } from "@/components/home-hero-chat";
+import heroImageAssets from "@/lib/hero-image-assets.json";
 import { HomeMotion } from "@/components/home-motion";
 import { HomeConsultation } from "@/components/home-consultation";
 import { HomeFaq } from "@/components/home-faq";
@@ -79,7 +80,10 @@ export async function HomePage({ locale }: { locale: Locale }) {
   return <SiteShell locale={locale}><HomeMotion>
     <h1 className="sr-only">{locale === "fa" ? "جهان آکادمی؛ راهنمای مسیر تحصیل بین‌المللی" : "Jahan Academy: guidance for your international study journey"}</h1>
     <div className={`home-hero home-hero--${locale}`}>
-      <Image src="/home-hero-campus-v2.png" alt="" fill sizes="100vw" preload className="home-hero__image" />
+      <picture>
+        <source media="(max-width: 767px)" sizes="100vw" srcSet={heroImageAssets["/home-hero-mobile-campus.webp"].map(({ url, width }) => `${url} ${width}w`).join(", ")} />
+        <Image src="/home-hero-campus-v2.png" alt="" fill sizes="100vw" loading="eager" fetchPriority="high" className="home-hero__image" />
+      </picture>
       <div className="home-hero__shade" aria-hidden="true" />
       <HomeHeroChat locale={locale} />
     </div>

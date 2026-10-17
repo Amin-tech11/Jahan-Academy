@@ -10,7 +10,7 @@ const sharp = createRequire(require.resolve("next/package.json"))("sharp");
 const root = fileURLToPath(new URL("../", import.meta.url));
 const publicDir = path.join(root, "public");
 const sources = new Set([
-  "/home-hero-campus-v2.png", "/services-hero-interview.png",
+  "/home-hero-campus-v2.png", "/home-hero-mobile-campus.webp", "/services-hero-interview.png",
   "/home-hero-documentary.png", "/blog/library-hero.webp",
   "/universities/hero/classical-campus.png", "/destinations/world-map-hero-wide.png",
   "/free-consultation.webp", "/home-trust-office-meeting.webp", "/brand/jahan-academy-official.png", "/assessment-hero-office.webp", "/home-trust-consultation.png",

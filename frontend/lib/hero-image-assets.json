@@ -1864,6 +1864,23 @@
       "bytes": 162636
     }
   ],
+  "/home-hero-mobile-campus.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/14f77bc88fe885bb-480.webp",
+      "bytes": 73084
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/14f77bc88fe885bb-768.webp",
+      "bytes": 162162
+    },
+    {
+      "width": 1122,
+      "url": "/hero-assets/14f77bc88fe885bb-1122.webp",
+      "bytes": 339174
+    }
+  ],
   "/home-trust-consultation.png": [
     {
       "width": 480,
