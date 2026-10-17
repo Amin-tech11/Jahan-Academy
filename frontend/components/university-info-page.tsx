@@ -4,7 +4,7 @@ import Link from "next/link";
 import { SiteShell } from "@/components/site-shell";
 import { UniversityGallery, UniversityTabs } from "@/components/university-info-interactive";
 import type { Locale } from "@/lib/site-content";
-import { safeUniversityUrl, universityIdentityLocation, universityMapEmbedUrl, type UniversityInfo, type UniversityOffering } from "@/lib/university-info-model";
+import { universityIdentityLocation, universityMapEmbedUrl, type UniversityInfo, type UniversityOffering } from "@/lib/university-info-model";
 import styles from "./university-info.module.css";
 
 function Pin() {
@@ -66,7 +66,6 @@ function CampusLifeIcon({ index }: { index: number }) {
 
 export function UniversityInfoPage({ university: u, locale }: { university: UniversityInfo; locale: Locale }) {
   const fa = locale === "fa";
-  const website = safeUniversityUrl(u.websiteUrl);
   const identityLocation = universityIdentityLocation(u);
   const offerings: (UniversityInfo["features"][number] & Partial<Pick<UniversityOffering, "icon" | "status">>)[] = u.offerings ?? u.features;
   const facts = [
@@ -124,7 +123,7 @@ export function UniversityInfoPage({ university: u, locale }: { university: Univ
     <header className={styles.identity} dir="ltr" lang="en">
       <div className={styles.logo}>{u.logo ? <Image src={u.logo} alt={`${u.englishName} logo`} width={64} height={64} /> : <span aria-hidden="true">{u.englishName.split(" ").slice(0, 2).map((word) => word[0]).join("")}</span>}</div>
       <div className={styles.identityText}>
-        <h1>{website ? <a className={styles.nameLink} href={website} target="_blank" rel="noopener noreferrer">{u.englishName}</a> : u.englishName}</h1>
+        <h1>{u.englishName}</h1>
         <div className={styles.location}>
           <span className={styles.cityLocation}>{identityLocation.flag && <Image src={identityLocation.flag} alt={u.country.en} width={24} height={24} />}<span>{identityLocation.label}</span></span>
           {identityLocation.address && <span className={styles.streetAddress}><Pin /><span>{identityLocation.address}</span></span>}
@@ -142,10 +141,6 @@ export function UniversityInfoPage({ university: u, locale }: { university: Univ
             <div className={styles.disciplineLabel}><span>{discipline.name[locale]}</span><span>{discipline.percentage.toLocaleString(locale)}{fa ? "٪" : "%"}</span></div>
             <meter min={0} max={100} value={discipline.percentage} aria-label={discipline.name[locale]}>{discipline.percentage}%</meter>
           </li>)}</ul> : <p className={styles.disciplinesEmpty}>{fa ? "آمار قابل استناد برای محاسبه درصد رشته‌های این دانشگاه هنوز در دسترس نیست." : "Verified statistics for this university's discipline percentages are not yet available."}</p>}
-          {u.disciplineSource && <div className={styles.disciplineSource}>
-            <p><b>{u.disciplineSource.year}</b> · {u.disciplineSource.basis[locale]}</p>
-            {[u.disciplineSource.url, ...(u.disciplineSource.supportingUrls ?? [])].map((url, index) => safeUniversityUrl(url) && <a key={url} href={url} target="_blank" rel="noopener noreferrer">{fa ? (index ? `منبع تکمیلی ${index}` : "منبع آمار") : (index ? `Supporting source ${index}` : "Statistics source")} ↗</a>)}
-          </div>}
         </section>
       </aside>
     </div>
