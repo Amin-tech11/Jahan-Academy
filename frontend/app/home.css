@@ -313,11 +313,12 @@
 .home-hero-chat__typing i { width: .3rem; height: .3rem; border-radius: 50%; background: var(--color-brand-900); animation: home-chat-typing 1.3s ease-in-out infinite; }
 .home-hero-chat__typing i:nth-of-type(2) { animation-delay: .15s; }
 .home-hero-chat__typing i:nth-of-type(3) { animation-delay: .3s; }
-.home-hero-chat__footer { display: flex; align-items: center; justify-content: space-between; gap: .75rem; margin: 0 1rem .8rem; padding: .7rem .9rem; min-height: 44px; border: 1px solid #b7c9e2; border-radius: .6rem; color: #123b78; font-size: .875rem; font-weight: 700; line-height: 1.7; background: #edf3fb; cursor: pointer; transition: background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease; }
+.home-hero-chat__footer { display: flex; align-items: center; justify-content: space-between; gap: .75rem; margin: 0 1rem .8rem; padding: .7rem .9rem; min-height: 44px; border: 1px solid #123b78; border-radius: .6rem; color: #fff; font-size: .875rem; font-weight: 700; line-height: 1.7; background: #123b78; cursor: pointer; transition: background-color 160ms ease, border-color 160ms ease; }
 .home-hero-chat__arrow { flex: 0 0 auto; transition: transform 180ms ease; }
-a.home-hero-chat__footer:is(:hover, :focus-visible) { color: #123b78; background: #dae7f8; border-color: #123b78; box-shadow: 0 4px 12px rgb(18 59 120 / 14%); transform: translateY(-2px); text-decoration: none; }
-.home-hero-chat[dir="rtl"] .home-hero-chat__footer:is(:hover, :focus-visible) .home-hero-chat__arrow { transform: translateX(-4px); }
-.home-hero-chat[dir="ltr"] .home-hero-chat__footer:is(:hover, :focus-visible) .home-hero-chat__arrow { transform: translateX(4px); }
+a.home-hero-chat__footer:is(:hover, :focus-visible) { color: #fff; background: #0e2f60; border-color: #0e2f60; box-shadow: none; transform: none; text-decoration: none; }
+a.home-hero-chat__footer:active { background: #0a244c; border-color: #0a244c; }
+.home-hero-chat[dir="rtl"] .home-hero-chat__footer:is(:hover, :focus-visible) .home-hero-chat__arrow { transform: translateX(-2px); }
+.home-hero-chat[dir="ltr"] .home-hero-chat__footer:is(:hover, :focus-visible) .home-hero-chat__arrow { transform: translateX(2px); }
 @media (prefers-reduced-motion: reduce) { .home-hero-chat__footer, .home-hero-chat__arrow { transition: none; } .home-hero-chat .home-hero-chat__footer:is(:hover, :focus-visible), .home-hero-chat .home-hero-chat__footer:is(:hover, :focus-visible) .home-hero-chat__arrow { transform: none; } }
 .home-hero-chat[data-chat-suspended="true"] * { animation-play-state: paused; }
 
