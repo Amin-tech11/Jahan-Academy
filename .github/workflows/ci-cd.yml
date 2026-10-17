@@ -297,6 +297,8 @@ jobs:
         env:
           DOCKER_PRODUCTION_TEST: "1"
         run: |
+          sudo apt-get update -qq
+          sudo apt-get install --yes --no-install-recommends age
           python3 -m unittest discover -s deploy/production -p 'test_*.py' -v
           for file in deploy/production/*.sh; do bash -n "$file"; done
 
