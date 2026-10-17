@@ -2,6 +2,7 @@ import "@/app/home.css";
 import { PreparedImage as Image } from "@/components/prepared-image";
 import { HomeFeatureIcon } from "@/components/home-feature-icon";
 import { HomeHeroChat } from "@/components/home-hero-chat";
+import heroImageAssets from "@/lib/hero-image-assets.json";
 import { HomeMotion } from "@/components/home-motion";
 import { HomeConsultation } from "@/components/home-consultation";
 import { HomeFaq } from "@/components/home-faq";
@@ -79,8 +80,12 @@ export async function HomePage({ locale }: { locale: Locale }) {
   return <SiteShell locale={locale}><HomeMotion>
     <h1 className="sr-only">{locale === "fa" ? "جهان آکادمی؛ راهنمای مسیر تحصیل بین‌المللی" : "Jahan Academy: guidance for your international study journey"}</h1>
     <div className={`home-hero home-hero--${locale}`}>
-      <Image src="/home-hero-campus-v2.png" alt="" fill sizes="100vw" preload className="home-hero__image" />
+      <picture>
+        <source media="(max-width: 767px)" sizes="100vw" srcSet={heroImageAssets["/home-hero-mobile-campus.webp"].map(({ url, width }) => `${url} ${width}w`).join(", ")} />
+        <Image src="/home-hero-campus-v2.png" alt="" fill sizes="100vw" loading="eager" fetchPriority="high" className="home-hero__image" />
+      </picture>
       <div className="home-hero__shade" aria-hidden="true" />
+      <div className="public-hero-brand public-hero-brand--mobile" lang="en" dir="ltr" aria-hidden="true">JAHAN ACADEMY</div>
       <HomeHeroChat locale={locale} />
     </div>
 
@@ -150,10 +155,10 @@ export async function HomePage({ locale }: { locale: Locale }) {
         media={<div className="home-process__media"><Image src={processImages[index]} alt="" fill sizes="(max-width: 1199px) 90vw, 40vw" /></div>} />)}</HomeJourneyProgress>
     </div></section>
 
-    <section className="home-section" aria-labelledby="home-articles-title"><div className="shell">
+    {visibleArticles.length > 0 && <section className="home-section" aria-labelledby="home-articles-title"><div className="shell">
       <h2 id="home-articles-title" className="home-destinations__title" dir={locale === "fa" ? "rtl" : "ltr"}><Link href={localPath(locale, "/articles")}>{locale === "fa" ? "خبر ها" : "News"}<svg className="home-destinations__title-arrow" aria-hidden="true" width="14" height="16" viewBox="0 0 14 16" fill="currentColor"><path d="M1 8 12 1v14L1 8Z" /></svg></Link></h2>
       <HomeNewsTicker items={visibleArticles} locale={locale} />
-    </div></section>
+    </div></section>}
 
     <section className="home-section home-section--soft" aria-labelledby="home-faq-title"><div className="shell home-faq__grid">
       <div className="home-faq__intro"><h2 id="home-faq-title">{locale === "fa" ? "سوالات متداول" : "Frequently Asked Questions"}</h2></div>

@@ -52,7 +52,11 @@ def status() -> dict[str, object]:
     except (ValueError, KeyError, TypeError):
         result["services"] = "unavailable"
     now = datetime.now(UTC).timestamp()
-    backups = list((ROOT / "backups").glob("jahan-*.dump"))
+    backups = [
+        path for path in (ROOT / "backups").glob("jahan-*.dump.age")
+        if path.stat().st_size > 0 and path.with_suffix(path.suffix + ".sha256").is_file()
+    ]
+    result["backup_encrypted"] = bool(backups)
     result["backup_age_hours"] = (
         round((now - max(p.stat().st_mtime for p in backups)) / 3600, 2)
         if backups

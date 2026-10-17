@@ -47,11 +47,12 @@ for (const locale of ["fa", "en"]) {
         expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
       }
       await page.goto(`/${locale}`, { waitUntil: "domcontentloaded" });
-      const chat = page.locator(".home-hero-chat__body");
-      expect(await chat.evaluate(node => node.scrollHeight <= node.clientHeight + 1)).toBe(true);
-      const chatBounds = await chat.boundingBox();
-      const actionBounds = await page.locator(".home-hero-chat__footer").boundingBox();
-      expect(actionBounds!.y).toBeGreaterThanOrEqual(chatBounds!.y + chatBounds!.height - 1);
+      await expect(page.locator(".home-hero-chat")).toBeHidden();
+      const hero = page.locator(".home-hero");
+      const heroImage = hero.locator(".home-hero__image");
+      await expect(heroImage).toBeVisible();
+      expect(await hero.evaluate(node => node.getBoundingClientRect().height)).toBeGreaterThanOrEqual(320);
+      await expect(heroImage).toHaveAttribute("src", /home-hero-campus-v2|hero-assets/);
       const columns = await page.locator(".home-destinations").evaluate(node => getComputedStyle(node).gridTemplateColumns.split(" ").length);
       expect(columns).toBe(width < 600 ? 1 : width < 1024 ? 2 : 3);
       expect(await page.locator(".home-services").evaluate(node => getComputedStyle(node).gridTemplateColumns.split(" ").length)).toBe(width < 600 ? 1 : 2);
@@ -75,6 +76,7 @@ for (const locale of ["fa", "en"]) {
     await expect(first.locator("p")).toBeHidden();
     for (const width of [1280, 1440, 1920]) {
       await page.setViewportSize({ width, height: 1000 });
+      await expect(page.locator(".home-hero-chat")).toBeVisible();
       await expect(page.locator(".home-process__toggle")).toHaveCount(0);
       await expect(page.locator(".home-process__detail:visible")).toHaveCount(13);
       await expect(page.locator(".home-process__media:visible")).toHaveCount(13);

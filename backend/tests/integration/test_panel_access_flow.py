@@ -9,6 +9,7 @@ from fastapi.testclient import TestClient
 
 from app.main import app
 from app.modules.identity.dependencies import auth_security
+from tests.integration.staff_mfa import login_enrolled_staff
 from tests.integration.test_admin_user_management_flow import _cleanup, _seed_super_admin
 
 pytestmark = pytest.mark.skipif(
@@ -47,9 +48,7 @@ def test_real_sessions_follow_grants_revocations_and_super_admin_protection() ->
         with TestClient(app) as client:
             tokens = {}
             for user_id, email in emails.items():
-                result = client.post(
-                    "/api/v1/auth/login", json={"email": email, "password": password}
-                )
+                result = login_enrolled_staff(client, {"email": email}, password)
                 assert result.status_code == 200, result.text
                 tokens[user_id] = {
                     "Authorization": f"Bearer {result.json()['data']['accessToken']}"

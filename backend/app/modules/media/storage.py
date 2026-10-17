@@ -33,7 +33,13 @@ class MediaStorage(Protocol):
     async def head(self, bucket: str, object_key: str) -> StoredObject: ...
     async def read(self, bucket: str, object_key: str, max_bytes: int) -> bytes: ...
     async def promote(
-        self, source_bucket: str, source_key: str, target_bucket: str, target_key: str
+        self,
+        source_bucket: str,
+        source_key: str,
+        target_bucket: str,
+        target_key: str,
+        content: bytes,
+        content_type: str,
     ) -> None: ...
     async def delete(self, bucket: str, object_key: str) -> None: ...
     async def create_download_url(
@@ -92,14 +98,22 @@ class S3MediaStorage:
         return await self._call(execute)
 
     async def promote(
-        self, source_bucket: str, source_key: str, target_bucket: str, target_key: str
+        self,
+        source_bucket: str,
+        source_key: str,
+        target_bucket: str,
+        target_key: str,
+        content: bytes,
+        content_type: str,
     ) -> None:
         def execute() -> None:
-            self._internal.copy_object(
+            # Publish the exact immutable bytes that passed validation and scanning.
+            # The presigned quarantine upload can still be overwritten by its holder.
+            self._internal.put_object(
                 Bucket=target_bucket,
                 Key=target_key,
-                CopySource={"Bucket": source_bucket, "Key": source_key},
-                MetadataDirective="COPY",
+                Body=content,
+                ContentType=content_type,
             )
             self._internal.delete_object(Bucket=source_bucket, Key=source_key)
 

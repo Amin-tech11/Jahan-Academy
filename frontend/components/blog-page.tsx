@@ -14,7 +14,7 @@ export function BlogPage({ locale }: { locale: Locale; initialType?: BlogFilter 
   const posts = selectBlogPosts([...articles, ...blogGuides], locale);
   const sections = ["news", "article", "guide"] as const;
   return <SiteShell locale={locale}><PublicPanelsMotion panel="blog" className="journal-page">
-    <section className="journal-campus-hero" aria-label={copy.title}><Image src="/blog/library-hero.webp" alt="" fill sizes="100vw" preload/><div aria-hidden="true" className="journal-campus-overlay"/><p dir="ltr">JAHAN ACADEMY</p></section>
+    <section className="journal-campus-hero" aria-label={copy.title}><Image src="/blog/library-hero.webp" alt="" fill sizes="100vw" preload/><div aria-hidden="true" className="journal-campus-overlay"/><p className="public-hero-brand" lang="en" dir="ltr">JAHAN ACADEMY</p></section>
     <div className="shell">
       <div className="journal-guide-content">
         <BlogNavigation title={copy.title} items={sections.map(type => ({ id: `journal-${type}`, label: copy[type] }))}/>
@@ -22,7 +22,6 @@ export function BlogPage({ locale }: { locale: Locale; initialType?: BlogFilter 
         {sections.map(type => <BlogArchive key={type} posts={posts} locale={locale} sectionType={type}/>)}
       </div>
       <section className="journal-consultation" id="journal-consultation"><div className="home-closing__layout"><div className="home-closing__image"><Image src="/consultation-specialist.webp" alt={copy.help} fill sizes="(max-width:800px) 100vw, 50vw"/></div><BlogConsultation locale={locale}/></div></section>
-      <p className="journal-preview-note">{copy.note}</p>
     </div>
   </PublicPanelsMotion></SiteShell>;
 }

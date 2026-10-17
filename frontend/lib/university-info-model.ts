@@ -161,7 +161,7 @@ export const westernUniversity: UniversityInfo = {
   ],
   features: [
     { title: { fa: "پردیس سبز و معماری تاریخی", en: "A green, historic campus" }, text: { fa: "محوطه‌های باز و ساختمان‌های تاریخی و مدرن در کنار یکدیگر قرار دارند.", en: "Open green spaces connect historic and modern university buildings." }, url: "https://www.uwo.ca/about/visit/index.html" },
-    { title: { fa: "اقامتگاه‌های دانشجویی", en: "Campus residences" }, text: { fa: "گزینه‌های مختلف اقامت در پردیس؛ جزئیات هر ساختمان در وب‌سایت رسمی دانشگاه قابل بررسی است.", en: "Explore different residence buildings and living arrangements on Western's official website." }, url: "https://residence.uwo.ca/buildings" },
+    { title: { fa: "اقامتگاه‌های دانشجویی", en: "Campus residences" }, text: { fa: "گزینه‌های مختلف اقامت در پردیس را از نظر ساختمان، امکانات و شرایط سکونت بررسی کنید.", en: "Explore different residence buildings, facilities and living arrangements." }, url: "https://residence.uwo.ca/buildings" },
     { title: { fa: "کتابخانه‌ها و فضاهای مطالعه", en: "Libraries and study spaces" }, text: { fa: "کتابخانه‌های دانشگاه فضایی برای مطالعه و دسترسی به منابع پژوهشی فراهم می‌کنند.", en: "University libraries provide places to study and access research collections." }, url: "https://www.lib.uwo.ca/contact/libraries/index.html" },
   ],
   offerings: [
@@ -180,7 +180,7 @@ export const westernUniversity: UniversityInfo = {
     {
       icon: "work", title: { fa: "کار هنگام تحصیل", en: "Work While Studying" },
       status: { fa: "با احراز شرایط", en: "Subject to eligibility" },
-      text: { fa: "دانشجویان بین‌المللی در صورت احراز شرایط می‌توانند هنگام تحصیل خارج از پردیس کار کنند. پیش از شروع کار، شرایط مجوز تحصیل، وضعیت ثبت‌نام و محدودیت ساعات کار را در راهنمای رسمی اداره مهاجرت کانادا بررسی کنید.", en: "International students who meet the requirements may work off campus while studying. Before starting work, check your study permit conditions, enrolment status and working-hour limits in the official IRCC guidance." },
+      text: { fa: "دانشجویان بین‌المللی در صورت احراز شرایط می‌توانند هنگام تحصیل خارج از پردیس کار کنند. پیش از شروع کار، شرایط مجوز تحصیل، وضعیت ثبت‌نام و محدودیت ساعات کار را بررسی کنید.", en: "International students who meet the requirements may work off campus while studying. Before starting work, check your study permit conditions, enrolment status and working-hour limits applicable to your circumstances." },
       url: "https://www.canada.ca/en/immigration-refugees-citizenship/services/study-canada/work/work-off-campus.html",
     },
     {

@@ -188,6 +188,7 @@ def test_staff_administration_lifecycle_roles_and_access_recovery() -> None:
                 },
             )
             assert login.status_code == 200, login.text
+            assert login.json()["data"]["mfaEnrollmentRequired"] is True
 
             roles = client.put(
                 f"/api/v1/admin/staff/{staff_id}/roles",

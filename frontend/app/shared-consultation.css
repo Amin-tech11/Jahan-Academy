@@ -44,5 +44,7 @@
   .site .home-closing__heading { margin-bottom: 24px; }
 }
 @media (max-width: 767px) {
+  .site .home-closing__image { height: clamp(240px, 68vw, 340px); }
+  .site .home-closing__image img { object-position: 50% 20%; }
   .site .home-consultation__fields { grid-template-columns: minmax(0, 1fr); }
 }

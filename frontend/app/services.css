@@ -84,7 +84,16 @@
 }
 
 .site[lang="en"] .services-feature__copy h2 { white-space: normal; overflow-wrap: anywhere; }
+@media (max-width: 767px) {
+  .services-cta .services-cta__photo { height: clamp(240px, 68vw, 340px); }
+  .services-cta .services-cta__photo img { object-position: 50% 20%; }
+}
 @media (max-width: 1199px) {
   .services-cta .services-cta__photo { min-height: 0; }
   .services-cta__layout[data-motion="ready"] > :is(.services-cta__photo, .services-cta__card) { opacity: 1; transform: none; }
+}
+
+@media (max-width: 767px) {
+  .services-intro { position: static; }
+  .services-navigation { display: none; }
 }

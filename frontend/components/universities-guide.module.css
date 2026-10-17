@@ -59,3 +59,9 @@
   .showcase :global(.home-university-card), .showcase :global(.home-university-card__media) img { transition: none; }
   .showcase :global(.home-university-card):hover :global(.home-university-card__media) img, .showcase :global(.home-university-card):focus-visible :global(.home-university-card__media) img { transform: none; }
 }
+
+@media (max-width: 767px) {
+  .navigation { position: static; }
+  .navigationTrack { display: none; }
+  .navigation h2 { margin-bottom: 0; }
+}

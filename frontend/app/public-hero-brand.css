@@ -1,0 +1,17 @@
+.public-hero-brand--mobile { display: none; }
+@media (max-width: 767px) {
+  .site .public-hero-brand[lang="en"] {
+    margin: 0; padding: 1rem; max-width: 100%; color: #fff;
+    font-family: Arial, sans-serif; font-size: clamp(2rem, 2.84vw, 3.4rem);
+    font-weight: 400; letter-spacing: .5em; line-height: 1.15;
+    text-align: center; text-shadow: 0 3px 22px rgba(2, 15, 24, .65);
+    direction: ltr; white-space: normal; pointer-events: none;
+  }
+  .site .public-hero-brand--mobile[lang="en"] {
+    position: absolute; inset: 0; z-index: 1;
+    display: grid; place-items: center;
+  }
+}
+@media (max-width: 600px) {
+  .site .public-hero-brand[lang="en"] { font-size: clamp(1.65rem, 7vw, 2.5rem); letter-spacing: .22em; }
+}

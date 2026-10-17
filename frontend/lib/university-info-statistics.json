@@ -1046,5 +1046,200 @@
         1932
       ]
     ]
+  },
+  "laval-university": {
+    "year": "2026 (autumn)",
+    "source": "https://www.reg.ulaval.ca/system/files/public/accueil/Profil-ULaval-public.xlsx",
+    "supportingSources": [
+      "https://www.reg.ulaval.ca/",
+      "https://www.reg.ulaval.ca/system/files/public/accueil/Profil-tous-cycle.pdf"
+    ],
+    "basis": {
+      "fa": "ثبت‌نام برنامه‌ها به تفکیک دانشکده در پاییز ۲۰۲۶؛ یک دانشجو ممکن است چند بار شمرده شود؛ به‌روزرسانی ۲۸ سپتامبر",
+      "en": "Autumn 2026 programme registrations by faculty; students may be counted in multiple programmes; updated 28 September"
+    },
+    "total": 53796,
+    "method": "Donnees sheet: filter Code_session=202609, sum Nb_ins_tous_automne by Nom_faculte_responsable across programme types, cycles and sexes. Retain the three largest faculties; Other is the remaining 17 units. This counts programme registrations, not distinct students.",
+    "rows": [
+      [
+        "علوم مدیریت",
+        "Administrative sciences",
+        10650
+      ],
+      [
+        "علوم و مهندسی",
+        "Science and engineering",
+        8550
+      ],
+      [
+        "علوم اجتماعی",
+        "Social sciences",
+        6996
+      ],
+      [
+        "سایر",
+        "Other",
+        27600
+      ]
+    ]
+  },
+  "catholic-university-of-the-sacred-heart": {
+    "year": "2023/24",
+    "source": "https://www.unicatt.it/content/dam/siti-web/unicatt/it/ateneo/bilancio-missione/Bilancio%20di%20missione%202024%20ITA.pdf#page=25",
+    "basis": {
+      "fa": "ثبت‌نام دوره‌های کارشناسی و کارشناسی ارشد به تفکیک دانشکده؛ مجموع پردیس‌ها؛ جدول صفحهٔ ۴۵ گزارش ۲۰۲۴",
+      "en": "First- and second-cycle enrolments by faculty, campuses combined; 2024 mission report, printed p.45"
+    },
+    "total": 42416,
+    "method": "Sum the campus rows within each of the 12 faculties in the published faculty table. Excludes post-laurea masters, doctorates and specialist schools.",
+    "rows": [
+      [
+        "اقتصاد",
+        "Economics",
+        9401
+      ],
+      [
+        "اقتصاد و حقوق",
+        "Economics and law",
+        2359
+      ],
+      [
+        "حقوق",
+        "Law",
+        3014
+      ],
+      [
+        "ادبیات و فلسفه",
+        "Letters and philosophy",
+        3380
+      ],
+      [
+        "پزشکی و جراحی",
+        "Medicine and surgery",
+        5543
+      ],
+      [
+        "روان‌شناسی",
+        "Psychology",
+        2995
+      ],
+      [
+        "علوم کشاورزی، غذایی و محیط‌زیست",
+        "Agricultural, food and environmental sciences",
+        689
+      ],
+      [
+        "بانکداری، مالی و بیمه",
+        "Banking, finance and insurance",
+        1748
+      ],
+      [
+        "علوم تربیتی",
+        "Education",
+        5770
+      ],
+      [
+        "زبان‌ها و ادبیات خارجی",
+        "Languages and foreign literatures",
+        3864
+      ],
+      [
+        "ریاضیات، فیزیک و علوم طبیعی",
+        "Mathematics, physics and natural sciences",
+        309
+      ],
+      [
+        "علوم سیاسی و اجتماعی",
+        "Political and social sciences",
+        3344
+      ]
+    ]
+  },
+  "polytechnic-university-of-turin": {
+    "year": "2021/22",
+    "source": "https://www.polito.it/sites/default/files/2024-01/BDG_2023_DEF.pdf#page=21",
+    "basis": {
+      "fa": "آمار تاریخی ثبت‌نام کارشناسی و کارشناسی ارشد به تفکیک گروه آموزشی؛ گزارش برابری جنسیتی ۲۰۲۳، صفحات ۲۱–۲۲؛ استخراج ۳۱ دسامبر ۲۰۲۲",
+      "en": "Historical first- and second-cycle enrolments by teaching college; 2023 Gender Report, pp.21–22; extracted 31 December 2022"
+    },
+    "total": 35747,
+    "method": "Combine the 15 matching teaching-college counts in figures 3.1.2 A (bachelor: 21,298) and 3.1.2 B (master: 14,449). These are enrolment shares, not gender percentages or subject rankings.",
+    "rows": [
+      [
+        "مهندسی مکانیک، هوافضا و خودرو",
+        "Mechanical, aerospace and automotive engineering",
+        8117
+      ],
+      [
+        "مهندسی کامپیوتر، سینما و مکاترونیک",
+        "Computer, cinema and mechatronics engineering",
+        6276
+      ],
+      [
+        "مهندسی مدیریت و تولید",
+        "Management and production engineering",
+        4270
+      ],
+      [
+        "مهندسی الکترونیک، مخابرات و فیزیک",
+        "Electronics, telecommunications and physics engineering",
+        2975
+      ],
+      [
+        "مهندسی پزشکی",
+        "Biomedical engineering",
+        2504
+      ],
+      [
+        "مهندسی انرژی",
+        "Energy engineering",
+        1613
+      ],
+      [
+        "مهندسی شیمی و مواد",
+        "Chemical and materials engineering",
+        1345
+      ],
+      [
+        "مهندسی ریاضی",
+        "Mathematical engineering",
+        1060
+      ],
+      [
+        "مهندسی عمران",
+        "Civil engineering",
+        989
+      ],
+      [
+        "مهندسی محیط‌زیست و سرزمین",
+        "Environmental and land engineering",
+        698
+      ],
+      [
+        "مهندسی برق",
+        "Electrical engineering",
+        587
+      ],
+      [
+        "مهندسی ساختمان",
+        "Building engineering",
+        436
+      ],
+      [
+        "معماری",
+        "Architecture",
+        3163
+      ],
+      [
+        "طراحی",
+        "Design",
+        1298
+      ],
+      [
+        "برنامه‌ریزی و طراحی شهری",
+        "Planning and design",
+        416
+      ]
+    ]
   }
 }

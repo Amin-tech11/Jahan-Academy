@@ -18,5 +18,6 @@ export function DestinationCollage({ photos, locale, layout, className = "" }: {
         sizes={index === 0 ? "(max-width: 760px) 80vw, 32vw" : "(max-width: 760px) 40vw, 18vw"}
         preload={layout === "hero" && index === 0} />
     </div>)}
+    {layout === "hero" && <div className="public-hero-brand public-hero-brand--mobile" lang="en" dir="ltr" aria-hidden="true">JAHAN ACADEMY</div>}
   </div>;
 }

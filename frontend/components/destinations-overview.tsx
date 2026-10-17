@@ -51,7 +51,7 @@ export function DestinationsOverview({ locale }: { locale: Locale }) {
     <section className={styles.hero} aria-labelledby="destination-wordmark">
       <Image className={styles.heroArtwork} src="/destinations/world-map-hero-wide.png" alt={t("نقشه برجسته جهان با نورهای طلایی", "A raised world map illuminated in warm gold")} fill sizes="100vw" preload />
       <div className={styles.heroShade} aria-hidden="true" />
-      <div className={styles.heroBrand} id="destination-wordmark" dir="ltr" lang="en">JAHAN ACADEMY</div>
+      <div className={`${styles.heroBrand} public-hero-brand`} id="destination-wordmark" dir="ltr" lang="en">JAHAN ACADEMY</div>
       <h1 className="sr-only">{t("مقصدهای تحصیلی جهان آکادمی", "Jahan Academy study destinations")}</h1>
     </section>
     <div className={`shell ${styles.guide}`}>

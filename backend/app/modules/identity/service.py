@@ -10,9 +10,11 @@ import structlog
 from sqlalchemy.exc import IntegrityError
 
 from app.core.config import Settings
+from app.core.redis import get_redis
+from app.modules.identity.abuse import AuthAbuseControl
 from app.modules.identity.mailer import AuthMailer
 from app.modules.identity.mfa import MfaSecurity
-from app.modules.identity.repository import AccountRecord, AuthRepository
+from app.modules.identity.repository import AccountRecord, AuthRepository, SessionRecord
 from app.modules.identity.schemas import (
     LoginRequest,
     PasswordResetConfirmRequest,
@@ -30,6 +32,7 @@ logger = structlog.get_logger()
 class IssuedTokens:
     view: TokenView
     refresh_token: str
+    refresh_expires_at: datetime | None = None
 
 
 class AuthService:
@@ -39,11 +42,13 @@ class AuthService:
         security: AuthSecurity,
         mailer: AuthMailer,
         settings: Settings,
+        abuse: AuthAbuseControl | None = None,
     ) -> None:
         self._repository = repository
         self._security = security
         self._mailer = mailer
         self._settings = settings
+        self._abuse = abuse if abuse is not None else AuthAbuseControl(get_redis(), settings)
 
     async def register(self, request: RegisterRequest) -> None:
         self._require_email_delivery()
@@ -117,19 +122,12 @@ class AuthService:
             raise self._invalid_credentials()
 
         now = datetime.now(UTC)
+        await self._abuse.check_account("login", account.user.id)
         if account.user.locked_until and account.user.locked_until > now:
-            raise ApplicationError(
-                code="ACCOUNT_LOCKED",
-                message="The account is temporarily locked. Try again later.",
-                status_code=403,
-            )
+            self._security.perform_dummy_password_check(request.password)
+            raise self._invalid_credentials()
         if not self._security.verify_password(account.identity.password_hash, request.password):
-            await self._repository.register_failed_login(
-                account.user,
-                self._settings.login_max_attempts,
-                timedelta(minutes=self._settings.login_lock_minutes),
-            )
-            await self._repository.session.commit()
+            await self._record_mfa_failure(account)
             raise self._invalid_credentials()
         if account.identity.verified_at is None or account.user.status == "pending":
             raise ApplicationError(
@@ -158,6 +156,7 @@ class AuthService:
         if self._security.password_needs_rehash(account.identity.password_hash):
             replacement_hash = self._security.hash_password(request.password)
         await self._repository.register_successful_login(account, replacement_hash)
+        await self._abuse.clear_failures(account.user.id)
         issued = await self._issue_session(account, ip_address, user_agent)
         await self._repository.audit_login(
             user_id=account.user.id,
@@ -184,7 +183,8 @@ class AuthService:
                 message="The session is no longer valid. Sign in again.",
                 status_code=401,
             )
-        if record.session.expires_at <= now or record.user.status != "active":
+        deadline = await self._session_deadline(record, now)
+        if deadline is None or record.user.status != "active":
             await self._repository.revoke_family(record.session.family_id)
             await self._repository.session.commit()
             raise self._invalid_refresh_token()
@@ -192,36 +192,52 @@ class AuthService:
         account = await self._repository.get_account_by_user_id(record.user.id)
         if account is None:
             raise self._invalid_refresh_token()
+        await self._abuse.check_account("refresh", account.user.id)
         record.session.revoked_at = now
         record.session.rotated_at = now
         new_refresh = self._security.new_opaque_token()
         new_session = await self._repository.create_session(
             user_id=record.user.id,
             token_hash=self._security.token_hash(new_refresh),
-            expires_at=now + timedelta(days=self._settings.refresh_token_days),
+            expires_at=deadline,
             ip_hash=self._security.fingerprint_hash(ip_address),
             user_agent=(user_agent or "")[:500] or None,
             family_id=record.session.family_id,
             parent_session_id=record.session.id,
         )
         access_token, access_expiry = self._security.create_access_token(
-            account.user.id, new_session.id
+            account.user.id, new_session.id, expires_at_limit=deadline
         )
         csrf_token = self._security.new_opaque_token()
+        enrollment_required = await self._requires_mfa_enrollment(account.user.id)
         await self._repository.session.commit()
         return IssuedTokens(
-            view=self._token_view(account, access_token, access_expiry, csrf_token),
+            view=self._token_view(
+                account, access_token, access_expiry, csrf_token, enrollment_required
+            ),
             refresh_token=new_refresh,
+            refresh_expires_at=deadline,
         )
 
     async def logout(self, claims: AccessClaims) -> None:
         await self._repository.revoke_session(claims.session_id)
         await self._repository.session.commit()
 
-    async def authenticate(self, access_token: str) -> tuple[AccessClaims, UserView]:
+    async def authenticate(
+        self, access_token: str, *, allow_mfa_enrollment: bool = False
+    ) -> tuple[AccessClaims, UserView]:
         claims = self._security.decode_access_token(access_token)
         session = await self._repository.get_active_session(claims.session_id, claims.user_id)
         if session is None:
+            raise ApplicationError(
+                code="SESSION_EXPIRED",
+                message="The session is invalid or expired.",
+                status_code=401,
+            )
+        now = datetime.now(UTC)
+        if await self._session_deadline(session, now) is None:
+            await self._repository.revoke_family(session.session.family_id)
+            await self._repository.session.commit()
             raise ApplicationError(
                 code="SESSION_EXPIRED",
                 message="The session is invalid or expired.",
@@ -234,7 +250,44 @@ class AuthService:
                 message="Authentication is required.",
                 status_code=401,
             )
+        # Re-check current roles and enrollment for every request, including old sessions.
+        # Enrollment-only access must never reach panel data or privilege management.
+        if not allow_mfa_enrollment and await self._requires_mfa_enrollment(claims.user_id):
+            raise ApplicationError(
+                code="MFA_ENROLLMENT_REQUIRED",
+                message="Set up multi-factor authentication before accessing the panel.",
+                status_code=403,
+            )
+        session.session.last_seen_at = now
+        await self._repository.session.commit()
         return claims, self._user_view(account)
+
+    async def _session_limits(self, user_id: UUID) -> tuple[timedelta, timedelta]:
+        if await self._repository.requires_staff_mfa(user_id):
+            return (
+                timedelta(minutes=self._settings.staff_session_idle_minutes),
+                timedelta(hours=self._settings.staff_session_absolute_hours),
+            )
+        return (
+            timedelta(minutes=self._settings.session_idle_minutes),
+            timedelta(hours=self._settings.session_absolute_hours),
+        )
+
+    async def _session_deadline(self, record: SessionRecord, now: datetime) -> datetime | None:
+        idle, absolute = await self._session_limits(record.user.id)
+        started = await self._repository.session_family_started_at(
+            record.session.family_id, record.user.id
+        )
+        if started is None or record.session.last_seen_at + idle <= now:
+            return None
+        deadline = min(record.session.expires_at, started + absolute)
+        return deadline if now < deadline else None
+
+    async def _requires_mfa_enrollment(self, user_id: UUID) -> bool:
+        if not await self._repository.requires_staff_mfa(user_id):
+            return False
+        record = await self._repository.mfa_record(user_id)
+        return not record or not record["enabled"]
 
     async def request_password_reset(self, email_input: str) -> None:
         self._require_email_delivery()
@@ -267,11 +320,13 @@ class AuthService:
                 status_code=400,
             )
         await self._repository.revoke_all_user_sessions(account.user.id)
+        await self._abuse.clear_failures(account.user.id)
         await self._repository.session.commit()
 
     async def mfa_status(self, user_id: UUID) -> dict[str, object]:
         record = await self._repository.mfa_record(user_id)
         return {
+            "required": await self._repository.requires_staff_mfa(user_id),
             "enabled": bool(record and record["enabled"]),
             "recoveryCodesRemaining": len(record["recovery_hashes"])
             if record and record["enabled"]
@@ -296,10 +351,11 @@ class AuthService:
         return account
 
     async def _record_mfa_failure(self, account: AccountRecord) -> None:
+        count, lock_seconds = await self._abuse.register_failure(account.user.id)
         await self._repository.register_failed_login(
             account.user,
-            self._settings.login_max_attempts,
-            timedelta(minutes=self._settings.login_lock_minutes),
+            count,
+            timedelta(seconds=lock_seconds),
         )
         await self._repository.session.commit()
 
@@ -365,6 +421,12 @@ class AuthService:
 
     async def mfa_disable(self, email: str, password: str, code: str) -> None:
         account = await self._fresh_account(email, password)
+        if await self._repository.requires_staff_mfa(account.user.id):
+            raise ApplicationError(
+                code="MFA_REQUIRED_FOR_STAFF",
+                message="Staff accounts must keep multi-factor authentication enabled.",
+                status_code=403,
+            )
         record = await self._repository.mfa_record(account.user.id)
         if not record or not record["enabled"]:
             raise ApplicationError(
@@ -391,18 +453,31 @@ class AuthService:
         self, account: AccountRecord, ip_address: str | None, user_agent: str | None
     ) -> IssuedTokens:
         refresh_token = self._security.new_opaque_token()
+        _, absolute = await self._session_limits(account.user.id)
+        deadline = datetime.now(UTC) + min(
+            absolute, timedelta(days=self._settings.refresh_token_days)
+        )
         session = await self._repository.create_session(
             user_id=account.user.id,
             token_hash=self._security.token_hash(refresh_token),
-            expires_at=datetime.now(UTC) + timedelta(days=self._settings.refresh_token_days),
+            expires_at=deadline,
             ip_hash=self._security.fingerprint_hash(ip_address),
             user_agent=(user_agent or "")[:500] or None,
         )
-        access_token, expires_at = self._security.create_access_token(account.user.id, session.id)
+        access_token, expires_at = self._security.create_access_token(
+            account.user.id, session.id, expires_at_limit=deadline
+        )
         csrf_token = self._security.new_opaque_token()
         return IssuedTokens(
-            view=self._token_view(account, access_token, expires_at, csrf_token),
+            view=self._token_view(
+                account,
+                access_token,
+                expires_at,
+                csrf_token,
+                await self._requires_mfa_enrollment(account.user.id),
+            ),
             refresh_token=refresh_token,
+            refresh_expires_at=deadline,
         )
 
     def _token_view(
@@ -411,8 +486,10 @@ class AuthService:
         access_token: str,
         expires_at: datetime,
         csrf_token: str,
+        enrollment_required: bool = False,
     ) -> TokenView:
         return TokenView(
+            mfa_enrollment_required=enrollment_required,
             access_token=access_token,
             expires_at=expires_at,
             csrf_token=csrf_token,

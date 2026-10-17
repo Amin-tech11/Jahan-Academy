@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { newPasswordError, passwordPolicyHint } from "../../lib/password-policy";
 import {
   acceptAdminSession,
   adminRequest,
@@ -33,8 +34,10 @@ export default function AdminLogin({
         });
         const session = result.data as RecordData;
         acceptAdminSession(session);
-        onLogin(session.user as RecordData);
+        onLogin({ ...(session.user as RecordData), mfaEnrollmentRequired: session.mfaEnrollmentRequired });
       } else if (mode === "reset") {
+        const validationError = newPasswordError(String(data.get("password") ?? ""));
+        if (validationError) throw new Error(validationError);
         await adminRequest("/auth/password-resets", "POST", {
           token: data.get("token"),
           newPassword: data.get("password"),
@@ -116,6 +119,7 @@ export default function AdminLogin({
               {notice}
             </div>
           )}
+          {mode === "reset" && <p>{passwordPolicyHint}</p>}
           <form onSubmit={submit} aria-busy={busy}>
             {mode === "login" && (
               <label htmlFor="adm-username">
@@ -179,8 +183,6 @@ export default function AdminLogin({
                     type={visible ? "text" : "password"}
                     dir="ltr"
                     required
-                    minLength={mode === "reset" ? 12 : 1}
-                    maxLength={128}
                     autoComplete={
                       mode === "reset" ? "new-password" : "current-password"
                     }
@@ -202,7 +204,7 @@ export default function AdminLogin({
                 </div>
               </div>
             )}
-            {mode === "login" && <label htmlFor="adm-mfa-code"><span>کد اپ احراز هویت یا بازیابی (در صورت فعال‌سازی)</span><input id="adm-mfa-code" name="mfaCode" dir="ltr" autoComplete="one-time-code" maxLength={64} /></label>}
+            {mode === "login" && <label htmlFor="adm-mfa-code"><span>کد اپ احراز هویت یا بازیابی (پس از راه‌اندازی الزامی است)</span><input id="adm-mfa-code" name="mfaCode" dir="ltr" autoComplete="one-time-code" maxLength={64} /></label>}
             <button type="submit" className="adm-entry-submit" disabled={busy}>
               {busy
                 ? "در حال بررسی…"

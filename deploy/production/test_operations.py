@@ -64,7 +64,7 @@ class OperationsTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             (root / "backups").mkdir()
-            (root / "backups" / "jahan-test.dump").write_bytes(b"verified-fixture")
+            (root / "backups" / "jahan-test.dump").write_bytes(b"legacy-plaintext")
             (root / "retention-success").touch()
             services = [
                 {"Service": name, "State": "running", "Health": "healthy"}
@@ -86,7 +86,13 @@ class OperationsTests(unittest.TestCase):
                 run.return_value = subprocess.CompletedProcess(
                     [], 0, json.dumps(services), ""
                 )
+                self.assertFalse(monitor.status()["healthy"])
+                self.assertFalse(monitor.status()["backup_encrypted"])
+                (root / "backups" / "jahan-test.dump.age").write_bytes(b"encrypted-fixture")
+                self.assertFalse(monitor.status()["healthy"])
+                (root / "backups" / "jahan-test.dump.age.sha256").write_text("fixture")
                 self.assertTrue(monitor.status()["healthy"])
+                self.assertTrue(monitor.status()["backup_encrypted"])
                 self.assertEqual(monitor.status()["offsite_backup"], "not_configured")
                 (root / "offsite-backup.env").touch()
                 self.assertFalse(monitor.status()["healthy"])

@@ -24,7 +24,7 @@ export const destinationCountryFacts: Record<string, CountryFacts> = {
     stay: fact("تا ۱۸ ماه", "Up to 18 months", "مجوز جست‌وجوی کار برای واجدان شرایط", "Job-search permit for eligible graduates", germanyVisa),
   },
   canada: {
-    living: fact("حداقل حدود ۱٬۹۱۷ دلار کانادا در ماه", "Budget at least about CAD 1,917 / month", "بودجه پیشنهادی رسمی ۲۳٬۰۰۰ دلار در سال؛ شهرها متفاوت‌اند", "Official suggested annual budget: CAD 23,000; cities vary", canadaCosts),
+    living: fact("حداقل حدود ۱٬۹۱۷ دلار کانادا در ماه", "Budget at least about CAD 1,917 / month", "بودجه پیشنهادی ۲۳٬۰۰۰ دلار در سال؛ شهرها متفاوت‌اند", "Suggested annual budget: CAD 23,000; cities vary", canadaCosts),
     tuition: fact("میانگین ۴۱٬۷۴۶ دلار کانادا در سال", "Average CAD 41,746 / year", "میانگین کارشناسی بین‌المللی؛ تحصیلات تکمیلی ۲۴٬۰۲۸ دلار", "International undergraduate average; graduate average CAD 24,028", canadaCosts),
     work: fact("تا ۲۴ ساعت در هفته", "Up to 24 hours / week", "کار خارج از محیط آموزشی در زمان تحصیل؛ با مجوز واجد شرایط", "Eligible off-campus work during academic terms", "https://www.canada.ca/en/immigration-refugees-citizenship/services/study-canada/work/work-off-campus.html"),
     stay: fact("تا ۳ سال", "Up to 3 years", "مجوز کار PGWP؛ مدت بر اساس شرایط و طول تحصیل", "PGWP work permit; length depends on eligibility and study duration", "https://www.canada.ca/en/immigration-refugees-citizenship/services/study-canada/work/after-graduation/about.html"),
@@ -48,15 +48,15 @@ export const destinationCountryFacts: Record<string, CountryFacts> = {
     stay: fact("۱۲ ماه", "12 months", "مجوز سال جهت‌یابی برای واجدان شرایط", "Orientation-year permit for eligible graduates", "https://ind.nl/en/residence-permits/work/residence-permit-for-orientation-year"),
   },
   australia: {
-    living: fact("متناسب با شهر و نوع مسکن", "Depends on city and housing", "برآورد با محاسبه‌گر رسمی؛ حداقل تمکن ویزا، هزینه واقعی نیست", "Use the official calculator; visa funding minimum is not actual living cost", australiaCosts),
-    tuition: fact("متغیر بر اساس مقطع و محل تحصیل", "Varies by level and study location", "منبع رسمی بازه سراسری ثابتی اعلام نمی‌کند", "The official source does not publish one fixed national range", australiaCosts),
+    living: fact("متناسب با شهر و نوع مسکن", "Depends on city and housing", "هزینه را بر اساس شرایط خود برآورد کنید؛ حداقل تمکن ویزا، هزینه واقعی نیست", "Estimate costs for your circumstances; visa funding minimum is not actual living cost", australiaCosts),
+    tuition: fact("متغیر بر اساس مقطع و محل تحصیل", "Varies by level and study location", "بازه سراسری ثابتی برای همه دوره‌ها وجود ندارد", "There is no single fixed national range for every course", australiaCosts),
     work: fact("تا ۴۸ ساعت در هر دو هفته", "Up to 48 hours / fortnight", "در زمان تحصیل؛ با رعایت شرایط ویزا", "During studies, subject to visa conditions", "https://www.studyaustralia.gov.au/en/work-in-australia.html"),
     stay: fact("معمولاً ۲ تا ۳ سال", "Usually 2–3 years", "مجوز موقت فارغ‌التحصیلی؛ مشروط به احراز شرایط", "Temporary Graduate visa; eligibility conditions apply", "https://www.studyaustralia.gov.au/en/plan-your-move/your-guide-to-visas/temporary-graduate-visa-subclass-485"),
   },
   sweden: {
     living: fact("حدود ۱۰٬۶۵۶ کرون سوئد در ماه", "About SEK 10,656 / month", "برآورد عمومی زندگی دانشجویی", "General student living-cost estimate", swedenCosts),
     tuition: fact("میانگین ۱۲۹٬۰۰۰ کرون سوئد در سال", "Average SEK 129,000 / year", "میانگین برای دانشجویان غیراروپایی؛ مبلغ دقیق متفاوت است", "Non-EU/EEA average; actual fees vary", swedenCosts),
-    work: fact("معمولاً تا ۱۵ ساعت در هفته", "Usually up to 15 hours / week", "مجوزهای صادرشده از ۱۱ ژوئن ۲۰۲۶؛ استثناها در منبع رسمی", "Permits granted from 11 June 2026; official exceptions apply", "https://www.migrationsverket.se/nyheter/news-archive/2026-05-25-new-rules-for-residence-permits-for-studies-in-higher-education.html"),
+    work: fact("معمولاً تا ۱۵ ساعت در هفته", "Usually up to 15 hours / week", "مجوزهای صادرشده از ۱۱ ژوئن ۲۰۲۶؛ بسته به شرایط مجوز، استثناهایی وجود دارد", "Permits granted from 11 June 2026; exceptions depend on permit conditions", "https://www.migrationsverket.se/nyheter/news-archive/2026-05-25-new-rules-for-residence-permits-for-studies-in-higher-education.html"),
     stay: fact("۱۲ ماه؛ دکتری تا ۱۸ ماه", "12 months; doctorates up to 18", "مجوز جست‌وجوی کار برای فارغ‌التحصیل واجد شرایط", "Job-search permit for eligible graduates", "https://www.migrationsverket.se/download/18.2cd2e409193b84c506a35a2a/1781157750292/189011_stud_soka_arbete_en.pdf"),
   },
   finland: {
@@ -66,8 +66,8 @@ export const destinationCountryFacts: Record<string, CountryFacts> = {
     stay: fact("تا ۲۴ ماه", "Up to 24 months", "مجوز جست‌وجوی کار یا راه‌اندازی کسب‌وکار برای واجدان شرایط", "Job-search or business-start permit for eligible graduates", "https://migri.fi/en/residence-permit-to-look-for-work"),
   },
   denmark: {
-    living: fact("حدود ۸٬۴۵۰ تا ۱۳٬۷۰۰ کرون دانمارک در ماه", "About DKK 8,450–13,700 / month", "جمع ردیف‌های بودجه رسمی؛ هزینه‌های اضافی جداست", "Sum of the official budget items; extras are separate", "https://studyindenmark.dk/live-in-denmark/bank-budget"),
-    tuition: fact("۶٬۰۰۰ تا ۱۶٬۰۰۰ یورو در سال", "€6,000–16,000 / year", "بازه رسمی برای دانشجوی غیراروپایی؛ به یورو اعلام شده", "Official non-EU/EEA estimate, published in euros", "https://studyindenmark.dk/study-options/tuition-fees-scholarships/tuition-fees-and-scholarships/download-pdf"),
+    living: fact("حدود ۸٬۴۵۰ تا ۱۳٬۷۰۰ کرون دانمارک در ماه", "About DKK 8,450–13,700 / month", "مجموع برآورد هزینه‌ها؛ هزینه‌های اضافی جداست", "Sum of estimated budget items; extras are separate", "https://studyindenmark.dk/live-in-denmark/bank-budget"),
+    tuition: fact("۶٬۰۰۰ تا ۱۶٬۰۰۰ یورو در سال", "€6,000–16,000 / year", "بازه برآوردی برای دانشجوی غیراروپایی؛ به یورو اعلام شده", "Estimated non-EU/EEA range, published in euros", "https://studyindenmark.dk/study-options/tuition-fees-scholarships/tuition-fees-and-scholarships/download-pdf"),
     work: fact("تا ۹۰ ساعت در ماه", "Up to 90 hours / month", "سپتامبر تا مه؛ تابستان تمام‌وقت برای تحصیل مورد تأیید دولت", "September–May; full-time summer work for state-approved study", denmarkVisa),
     stay: fact("۶ ماه یا تا ۳ سال", "6 months or up to 3 years", "جست‌وجوی کار؛ بسته به مدرک و تأیید دولتی تحصیل", "Job-search period depends on qualification and state approval", denmarkVisa),
   },

@@ -22,3 +22,6 @@ export function pageMetadata(locale: Locale, path: string, title: string, descri
 export function organizationSchema() {
   return { "@context": "https://schema.org", "@type": "Organization", "@id": `${siteOrigin}/#organization`, name: "Jahan Academy", alternateName: "جهان آکادمی", url: siteOrigin, logo: `${siteOrigin}/brand/jahan-academy-official.png`, telephone: "+989196017164", sameAs: ["https://t.me/jahanacademy11", "https://www.instagram.com/jahanacademi/", "https://wa.me/989196017164"], address: { "@type": "PostalAddress", addressCountry: "IR", addressLocality: "Tehran", streetAddress: "Unit 3, Floor 3, No. 386, Mirdamad Boulevard, past Nelson Mandela Street" } };
 }
+export function websiteSchema() {
+  return { "@context": "https://schema.org", "@type": "WebSite", "@id": `${siteOrigin}/#website`, url: `${siteOrigin}/`, name: "جهان آکادمی", alternateName: ["Jahan Academy", "جهان اکادمی"], publisher: { "@id": `${siteOrigin}/#organization` }, inLanguage: ["fa", "en"] };
+}

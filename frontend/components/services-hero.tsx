@@ -16,6 +16,6 @@ export function ServicesHero({ title }: { title: string }) {
 
   return <section ref={root} className="services-hero" aria-label={title}>
     <Image src="/services-hero-interview.png" alt="" fill sizes="100vw" preload className="services-hero__image" />
-    <div className="services-hero__brand">JAHAN ACADEMY</div>
+    <div className="services-hero__brand public-hero-brand" lang="en">JAHAN ACADEMY</div>
   </section>;
 }

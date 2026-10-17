@@ -1110,6 +1110,12 @@ paths:
         '422': { $ref: '#/components/responses/ValidationError' }
   /auth/login:
     post:
+      description: >-
+        Staff roles require MFA. Password-only staff login returns mfaEnrollmentRequired=true;
+        the session can only read MFA status, enroll/confirm MFA, refresh or log out.
+        All other authenticated endpoints reject it with MFA_ENROLLMENT_REQUIRED (403),
+        including sessions issued before this policy. Confirmation revokes all sessions;
+        sign in again with an authenticator or one-use recovery code for panel access.
       tags: [User Authentication]
       operationId: loginUser
       x-phase: Final
@@ -1119,13 +1125,19 @@ paths:
           application/json:
             schema: { $ref: '#/components/schemas/UserLogin' }
       responses:
-        '200': { description: User session established }
+        '200': { description: Session issued; data.mfaEnrollmentRequired indicates mandatory staff enrollment }
         '401': { $ref: '#/components/responses/Unauthorized' }
         '403': { $ref: '#/components/responses/Forbidden' }
         '422': { $ref: '#/components/responses/ValidationError' }
         '429': { $ref: '#/components/responses/RateLimited' }
   /auth/refresh:
     post:
+      description: >-
+        Rechecks current roles and MFA enrollment. Both access and refresh enforce idle
+        and absolute session lifetimes. Rotation preserves the original login deadline;
+        expired sessions return 401 and cannot be renewed. Default idle/absolute limits
+        are 30 minutes/12 hours for regular users and 15 minutes/8 hours for staff.
+        Rotation never grants panel access to an unenrolled staff account.
       tags: [User Authentication]
       operationId: refreshUserSession
       x-phase: Final

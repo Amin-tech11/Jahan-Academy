@@ -146,3 +146,8 @@
   .journal-consultation .home-consultation__fields input,
   .journal-consultation .home-consultation__consent { font-size: 16px; }
 }
+
+@media (max-width: 767px) {
+  .journal-navigation { position: static; }
+  .journal-navigation-track { display: none; }
+}

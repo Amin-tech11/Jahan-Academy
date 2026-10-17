@@ -133,7 +133,7 @@ export function DestinationPage({ destination: d, locale, universities, relatedD
           ["arrival", t("هزینه‌های شروع", "Getting started")],
           ["funding", t("تأمین و مدیریت بودجه", "Funding & budgeting")],
         ] as const).map(([key, title]) => <li key={key}><div><strong>{title}</strong><p>{d.planning[key][locale]}</p></div></li>)}</ul>
-        <p className={styles.planningNote}>{t("ارقام، برآورد منابع رسمی‌اند؛ مبلغ به‌روز را از دانشگاه و محل اقامت بگیرید.", "Figures are estimates from official guides; confirm current amounts with your institution and accommodation provider.")}</p>
+        <p className={styles.planningNote}>{t("ارقام تقریبی‌اند و با توجه به دانشگاه، شهر و نوع اقامت تغییر می‌کنند.", "Figures are estimates and vary by institution, city and accommodation type.")}</p>
       </div>
     </section>
 
@@ -147,7 +147,7 @@ export function DestinationPage({ destination: d, locale, universities, relatedD
           ["documents", t("مدارک و آمادگی پرونده", "Documents & preparation")],
           ["process", t("مراحل ویزا و اقامت", "Visa & residence process")],
         ] as const).map(([key, title]) => <li key={key}><div><strong>{title}</strong><p>{d.visa[key][locale]}</p></div></li>)}</ul>
-        <p className={styles.planningNote}>{t("مسیر و مدارک به تابعیت، دوره و شرایط شما بستگی دارد؛ پیش از اقدام، آخرین فهرست مرجع رسمی را بررسی کنید.", "The route and documents depend on your nationality, course and circumstances; check the official current checklist before applying.")}</p>
+        <p className={styles.planningNote}>{t("مسیر و مدارک به تابعیت، دوره و شرایط شما بستگی دارد؛ فهرست مدارک را متناسب با پرونده خود آماده کنید.", "The route and documents depend on your nationality, course and circumstances; prepare a checklist suited to your application.")}</p>
       </div>
     </section>
     </div>

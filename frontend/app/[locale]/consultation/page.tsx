@@ -31,7 +31,7 @@ export default async function ConsultationPage({ params, searchParams }: PagePro
   return <SiteShell locale={locale}><main className="assessment-page">
     <section className="assessment-page__hero" aria-labelledby="consultation-title">
       <PreparedImage className="assessment-page__hero-image" src="/assessment-hero-office.webp" alt="" fill sizes="100vw" preload />
-      <div className="assessment-page__wordmark" dir="ltr">JAHAN ACADEMY</div>
+      <div className="assessment-page__wordmark public-hero-brand" lang="en" dir="ltr">JAHAN ACADEMY</div>
       <h1 className="sr-only" id="consultation-title">{fa ? "فرم ارزیابی اولیه" : "Initial assessment form"}</h1>
     </section>
     <div className="assessment-page__body">

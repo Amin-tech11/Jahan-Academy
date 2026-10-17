@@ -29,7 +29,7 @@ export const destinationFaqs: Record<string, readonly DestinationFaqItem[]> = {
   ],
   "united-kingdom": [
     faq("ارشد در انگلستان معمولاً چند سال طول می‌کشد؟", "How long does a UK master's usually take?", "طول دوره معمولاً یک تا دو سال است؛ مدت دقیق را در صفحه رشته بررسی کنید.", "Typical duration is one to two years; check the specific programme."),
-    faq("بدون دیپلم بین‌المللی چه مسیری برای ورود به دانشگاه هست؟", "What entry routes exist without an international diploma?", "مسیرهایی مانند GCSE، سپس A-level یا دوره فاندیشن در منبع مطرح شده‌اند.", "The source discusses routes involving GCSEs, followed by A-levels or foundation study."),
+    faq("بدون دیپلم بین‌المللی چه مسیری برای ورود به دانشگاه هست؟", "What entry routes exist without an international diploma?", "مسیرهایی مانند GCSE، سپس A-level یا دوره فاندیشن وجود دارند.", "Routes can involve GCSEs, followed by A-levels or foundation study."),
     faq("برای اپلای انگلستان از چه مرحله‌ای شروع کنم؟", "How should I begin a UK study application?", "دانشگاه را انتخاب کنید؛ مدارک، پذیرش، ویزا، بودجه و برنامه سفر را به‌ترتیب آماده کنید.", "Choose an institution, then arrange documents, admission, visa, funding and travel."),
     faq("لندن چه مزیتی برای ادامه تحصیل دارد؟", "What makes London attractive for study?", "دانشگاه‌های شناخته‌شده، شبکه‌سازی حرفه‌ای و فضای چندفرهنگی از مزیت‌های آن هستند.", "Recognised universities, professional networking and a multicultural environment are highlighted."),
     faq("بورسیه کامل در انگلستان امکان‌پذیر است؟", "Is full funding possible in the UK?", "بله؛ بورسیه‌های فول‌فاند می‌توانند هزینه تحصیل را پوشش دهند، در صورت احراز شرایط.", "Yes. Fully funded scholarships can cover study costs when eligibility conditions are met."),
@@ -61,7 +61,7 @@ export const destinationFaqs: Record<string, readonly DestinationFaqItem[]> = {
     faq("پس از فارغ‌التحصیلی سوئد می‌توان برای یافتن شغل ماند؟", "Can graduates stay in Sweden to seek work?", "فرصت ۱۲ماهه جست‌وجوی کار و سپس تغییر اقامت، مشروط به احراز شرایط مربوط، مطرح است.", "A 12-month job-search opportunity may be available, followed by a residence change if eligible."),
   ],
   "finland": [
-    faq("چه مدارکی برای پرونده تحصیلی فنلاند آماده کنم؟", "Which documents should I prepare for Finnish study?", "ترجمه سوابق تحصیلی، مدرک زبان، گذرنامه، انگیزه‌نامه و مدارک مالی در منبع ذکر شده‌اند.", "The source lists translated academic records, language evidence, passport, motivation letter and financial documents."),
+    faq("چه مدارکی برای پرونده تحصیلی فنلاند آماده کنم؟", "Which documents should I prepare for Finnish study?", "ترجمه سوابق تحصیلی، مدرک زبان، گذرنامه، انگیزه‌نامه و مدارک مالی را آماده کنید.", "Prepare translated academic records, language evidence, passport, motivation letter and financial documents."),
     faq("طول کارشناسی در فنلاند چقدر است؟", "How long is a Finnish bachelor's programme?", "مدت سه‌ونیم تا چهارونیم سال مطرح است؛ دوره انتخابی را بررسی کنید.", "An indicative duration is 3.5–4.5 years; check your chosen programme."),
     faq("برآورد شهریه سالانه فنلاند چقدر است؟", "What are the estimated annual Finnish tuition fees?", "حدود ۹ تا ۲۰ هزار یورو؛ مبلغ نهایی به دانشگاه و دوره بستگی دارد.", "Approximately €9,000–20,000; the final amount depends on the institution and course."),
     faq("برای دوره انگلیسی فنلاند چه نمره زبانی مطرح است؟", "What English scores are suggested for Finnish courses?", "آیلتس ۶ تا ۶٫۵ یا تافل ۸۰ تا ۹۰ مطرح است؛ بعضی دانشگاه‌ها معافیت دارند.", "Indicative scores are IELTS 6–6.5 or TOEFL 80–90; some institutions offer exemptions."),

@@ -29,6 +29,9 @@
 .home-hero__image { z-index: -2; object-fit: cover; object-position: center 45%; }
 .home-hero__shade { position: absolute; z-index: -1; inset: 0; background: linear-gradient(90deg, rgb(3 22 35 / 72%) 0%, rgb(3 22 35 / 29%) 42%, rgb(3 22 35 / 16%) 67%, rgb(3 22 35 / 63%) 100%), linear-gradient(0deg, rgb(3 22 35 / 46%), transparent 42%); }
 .home-hero--fa .home-hero__image, .home-hero--fa .home-hero__shade { transform: scaleX(-1); }
+@media (max-width: 767px) {
+  .home-page .home-hero .home-hero__image { object-position: center 70%; transform: none; }
+}
 .home-start { position: relative; z-index: 2; margin-top: -3rem; padding: 1.5rem 1rem; border: 1px solid var(--color-border); border-radius: 1rem; background: #fff; box-shadow: 0 8px 24px rgb(9 37 59 / 8%); }
 .home-start__features { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); padding: 0; margin: 0; list-style: none; }
 .home-start__features li { display: flex; flex-direction: column; align-items: center; padding: .15rem 1rem; text-align: center; color: var(--color-brand-900); }
@@ -313,17 +316,18 @@
 .home-hero-chat__typing i { width: .3rem; height: .3rem; border-radius: 50%; background: var(--color-brand-900); animation: home-chat-typing 1.3s ease-in-out infinite; }
 .home-hero-chat__typing i:nth-of-type(2) { animation-delay: .15s; }
 .home-hero-chat__typing i:nth-of-type(3) { animation-delay: .3s; }
-.home-hero-chat__footer { display: flex; align-items: center; justify-content: space-between; gap: .75rem; margin: 0 1rem .8rem; padding: .7rem .9rem; min-height: 44px; border: 1px solid #b7c9e2; border-radius: .6rem; color: #123b78; font-size: .875rem; font-weight: 700; line-height: 1.7; background: #edf3fb; cursor: pointer; transition: background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease; }
+.home-hero-chat__footer { display: flex; align-items: center; justify-content: space-between; gap: .75rem; margin: 0 1rem .8rem; padding: .7rem .9rem; min-height: 44px; border: 1px solid #123b78; border-radius: .6rem; color: #fff; font-size: .875rem; font-weight: 700; line-height: 1.7; background: #123b78; cursor: pointer; transition: background-color 160ms ease, border-color 160ms ease; }
 .home-hero-chat__arrow { flex: 0 0 auto; transition: transform 180ms ease; }
-a.home-hero-chat__footer:is(:hover, :focus-visible) { color: #123b78; background: #dae7f8; border-color: #123b78; box-shadow: 0 4px 12px rgb(18 59 120 / 14%); transform: translateY(-2px); text-decoration: none; }
-.home-hero-chat[dir="rtl"] .home-hero-chat__footer:is(:hover, :focus-visible) .home-hero-chat__arrow { transform: translateX(-4px); }
-.home-hero-chat[dir="ltr"] .home-hero-chat__footer:is(:hover, :focus-visible) .home-hero-chat__arrow { transform: translateX(4px); }
+a.home-hero-chat__footer:is(:hover, :focus-visible) { color: #fff; background: #0e2f60; border-color: #0e2f60; box-shadow: none; transform: none; text-decoration: none; }
+a.home-hero-chat__footer:active { background: #0a244c; border-color: #0a244c; }
+.home-hero-chat[dir="rtl"] .home-hero-chat__footer:is(:hover, :focus-visible) .home-hero-chat__arrow { transform: translateX(-2px); }
+.home-hero-chat[dir="ltr"] .home-hero-chat__footer:is(:hover, :focus-visible) .home-hero-chat__arrow { transform: translateX(2px); }
 @media (prefers-reduced-motion: reduce) { .home-hero-chat__footer, .home-hero-chat__arrow { transition: none; } .home-hero-chat .home-hero-chat__footer:is(:hover, :focus-visible), .home-hero-chat .home-hero-chat__footer:is(:hover, :focus-visible) .home-hero-chat__arrow { transform: none; } }
 .home-hero-chat[data-chat-suspended="true"] * { animation-play-state: paused; }
 
 @media (max-width: 1199px) {
-  .home-page .home-hero { min-height: 0; padding-block: 24px 40px; }
-  .home-page .home-hero .home-hero-chat { width: calc(100% - 2 * var(--public-gutter)); max-width: 42rem; margin-block: 0; margin-inline: auto; }
+  .home-page .home-hero { min-height: clamp(20rem, 52vw, 28rem); padding-block: 0; }
+  .home-page .home-hero .home-hero-chat { display: none; }
   .home-page .home-hero__image { object-position: 75% center; }
   .home-page .home-hero-chat__body { height: auto; min-height: 300px; max-height: 400px; overflow-y: auto; overscroll-behavior: contain; }
   .home-page .home-hero-chat__body:focus-visible { outline: 3px solid #123b78; outline-offset: -4px; }

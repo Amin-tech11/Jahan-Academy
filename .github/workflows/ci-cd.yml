@@ -273,6 +273,8 @@ jobs:
           JAHAN_SESSION_SECRET: ci-only-secret-that-is-longer-than-32-characters
           # Isolated functional tests share TestClient's synthetic peer address.
           JAHAN_API_RATE_LIMIT: "10000"
+          JAHAN_AUTH_IP_LIMIT: "10000"
+          JAHAN_AUTH_REFRESH_IP_LIMIT: "10000"
         run: uv run pytest tests/integration -v
 
       - name: Verify latest migration rollback and re-upgrade
@@ -297,6 +299,8 @@ jobs:
         env:
           DOCKER_PRODUCTION_TEST: "1"
         run: |
+          sudo apt-get update -qq
+          sudo apt-get install --yes --no-install-recommends age
           python3 -m unittest discover -s deploy/production -p 'test_*.py' -v
           for file in deploy/production/*.sh; do bash -n "$file"; done
 
