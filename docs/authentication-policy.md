@@ -51,7 +51,9 @@ as well, allow paste/password managers, and display the server's common-password
   The existing shared jahan-academy-redis-1 is restarting because its incremental AOF has
   a bad file format (confirmed in container logs). Its data/configuration were left intact.
   Integration tests used isolated healthy services; auth browser tests mocked API responses.
-  Live preview authentication therefore remains blocked by this separate Redis problem.
+  This blocked live preview authentication at that checkpoint. It was subsequently
+  resolved with a pre-repair backup; see local-redis-recovery-2026-10-17.md for the
+  successful real browser login and persistence checks.
 
 Changed areas: backend identity abuse control, service/repository/dependencies/router,
 password validation/schemas and bundled blocklist/license; core settings and example
