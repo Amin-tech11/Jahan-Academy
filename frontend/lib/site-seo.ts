@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import type { Locale } from "./site-content";
+import { getSeoCopy } from "./seo-copy";
 
 export const siteOrigin = "https://jahanacademi.ir";
 const descriptions = {
@@ -7,6 +8,9 @@ const descriptions = {
   en: "Jahan Academy helps you explore study destinations and universities, prepare application documents and plan your international study journey.",
 };
 export function pageMetadata(locale: Locale, path: string, title: string, description = descriptions[locale]): Metadata {
+  const copy = getSeoCopy(locale, path);
+  title = copy?.title ?? title;
+  description = copy?.description ?? description;
   const url = `${siteOrigin}/${locale}${path}`;
   return {
     metadataBase: new URL(siteOrigin), title, description,

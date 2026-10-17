@@ -11,7 +11,7 @@
 .free-consultation-page__media-caption strong { font-size: 1.05rem; }
 .free-consultation-page__media-caption span { font-size: .85rem; line-height: 1.7; }
 .free-consultation-page .home-closing__card { width: 100%; margin: 0; align-self: stretch; padding: clamp(1.5rem, 3vw, 2.5rem); border-radius: 1.25rem; box-shadow: 0 18px 45px rgb(32 40 51 / 7%); }
-.free-consultation-page .consultation-form-heading h3 { font-size: 1.4rem; }
+.free-consultation-page .consultation-form-heading :is(h2, h3) { font-size: 1.4rem; }
 @media (max-width: 800px) {
   .free-consultation-page__layout { grid-template-columns: 1fr; }
   .free-consultation-page__media { min-height: 18rem; }

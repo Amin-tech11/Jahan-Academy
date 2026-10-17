@@ -46,7 +46,7 @@ export default async function FreeConsultationPage({ params, searchParams }: Pag
             <span>{fa ? "درخواستتان را ثبت کنید؛ برای ادامه با شما تماس می‌گیریم." : "Send your request and we will get in touch about what comes next."}</span>
           </div>
         </div>
-        <HomeConsultation locale={locale} sourcePage={fromHome ? `/${locale}` : `/${locale}/free-consultation`} />
+        <HomeConsultation locale={locale} headingLevel="h2" sourcePage={fromHome ? `/${locale}` : `/${locale}/free-consultation`} />
       </div>
     </div>
   </main></SiteShell>;

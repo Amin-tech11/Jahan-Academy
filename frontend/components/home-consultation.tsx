@@ -11,7 +11,7 @@ import { apiRequest, ApiError, type ApiEnvelope } from "@/lib/api-client";
 import { normalizeMobile } from "@/lib/consultation";
 import type { Locale } from "@/lib/site-content";
 
-export function HomeConsultation({ locale, sourcePage }: { locale: Locale; sourcePage?: string }) {
+export function HomeConsultation({ locale, sourcePage, headingLevel = "h3" }: { locale: Locale; sourcePage?: string; headingLevel?: "h2" | "h3" }) {
   const id = useId();
   const feedback = usePublicFormFeedback(locale);
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
@@ -47,7 +47,7 @@ export function HomeConsultation({ locale, sourcePage }: { locale: Locale; sourc
   }
   if (status === "success") return <div className="home-closing__card"><ConsultationSuccess locale={locale} reference={reference} /></div>;
   return <form {...feedback.formProps} className="home-closing__card home-consultation__form" onSubmit={submit} aria-label={t("درخواست مشاوره تخصصی رایگان", "Request a free consultation")}>
-    <ConsultationFormHeading locale={locale} />
+    <ConsultationFormHeading locale={locale} level={headingLevel} />
     <div className="home-consultation__fields">
       <label htmlFor={id + "-first"}>{t("نام *", "First name *")}<input id={id + "-first"} {...feedback.fieldProps("firstName")} name="firstName" required maxLength={100} autoComplete="given-name" />{feedback.message("firstName")}</label>
       <label htmlFor={id + "-last"}>{t("نام خانوادگی *", "Last name *")}<input id={id + "-last"} {...feedback.fieldProps("lastName")} name="lastName" required maxLength={100} autoComplete="family-name" />{feedback.message("lastName")}</label>
