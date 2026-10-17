@@ -14,10 +14,14 @@ function load(path, dependencies = {}) {
 }
 const content = load("lib/site-content.ts");
 const seo = load("lib/site-seo.ts", { "./seo-copy": load("lib/seo-copy.ts") });
-const routes = load("app/[locale]/[...segments]/page.tsx", { "@/lib/site-content": content, "@/lib/site-seo": seo });
+const editorialFixtures = ["article", "news"].map(type => ({
+  slug: `test-${type}`, type, title: { fa: "عنوان آزمایشی", en: "Test title" },
+  excerpt: { fa: "خلاصه آزمایشی", en: "Test excerpt" }, date: "2026-01-01",
+}));
+const routes = load("app/[locale]/[...segments]/page.tsx", { "@/lib/site-content": { ...content, articles: editorialFixtures }, "@/lib/site-seo": seo });
 
 test("each editorial detail identifies itself instead of inheriting home metadata", async () => {
-  for (const locale of ["fa", "en"]) for (const article of content.articles) {
+  for (const locale of ["fa", "en"]) for (const article of editorialFixtures) {
     const segments = [article.type === "news" ? "news" : "articles", article.slug];
     const metadata = await routes.generateMetadata({ params: Promise.resolve({ locale, segments }) });
     assert.equal(metadata.title, `${article.title[locale]} | Jahan Academy`);

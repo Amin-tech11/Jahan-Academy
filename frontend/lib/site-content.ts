@@ -60,7 +60,6 @@ export const siteCopy: Localized<{
 
 export const services = [
   { slug: "education-consultation", icon: "◌", title: { fa: "مشاوره مسیر تحصیلی", en: "Academic pathway consultation" }, summary: { fa: "بررسی هدف، پیشینه و اولویت‌های شما برای روشن‌شدن قدم بعدی.", en: "A practical review of your goals, background, and priorities." } },
-  { slug: "admission-guidance", icon: "□", title: { fa: "راهنمایی پذیرش", en: "Admission guidance" }, summary: { fa: "همراهی تخصصی برای آماده‌سازی مسیر اپلای و تصمیم‌گیری آگاهانه.", en: "Expert guidance for shaping an informed application journey." } },
   { slug: "document-review", icon: "⌁", title: { fa: "بررسی مدارک", en: "Document review" }, summary: { fa: "شناخت مدارک موردنیاز و آماده‌سازی منظم برای مرحله بعد.", en: "Understand and organize the documents needed for your next step." } },
 ];
 
@@ -116,11 +115,13 @@ export const fixtureUniversities: UniversityShowcase[] = [
   { slug: "university-of-bologna", name: { fa: "دانشگاه بولونیا", en: "University of Bologna" }, summary: { fa: "نمونه‌ای از معرفی دانشگاه بدون ورود به اطلاعات Program یا شرایط عملیاتی.", en: "An example of a university introduction without Program or operational information." }, country: { fa: "ایتالیا", en: "Italy" }, city: { fa: "بولونیا", en: "Bologna" }, institutionType: { fa: "دانشگاه عمومی", en: "Public university" }, foundedYear: 1088, websiteUrl: "https://www.unibo.it/" },
 ];
 
-export const articles = [
-  { slug: "prepare-for-consultation", type: "article", title: { fa: "پیش از جلسه مشاوره چه چیزهایی آماده کنیم؟", en: "What to prepare before a consultation" }, excerpt: { fa: "چند اطلاعات ساده که گفت‌وگوی شما با مشاور را دقیق‌تر می‌کند.", en: "A few simple details that make your conversation with a consultant more useful." }, date: "2026-09-22" },
-  { slug: "choosing-a-study-destination", type: "article", title: { fa: "چگونه مقصد تحصیلی را آگاهانه‌تر انتخاب کنیم؟", en: "How to choose a study destination more thoughtfully" }, excerpt: { fa: "به‌جای مقایسه‌های شتاب‌زده، پرسش‌های درست را از خودتان بپرسید.", en: "Ask better questions before relying on broad comparisons." }, date: "2026-09-20" },
-  { slug: "jahan-academy-launch", type: "news", title: { fa: "رونمایی از تجربه جدید جهان آکادمی", en: "Introducing the new Jahan Academy experience" }, excerpt: { fa: "تمرکز ما بر محتوای روشن و مشاوره‌ای قابل‌اعتماد است.", en: "Our focus is clearer guidance and a more trustworthy consultation journey." }, date: "2026-09-18" },
-] as const;
+export const articles: Array<{
+  slug: string;
+  type: "article" | "news";
+  title: Localized<string>;
+  excerpt: Localized<string>;
+  date: string;
+}> = [];
 
 export const faqItems: Localized<Array<{ question: string; answer: string }>> = {
   fa: [{ question: "آیا برای ثبت درخواست مشاوره باید حساب کاربری بسازم؟", answer: "خیر. در نسخه فعلی، ثبت درخواست مشاوره بدون ساخت حساب کاربری انجام می‌شود." }, { question: "پس از ثبت درخواست چه اتفاقی می‌افتد؟", answer: "درخواست شما ثبت می‌شود و تیم جهان آکادمی برای بررسی مرحله بعد با شما تماس می‌گیرد." }, { question: "آیا اطلاعات Programها در سایت نمایش داده می‌شود؟", answer: "خیر. سایت عمومی برای آشنایی و دریافت مشاوره طراحی شده است؛ اطلاعات عملیاتی فقط در اختیار تیم داخلی قرار دارد." }],

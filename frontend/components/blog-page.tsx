@@ -22,7 +22,6 @@ export function BlogPage({ locale }: { locale: Locale; initialType?: BlogFilter 
         {sections.map(type => <BlogArchive key={type} posts={posts} locale={locale} sectionType={type}/>)}
       </div>
       <section className="journal-consultation" id="journal-consultation"><div className="home-closing__layout"><div className="home-closing__image"><Image src="/consultation-specialist.webp" alt={copy.help} fill sizes="(max-width:800px) 100vw, 50vw"/></div><BlogConsultation locale={locale}/></div></section>
-      <p className="journal-preview-note">{copy.note}</p>
     </div>
   </PublicPanelsMotion></SiteShell>;
 }

@@ -150,10 +150,10 @@ export async function HomePage({ locale }: { locale: Locale }) {
         media={<div className="home-process__media"><Image src={processImages[index]} alt="" fill sizes="(max-width: 1199px) 90vw, 40vw" /></div>} />)}</HomeJourneyProgress>
     </div></section>
 
-    <section className="home-section" aria-labelledby="home-articles-title"><div className="shell">
+    {visibleArticles.length > 0 && <section className="home-section" aria-labelledby="home-articles-title"><div className="shell">
       <h2 id="home-articles-title" className="home-destinations__title" dir={locale === "fa" ? "rtl" : "ltr"}><Link href={localPath(locale, "/articles")}>{locale === "fa" ? "خبر ها" : "News"}<svg className="home-destinations__title-arrow" aria-hidden="true" width="14" height="16" viewBox="0 0 14 16" fill="currentColor"><path d="M1 8 12 1v14L1 8Z" /></svg></Link></h2>
       <HomeNewsTicker items={visibleArticles} locale={locale} />
-    </div></section>
+    </div></section>}
 
     <section className="home-section home-section--soft" aria-labelledby="home-faq-title"><div className="shell home-faq__grid">
       <div className="home-faq__intro"><h2 id="home-faq-title">{locale === "fa" ? "سوالات متداول" : "Frequently Asked Questions"}</h2></div>
