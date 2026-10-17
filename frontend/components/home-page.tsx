@@ -1,7 +1,6 @@
 import "@/app/home.css";
 import { PreparedImage as Image } from "@/components/prepared-image";
 import { HomeFeatureIcon } from "@/components/home-feature-icon";
-import { HomeHeroChat } from "@/components/home-hero-chat";
 import { HomeMotion } from "@/components/home-motion";
 import { HomeConsultation } from "@/components/home-consultation";
 import { HomeFaq } from "@/components/home-faq";
@@ -81,7 +80,6 @@ export async function HomePage({ locale }: { locale: Locale }) {
     <div className={`home-hero home-hero--${locale}`}>
       <Image src="/home-hero-campus-v2.png" alt="" fill sizes="100vw" preload className="home-hero__image" />
       <div className="home-hero__shade" aria-hidden="true" />
-      <HomeHeroChat locale={locale} />
     </div>
 
     <section className="home-start shell" aria-label={locale === "fa" ? "شروع مسیر با جهان آکادمی" : "Start your journey with Jahan Academy"}>
