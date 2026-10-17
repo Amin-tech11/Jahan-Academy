@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import math
 import secrets
 from datetime import UTC, datetime, timedelta
@@ -77,6 +78,7 @@ class MediaService:
                 row["object_key"],
                 mime_type,
                 self._settings.media_upload_expiry_seconds,
+                size_bytes,
             )
             await self._repository.audit(
                 actor_user_id=actor.user_id,
@@ -91,10 +93,12 @@ class MediaService:
             raise self._storage_unavailable() from exc
         return UploadIntent(
             id=row["id"],
-            upload_url=upload_url,
-            headers={"Content-Type": mime_type},
+            upload_url=upload_url.url,
+            method="POST",
+            fields=upload_url.fields,
+            headers={},
             expires_at=expires_at,
-            max_size_bytes=self._max_size(purpose),
+            max_size_bytes=size_bytes,
         )
 
     async def confirm(
@@ -123,7 +127,7 @@ class MediaService:
             if stored.content_type and stored.content_type.casefold() != row["mime_type"]:
                 raise MediaValidationError("MEDIA_CONTENT_TYPE_MISMATCH")
             content = await self._storage.read(row["bucket"], row["object_key"], row["size_bytes"])
-            result = self._validator.validate(content, row["mime_type"])
+            result = await asyncio.to_thread(self._validator.validate, content, row["mime_type"])
             if not secrets.compare_digest(result.checksum_sha256, checksum):
                 raise MediaValidationError("MEDIA_CHECKSUM_MISMATCH")
             duplicate_id = await self._repository.duplicate_ready_asset(checksum, asset_id)

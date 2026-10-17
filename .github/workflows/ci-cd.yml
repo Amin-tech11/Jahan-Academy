@@ -122,6 +122,8 @@ jobs:
 
   browser-tests:
     name: Browser and Accessibility Tests
+    env:
+      ADMIN_STORAGE_ORIGIN: http://localhost:9100
     needs: lint
     runs-on: ubuntu-24.04
     timeout-minutes: 30
@@ -264,6 +266,14 @@ jobs:
           DATABASE_URL: postgresql+psycopg://jahan:jahan_ci@localhost:${{ job.services.postgres.ports['5432'] }}/jahan_academy
         run: uv run alembic -c alembic.ini upgrade head
 
+      - name: Start isolated storage policy test service
+        run: >-
+          docker run --detach --name media-policy-test
+          -e MINIO_ROOT_USER=synthetic-local-user
+          -e MINIO_ROOT_PASSWORD=synthetic-local-password-only
+          -p 127.0.0.1:19200:9000
+          minio/minio:RELEASE.2025-09-07T16-13-09Z server /data
+
       - name: Run integration tests
         env:
           JAHAN_RUN_INTEGRATION: "1"
@@ -275,6 +285,7 @@ jobs:
           JAHAN_API_RATE_LIMIT: "10000"
           JAHAN_AUTH_IP_LIMIT: "10000"
           JAHAN_AUTH_REFRESH_IP_LIMIT: "10000"
+          JAHAN_STORAGE_POLICY_TEST_URL: http://127.0.0.1:19200
         run: uv run pytest tests/integration -v
 
       - name: Verify latest migration rollback and re-upgrade

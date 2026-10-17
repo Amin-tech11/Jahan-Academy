@@ -14,7 +14,7 @@ from app.main import app
 from app.modules.identity.authorization import AuthorizationContext, RoleGrant
 from app.modules.identity.dependencies import authorization_context
 from app.modules.media.router import malware_scanner, media_storage
-from app.modules.media.storage import StoredObject
+from app.modules.media.storage import StoredObject, UploadForm
 from app.modules.media.validation import DisabledMalwareScanner
 
 pytestmark = pytest.mark.skipif(
@@ -29,11 +29,17 @@ class FakeStorage:
         self.pending: tuple[str, str, str] | None = None
 
     async def create_upload_url(
-        self, bucket: str, object_key: str, content_type: str, expires_seconds: int
-    ) -> str:
-        del expires_seconds
+        self, bucket: str, object_key: str, content_type: str, expires_seconds: int, size_bytes: int
+    ) -> UploadForm:
+        del expires_seconds, size_bytes
         self.pending = bucket, object_key, content_type
-        return f"https://storage.test/{bucket}/{object_key}"
+        return UploadForm(
+            f"https://storage.test/{bucket}",
+            {
+                "key": object_key,
+                "Content-Type": content_type,
+            },
+        )
 
     def upload_pending(self, content: bytes) -> None:
         assert self.pending is not None
@@ -154,7 +160,10 @@ def test_media_upload_management_and_public_delivery() -> None:
             assert created.status_code == 201, created.text
             asset_id = UUID(created.json()["data"]["id"])
             asset_ids.append(asset_id)
-            assert created.json()["data"]["headers"] == {"Content-Type": "image/png"}
+            assert created.json()["data"]["headers"] == {}
+            assert created.json()["data"]["method"] == "POST"
+            assert created.json()["data"]["fields"]["Content-Type"] == "image/png"
+            assert created.json()["data"]["maxSizeBytes"] == len(content)
 
             storage.upload_pending(content)
             confirmed = client.post(

@@ -48,7 +48,8 @@ class UploadIntentRequest(MediaModel):
 class UploadIntent(MediaModel):
     id: UUID
     upload_url: str
-    method: str = "PUT"
+    method: str = "POST"
+    fields: dict[str, str]
     headers: dict[str, str]
     expires_at: datetime
     max_size_bytes: int

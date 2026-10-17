@@ -1,10 +1,12 @@
 import hashlib
+import io
 from datetime import UTC, datetime, timedelta
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, Mock
 from uuid import uuid4
 
 import pytest
+from pypdf import PdfWriter
 
 from app.core.config import Settings
 from app.modules.identity.authorization import AuthorizationContext
@@ -20,7 +22,11 @@ async def test_quarantine_replacement_cannot_publish_unscanned_bytes(
     scan_fails: bool,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    original = b"%PDF-1.7\noriginal scanned content\n%%EOF"
+    output = io.BytesIO()
+    writer = PdfWriter()
+    writer.add_blank_page(width=100, height=100)
+    writer.write(output)
+    original = output.getvalue()
     replacement = b"unscanned replacement"
     owner = uuid4()
     asset_id = uuid4()

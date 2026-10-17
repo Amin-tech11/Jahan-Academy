@@ -3,6 +3,7 @@ import { MfaSettings } from "./mfa-settings";
 import SiteSelect from "../../components/site-select";
 
 import Login from "./login";
+import { storageUploadRequest } from "../../lib/media-upload";
 import DateFilter from "./date-filter";
 import ColumnFilter from "./column-filter";
 import { facetLabel, serverColumnParams, loadAllLeadRows, type ColumnFilters, type ColumnSort } from "../../lib/admin-lead-table";
@@ -746,12 +747,7 @@ function MediaUpload({ onSaved }: { onSaved: () => void }) {
         altEn: form.get("altEn") || null,
       });
       const intent = result.data as RecordData;
-      const response = await fetch(String(intent.uploadUrl), {
-        method: String(intent.method),
-        headers: intent.headers as Record<string, string>,
-        body: file,
-        credentials: "omit",
-      });
+      const response = await fetch(String(intent.uploadUrl), storageUploadRequest(intent, file));
       if (!response.ok) throw new Error("بارگذاری فایل انجام نشد.");
       const hash = await crypto.subtle.digest(
         "SHA-256",

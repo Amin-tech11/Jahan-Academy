@@ -98,6 +98,9 @@ export async function adminRequest(
       503: "سرویس موردنیاز موقتاً در دسترس نیست؛ کمی بعد تلاش کنید.",
     };
     const codes: Record<string, string> = {
+      MEDIA_PDF_ACTIVE_CONTENT_REJECTED: "PDF دارای محتوای فعال یا فرم تعاملی است؛ نسخهٔ ساده ارسال کنید.",
+      MEDIA_PDF_ENCRYPTED: "PDF رمزدار قابل بررسی نیست؛ نسخهٔ بدون رمز ارسال کنید.",
+      MEDIA_PDF_LIMIT_EXCEEDED: "بررسی این PDF از محدودیت مجاز فراتر رفت؛ نسخهٔ ساده‌تر ارسال کنید.",
       REAUTH_REQUIRED: "تأیید هویت منقضی شده است؛ عملیات را دوباره انجام دهید.",
       REAUTH_UNAVAILABLE: "تأیید هویت موقتاً در دسترس نیست؛ کمی بعد تلاش کنید.",
       PASSWORD_LENGTH: "رمز جدید باید بین ۱۵ و ۱۲۸ کاراکتر باشد.",

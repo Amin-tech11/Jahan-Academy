@@ -5,12 +5,18 @@ import hashlib
 import io
 import socket
 import struct
+import subprocess
+import sys
+import threading
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Protocol
 
 from PIL import Image, UnidentifiedImageError
 
 from app.modules.media.domain import IMAGE_MIME_TYPES
+
+_PDF_SLOT = threading.BoundedSemaphore(1)
 
 
 class MediaValidationError(Exception):
@@ -72,14 +78,6 @@ class ClamAvScanner:
 
 class MediaContentValidator:
     FORMAT_MIME = {"JPEG": "image/jpeg", "PNG": "image/png", "WEBP": "image/webp"}
-    DANGEROUS_PDF_TOKENS = (
-        b"/JavaScript",
-        b"/JS",
-        b"/Launch",
-        b"/EmbeddedFile",
-        b"/OpenAction",
-        b"/AA",
-    )
 
     def __init__(self, max_image_pixels: int) -> None:
         self._max_image_pixels = max_image_pixels
@@ -125,6 +123,29 @@ class MediaContentValidator:
     def _validate_pdf(self, content: bytes) -> str:
         if not content.startswith(b"%PDF-") or b"%%EOF" not in content[-2048:]:
             raise MediaValidationError("MEDIA_PDF_INVALID")
-        if any(token in content for token in self.DANGEROUS_PDF_TOKENS):
+        if len(content) > 25 * 1024 * 1024:
+            raise MediaValidationError("MEDIA_PDF_LIMIT_EXCEEDED")
+        if not _PDF_SLOT.acquire(blocking=False):
+            raise MalwareScanError("PDF_VALIDATOR_BUSY")
+        try:
+            result = subprocess.run(
+                [sys.executable, "-I", str(Path(__file__).with_name("pdf_check.py"))],
+                input=content,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                timeout=10,
+                check=False,
+            )
+        except (subprocess.TimeoutExpired, OSError) as error:
+            raise MediaValidationError("MEDIA_PDF_LIMIT_EXCEEDED") from error
+        finally:
+            _PDF_SLOT.release()
+        if result.returncode == 3:
             raise MediaValidationError("MEDIA_PDF_ACTIVE_CONTENT_REJECTED")
+        if result.returncode == 4:
+            raise MediaValidationError("MEDIA_PDF_LIMIT_EXCEEDED")
+        if result.returncode == 5:
+            raise MediaValidationError("MEDIA_PDF_ENCRYPTED")
+        if result.returncode != 0:
+            raise MediaValidationError("MEDIA_PDF_INVALID")
         return "application/pdf"
