@@ -74,6 +74,7 @@ def staff_management_service(
 
 
 async def current_user(
+    request: Request,
     credentials: Annotated[HTTPAuthorizationCredentials | None, Depends(bearer)],
     service: Annotated[AuthService, Depends(auth_service)],
 ) -> CurrentUser:
@@ -83,7 +84,16 @@ async def current_user(
             message="Authentication is required.",
             status_code=401,
         )
-    claims, user = await service.authenticate(credentials.credentials)
+    claims, user = await service.authenticate(
+        credentials.credentials,
+        allow_mfa_enrollment=request.url.path
+        in {
+            "/api/v1/auth/mfa",
+            "/api/v1/auth/mfa/setup",
+            "/api/v1/auth/mfa/confirm",
+            "/api/v1/auth/logout",
+        },
+    )
     return CurrentUser(claims=claims, user=user)
 
 

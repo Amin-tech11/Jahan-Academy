@@ -33,7 +33,7 @@ export default function AdminLogin({
         });
         const session = result.data as RecordData;
         acceptAdminSession(session);
-        onLogin(session.user as RecordData);
+        onLogin({ ...(session.user as RecordData), mfaEnrollmentRequired: session.mfaEnrollmentRequired });
       } else if (mode === "reset") {
         await adminRequest("/auth/password-resets", "POST", {
           token: data.get("token"),
@@ -202,7 +202,7 @@ export default function AdminLogin({
                 </div>
               </div>
             )}
-            {mode === "login" && <label htmlFor="adm-mfa-code"><span>کد اپ احراز هویت یا بازیابی (در صورت فعال‌سازی)</span><input id="adm-mfa-code" name="mfaCode" dir="ltr" autoComplete="one-time-code" maxLength={64} /></label>}
+            {mode === "login" && <label htmlFor="adm-mfa-code"><span>کد اپ احراز هویت یا بازیابی (پس از راه‌اندازی الزامی است)</span><input id="adm-mfa-code" name="mfaCode" dir="ltr" autoComplete="one-time-code" maxLength={64} /></label>}
             <button type="submit" className="adm-entry-submit" disabled={busy}>
               {busy
                 ? "در حال بررسی…"

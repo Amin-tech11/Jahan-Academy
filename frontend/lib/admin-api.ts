@@ -79,6 +79,8 @@ export async function adminRequest(
     const codes: Record<string, string> = {
       MFA_REQUIRED: "کد اپ احراز هویت یا یکی از کدهای بازیابی را وارد کنید.",
       MFA_INVALID: "کد احراز هویت معتبر نیست یا قبلاً مصرف شده است.",
+      MFA_ENROLLMENT_REQUIRED: "پیش از دسترسی به پنل، ورود دومرحله‌ای را فعال کنید.",
+      MFA_REQUIRED_FOR_STAFF: "ورود دومرحله‌ای برای حساب‌های پنل الزامی است و غیرفعال نمی‌شود.",
       EMAIL_SERVICE_UNAVAILABLE: "بازیابی ایمیلی فعلاً فعال نیست. با مدیر سایت تماس بگیرید.",
       INVALID_CREDENTIALS: "نام کاربری یا رمز عبور صحیح نیست.",
     };

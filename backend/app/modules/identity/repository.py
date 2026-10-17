@@ -6,6 +6,7 @@ from uuid import UUID, uuid4
 from sqlalchemy import select, text, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.modules.identity.domain import STAFF_ROLE_CODES
 from app.modules.identity.models import (
     AuthChallengeModel,
     PasswordResetTokenModel,
@@ -30,6 +31,18 @@ class SessionRecord:
 
 
 class AuthRepository:
+    async def requires_staff_mfa(self, user_id: UUID) -> bool:
+        return bool(
+            await self.session.scalar(
+                text("""SELECT EXISTS (
+                SELECT 1 FROM user_roles ur JOIN roles r ON r.id = ur.role_id
+                WHERE ur.user_id = :id AND ur.revoked_at IS NULL
+                  AND r.code = ANY(:roles)
+            )"""),
+                {"id": user_id, "roles": sorted(STAFF_ROLE_CODES)},
+            )
+        )
+
     async def mfa_record(self, user_id: UUID) -> dict[str, Any] | None:
         row = (
             (

@@ -2,10 +2,11 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { adminRequest, clearAdminSession, type RecordData } from "@/lib/admin-api";
 
-export function MfaSettings() {
+export function MfaSettings({ required = false }: { required?: boolean }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const [open, setOpen] = useState(false);
   const [enabled, setEnabled] = useState(false);
+  const [mandatory, setMandatory] = useState(required);
   const [loaded, setLoaded] = useState(false);
   const [secret, setSecret] = useState("");
   const [codes, setCodes] = useState<string[]>([]);
@@ -17,9 +18,10 @@ export function MfaSettings() {
     const controller = new AbortController();
     adminRequest("/auth/mfa", "GET", undefined, undefined, controller.signal).then(result => {
       setEnabled(Boolean((result.data as RecordData).enabled)); setLoaded(true);
+      setMandatory(required || Boolean((result.data as RecordData).required));
     }).catch(cause => { if (!controller.signal.aborted) setError(cause.message); });
     return () => controller.abort();
-  }, [open]);
+  }, [open, required]);
   function close() {
     dialog.current?.close(); setOpen(false); setSecret(""); setCodes([]); setLoaded(false); setError("");
   }
@@ -42,12 +44,12 @@ export function MfaSettings() {
       <h2 id="mfa-title">ورود دومرحله‌ای</h2>
       {error && <p role="alert">{error}</p>}
       {codes.length ? <><p>ورود دومرحله‌ای فعال شد. این کدهای یک‌بارمصرف فقط همین بار نمایش داده می‌شوند؛ آن‌ها را خارج از این دستگاه ذخیره کنید. همه نشست‌های قبلی بسته شدند.</p><pre dir="ltr">{codes.join("\n")}</pre><button type="button" onClick={() => { close(); signedOut(); }}>کدها را ذخیره کردم؛ ورود دوباره</button></> : <>
-        <p>{enabled ? "حساب شما ورود دومرحله‌ای دارد. غیرفعال‌سازی به رمز و کد معتبر نیاز دارد و همه نشست‌ها را می‌بندد." : "فعال‌سازی اختیاری است. کلید را در اپ احراز هویت با حساب جهان آکادمی و کد شش‌رقمی ۳۰ثانیه‌ای ثبت کنید."}</p>
+        <p>{enabled ? mandatory ? "ورود دومرحله‌ای برای حساب‌های پنل الزامی است و امکان غیرفعال‌سازی ندارد." : "حساب شما ورود دومرحله‌ای دارد. غیرفعال‌سازی به رمز و کد معتبر نیاز دارد و همه نشست‌ها را می‌بندد." : "کلید را در اپ احراز هویت با حساب جهان آکادمی ثبت کنید و کد شش‌رقمی را وارد کنید. ورود دومرحله‌ای برای حساب‌های پنل الزامی است."}</p>
         {secret && <><p>کلید راه‌اندازی (محرمانه):</p><code dir="ltr">{secret}</code><p>پیش از تأیید، کد اپ را وارد کنید. راه‌اندازی بعد از ۱۵ دقیقه منقضی می‌شود.</p></>}
-        <form onSubmit={submit} aria-busy={busy}><label>رمز فعلی<input name="password" type="password" autoComplete="current-password" dir="ltr" required maxLength={128} /></label>
+        {!(enabled && mandatory) && <form onSubmit={submit} aria-busy={busy}><label>رمز فعلی<input name="password" type="password" autoComplete="current-password" dir="ltr" required maxLength={128} /></label>
           {(secret || enabled) && <label>کد اپ احراز هویت{enabled ? " یا بازیابی" : ""}<input name="code" autoComplete="one-time-code" dir="ltr" required minLength={6} maxLength={64} /></label>}
           <button type="submit" disabled={busy || !loaded}>{busy ? "در حال بررسی…" : enabled ? "غیرفعال‌سازی و خروج" : secret ? "تأیید و دریافت کدهای بازیابی" : "آغاز فعال‌سازی"}</button>
-        </form><button type="button" disabled={busy} onClick={close}>بستن</button>
+        </form>}<button type="button" disabled={busy} onClick={close}>بستن</button>
       </>}
     </dialog>}
   </>;

@@ -126,6 +126,7 @@ class AcknowledgementEnvelope(ApiModel):
 
 
 class TokenView(ApiModel):
+    mfa_enrollment_required: bool = False
     access_token: str
     token_type: str = "Bearer"
     expires_at: datetime

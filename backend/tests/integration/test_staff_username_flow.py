@@ -7,13 +7,15 @@ from fastapi.testclient import TestClient
 
 from app.main import app
 from app.modules.identity.dependencies import auth_security
+from tests.integration.staff_mfa import login_enrolled_staff
 
 pytestmark = pytest.mark.skipif(
     os.getenv("JAHAN_RUN_INTEGRATION") != "1", reason="requires migrated PostgreSQL and Redis"
 )
 
 
-def test_support_username_login_and_section_isolation() -> None:
+@pytest.mark.parametrize("role", ["super_admin", "support", "consultant", "content_editor"])
+def test_staff_username_login_requires_mfa_and_preserves_section_isolation(role: str) -> None:
     user_id = uuid4()
     name = f"support-{uuid4().hex[:12]}"
     email = f"{name}@example.com"
@@ -33,8 +35,8 @@ def test_support_username_login_and_section_isolation() -> None:
         )
         cursor.execute(
             "INSERT INTO user_roles (user_id,role_id,scope_type) "
-            "SELECT %s,id,'global' FROM roles WHERE code='support'",
-            (user_id,),
+            "SELECT %s,id,'global' FROM roles WHERE code=%s",
+            (user_id, role),
         )
         cursor.execute(
             "INSERT INTO staff_login_names (user_id,username) VALUES (%s,%s)", (user_id, name)
@@ -45,14 +47,13 @@ def test_support_username_login_and_section_isolation() -> None:
         )
     try:
         with TestClient(app) as client:
-            result = client.post(
-                "/api/v1/auth/login", json={"username": name.upper(), "password": password}
-            )
+            result = login_enrolled_staff(client, {"username": name.upper()}, password)
             assert result.status_code == 200, result.text
             headers = {"Authorization": f"Bearer {result.json()['data']['accessToken']}"}
-            assert client.get("/api/v1/users/me/panel-access", headers=headers).json()["data"][
+            sections = client.get("/api/v1/users/me/panel-access", headers=headers).json()["data"][
                 "sections"
-            ] == ["leads"]
+            ]
+            assert "leads" in sections
             assert client.get("/api/v1/admin/leads", headers=headers).status_code == 200
             for path in (
                 "/admin/staff",
@@ -60,7 +61,8 @@ def test_support_username_login_and_section_isolation() -> None:
                 "/admin/audit-logs",
                 "/reporting/dashboard",
             ):
-                assert client.get("/api/v1" + path, headers=headers).status_code == 403
+                expected = 200 if role == "super_admin" else 403
+                assert client.get("/api/v1" + path, headers=headers).status_code == expected
             wrong = client.post("/api/v1/auth/login", json={"username": name, "password": "wrong"})
             assert wrong.status_code == 401
     finally:

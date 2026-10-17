@@ -1231,7 +1231,7 @@ export default function AdminPanel() {
   useEffect(() => {
     setAccess(null);
     setAccessError("");
-    if (!user) return;
+    if (!user || user.mfaEnrollmentRequired) return;
     const controller = new AbortController();
     let pending = false;
     const load = async () => {
@@ -1268,7 +1268,7 @@ export default function AdminPanel() {
         if (alive) {
           const session = result.data as RecordData;
           acceptAdminSession(session);
-          setUser(session.user as RecordData);
+          setUser({ ...(session.user as RecordData), mfaEnrollmentRequired: session.mfaEnrollmentRequired });
         }
       })
       .catch(() => {
@@ -1301,6 +1301,16 @@ export default function AdminPanel() {
       </main>
     );
   if (!user) return <Login onLogin={setUser} />;
+  if (user.mfaEnrollmentRequired) return <main className="adm-checking">
+    <section><h1>فعال‌سازی ورود دومرحله‌ای الزامی است</h1>
+      <p>برای دسترسی به پنل، ابتدا اپ احراز هویت را راه‌اندازی و کدهای بازیابی را ذخیره کنید. سپس دوباره وارد شوید.</p>
+      <MfaSettings required />
+      {logoutError && <ErrorBox message={logoutError} />}
+      <button type="button" onClick={async () => {
+        try { await adminRequest("/auth/logout", "POST", {}); clearAdminSession(); setUser(null); }
+        catch (cause) { setLogoutError(describe(cause)); }
+      }}>خروج</button></section>
+  </main>;
   const resource = resources.find((item) => item.id === section);
   const accountName = String(user.username || [user.firstName, user.lastName].filter(value => typeof value === "string" && value.trim()).join(" ") || (typeof user.email === "string" ? user.email.split("@")[0] : "کاربر"));
   return (

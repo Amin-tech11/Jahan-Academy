@@ -208,9 +208,12 @@ class AuthService:
             account.user.id, new_session.id
         )
         csrf_token = self._security.new_opaque_token()
+        enrollment_required = await self._requires_mfa_enrollment(account.user.id)
         await self._repository.session.commit()
         return IssuedTokens(
-            view=self._token_view(account, access_token, access_expiry, csrf_token),
+            view=self._token_view(
+                account, access_token, access_expiry, csrf_token, enrollment_required
+            ),
             refresh_token=new_refresh,
         )
 
@@ -218,7 +221,9 @@ class AuthService:
         await self._repository.revoke_session(claims.session_id)
         await self._repository.session.commit()
 
-    async def authenticate(self, access_token: str) -> tuple[AccessClaims, UserView]:
+    async def authenticate(
+        self, access_token: str, *, allow_mfa_enrollment: bool = False
+    ) -> tuple[AccessClaims, UserView]:
         claims = self._security.decode_access_token(access_token)
         session = await self._repository.get_active_session(claims.session_id, claims.user_id)
         if session is None:
@@ -234,7 +239,21 @@ class AuthService:
                 message="Authentication is required.",
                 status_code=401,
             )
+        # Re-check current roles and enrollment for every request, including old sessions.
+        # Enrollment-only access must never reach panel data or privilege management.
+        if not allow_mfa_enrollment and await self._requires_mfa_enrollment(claims.user_id):
+            raise ApplicationError(
+                code="MFA_ENROLLMENT_REQUIRED",
+                message="Set up multi-factor authentication before accessing the panel.",
+                status_code=403,
+            )
         return claims, self._user_view(account)
+
+    async def _requires_mfa_enrollment(self, user_id: UUID) -> bool:
+        if not await self._repository.requires_staff_mfa(user_id):
+            return False
+        record = await self._repository.mfa_record(user_id)
+        return not record or not record["enabled"]
 
     async def request_password_reset(self, email_input: str) -> None:
         self._require_email_delivery()
@@ -272,6 +291,7 @@ class AuthService:
     async def mfa_status(self, user_id: UUID) -> dict[str, object]:
         record = await self._repository.mfa_record(user_id)
         return {
+            "required": await self._repository.requires_staff_mfa(user_id),
             "enabled": bool(record and record["enabled"]),
             "recoveryCodesRemaining": len(record["recovery_hashes"])
             if record and record["enabled"]
@@ -365,6 +385,12 @@ class AuthService:
 
     async def mfa_disable(self, email: str, password: str, code: str) -> None:
         account = await self._fresh_account(email, password)
+        if await self._repository.requires_staff_mfa(account.user.id):
+            raise ApplicationError(
+                code="MFA_REQUIRED_FOR_STAFF",
+                message="Staff accounts must keep multi-factor authentication enabled.",
+                status_code=403,
+            )
         record = await self._repository.mfa_record(account.user.id)
         if not record or not record["enabled"]:
             raise ApplicationError(
@@ -401,7 +427,13 @@ class AuthService:
         access_token, expires_at = self._security.create_access_token(account.user.id, session.id)
         csrf_token = self._security.new_opaque_token()
         return IssuedTokens(
-            view=self._token_view(account, access_token, expires_at, csrf_token),
+            view=self._token_view(
+                account,
+                access_token,
+                expires_at,
+                csrf_token,
+                await self._requires_mfa_enrollment(account.user.id),
+            ),
             refresh_token=refresh_token,
         )
 
@@ -411,8 +443,10 @@ class AuthService:
         access_token: str,
         expires_at: datetime,
         csrf_token: str,
+        enrollment_required: bool = False,
     ) -> TokenView:
         return TokenView(
+            mfa_enrollment_required=enrollment_required,
             access_token=access_token,
             expires_at=expires_at,
             csrf_token=csrf_token,
