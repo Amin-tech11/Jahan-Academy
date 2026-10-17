@@ -47,7 +47,7 @@ for (const locale of ["fa", "en"]) {
         expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
       }
       await page.goto(`/${locale}`, { waitUntil: "domcontentloaded" });
-      await expect(page.locator(".home-hero-chat")).toHaveCount(0);
+      await expect(page.locator(".home-hero-chat")).toBeHidden();
       const hero = page.locator(".home-hero");
       const heroImage = hero.locator(".home-hero__image");
       await expect(heroImage).toBeVisible();
@@ -76,6 +76,7 @@ for (const locale of ["fa", "en"]) {
     await expect(first.locator("p")).toBeHidden();
     for (const width of [1280, 1440, 1920]) {
       await page.setViewportSize({ width, height: 1000 });
+      await expect(page.locator(".home-hero-chat")).toBeVisible();
       await expect(page.locator(".home-process__toggle")).toHaveCount(0);
       await expect(page.locator(".home-process__detail:visible")).toHaveCount(13);
       await expect(page.locator(".home-process__media:visible")).toHaveCount(13);

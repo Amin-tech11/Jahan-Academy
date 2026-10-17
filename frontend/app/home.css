@@ -324,7 +324,7 @@ a.home-hero-chat__footer:active { background: #0a244c; border-color: #0a244c; }
 
 @media (max-width: 1199px) {
   .home-page .home-hero { min-height: clamp(20rem, 52vw, 28rem); padding-block: 0; }
-  .home-page .home-hero .home-hero-chat { width: calc(100% - 2 * var(--public-gutter)); max-width: 42rem; margin-block: 0; margin-inline: auto; }
+  .home-page .home-hero .home-hero-chat { display: none; }
   .home-page .home-hero__image { object-position: 75% center; }
   .home-page .home-hero-chat__body { height: auto; min-height: 300px; max-height: 400px; overflow-y: auto; overscroll-behavior: contain; }
   .home-page .home-hero-chat__body:focus-visible { outline: 3px solid #123b78; outline-offset: -4px; }
