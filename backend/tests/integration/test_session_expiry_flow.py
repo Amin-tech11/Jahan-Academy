@@ -46,7 +46,7 @@ def test_access_and_refresh_reject_expired_staff_sessions(
             access = issued["accessToken"]
             csrf = issued["csrfToken"]
             sid = auth_security().decode_access_token(access).session_id
-            # Successful authenticated activity is persisted even on a read-only route.
+            # Passive reads cannot extend the idle deadline; explicit input can.
             with psycopg.connect(database) as db:
                 db.execute(
                     "UPDATE sessions SET last_seen_at=now()-interval '10 minutes' WHERE id=%s",
@@ -65,7 +65,15 @@ def test_access_and_refresh_reject_expired_staff_sessions(
                 ).fetchone()
                 assert row is not None
                 seen, family, original_expiry = row
-                assert seen >= before
+                assert seen < before
+            active = client.post(
+                "/api/v1/auth/activity",
+                headers={
+                    "Authorization": f"Bearer {access}",
+                    "X-CSRF-Token": csrf,
+                },
+            )
+            assert active.status_code == 204
             rotated = client.post("/api/v1/auth/refresh", headers={"X-CSRF-Token": csrf})
             assert rotated.status_code == 200, rotated.text
             current = rotated.json()["data"]

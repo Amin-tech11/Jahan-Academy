@@ -87,12 +87,14 @@ class AuthAbuseControl:
     async def check_request(self, operation: str, ip: str, identifier: str) -> None:
         settings = self._settings
         ip_limit = (
-            settings.auth_refresh_ip_limit if operation == "refresh" else settings.auth_ip_limit
+            settings.auth_refresh_ip_limit
+            if operation in {"refresh", "activity"}
+            else settings.auth_ip_limit
         )
         limit = settings.auth_identifier_limit
         if operation in {"email", "register"}:
             limit = settings.auth_email_identifier_limit
-        elif operation == "refresh":
+        elif operation in {"refresh", "activity"}:
             limit = settings.auth_refresh_identifier_limit
         await self._check(f"{operation}:ip", ip, ip_limit)
         await self._check(f"{operation}:identifier", identifier, limit)

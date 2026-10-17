@@ -133,6 +133,21 @@ async def authorization_context(
     return await service.context_for(principal.user.id)
 
 
+async def require_fresh_auth(
+    request: Request,
+    principal: Annotated[CurrentUser, Depends(current_user)],
+) -> None:
+    from app.modules.identity.reauth import consume
+
+    await consume(
+        get_redis(),
+        principal.claims,
+        request.method,
+        request.url.path.removeprefix("/api/v1"),
+        request.headers.get("x-reauth-token"),
+    )
+
+
 def require_permissions(
     *permission_codes: str,
     mode: PermissionMode = PermissionMode.ALL,

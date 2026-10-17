@@ -18,6 +18,7 @@ from app.modules.identity.dependencies import (
     csrf_protection,
     current_user,
     panel_access_service,
+    require_fresh_auth,
     require_permissions,
     staff_management_service,
 )
@@ -35,6 +36,7 @@ from app.modules.identity.schemas import (
     PanelAccessUpdate,
     PanelAccessView,
     PasswordResetConfirmRequest,
+    ReauthRequest,
     RegisterRequest,
     RegistrationEnvelope,
     RegistrationPending,
@@ -66,8 +68,8 @@ async def auth_request_limit(
     endpoint = request.url.path.removeprefix("/api/v1/auth/")
     operation = endpoint
     identifier = "invalid"
-    if endpoint.startswith("mfa/"):
-        operation = "mfa"
+    if endpoint.startswith("mfa/") or endpoint in {"activity", "reauthenticate"}:
+        operation = "mfa" if endpoint.startswith("mfa/") else endpoint
         authorization = request.headers.get("authorization", "")
         if authorization.lower().startswith("bearer "):
             try:
@@ -107,6 +109,32 @@ async def auth_request_limit(
 auth_router = APIRouter(
     prefix="/auth", tags=["identity"], dependencies=[Depends(auth_request_limit)]
 )
+
+
+@auth_router.post("/activity", status_code=204, dependencies=[Depends(csrf_protection)])
+async def activity(
+    principal: Annotated[CurrentUser, Depends(current_user)],
+    service: Annotated[AuthService, Depends(auth_service)],
+) -> None:
+    await service.activity(principal.claims)
+
+
+@auth_router.post("/reauthenticate", dependencies=[Depends(csrf_protection)])
+async def reauthenticate(
+    payload: ReauthRequest,
+    principal: Annotated[CurrentUser, Depends(current_user)],
+    service: Annotated[AuthService, Depends(auth_service)],
+) -> dict[str, object]:
+    token = await service.reauthenticate(
+        principal.claims,
+        payload.password,
+        payload.code,
+        payload.method,
+        payload.path,
+    )
+    return {"data": {"token": token, "expiresIn": 300}}
+
+
 users_router = APIRouter(prefix="/users", tags=["identity"])
 staff_router = APIRouter(prefix="/admin/staff", tags=["staff-administration"])
 
@@ -287,6 +315,7 @@ async def get_me(
 
 @staff_router.post(
     "",
+    dependencies=[Depends(require_fresh_auth)],
     response_model=StaffEnvelope,
     status_code=status.HTTP_201_CREATED,
 )
@@ -335,7 +364,9 @@ async def get_staff(
     return StaffEnvelope(data=staff)
 
 
-@staff_router.patch("/{staff_id}", response_model=StaffEnvelope)
+@staff_router.patch(
+    "/{staff_id}", response_model=StaffEnvelope, dependencies=[Depends(require_fresh_auth)]
+)
 async def update_staff(
     staff_id: UUID,
     payload: StaffUpdateRequest,
@@ -351,7 +382,9 @@ async def update_staff(
     return StaffEnvelope(data=staff)
 
 
-@staff_router.put("/{staff_id}/roles", response_model=StaffEnvelope)
+@staff_router.put(
+    "/{staff_id}/roles", response_model=StaffEnvelope, dependencies=[Depends(require_fresh_auth)]
+)
 async def replace_staff_roles(
     staff_id: UUID,
     payload: StaffRolesUpdateRequest,
@@ -369,6 +402,7 @@ async def replace_staff_roles(
 
 @staff_router.post(
     "/{staff_id}/access-recovery",
+    dependencies=[Depends(require_fresh_auth)],
     response_model=StaffEnvelope,
     status_code=status.HTTP_202_ACCEPTED,
 )
@@ -468,7 +502,11 @@ async def get_staff_panel_access(
     return PanelAccessEnvelope(data=await service.get(actor, staff_id))
 
 
-@staff_router.put("/{staff_id}/panel-access", response_model=PanelAccessEnvelope)
+@staff_router.put(
+    "/{staff_id}/panel-access",
+    response_model=PanelAccessEnvelope,
+    dependencies=[Depends(require_fresh_auth)],
+)
 async def replace_staff_panel_access(
     staff_id: UUID,
     payload: PanelAccessUpdate,

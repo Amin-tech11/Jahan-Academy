@@ -1,3 +1,5 @@
+import { trackAdminActivity } from "./admin-activity.ts";
+import { requestReauthentication } from "./admin-reauth.ts";
 export type RecordData = Record<string, unknown>;
 export class AdminError extends Error {
   status: number;
@@ -8,6 +10,7 @@ export class AdminError extends Error {
 }
 let accessToken = "";
 let refreshPromise: Promise<RecordData> | null = null;
+let stopActivity: (() => void) | undefined;
 export function restoreAdminSession(): Promise<RecordData> {
   if (!refreshPromise)
     refreshPromise = adminRequest("/auth/refresh", "POST", {})
@@ -22,9 +25,21 @@ export function restoreAdminSession(): Promise<RecordData> {
 }
 export function clearAdminSession() {
   accessToken = "";
+  stopActivity?.(); stopActivity = undefined;
 }
 export function acceptAdminSession(data: RecordData) {
   accessToken = String(data.accessToken ?? "");
+  if (data.mfaEnrollmentRequired) { stopActivity?.(); stopActivity = undefined; }
+  if (typeof window !== "undefined" && accessToken && !data.mfaEnrollmentRequired && !stopActivity)
+    stopActivity = trackAdminActivity(window, async () => {
+      try { await adminRequest("/auth/activity", "POST", {}); }
+      catch (error) {
+        if (error instanceof AdminError && error.status === 401) {
+          try { await restoreAdminSession(); await adminRequest("/auth/activity", "POST", {}); }
+          catch { clearAdminSession(); window.dispatchEvent(new Event("admin-session-expired")); }
+        }
+      }
+    });
 }
 export async function adminRequest(
   path: string,
@@ -33,6 +48,7 @@ export async function adminRequest(
   version?: number,
   signal?: AbortSignal,
   retried = false,
+  reauthToken?: string,
 ): Promise<RecordData> {
   if (
     !/^\/(admin\/|auth\/|users\/me(?:\/panel-access)?$|reporting\/dashboard)/.test(path) ||
@@ -50,6 +66,7 @@ export async function adminRequest(
       "Content-Type": "application/json",
       ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
       ...(version ? { "If-Match": `"${version}"` } : {}),
+      ...(reauthToken ? { "X-Reauth-Token": reauthToken } : {}),
     },
     ...(body === undefined ? {} : { body: JSON.stringify(body) }),
   });
@@ -64,7 +81,11 @@ export async function adminRequest(
         window.dispatchEvent(new Event("admin-session-expired"));
       throw new AdminError(401, "نشست منقضی شده است؛ دوباره وارد شوید.");
     }
-    return adminRequest(path, method, body, version, signal, true);
+    return adminRequest(path, method, body, version, signal, true, reauthToken);
+  }
+  if (response.status === 403 && payload.error?.code === "REAUTH_REQUIRED" && !reauthToken) {
+    const token = await requestReauthentication({ method, path });
+    return adminRequest(path, method, body, version, signal, retried, token);
   }
   if (!response.ok) {
     const messages: Record<number, string> = {
@@ -77,6 +98,8 @@ export async function adminRequest(
       503: "سرویس موردنیاز موقتاً در دسترس نیست؛ کمی بعد تلاش کنید.",
     };
     const codes: Record<string, string> = {
+      REAUTH_REQUIRED: "تأیید هویت منقضی شده است؛ عملیات را دوباره انجام دهید.",
+      REAUTH_UNAVAILABLE: "تأیید هویت موقتاً در دسترس نیست؛ کمی بعد تلاش کنید.",
       PASSWORD_LENGTH: "رمز جدید باید بین ۱۵ و ۱۲۸ کاراکتر باشد.",
       PASSWORD_COMMON_OR_COMPROMISED: "این رمز رایج است؛ یک عبارت منحصربه‌فرد انتخاب کنید.",
       PASSWORD_POLICY_UNAVAILABLE: "بررسی امنیت رمز موقتاً در دسترس نیست؛ کمی بعد تلاش کنید.",

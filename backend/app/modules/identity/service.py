@@ -205,6 +205,8 @@ class AuthService:
             family_id=record.session.family_id,
             parent_session_id=record.session.id,
         )
+        # Rotation is background work, not evidence of human activity.
+        new_session.last_seen_at = record.session.last_seen_at
         access_token, access_expiry = self._security.create_access_token(
             account.user.id, new_session.id, expires_at_limit=deadline
         )
@@ -258,9 +260,39 @@ class AuthService:
                 message="Set up multi-factor authentication before accessing the panel.",
                 status_code=403,
             )
-        session.session.last_seen_at = now
         await self._repository.session.commit()
         return claims, self._user_view(account)
+
+    async def activity(self, claims: AccessClaims) -> None:
+        record = await self._repository.get_active_session(claims.session_id, claims.user_id)
+        now = datetime.now(UTC)
+        if record is None or await self._session_deadline(record, now) is None:
+            raise ApplicationError("SESSION_EXPIRED", "The session expired.", 401)
+        record.session.last_seen_at = now
+        await self._repository.session.commit()
+
+    async def reauthenticate(
+        self,
+        claims: AccessClaims,
+        password: str,
+        code: str,
+        method: str,
+        path: str,
+    ) -> str:
+        from app.modules.identity.reauth import issue
+
+        account = await self._repository.get_account_by_user_id(claims.user_id)
+        if account is None:
+            raise self._invalid_credentials()
+        account = await self._fresh_account(account.identity.provider_subject, password)
+        mfa = await self._repository.mfa_record(account.user.id)
+        if not mfa or not mfa["enabled"]:
+            raise ApplicationError("MFA_ENROLLMENT_REQUIRED", "Enroll MFA first.", 403)
+        await self._consume_mfa_proof(account, mfa, code)
+        await self._abuse.clear_failures(account.user.id)
+        await self._repository.audit_mfa(account.user.id, "auth.reauthenticated")
+        await self._repository.session.commit()
+        return await issue(get_redis(), claims, method, path)
 
     async def _session_limits(self, user_id: UUID) -> tuple[timedelta, timedelta]:
         if await self._repository.requires_staff_mfa(user_id):

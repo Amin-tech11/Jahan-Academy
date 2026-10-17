@@ -17,7 +17,7 @@ async function proxy(
     relative === "users/me/panel-access" ||
     relative === "reporting/dashboard" ||
     /^auth\/mfa(?:\/(setup|confirm|disable))?$/.test(relative) ||
-    /^auth\/(login|refresh|logout|password-reset-requests|password-resets|email-verifications)$/.test(
+    /^auth\/(login|refresh|logout|activity|reauthenticate|password-reset-requests|password-resets|email-verifications)$/.test(
       relative,
     );
   if (!allowed) return new NextResponse(null, { status: 404 });
@@ -37,7 +37,7 @@ async function proxy(
     "Content-Type": "application/json",
     ...trustedClientHeaders(request.headers, process.env.JAHAN_TRUSTED_PROXY_SECRET),
   });
-  for (const name of ["authorization", "cookie", "if-match"]) {
+  for (const name of ["authorization", "cookie", "if-match", "x-reauth-token"]) {
     const value = request.headers.get(name);
     if (value) headers.set(name, value);
   }
