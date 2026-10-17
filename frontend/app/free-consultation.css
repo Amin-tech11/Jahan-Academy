@@ -20,3 +20,11 @@
 @media (max-width: 480px) {
   .free-consultation-page__media-caption { right: .75rem; bottom: .75rem; left: .75rem; padding: .75rem 1rem; }
 }
+@media (max-width: 1199px) {
+  .free-consultation-page { padding-block-start: 24px; }
+  .free-consultation-page__layout { grid-template-columns: minmax(0, 1fr); gap: 24px; max-width: 900px; margin-inline: auto; }
+  .free-consultation-page__media { min-height: 0; height: clamp(220px, 42vw, 340px); }
+  .free-consultation-page__media img { object-position: 45% 35%; }
+  .free-consultation-page__intro p, .free-consultation-page__media-caption span { font-size: 16px; }
+  .free-consultation-page .home-closing__card { min-width: 0; padding: clamp(20px, 4vw, 32px); }
+}

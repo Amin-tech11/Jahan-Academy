@@ -2,6 +2,7 @@
 
 import { Children, isValidElement, useEffect, useId, useRef, useState, type ReactNode, type SelectHTMLAttributes } from "react";
 import { createPortal } from "react-dom";
+import "./site-select-viewport.css";
 
 type Option = { value: string; text: string; disabled: boolean };
 function textOf(children: ReactNode): string {
@@ -28,6 +29,7 @@ export default function SiteSelect(props: SelectHTMLAttributes<HTMLSelectElement
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(selected);
   const [invalid, setInvalid] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
   const [label, setLabel] = useState("");
   const [position, setPosition] = useState({ top: 0, left: 0, width: 0, maxHeight: 280, direction: "rtl" });
   const trigger = useRef<HTMLButtonElement>(null);
@@ -36,6 +38,7 @@ export default function SiteSelect(props: SelectHTMLAttributes<HTMLSelectElement
   const search = useRef({ text: "", time: 0 });
   useEffect(() => {
     const button = trigger.current;
+    setHydrated(true);
     const wrappingLabel = button?.closest("label") ?? (suppliedId ? [...document.querySelectorAll("label")].find(item => item.htmlFor === suppliedId) : null);
     if (wrappingLabel) {
       const clone = wrappingLabel.cloneNode(true) as HTMLElement;
@@ -54,18 +57,26 @@ export default function SiteSelect(props: SelectHTMLAttributes<HTMLSelectElement
       const button = trigger.current;
       if (!button) return;
       const rect = button.getBoundingClientRect();
-      const below = window.innerHeight - rect.bottom - 12;
-      const above = rect.top - 12;
-      const height = Math.min(280, options.length * 44 + 12, Math.max(80, below >= 180 || below >= above ? below : above));
-      const width = Math.min(Math.max(rect.width, 180), window.innerWidth - 16);
-      setPosition({ top: below >= 180 || below >= above ? rect.bottom + 6 : Math.max(8, rect.top - height - 6), left: Math.max(8, Math.min(rect.left, window.innerWidth - width - 8)), width, maxHeight: height, direction: getComputedStyle(button).direction });
+      const viewport = window.visualViewport;
+      const viewportTop = viewport?.offsetTop ?? 0;
+      const viewportLeft = viewport?.offsetLeft ?? 0;
+      const viewportBottom = viewportTop + (viewport?.height ?? window.innerHeight);
+      const viewportRight = viewportLeft + (viewport?.width ?? window.innerWidth);
+      const below = Math.max(0, viewportBottom - rect.bottom - 12);
+      const above = Math.max(0, rect.top - viewportTop - 12);
+      const height = Math.max(0, Math.min(280, options.length * 44 + 12, Math.max(below, above), viewportBottom - viewportTop - 16));
+      const width = Math.max(0, Math.min(Math.max(rect.width, 180), viewportRight - viewportLeft - 16));
+      const top = below >= 180 || below >= above ? rect.bottom + 6 : rect.top - height - 6;
+      setPosition({ top: Math.max(viewportTop + 8, Math.min(top, viewportBottom - height - 8)), left: Math.max(viewportLeft + 8, Math.min(rect.left, viewportRight - width - 8)), width, maxHeight: height, direction: getComputedStyle(button).direction });
     };
     const outside = (event: PointerEvent) => { if (!trigger.current?.contains(event.target as Node) && !list.current?.contains(event.target as Node)) setOpen(false); };
     place();
     window.addEventListener("resize", place);
     window.addEventListener("scroll", place, true);
+    window.visualViewport?.addEventListener("resize", place);
+    window.visualViewport?.addEventListener("scroll", place);
     document.addEventListener("pointerdown", outside);
-    return () => { window.removeEventListener("resize", place); window.removeEventListener("scroll", place, true); document.removeEventListener("pointerdown", outside); };
+    return () => { window.removeEventListener("resize", place); window.removeEventListener("scroll", place, true); window.visualViewport?.removeEventListener("resize", place); window.visualViewport?.removeEventListener("scroll", place); document.removeEventListener("pointerdown", outside); };
   }, [open, options.length]);
   useEffect(() => { if (open) document.getElementById(`${id}-option-${active}`)?.scrollIntoView({ block: "nearest" }); }, [active, open, id]);
   useEffect(() => { if (props.disabled) setOpen(false); }, [props.disabled]);
@@ -82,7 +93,7 @@ export default function SiteSelect(props: SelectHTMLAttributes<HTMLSelectElement
     setActive(enabled[Math.max(0, Math.min(enabled.length - 1, current + delta))] ?? -1);
   }
   return <span className="site-select" style={style}>
-    <button ref={trigger} id={id} type="button" role="combobox" className={["site-select__trigger", className].filter(Boolean).join(" ")} disabled={props.disabled} tabIndex={props.tabIndex}
+    <button ref={trigger} id={id} type="button" role="combobox" className={["site-select__trigger", className].filter(Boolean).join(" ")} disabled={props.disabled || !hydrated} tabIndex={props.tabIndex}
       aria-label={props["aria-label"] ?? (label || undefined)} aria-labelledby={props["aria-labelledby"]} aria-describedby={props["aria-describedby"]}
       aria-expanded={open} aria-controls={`${id}-list`} aria-haspopup="listbox" aria-required={props.required}
       aria-invalid={invalid || props["aria-invalid"]} aria-activedescendant={open && active >= 0 ? `${id}-option-${active}` : undefined}
@@ -101,7 +112,7 @@ export default function SiteSelect(props: SelectHTMLAttributes<HTMLSelectElement
       }}><span>{options[selected]?.text ?? "—"}</span><svg viewBox="0 0 10 6" width="10" height="6" aria-hidden="true"><path d="M0 0h10L5 6z" fill="currentColor" /></svg></button>
     <select {...nativeProps} ref={native} id={`${id}-native`} className="site-select__native" tabIndex={-1} aria-hidden="true" onChange={event => { setInternal(event.target.value); setInvalid(false); onChange?.(event); }} onInvalid={event => { event.preventDefault(); setInvalid(true); trigger.current?.focus(); onInvalid?.(event); }}>{children}</select>
     {invalid && <span className="site-select__error" role="alert">{position.direction === "ltr" ? "Please select an option." : "لطفاً یک گزینه انتخاب کنید."}</span>}
-    {open && createPortal(<div ref={list} id={`${id}-list`} className="site-select__list" role="listbox" aria-label={props["aria-label"] ?? (label || undefined)} dir={position.direction === "ltr" ? "ltr" : "rtl"} style={{ top: position.top, left: position.left, width: position.width, maxHeight: position.maxHeight }} onMouseDown={event => event.preventDefault()}>
+    {open && createPortal(<div ref={list} id={`${id}-list`} className="site-select__list" data-public={Boolean(trigger.current?.closest(".site"))} role="listbox" aria-label={props["aria-label"] ?? (label || undefined)} dir={position.direction === "ltr" ? "ltr" : "rtl"} style={{ top: position.top, left: position.left, width: position.width, maxHeight: position.maxHeight }} onMouseDown={event => event.preventDefault()}>
       {options.map((option, index) => <div key={`${option.value}-${index}`} id={`${id}-option-${index}`} role="option" aria-selected={index === selected} aria-disabled={option.disabled} data-active={index === active} onPointerMove={() => { if (!option.disabled) setActive(index); }} onClick={event => { event.preventDefault(); event.stopPropagation(); choose(index); }}><span>{option.text}</span>{index === selected && <span aria-hidden="true">✓</span>}</div>)}
     </div>, trigger.current?.closest("dialog[open]") ?? document.body)}
   </span>;

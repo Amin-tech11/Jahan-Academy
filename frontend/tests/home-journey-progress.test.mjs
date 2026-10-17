@@ -26,6 +26,7 @@ function setup(top = 700, mobile = false) {
   let effect, scheduled, observer;
   let refs = 0;
   const window = {
+    matchMedia: () => ({ matches: mobile, addEventListener(name, fn) { events.set(`media:${name}`, fn); }, removeEventListener(name) { events.delete(`media:${name}`); } }),
     innerHeight: 1000,
     requestAnimationFrame(fn) { scheduled = fn; return 1; },
     cancelAnimationFrame() { scheduled = undefined; },
@@ -41,6 +42,7 @@ function setup(top = 700, mobile = false) {
       disconnect() { this.disconnected = true; }
     },
     require(name) {
+      if (name.endsWith(".css")) return {};
       if (name === "react") return { useEffect(fn) { effect = fn; }, useRef() { return { current: refs++ === 0 ? list : dot }; } };
       if (name === "react/jsx-runtime") return { jsx: (type, props) => ({ type, props }), jsxs: (type, props) => ({ type, props }) };
       throw new Error(name);
@@ -90,13 +92,13 @@ test("point follows the rendered curve including alternating mirrored segments",
   app.cleanup();
 });
 
-test("mobile uses the straight rail and its actual number position", () => {
+test("compact journey leaves the decorative animation inactive while the step list is used", () => {
   const app = setup(452, true);
-  near(app.coordinates()[0], 24);
-  assert.equal(app.steps[0].dataset.active, "true");
+  assert.equal(app.dot.dataset.ready, "false");
+  assert.equal(app.dot.style.transform, undefined);
   app.shift(-400);
-  near(app.coordinates()[0], 24);
-  assert.equal(app.steps[1].dataset.active, "true");
+  assert.ok(app.steps.every(step => !step.dataset.active));
+  assert.equal(app.dot.style.transform, undefined);
   app.cleanup();
 });
 
@@ -127,9 +129,9 @@ test("decorative dot is outside the semantic list and hidden from assistive tech
   app.cleanup();
 });
 
-test("dot fully disappears at a numbered circle and returns beyond it in both scroll directions", () => {
-  for (const mobile of [false, true]) {
-    const app = setup(mobile ? 492 : 340, mobile);
+test("desktop dot fully disappears at a numbered circle and returns beyond it in both scroll directions", () => {
+  {
+    const app = setup(340);
     assert.equal(app.dot.style.opacity, "1");
     app.shift(-15);
     assert.equal(app.dot.style.opacity, "0");

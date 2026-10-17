@@ -20,3 +20,8 @@
 
 @media (max-width: 800px) { .home-universities { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 600px) { .home-universities { grid-template-columns: 1fr; } }
+@media (min-width: 600px) and (max-width: 1023px) { .home-universities { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 1199px) {
+  .home-university-card h3 { overflow-wrap: anywhere; }
+  .home-university-card__summary, .home-university-card__location { font-size: 16px; }
+}

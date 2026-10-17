@@ -140,3 +140,9 @@
 
 .journal-grid { column-gap:20px; row-gap:36px; }
 .journal-card a:focus-visible { outline:2px solid #B87B08; outline-offset:5px; }
+@media (max-width: 1199px) {
+  .journal-consultation .home-closing__card.home-consultation__form p,
+  .journal-consultation .home-consultation__fields label,
+  .journal-consultation .home-consultation__fields input,
+  .journal-consultation .home-consultation__consent { font-size: 16px; }
+}

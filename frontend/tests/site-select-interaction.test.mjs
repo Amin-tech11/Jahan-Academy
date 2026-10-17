@@ -12,10 +12,12 @@ function nodes(node) {
   if (!node || typeof node !== 'object') return [];
   return [node, ...nodes(node.props?.children)];
 }
-function setup({ disabled = false, rtl = false, noEnabled = false, inDialog = false } = {}) {
+function setup({ disabled = false, rtl = false, noEnabled = false, inDialog = false, viewport } = {}) {
   const values = [], refs = [], effects = [], changes = [], listeners = new Map();
   let stateIndex = 0, refIndex = 0, tree, focused = 0, portalTarget;
   const dialog = {};
+  const viewportListeners = new Map();
+  if (viewport) Object.assign(viewport, { addEventListener: (name, callback) => viewportListeners.set(name, callback), removeEventListener() {} });
   const select = {
     value: '', options: [
       { value: '', text: 'Choose', disabled: true },
@@ -33,7 +35,7 @@ function setup({ disabled = false, rtl = false, noEnabled = false, inDialog = fa
     module, exports: module.exports, Event, Date, setTimeout: cb => cb(), CSS: { escape: value => value },
     getComputedStyle: () => ({ direction: rtl ? 'rtl' : 'ltr' }),
     document: { body: {}, querySelectorAll: () => [], getElementById: () => null, addEventListener: (name, cb) => listeners.set(name, cb), removeEventListener() {} },
-    window: { innerHeight: 600, innerWidth: 384, addEventListener() {}, removeEventListener() {} },
+    window: { innerHeight: 600, innerWidth: 384, visualViewport: viewport, addEventListener() {}, removeEventListener() {} },
     require(name) {
       if (name === 'react') return {
         Children: React.Children, isValidElement: React.isValidElement,
@@ -44,7 +46,7 @@ function setup({ disabled = false, rtl = false, noEnabled = false, inDialog = fa
       };
       if (name === 'react-dom') return { createPortal: (node, target) => { portalTarget = target; return node; } };
       if (name === 'react/jsx-runtime') return { jsx: (type, props) => ({ type, props }), jsxs: (type, props) => ({ type, props }) };
-      if (name.endsWith('.module.css')) return { default: {} };
+      if (name.endsWith('.css')) return { default: {} };
       throw new Error(name);
     },
   });
@@ -55,11 +57,29 @@ function setup({ disabled = false, rtl = false, noEnabled = false, inDialog = fa
   }
   function find(type) { return nodes(tree).find(node => node.type === type); }
   const fallback = render(); effects[0](); render();
-  return { select, changes, listeners, fallback, render, find, dialog, get portalTarget() { return portalTarget; }, get focused() { return focused; },
+  return { select, changes, listeners, fallback, render, find, dialog, viewportListeners, get portalTarget() { return portalTarget; }, get focused() { return focused; },
     key(key) { find('button').props.onKeyDown({ key, preventDefault() {} }); render(); },
     click() { find('button').props.onClick(); render(); effects[1](); render(); },
   };
 }
+
+test('open options stay inside the visible viewport as the keyboard or zoom changes its bounds', () => {
+  const viewport = { offsetTop: 80, offsetLeft: 20, height: 180, width: 240 };
+  const app = setup({ viewport });
+  app.click();
+  const bounds = () => nodes(app.render()).find(node => node.props?.role === 'listbox').props.style;
+  const inside = () => {
+    const style = bounds();
+    assert.ok(style.top >= viewport.offsetTop);
+    assert.ok(style.top + style.maxHeight <= viewport.offsetTop + viewport.height);
+    assert.ok(style.left >= viewport.offsetLeft);
+    assert.ok(style.left + style.width <= viewport.offsetLeft + viewport.width);
+  };
+  inside();
+  viewport.height = 100;
+  app.viewportListeners.get('resize')();
+  inside();
+});
 
 test('native control retains named required values alongside the accessible trigger', () => {
   const app = setup();

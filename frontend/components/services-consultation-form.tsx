@@ -1,5 +1,6 @@
 "use client";
 import SiteSelect from "./site-select";
+import { usePublicFormFeedback } from "./use-public-form-feedback";
 import { createRequestKey } from "@/lib/request-key";
 
 import Link from "next/link";
@@ -14,6 +15,7 @@ type Receipt = { reference: string; duplicate: boolean };
 
 export function ServicesConsultationForm({ locale }: { locale: Locale }) {
   const id = useId();
+  const feedback = usePublicFormFeedback(locale);
   const fa = locale === "fa";
   const t = (persian: string, english: string) => fa ? persian : english;
   const [busy, setBusy] = useState(false);
@@ -50,25 +52,26 @@ export function ServicesConsultationForm({ locale }: { locale: Locale }) {
       if (!response.data?.reference) throw new Error("Missing receipt");
       setReceipt(response.data);
     } catch (cause) {
+      if (cause instanceof ApiError) feedback.serverErrors(cause.fieldErrors);
       setError(cause instanceof ApiError ? cause.message : t("تأیید ثبت درخواست دریافت نشد. لطفاً دوباره تلاش کنید.", "We could not confirm your submission. Please try again."));
     } finally { setBusy(false); }
   }
 
   if (receipt) return <ConsultationSuccess locale={locale} reference={receipt.reference} duplicate={receipt.duplicate} />;
 
-  return <form className="services-request" onSubmit={submit} aria-label={t("درخواست مشاوره تخصصی رایگان", "Request a free expert consultation")}>
+  return <form {...feedback.formProps} className="services-request" onSubmit={submit} aria-label={t("درخواست مشاوره تخصصی رایگان", "Request a free expert consultation")}>
     <ConsultationFormHeading locale={locale} />
     <div className="services-request__fields">
-      <label htmlFor={`${id}-first`}>{t("نام", "First name")} *<input id={`${id}-first`} name="firstName" autoComplete="given-name" required maxLength={100} /></label>
-      <label htmlFor={`${id}-last`}>{t("نام خانوادگی", "Last name")} *<input id={`${id}-last`} name="lastName" autoComplete="family-name" required maxLength={100} /></label>
-      <label htmlFor={`${id}-phone`}>{t("شماره موبایل", "Mobile number")} *<input id={`${id}-phone`} name="mobile" type="tel" inputMode="tel" autoComplete="tel" dir="ltr" placeholder="0912 000 0000" required maxLength={32} onInput={(event) => event.currentTarget.setCustomValidity("")} /></label>
-      <label htmlFor={`${id}-occupation`}>{t("حوزه فعالیت", "Field of activity")} *<SiteSelect id={`${id}-occupation`} name="occupation" defaultValue="" required><option value="" disabled>{t("حوزه فعالیت خود را انتخاب کنید", "Select your field of activity")}</option>{[ ["مهندسی", "Engineering"], ["علوم پایه", "Natural sciences"], ["پزشکی", "Medicine"], ["پیراپزشکی", "Allied health"], ["علوم انسانی", "Humanities"], ["مدیریت و کسب‌وکار", "Business and management"], ["هنر و معماری", "Art and architecture"], ["سایر", "Other"] ].map(([persian, english]) => <option key={english} value={t(persian, english)}>{t(persian, english)}</option>)}</SiteSelect></label>
-      <label className="services-request__wide" htmlFor={`${id}-time`}>{t("زمان مناسب تماس (اختیاری)", "Preferred contact time (optional)")}<SiteSelect id={`${id}-time`} name="contactTime" defaultValue=""><option value="">{t("فرقی ندارد", "No preference")}</option>{["10:00–12:00", "12:00–14:00", "14:00–16:00", "16:00–18:00"].map((time) => <option key={time} value={time}>{time}</option>)}</SiteSelect></label>
+      <label htmlFor={`${id}-first`}>{t("نام", "First name")} *<input id={`${id}-first`} {...feedback.fieldProps("firstName")} name="firstName" autoComplete="given-name" required maxLength={100} />{feedback.message("firstName")}</label>
+      <label htmlFor={`${id}-last`}>{t("نام خانوادگی", "Last name")} *<input id={`${id}-last`} {...feedback.fieldProps("lastName")} name="lastName" autoComplete="family-name" required maxLength={100} />{feedback.message("lastName")}</label>
+      <label htmlFor={`${id}-phone`}>{t("شماره موبایل", "Mobile number")} *<input id={`${id}-phone`} {...feedback.fieldProps("mobile")} name="mobile" type="tel" inputMode="tel" autoComplete="tel" dir="ltr" placeholder="0912 000 0000" required maxLength={32} onInput={(event) => event.currentTarget.setCustomValidity("")} />{feedback.message("mobile")}</label>
+      <label htmlFor={`${id}-occupation`}>{t("حوزه فعالیت", "Field of activity")} *<SiteSelect id={`${id}-occupation`} {...feedback.fieldProps("occupation")} name="occupation" defaultValue="" required><option value="" disabled>{t("حوزه فعالیت خود را انتخاب کنید", "Select your field of activity")}</option>{[ ["مهندسی", "Engineering"], ["علوم پایه", "Natural sciences"], ["پزشکی", "Medicine"], ["پیراپزشکی", "Allied health"], ["علوم انسانی", "Humanities"], ["مدیریت و کسب‌وکار", "Business and management"], ["هنر و معماری", "Art and architecture"], ["سایر", "Other"] ].map(([persian, english]) => <option key={english} value={t(persian, english)}>{t(persian, english)}</option>)}</SiteSelect>{feedback.message("occupation")}</label>
+      <label className="services-request__wide" htmlFor={`${id}-time`}>{t("زمان مناسب تماس (اختیاری)", "Preferred contact time (optional)")}<SiteSelect id={`${id}-time`} {...feedback.fieldProps("contactTime")} name="contactTime" defaultValue=""><option value="">{t("فرقی ندارد", "No preference")}</option>{["10:00–12:00", "12:00–14:00", "14:00–16:00", "16:00–18:00"].map((time) => <option key={time} value={time}>{time}</option>)}</SiteSelect>{feedback.message("contactTime")}</label>
     </div>
-    <div className="services-request__trap" aria-hidden="true"><label>Website<input name="website" tabIndex={-1} autoComplete="off" /></label></div>
-    <label className="services-request__consent"><input type="checkbox" name="privacyConsent" required /><span>{t("با ثبت اطلاعاتم طبق", "I agree to submit my information under the")} <Link href={`/${locale}/privacy`}>{t("سیاست حریم خصوصی", "privacy policy")}</Link> {t("موافقم.", ".")}</span></label>
-    <label className="services-request__consent"><input type="checkbox" name="contactConsent" required /><span>{t("با تماس تیم جهان آکادمی برای این درخواست موافقم.", "I agree to be contacted by Jahan Academy about this request.")}</span></label>
+    <div className="services-request__trap" aria-hidden="true"><label>Website<input {...feedback.fieldProps("website")} name="website" tabIndex={-1} autoComplete="off" />{feedback.message("website")}</label></div>
+    <label className="services-request__consent"><input type="checkbox" {...feedback.fieldProps("privacyConsent")} name="privacyConsent" required /><span>{t("با ثبت اطلاعاتم طبق", "I agree to submit my information under the")} <Link href={`/${locale}/privacy`}>{t("سیاست حریم خصوصی", "privacy policy")}</Link> {t("موافقم.", ".")}{feedback.message("privacyConsent")}</span></label>
+    <label className="services-request__consent"><input type="checkbox" {...feedback.fieldProps("contactConsent")} name="contactConsent" required /><span>{t("با تماس تیم جهان آکادمی برای این درخواست موافقم.", "I agree to be contacted by Jahan Academy about this request.")}{feedback.message("contactConsent")}</span></label>
     {error && <p className="services-request__error" role="alert">{error}</p>}
-    <button type="submit" disabled={busy} aria-busy={busy}>{busy ? t("در حال ارسال…", "Sending…") : t("ثبت درخواست مشاوره", "Request a consultation")}</button>
+    <button type="submit" disabled={!feedback.ready || busy} aria-busy={busy}>{busy ? t("در حال ارسال…", "Sending…") : t("ثبت درخواست مشاوره", "Request a consultation")}</button>
   </form>;
 }

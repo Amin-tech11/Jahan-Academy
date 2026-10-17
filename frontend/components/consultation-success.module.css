@@ -10,3 +10,7 @@ section.receipt p.note { font-size: .85rem; }
 .receipt .copy:hover { background: #edf2fa; }
 .receipt .copy:focus-visible { outline: 2px solid #123b78; outline-offset: 3px; }
 .receipt .copy:disabled { opacity: .6; cursor: wait; }
+@media (max-width: 1199px) {
+  section.receipt p.description, section.receipt p.note { font-size: 16px; }
+  .receipt .copy { min-height: 44px; }
+}

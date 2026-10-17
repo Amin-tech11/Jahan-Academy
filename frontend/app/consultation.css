@@ -106,3 +106,19 @@ body:has(.assessment-page) {
 .assessment-page .consultation-receipt > a { color: #123b78; text-decoration: underline; text-underline-offset: .2rem; }
 @media (max-width: 850px) { .assessment-page__body { grid-template-columns: 1fr; } .assessment-page__sidebar { display: grid; grid-template-columns: 1fr 1fr; column-gap: 2rem; } .assessment-page__sidebar .assessment-page__section-kicker, .assessment-page__sidebar h2, .assessment-page__sidebar > p { grid-column: 1 / -1; } .assessment-page__privacy-note { align-self: start; margin-top: 2.5rem; } }
 @media (max-width: 600px) { .assessment-page__hero { min-height: 330px; } .assessment-page__wordmark { font-size: clamp(1.15rem, 5vw, 1.55rem); letter-spacing: .22em; } .assessment-page__body { width: min(100% - 2rem, 1200px); } .assessment-page__sidebar { display: block; } .assessment-page__timeline { margin-top: 1.5rem; } .assessment-page__timeline li { min-height: 85px; } .assessment-page__privacy-note { margin-top: 0; } .assessment-form__grid { grid-template-columns: 1fr; gap: 1rem; } .assessment-page__form-card { padding: 1.3rem; } }
+@media (max-width: 1199px) {
+  .assessment-page__hero { min-height: clamp(240px, 38vw, 360px); padding-inline: var(--public-gutter); }
+  .assessment-page__hero-image { object-position: 55% 40%; }
+  .assessment-page__wordmark { font-size: clamp(18px, 4vw, 40px); letter-spacing: .22em; }
+  .assessment-page__body { width: min(960px, calc(100% - 2 * var(--public-gutter))); grid-template-columns: minmax(0, 1fr); gap: 24px; margin-block-start: 24px; }
+  .assessment-page__sidebar { display: block; padding-top: 0; }
+  .assessment-page__form-card { padding: clamp(20px, 4vw, 32px); scroll-margin-block-start: calc(var(--site-header-height) + 24px); }
+  .assessment-page :is(p, small), .assessment-form__grid label, .assessment-form__consents label { font-size: 16px; }
+  .assessment-page .assessment-form__grid :is(input, .site-select__trigger) { font-size: 16px; min-height: 48px; }
+  .assessment-form__consents label { min-height: 44px; }
+  .assessment-receipt__copy { min-height: 44px; }
+  .consultation-request-form__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 767px) {
+  .assessment-form__grid, .consultation-request-form__grid { grid-template-columns: minmax(0, 1fr); }
+}

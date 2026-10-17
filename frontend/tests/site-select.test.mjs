@@ -11,7 +11,7 @@ const { renderToStaticMarkup } = require("react-dom/server");
 const source = readFileSync(new URL("../components/site-select.tsx", import.meta.url), "utf8");
 const compiled = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX, target: ts.ScriptTarget.ES2022 } }).outputText;
 const module = { exports: {} };
-vm.runInNewContext(compiled, { module, exports: module.exports, require }, { filename: "site-select.js" });
+vm.runInNewContext(compiled, { module, exports: module.exports, require: name => name.endsWith(".css") ? {} : require(name) }, { filename: "site-select.js" });
 const SiteSelect = module.exports.default;
 const option = (value, label, disabled = false) => React.createElement("option", { value, disabled }, label);
 

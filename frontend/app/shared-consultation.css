@@ -31,3 +31,18 @@
 @media (max-width:800px) { .home-closing__layout { grid-template-columns:1fr; } .home-closing__image { min-height:0; height:18rem; border-radius:1.25rem 1.25rem 0 0; } .home-closing__card { margin-left:0; margin-top:-1rem; padding:1.5rem; } }
 @media (max-width:600px) { .home-closing__inner {flex-direction:column;align-items:start;} .home-closing .ui-button {width:100%;} }
 @media (max-width:480px) { .home-consultation__fields {grid-template-columns:1fr;} }
+
+@media (max-width: 1199px) {
+  .site .home-closing__layout { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .site .home-closing__image { width: 100%; height: clamp(220px, 42vw, 340px); min-height: 0; border-radius: 20px; }
+  .site .home-closing__card { min-width: 0; margin: 0; padding: clamp(20px, 4vw, 32px); border-radius: 20px; }
+  .site .home-consultation__fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .site .home-consultation__fields label { min-width: 0; font-size: 16px; }
+  .site .home-consultation__form :is(p, .home-consultation__consent) { font-size: 16px; line-height: 1.9; }
+  .site .home-consultation__consent { min-height: 44px; }
+  .site .home-consultation__fields :is(input, .site-select__trigger) { min-height: 48px; font-size: 16px; }
+  .site .home-closing__heading { margin-bottom: 24px; }
+}
+@media (max-width: 767px) {
+  .site .home-consultation__fields { grid-template-columns: minmax(0, 1fr); }
+}
