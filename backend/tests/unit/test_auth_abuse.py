@@ -1,9 +1,11 @@
+from collections.abc import Awaitable, Callable
 from unittest.mock import AsyncMock
 from uuid import uuid4
 
 import pytest
 from fastapi import Request
 from redis.exceptions import ConnectionError as RedisConnectionError
+from starlette.types import Message
 
 from app.core.config import Settings
 from app.modules.identity.abuse import AuthAbuseControl
@@ -30,7 +32,7 @@ async def test_redis_outage_does_not_disable_authentication_protection(action: s
     redis.eval.side_effect = RedisConnectionError("unavailable")
     redis.delete.side_effect = RedisConnectionError("unavailable")
     control = AuthAbuseControl(redis, Settings(_env_file=None))
-    operations = {
+    operations: dict[str, Callable[[], Awaitable[object]]] = {
         "request": lambda: control.check_request("login", "192.0.2.1", "account"),
         "account": lambda: control.check_account("login", uuid4()),
         "failure": lambda: control.register_failure(uuid4()),
@@ -46,7 +48,7 @@ async def test_redis_outage_does_not_disable_authentication_protection(action: s
     "endpoint", ["login", "password-reset-requests", "email-verification-requests"]
 )
 async def test_identifier_normalization_and_shared_email_limit(endpoint: str) -> None:
-    async def receive() -> dict:
+    async def receive() -> Message:
         return {"type": "http.request", "body": b'{"email":"  TEST@EXAMPLE.COM  "}'}
 
     request = Request(
