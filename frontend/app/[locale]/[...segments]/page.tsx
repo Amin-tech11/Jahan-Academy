@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { RoutedPublicPage } from "@/components/public-page";
-import { isLocale, services } from "@/lib/site-content";
+import { articles, isLocale, services } from "@/lib/site-content";
 import { pageMetadata } from "@/lib/site-seo";
 import { BreadcrumbSchema } from "@/components/breadcrumb-schema";
 
@@ -10,6 +10,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const { locale, segments } = await params;
   if (!isLocale(locale)) return {};
   const [root, slug] = segments;
+  const article = segments.length === 2 && articles.find(item => item.slug === slug && root === (item.type === "news" ? "news" : "articles"));
+  if (article) return pageMetadata(locale, `/${root}/${slug}`, `${article.title[locale]} | Jahan Academy`, article.excerpt[locale]);
   const service = root === "services" && services.find(item => item.slug === slug);
   if (service) return pageMetadata(locale, `/services/${slug}`, `${service.title[locale]} | Jahan Academy`, service.summary[locale]);
   if (root === "universities" && !slug) return pageMetadata(locale, "/universities", locale === "fa" ? "دانشگاه‌های برتر | جهان آکادمی" : "Explore universities | Jahan Academy");
