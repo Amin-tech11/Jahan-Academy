@@ -12,7 +12,7 @@ from sqlalchemy.exc import IntegrityError
 from app.core.config import Settings
 from app.modules.identity.mailer import AuthMailer
 from app.modules.identity.mfa import MfaSecurity
-from app.modules.identity.repository import AccountRecord, AuthRepository
+from app.modules.identity.repository import AccountRecord, AuthRepository, SessionRecord
 from app.modules.identity.schemas import (
     LoginRequest,
     PasswordResetConfirmRequest,
@@ -30,6 +30,7 @@ logger = structlog.get_logger()
 class IssuedTokens:
     view: TokenView
     refresh_token: str
+    refresh_expires_at: datetime | None = None
 
 
 class AuthService:
@@ -184,7 +185,8 @@ class AuthService:
                 message="The session is no longer valid. Sign in again.",
                 status_code=401,
             )
-        if record.session.expires_at <= now or record.user.status != "active":
+        deadline = await self._session_deadline(record, now)
+        if deadline is None or record.user.status != "active":
             await self._repository.revoke_family(record.session.family_id)
             await self._repository.session.commit()
             raise self._invalid_refresh_token()
@@ -198,14 +200,14 @@ class AuthService:
         new_session = await self._repository.create_session(
             user_id=record.user.id,
             token_hash=self._security.token_hash(new_refresh),
-            expires_at=now + timedelta(days=self._settings.refresh_token_days),
+            expires_at=deadline,
             ip_hash=self._security.fingerprint_hash(ip_address),
             user_agent=(user_agent or "")[:500] or None,
             family_id=record.session.family_id,
             parent_session_id=record.session.id,
         )
         access_token, access_expiry = self._security.create_access_token(
-            account.user.id, new_session.id
+            account.user.id, new_session.id, expires_at_limit=deadline
         )
         csrf_token = self._security.new_opaque_token()
         enrollment_required = await self._requires_mfa_enrollment(account.user.id)
@@ -215,6 +217,7 @@ class AuthService:
                 account, access_token, access_expiry, csrf_token, enrollment_required
             ),
             refresh_token=new_refresh,
+            refresh_expires_at=deadline,
         )
 
     async def logout(self, claims: AccessClaims) -> None:
@@ -227,6 +230,15 @@ class AuthService:
         claims = self._security.decode_access_token(access_token)
         session = await self._repository.get_active_session(claims.session_id, claims.user_id)
         if session is None:
+            raise ApplicationError(
+                code="SESSION_EXPIRED",
+                message="The session is invalid or expired.",
+                status_code=401,
+            )
+        now = datetime.now(UTC)
+        if await self._session_deadline(session, now) is None:
+            await self._repository.revoke_family(session.session.family_id)
+            await self._repository.session.commit()
             raise ApplicationError(
                 code="SESSION_EXPIRED",
                 message="The session is invalid or expired.",
@@ -247,7 +259,30 @@ class AuthService:
                 message="Set up multi-factor authentication before accessing the panel.",
                 status_code=403,
             )
+        session.session.last_seen_at = now
+        await self._repository.session.commit()
         return claims, self._user_view(account)
+
+    async def _session_limits(self, user_id: UUID) -> tuple[timedelta, timedelta]:
+        if await self._repository.requires_staff_mfa(user_id):
+            return (
+                timedelta(minutes=self._settings.staff_session_idle_minutes),
+                timedelta(hours=self._settings.staff_session_absolute_hours),
+            )
+        return (
+            timedelta(minutes=self._settings.session_idle_minutes),
+            timedelta(hours=self._settings.session_absolute_hours),
+        )
+
+    async def _session_deadline(self, record: SessionRecord, now: datetime) -> datetime | None:
+        idle, absolute = await self._session_limits(record.user.id)
+        started = await self._repository.session_family_started_at(
+            record.session.family_id, record.user.id
+        )
+        if started is None or record.session.last_seen_at + idle <= now:
+            return None
+        deadline = min(record.session.expires_at, started + absolute)
+        return deadline if now < deadline else None
 
     async def _requires_mfa_enrollment(self, user_id: UUID) -> bool:
         if not await self._repository.requires_staff_mfa(user_id):
@@ -417,14 +452,20 @@ class AuthService:
         self, account: AccountRecord, ip_address: str | None, user_agent: str | None
     ) -> IssuedTokens:
         refresh_token = self._security.new_opaque_token()
+        _, absolute = await self._session_limits(account.user.id)
+        deadline = datetime.now(UTC) + min(
+            absolute, timedelta(days=self._settings.refresh_token_days)
+        )
         session = await self._repository.create_session(
             user_id=account.user.id,
             token_hash=self._security.token_hash(refresh_token),
-            expires_at=datetime.now(UTC) + timedelta(days=self._settings.refresh_token_days),
+            expires_at=deadline,
             ip_hash=self._security.fingerprint_hash(ip_address),
             user_agent=(user_agent or "")[:500] or None,
         )
-        access_token, expires_at = self._security.create_access_token(account.user.id, session.id)
+        access_token, expires_at = self._security.create_access_token(
+            account.user.id, session.id, expires_at_limit=deadline
+        )
         csrf_token = self._security.new_opaque_token()
         return IssuedTokens(
             view=self._token_view(
@@ -435,6 +476,7 @@ class AuthService:
                 await self._requires_mfa_enrollment(account.user.id),
             ),
             refresh_token=refresh_token,
+            refresh_expires_at=deadline,
         )
 
     def _token_view(

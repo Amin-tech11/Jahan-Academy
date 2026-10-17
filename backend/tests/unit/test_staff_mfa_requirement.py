@@ -40,7 +40,15 @@ def auth() -> tuple[AuthService, Mock, AccountRecord]:
     repository.get_account_by_email.return_value = account
     repository.get_staff_account_by_username.return_value = account
     repository.get_account_by_user_id.return_value = account
-    repository.get_active_session.return_value = SimpleNamespace()
+    repository.get_active_session.return_value = SimpleNamespace(
+        user=account.user,
+        session=SimpleNamespace(
+            family_id=uuid4(),
+            last_seen_at=datetime.now(UTC),
+            expires_at=datetime.now(UTC) + timedelta(hours=8),
+        ),
+    )
+    repository.session_family_started_at.return_value = datetime.now(UTC)
     repository.create_session.return_value = SimpleNamespace(id=uuid4())
     repository.requires_staff_mfa.return_value = True
     repository.mfa_record.return_value = None
@@ -84,6 +92,7 @@ async def test_refresh_cannot_upgrade_an_unenrolled_staff_session(
             expires_at=datetime.now(UTC) + timedelta(days=1),
             family_id=uuid4(),
             id=uuid4(),
+            last_seen_at=datetime.now(UTC),
         ),
     )
     issued = await service.refresh("synthetic-refresh", None, None)

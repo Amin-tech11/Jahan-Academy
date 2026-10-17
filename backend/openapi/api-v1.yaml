@@ -1132,7 +1132,12 @@ paths:
         '429': { $ref: '#/components/responses/RateLimited' }
   /auth/refresh:
     post:
-      description: Rechecks current staff roles and MFA enrollment; rotation never grants panel access to an unenrolled staff account.
+      description: >-
+        Rechecks current roles and MFA enrollment. Both access and refresh enforce idle
+        and absolute session lifetimes. Rotation preserves the original login deadline;
+        expired sessions return 401 and cannot be renewed. Default idle/absolute limits
+        are 30 minutes/12 hours for regular users and 15 minutes/8 hours for staff.
+        Rotation never grants panel access to an unenrolled staff account.
       tags: [User Authentication]
       operationId: refreshUserSession
       x-phase: Final

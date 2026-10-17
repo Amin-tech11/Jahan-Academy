@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
-from typing import Any
+from typing import Any, cast
 from uuid import UUID, uuid4
 
 from sqlalchemy import select, text, update
@@ -373,6 +373,11 @@ class AuthRepository:
         return None if row is None else SessionRecord(session=row[0], user=row[1])
 
     async def get_active_session(self, session_id: UUID, user_id: UUID) -> SessionRecord | None:
+        # Same lock order as refresh/MFA: user, then session. Persisting activity must
+        # not race a refresh that revokes this session or another sensitive action.
+        await self.session.execute(
+            select(UserModel).where(UserModel.id == user_id).with_for_update()
+        )
         now = datetime.now(UTC)
         statement = (
             select(SessionModel, UserModel)
@@ -385,9 +390,23 @@ class AuthRepository:
                 UserModel.status == "active",
                 UserModel.deleted_at.is_(None),
             )
+            .with_for_update(of=SessionModel)
+            .execution_options(populate_existing=True)
         )
         row = (await self.session.execute(statement)).one_or_none()
         return None if row is None else SessionRecord(session=row[0], user=row[1])
+
+    async def session_family_started_at(self, family_id: UUID, user_id: UUID) -> datetime | None:
+        # Rotation retains the original row. Its timestamp, never the child's,
+        # defines the absolute lifetime, including for pre-policy sessions.
+        return cast(
+            datetime | None,
+            await self.session.scalar(
+                select(SessionModel.created_at).where(
+                    SessionModel.id == family_id, SessionModel.user_id == user_id
+                )
+            ),
+        )
 
     async def revoke_session(self, session_id: UUID) -> None:
         await self.session.execute(

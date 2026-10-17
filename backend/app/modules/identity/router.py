@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from datetime import UTC, datetime
 from typing import Annotated
 from uuid import UUID
 
@@ -331,6 +332,10 @@ async def recover_staff_access(
 
 def _set_auth_cookies(response: Response, issued: IssuedTokens, settings: Settings) -> None:
     max_age = settings.refresh_token_days * 24 * 60 * 60
+    if issued.refresh_expires_at is not None:
+        max_age = min(
+            max_age, max(0, int((issued.refresh_expires_at - datetime.now(UTC)).total_seconds()))
+        )
     response.set_cookie(
         settings.refresh_cookie_name,
         issued.refresh_token,

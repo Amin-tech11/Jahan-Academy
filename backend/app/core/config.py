@@ -37,6 +37,10 @@ class Settings(BaseSettings):
     jwt_audience: str = "jahan-academy-api"
     access_token_minutes: int = Field(default=15, ge=5, le=60)
     refresh_token_days: int = Field(default=30, ge=1, le=90)
+    session_idle_minutes: int = Field(default=30, ge=1, le=1440)
+    session_absolute_hours: int = Field(default=12, ge=1, le=24)
+    staff_session_idle_minutes: int = Field(default=15, ge=1, le=1440)
+    staff_session_absolute_hours: int = Field(default=8, ge=1, le=24)
     email_verification_hours: int = Field(default=24, ge=1, le=72)
     password_reset_minutes: int = Field(default=30, ge=10, le=120)
     login_max_attempts: int = Field(default=5, ge=3, le=20)
@@ -92,6 +96,19 @@ class Settings(BaseSettings):
     clamav_host: str = "clamav"
     clamav_port: int = Field(default=3310, ge=1, le=65535)
     clamav_timeout_seconds: float = Field(default=15.0, gt=0, le=120)
+
+    @model_validator(mode="after")
+    def validate_session_limits(self) -> "Settings":
+        if self.session_idle_minutes > self.session_absolute_hours * 60:
+            raise ValueError("Session idle timeout must not exceed its absolute lifetime")
+        if self.staff_session_idle_minutes > self.staff_session_absolute_hours * 60:
+            raise ValueError("Staff idle timeout must not exceed its absolute lifetime")
+        if (
+            self.staff_session_idle_minutes > self.session_idle_minutes
+            or self.staff_session_absolute_hours > self.session_absolute_hours
+        ):
+            raise ValueError("Staff session limits must not be weaker than regular session limits")
+        return self
 
     @model_validator(mode="after")
     def validate_production_secrets(self) -> "Settings":

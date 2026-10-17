@@ -67,9 +67,13 @@ class AuthSecurity:
     def constant_time_equal(left: str, right: str) -> bool:
         return hmac.compare_digest(left.encode("utf-8"), right.encode("utf-8"))
 
-    def create_access_token(self, user_id: UUID, session_id: UUID) -> tuple[str, datetime]:
+    def create_access_token(
+        self, user_id: UUID, session_id: UUID, *, expires_at_limit: datetime | None = None
+    ) -> tuple[str, datetime]:
         now = datetime.now(UTC)
         expires_at = now + timedelta(minutes=self._settings.access_token_minutes)
+        if expires_at_limit is not None:
+            expires_at = min(expires_at, expires_at_limit)
         payload = {
             "sub": str(user_id),
             "sid": str(session_id),
