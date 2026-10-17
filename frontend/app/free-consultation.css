@@ -28,3 +28,11 @@
   .free-consultation-page__intro p, .free-consultation-page__media-caption span { font-size: 16px; }
   .free-consultation-page .home-closing__card { min-width: 0; padding: clamp(20px, 4vw, 32px); }
 }
+
+@media (max-width: 767px) {
+  .free-consultation-page__media { height: clamp(240px, 68vw, 340px); }
+  .free-consultation-page__media img { object-position: 50% 20%; }
+  .free-consultation-page__media-caption { inset-inline: 12px; bottom: 12px; gap: 4px; padding: 10px 12px; border-radius: 10px; }
+  .free-consultation-page__media-caption strong { font-size: 14px; line-height: 1.5; }
+  .free-consultation-page__media-caption span { font-size: 12px; line-height: 1.6; }
+}
