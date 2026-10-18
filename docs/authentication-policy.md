@@ -16,6 +16,11 @@ remaining window in Retry-After. Redis failure returns 503, never unlimited acce
 Environment settings are listed in .env.example. CI raises only shared-IP limits for
 the integration runner; dedicated tests exercise low limits using actual Redis.
 
+Activity uses the refresh-sized limits and identifies the authenticated user, not the
+shared invalid-token bucket. Passive polling and refresh do not extend the idle timeout.
+Sensitive staff mutations require a one-use password/MFA proof. See
+session-activity-and-stepup.md for the protocol and tests.
+
 Five incorrect passwords or MFA proofs within 15 minutes lock the account for 15 minutes.
 Repeated lockouts within 24 hours double the delay up to 24 hours. Expired failure windows
 start over. Active lock deadlines persist in PostgreSQL; failure windows and escalation

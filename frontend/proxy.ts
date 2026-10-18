@@ -1,15 +1,19 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+import { storageOrigin } from "./lib/storage-origin";
 
 export function proxy(request: NextRequest) {
-  // Locale comes from static route params; do not make public HTML request-dependent.
-  if (!request.nextUrl.pathname.startsWith("/admin")) return NextResponse.next();
+  const admin = request.nextUrl.pathname.startsWith("/admin");
   const headers = new Headers(request.headers);
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
-  const policy = `default-src 'self'; script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""}; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'${process.env.NODE_ENV === "development" ? " ws:" : ""}; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'`;
+  const storage = storageOrigin(process.env.ADMIN_STORAGE_ORIGIN);
+  const analytics = admin ? "" : " https://www.google-analytics.com https://region1.google-analytics.com https://www.googletagmanager.com";
+  const policy = `default-src 'self'; script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""}; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:${analytics}; font-src 'self'; connect-src 'self'${admin && storage ? ` ${storage}` : ""}${analytics}${process.env.NODE_ENV === "development" ? " ws:" : ""};${admin ? "" : " frame-src https://maps.google.com https://www.google.com/maps/;"} object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'`;
+  headers.set("x-nonce", nonce);
   headers.set("content-security-policy", policy);
   const response = NextResponse.next({ request: { headers } });
   response.headers.set("Content-Security-Policy", policy);
+  // Request-specific nonces must never be served from shared HTML caches.
   response.headers.set("Cache-Control", "no-store");
   return response;
 }

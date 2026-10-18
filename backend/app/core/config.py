@@ -99,6 +99,11 @@ class Settings(BaseSettings):
     media_max_logo_bytes: int = Field(default=5 * 1024 * 1024, ge=1024)
     media_max_public_file_bytes: int = Field(default=25 * 1024 * 1024, ge=1024)
     media_max_image_pixels: int = Field(default=40_000_000, ge=1_000_000)
+    media_user_quota_bytes: int = Field(default=512 * 1024 * 1024, ge=1024)
+    media_total_quota_bytes: int = Field(default=5 * 1024 * 1024 * 1024, ge=1024)
+    media_user_pending_limit: int = Field(default=20, ge=1, le=1000)
+    media_total_pending_limit: int = Field(default=200, ge=1, le=10000)
+    sheets_snapshot_retention_days: int = Field(default=14, ge=1, le=14)
     malware_scan_enabled: bool = True
     clamav_host: str = "clamav"
     clamav_port: int = Field(default=3310, ge=1, le=65535)

@@ -16,8 +16,7 @@ pytestmark = pytest.mark.skipif(
 )
 
 
-async def test_empty_day_export_does_not_authenticate_or_write_to_google() -> None:
-    # An old complete day outside the application's record history.
+async def test_expired_day_export_does_not_authenticate_or_write_to_google() -> None:
     day = "1900-01-01"
     with (
         patch(
@@ -27,17 +26,16 @@ async def test_empty_day_export_does_not_authenticate_or_write_to_google() -> No
         patch("app.modules.operational.sheets_backup.google_token", AsyncMock()) as token,
         patch("app.modules.operational.sheets_backup.write_snapshot", AsyncMock()) as remote,
     ):
-        prepared = await prepare_day(day)
+        with pytest.raises(ValueError, match="retention window"):
+            await prepare_day(day)
         result = await backup_day(day)
-    assert prepared["status"] == "empty"
-    assert prepared["rowCount"] == 0 and prepared["requests"] == []
-    assert result == {"status": "empty", "day": day, "rows": 0}
+    assert result == {"status": "expired", "day": day}
     token.assert_not_awaited()
     remote.assert_not_awaited()
 
 
 async def test_database_to_snapshot_includes_whole_day_and_archived_requests() -> None:
-    day = date(2001, 1, 1)
+    day = date.today() - timedelta(days=3)
     start, end = day_bounds(day)
     references = [f"BK-{uuid4().hex[:18]}" for _ in range(6)]
     moments = [
@@ -76,6 +74,7 @@ async def test_database_to_snapshot_includes_whole_day_and_archived_requests() -
                 "app.modules.operational.sheets_backup.google_token", AsyncMock(return_value="test")
             ),
             patch("app.modules.operational.sheets_backup.write_snapshot", remote),
+            patch("app.modules.operational.sheets_retention.reconcile", AsyncMock()),
         ):
             result = await backup_day(day.isoformat())
             prepared = await prepare_day(day.isoformat())

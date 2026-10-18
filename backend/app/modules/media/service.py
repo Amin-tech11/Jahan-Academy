@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import asyncio
 import math
 import secrets
+from collections.abc import Awaitable
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from uuid import UUID
@@ -9,6 +11,7 @@ from uuid import UUID
 from sqlalchemy.exc import IntegrityError
 
 from app.core.config import Settings
+from app.core.work_budget import heavy_work_slot
 from app.modules.identity.authorization import AuthorizationContext
 from app.modules.media.domain import (
     EXTENSIONS_BY_MIME,
@@ -26,6 +29,26 @@ from app.modules.media.validation import (
     MediaValidationError,
 )
 from app.shared.exceptions import ApplicationError
+
+_MEDIA_PROCESSING_SLOT = heavy_work_slot
+
+
+async def _complete_io[T](operation: Awaitable[T]) -> T:
+    """Cancellation must not release admission while native work still owns buffers."""
+    task = asyncio.ensure_future(operation)
+    try:
+        return await asyncio.shield(task)
+    except asyncio.CancelledError:
+        while not task.done():
+            try:
+                await asyncio.shield(task)
+            except asyncio.CancelledError:
+                continue
+            except Exception:
+                break
+        if not task.cancelled():
+            task.exception()  # Retrieve any late failure before propagating cancellation.
+        raise
 
 
 class MediaService:
@@ -71,12 +94,15 @@ class MediaService:
             "attribution": payload.get("attribution"),
         }
         try:
+            await self._repository.reserve_quota(actor.user_id, size_bytes, self._settings)
             row = await self._repository.create_intent(values)
             upload_url = await self._storage.create_upload_url(
                 row["bucket"],
                 row["object_key"],
                 mime_type,
                 self._settings.media_upload_expiry_seconds,
+                size_bytes,
+                deadline=expires_at,
             )
             await self._repository.audit(
                 actor_user_id=actor.user_id,
@@ -91,10 +117,12 @@ class MediaService:
             raise self._storage_unavailable() from exc
         return UploadIntent(
             id=row["id"],
-            upload_url=upload_url,
-            headers={"Content-Type": mime_type},
+            upload_url=upload_url.url,
+            method="POST",
+            fields=upload_url.fields,
+            headers={},
             expires_at=expires_at,
-            max_size_bytes=self._max_size(purpose),
+            max_size_bytes=size_bytes,
         )
 
     async def confirm(
@@ -116,14 +144,28 @@ class MediaService:
             await self._reject(row, "MEDIA_UPLOAD_EXPIRED")
             raise ApplicationError("MEDIA_UPLOAD_EXPIRED", "The upload intent has expired.", 410)
         await self._repository.mark_processing(asset_id)
+        acquired = False
         try:
-            stored = await self._storage.head(row["bucket"], row["object_key"])
+            acquired = _MEDIA_PROCESSING_SLOT.acquire(blocking=False)
+            if not acquired:
+                raise MalwareScanError("MEDIA_VALIDATOR_BUSY")
+            # Also bound legacy intents and configurations with larger declaration limits.
+            input_cap = (
+                25 * 1024 * 1024 if row["mime_type"] == "application/pdf" else 15 * 1024 * 1024
+            )
+            if row["size_bytes"] > input_cap:
+                raise MediaValidationError("MEDIA_TOO_LARGE")
+            stored = await _complete_io(self._storage.head(row["bucket"], row["object_key"]))
             if stored.size_bytes != row["size_bytes"]:
                 raise MediaValidationError("MEDIA_SIZE_MISMATCH")
             if stored.content_type and stored.content_type.casefold() != row["mime_type"]:
                 raise MediaValidationError("MEDIA_CONTENT_TYPE_MISMATCH")
-            content = await self._storage.read(row["bucket"], row["object_key"], row["size_bytes"])
-            result = self._validator.validate(content, row["mime_type"])
+            content = await _complete_io(
+                self._storage.read(row["bucket"], row["object_key"], row["size_bytes"])
+            )
+            result = await _complete_io(
+                asyncio.to_thread(self._validator.validate, content, row["mime_type"])
+            )
             if not secrets.compare_digest(result.checksum_sha256, checksum):
                 raise MediaValidationError("MEDIA_CHECKSUM_MISMATCH")
             duplicate_id = await self._repository.duplicate_ready_asset(checksum, asset_id)
@@ -134,15 +176,17 @@ class MediaService:
                     409,
                     field_errors={"existingMediaId": str(duplicate_id)},
                 )
-            await self._scanner.scan(content)
+            await _complete_io(self._scanner.scan(content))
             target_key = f"public/{asset_id}/{Path(row['object_key']).name}"
-            await self._storage.promote(
-                row["bucket"],
-                row["object_key"],
-                self._settings.media_public_bucket,
-                target_key,
-                content,
-                result.detected_mime_type,
+            await _complete_io(
+                self._storage.promote(
+                    row["bucket"],
+                    row["object_key"],
+                    self._settings.media_public_bucket,
+                    target_key,
+                    content,
+                    result.detected_mime_type,
+                )
             )
             ready = await self._repository.mark_ready(
                 asset_id,
@@ -181,6 +225,9 @@ class MediaService:
             raise ApplicationError(
                 "MEDIA_DUPLICATE", "An identical media asset already exists.", 409
             ) from exc
+        finally:
+            if acquired:
+                _MEDIA_PROCESSING_SLOT.release()
 
     async def list(
         self,
@@ -322,10 +369,10 @@ class MediaService:
 
     def _max_size(self, purpose: MediaPurpose) -> int:
         if purpose is MediaPurpose.LOGO:
-            return self._settings.media_max_logo_bytes
+            return min(self._settings.media_max_logo_bytes, 15 * 1024 * 1024)
         if purpose is MediaPurpose.PUBLIC_FILE:
-            return self._settings.media_max_public_file_bytes
-        return self._settings.media_max_image_bytes
+            return min(self._settings.media_max_public_file_bytes, 25 * 1024 * 1024)
+        return min(self._settings.media_max_image_bytes, 15 * 1024 * 1024)
 
     @staticmethod
     def _require_owner_or_super_admin(row: dict[str, object], actor: AuthorizationContext) -> None:

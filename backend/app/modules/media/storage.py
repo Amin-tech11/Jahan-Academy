@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 from collections.abc import Callable
 from dataclasses import dataclass
+from datetime import UTC, datetime
 from typing import Protocol, TypeVar
 
 import boto3  # type: ignore[import-untyped]
@@ -25,10 +26,23 @@ class StoredObject:
     content_type: str | None
 
 
+@dataclass(frozen=True, slots=True)
+class UploadForm:
+    url: str
+    fields: dict[str, str]
+
+
 class MediaStorage(Protocol):
     async def create_upload_url(
-        self, bucket: str, object_key: str, content_type: str, expires_seconds: int
-    ) -> str: ...
+        self,
+        bucket: str,
+        object_key: str,
+        content_type: str,
+        expires_seconds: int,
+        size_bytes: int,
+        *,
+        deadline: datetime | None = None,
+    ) -> UploadForm: ...
 
     async def head(self, bucket: str, object_key: str) -> StoredObject: ...
     async def read(self, bucket: str, object_key: str, max_bytes: int) -> bytes: ...
@@ -61,16 +75,34 @@ class S3MediaStorage:
         )
 
     async def create_upload_url(
-        self, bucket: str, object_key: str, content_type: str, expires_seconds: int
-    ) -> str:
-        def generate() -> str:
-            return str(
-                self._public.generate_presigned_url(
-                    "put_object",
-                    Params={"Bucket": bucket, "Key": object_key, "ContentType": content_type},
-                    ExpiresIn=expires_seconds,
-                )
+        self,
+        bucket: str,
+        object_key: str,
+        content_type: str,
+        expires_seconds: int,
+        size_bytes: int,
+        *,
+        deadline: datetime | None = None,
+    ) -> UploadForm:
+        def generate() -> UploadForm:
+            ttl = (
+                expires_seconds
+                if deadline is None
+                else min(expires_seconds, int((deadline - datetime.now(UTC)).total_seconds()))
             )
+            if ttl < 1:
+                raise StorageError("STORAGE_INTENT_EXPIRED")
+            result = self._public.generate_presigned_post(
+                Bucket=bucket,
+                Key=object_key,
+                Fields={"Content-Type": content_type},
+                Conditions=[
+                    {"Content-Type": content_type},
+                    ["content-length-range", size_bytes, size_bytes],
+                ],
+                ExpiresIn=ttl,
+            )
+            return UploadForm(str(result["url"]), dict(result["fields"]))
 
         return await self._call(generate)
 

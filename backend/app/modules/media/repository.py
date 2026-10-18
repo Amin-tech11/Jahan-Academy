@@ -7,6 +7,9 @@ from uuid import UUID, uuid4
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.config import Settings
+from app.shared.exceptions import ApplicationError
+
 
 class StaleMediaError(Exception):
     pass
@@ -15,6 +18,39 @@ class StaleMediaError(Exception):
 class MediaRepository:
     def __init__(self, session: AsyncSession) -> None:
         self.session = session
+
+    async def reserve_quota(self, owner: UUID, size: int, settings: Settings) -> None:
+        # Serialize reservations across API processes; released by intent commit/rollback.
+        await self.session.execute(text("SELECT pg_advisory_xact_lock(720028)"))
+        rows = (
+            (
+                await self.session.execute(
+                    text("""
+            SELECT owner_user_id,
+              coalesce(sum(size_bytes * CASE
+                WHEN quarantine_cleaned_at IS NULL AND quarantine_key IS NOT NULL THEN 2
+                WHEN upload_status = 'ready' AND deleted_at IS NULL THEN 1 ELSE 0 END), 0) AS bytes,
+              count(*) FILTER (WHERE quarantine_cleaned_at IS NULL
+                                AND quarantine_key IS NOT NULL) AS pending
+            FROM media_assets GROUP BY owner_user_id
+        """)
+                )
+            )
+            .mappings()
+            .all()
+        )
+        total_bytes = sum(int(r["bytes"]) for r in rows)
+        total_pending = sum(int(r["pending"]) for r in rows)
+        own = next((r for r in rows if r["owner_user_id"] == owner), None)
+        if (
+            total_bytes + 2 * size > settings.media_total_quota_bytes
+            or total_pending >= settings.media_total_pending_limit
+            or (int(own["bytes"]) if own else 0) + 2 * size > settings.media_user_quota_bytes
+            or (int(own["pending"]) if own else 0) >= settings.media_user_pending_limit
+        ):
+            raise ApplicationError(
+                "MEDIA_QUOTA_EXCEEDED", "Upload quota exhausted; retry after cleanup.", 429
+            )
 
     async def create_intent(self, values: dict[str, Any]) -> dict[str, Any]:
         asset_id = uuid4()
@@ -25,10 +61,13 @@ class MediaRepository:
                         "INSERT INTO media_assets (id, owner_user_id, storage_provider, bucket, "
                         "object_key, original_filename, mime_type, size_bytes, privacy_class, "
                         "scan_status, purpose, upload_status, upload_expires_at, alt_fa, alt_en, "
-                        "source_url, attribution) VALUES (:id, :owner_user_id, 's3', :bucket, "
+                        "source_url, attribution, quarantine_key, quarantine_cleanup_after) "
+                        "VALUES (:id, :owner_user_id, 's3', :bucket, "
                         ":object_key, :original_filename, :mime_type, :size_bytes, 'quarantine', "
                         "'pending', :purpose, 'pending', :upload_expires_at, :alt_fa, :alt_en, "
-                        ":source_url, :attribution) RETURNING *"
+                        ":source_url, :attribution, CAST(:object_key AS varchar), "
+                        "CAST(:upload_expires_at AS timestamptz) + interval '5 minutes') "
+                        "RETURNING *"
                     ),
                     {"id": asset_id, **values},
                 )

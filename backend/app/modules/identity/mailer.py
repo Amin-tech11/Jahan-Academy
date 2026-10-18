@@ -9,6 +9,8 @@ from app.core.config import Settings
 
 
 class AuthMailer(Protocol):
+    async def send_security_notice(self, email: str, subject: str, body: str) -> None: ...
+
     async def send_email_verification(self, email: str, token: str) -> None: ...
 
     async def send_password_reset(self, email: str, token: str) -> None: ...
@@ -17,6 +19,9 @@ class AuthMailer(Protocol):
 class SmtpAuthMailer:
     def __init__(self, settings: Settings) -> None:
         self._settings = settings
+
+    async def send_security_notice(self, email: str, subject: str, body: str) -> None:
+        await self._send(email, subject, body)
 
     async def send_email_verification(self, email: str, token: str) -> None:
         url = f"{self._settings.frontend_url.rstrip('/')}/verify-email#token={token}"

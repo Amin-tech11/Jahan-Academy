@@ -3,6 +3,7 @@ from __future__ import annotations
 from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 from functools import lru_cache
+from threading import Lock
 from typing import Annotated
 
 from fastapi import Depends, Request
@@ -47,8 +48,17 @@ class CurrentUser:
 
 
 @lru_cache
-def auth_security() -> AuthSecurity:
+def _cached_auth_security() -> AuthSecurity:
     return AuthSecurity(get_settings())
+
+
+_security_lock = Lock()
+
+
+def auth_security() -> AuthSecurity:
+    # lru_cache alone does not serialize concurrent cold-cache misses.
+    with _security_lock:
+        return _cached_auth_security()
 
 
 def auth_abuse(
@@ -58,6 +68,7 @@ def auth_abuse(
 
 
 def auth_service(
+    request: Request,
     session: Annotated[AsyncSession, Depends(database_session)],
     settings: Annotated[Settings, Depends(get_settings)],
     abuse: Annotated[AuthAbuseControl, Depends(auth_abuse)],
@@ -68,6 +79,8 @@ def auth_service(
         mailer=SmtpAuthMailer(settings),
         settings=settings,
         abuse=abuse,
+        ip_address=request.client.host if request.client else None,
+        user_agent=request.headers.get("user-agent"),
     )
 
 
@@ -131,6 +144,21 @@ async def authorization_context(
 ) -> AuthorizationContext:
     service = AuthorizationService(AuthorizationRepository(session))
     return await service.context_for(principal.user.id)
+
+
+async def require_fresh_auth(
+    request: Request,
+    principal: Annotated[CurrentUser, Depends(current_user)],
+) -> None:
+    from app.modules.identity.reauth import consume
+
+    await consume(
+        get_redis(),
+        principal.claims,
+        request.method,
+        request.url.path.removeprefix("/api/v1"),
+        request.headers.get("x-reauth-token"),
+    )
 
 
 def require_permissions(

@@ -29,6 +29,18 @@ env:
   COMPOSE_FILE: docker-compose.yml:docker-compose.ci.yml
 
 jobs:
+  local-backup-protection:
+    name: Windows local backup protection
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Verify DPAPI backup and safe failure behavior
+        shell: pwsh
+        run: ./scripts/test-local-backup-protection.ps1 -TestDirectory (Join-Path $env:RUNNER_TEMP ([guid]::NewGuid().ToString('N')))
+
   lint:
     name: Lint
     runs-on: ubuntu-24.04
@@ -122,6 +134,8 @@ jobs:
 
   browser-tests:
     name: Browser and Accessibility Tests
+    env:
+      ADMIN_STORAGE_ORIGIN: http://localhost:9100
     needs: lint
     runs-on: ubuntu-24.04
     timeout-minutes: 30
@@ -268,6 +282,18 @@ jobs:
           DATABASE_URL: postgresql+psycopg://jahan:jahan_ci@localhost:${{ job.services.postgres.ports['5432'] }}/jahan_academy
         run: uv run alembic -c alembic.ini upgrade head
 
+      - name: Build isolated storage policy test service from pinned upstream source
+        run: docker build --file deploy/testing/minio.Dockerfile --tag jahan-ci-minio:policy-test deploy/testing
+        working-directory: .
+
+      - name: Start isolated storage policy test service
+        run: >-
+          docker run --detach --name media-policy-test
+          -e MINIO_ROOT_USER=synthetic-local-user
+          -e MINIO_ROOT_PASSWORD=synthetic-local-password-only
+          -p 127.0.0.1:19200:9000
+          jahan-ci-minio:policy-test server /data
+
       - name: Run integration tests
         env:
           JAHAN_RUN_INTEGRATION: "1"
@@ -279,6 +305,7 @@ jobs:
           JAHAN_API_RATE_LIMIT: "10000"
           JAHAN_AUTH_IP_LIMIT: "10000"
           JAHAN_AUTH_REFRESH_IP_LIMIT: "10000"
+          JAHAN_STORAGE_POLICY_TEST_URL: http://127.0.0.1:19200
         run: uv run pytest tests/integration -v
 
       - name: Verify latest migration rollback and re-upgrade
@@ -310,7 +337,7 @@ jobs:
 
   build:
     name: Build
-    needs: [integration-tests, browser-tests]
+    needs: [integration-tests, browser-tests, local-backup-protection]
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     steps:

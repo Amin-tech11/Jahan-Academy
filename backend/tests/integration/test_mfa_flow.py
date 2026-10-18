@@ -17,7 +17,7 @@ from app.modules.identity.dependencies import auth_security, auth_service
 from app.modules.identity.mfa import MfaSecurity
 from app.modules.identity.repository import AuthRepository
 from app.modules.identity.service import AuthService
-from tests.integration.test_auth_flow import CapturingMailer
+from tests.integration.test_auth_flow import CapturingMailer, dispatch_auth_mail
 
 pytestmark = pytest.mark.skipif(
     os.getenv("JAHAN_RUN_INTEGRATION") != "1",
@@ -51,6 +51,8 @@ def test_optional_mfa_enrollment_replay_recovery_and_session_revocation() -> Non
                 },
             )
             assert registration.status_code == 202
+            client.portal.call(dispatch_auth_mail, mailer)  # type: ignore[union-attr]
+            assert mailer.verification_token is not None
             verified = client.post(
                 "/api/v1/auth/email-verifications", json={"token": mailer.verification_token}
             )

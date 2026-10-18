@@ -60,4 +60,5 @@ def login_enrolled_staff(client: TestClient, identity: dict[str, str], password:
     )
     assert forbidden.status_code == 403, forbidden.text
     assert forbidden.json()["error"]["code"] == "MFA_REQUIRED_FOR_STAFF"
+    authenticated.extensions["unused_recovery_codes"] = codes[2:]
     return cast(Response, authenticated)

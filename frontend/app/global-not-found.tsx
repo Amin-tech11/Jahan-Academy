@@ -2,4 +2,5 @@ import "./globals.css";
 import "./foundation.css";
 import "@fontsource-variable/vazirmatn";
 import NotFound from "./not-found";
-export default function GlobalNotFound() { return <html lang="fa" dir="rtl"><body><NotFound /></body></html>; }
+import { PublicDocument } from "@/components/public-document";
+export default function GlobalNotFound() { return <PublicDocument locale="fa"><NotFound /></PublicDocument>; }

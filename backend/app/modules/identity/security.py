@@ -35,7 +35,11 @@ class AuthSecurity:
             hash_len=32,
             salt_len=16,
         )
-        self._dummy_password_hash = self._passwords.hash("Jahan-Dummy-Password-2026")
+        # Fixed dummy hash, never an account credential. Construction allocates no Argon2 work.
+        self._dummy_password_hash = (
+            "$argon2id$v=19$m=65536,t=3,p=4$3olKu4BAEgr/AdqoUm+0Cg$"  # nosec B105
+            "Pmmb6TdNACtLAXuBU02Nx8N/1j6+L3y2DIdNd/IfZ9I"
+        )
 
     def hash_password(self, password: str) -> str:
         return self._passwords.hash(password)

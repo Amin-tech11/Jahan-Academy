@@ -4,16 +4,24 @@ import os
 from collections.abc import AsyncIterator
 from uuid import uuid4
 
+import psycopg
 import pytest
 from fastapi.testclient import TestClient
 
 from app.core.config import get_settings
 from app.core.database import session_factory
 from app.main import app
+from app.modules.identity.auth_mail import deliver
 from app.modules.identity.dependencies import auth_security, auth_service
 from app.modules.identity.mailer import AuthMailer
 from app.modules.identity.repository import AuthRepository
 from app.modules.identity.service import AuthService
+
+
+async def dispatch_auth_mail(mailer: AuthMailer) -> None:
+    async with session_factory() as session:
+        await deliver(session, mailer, get_settings())
+
 
 pytestmark = pytest.mark.skipif(
     os.getenv("JAHAN_RUN_INTEGRATION") != "1",
@@ -22,6 +30,9 @@ pytestmark = pytest.mark.skipif(
 
 
 class CapturingMailer(AuthMailer):
+    async def send_security_notice(self, email: str, subject: str, body: str) -> None:
+        pass
+
     verification_token: str | None = None
     password_reset_token: str | None = None
 
@@ -64,6 +75,21 @@ def test_complete_email_authentication_lifecycle() -> None:
                 },
             )
             assert registration.status_code == 202
+            duplicate = client.post(
+                "/api/v1/auth/register",
+                json={
+                    "email": email,
+                    "password": original_password,
+                    "firstName": "Auth",
+                    "lastName": "Flow",
+                    "locale": "fa",
+                    "acceptedTermsVersion": "1.0",
+                    "acceptedPrivacyVersion": "1.0",
+                },
+            )
+            assert duplicate.status_code == registration.status_code
+            assert duplicate.json() == registration.json()
+            client.portal.call(dispatch_auth_mail, mailer)  # type: ignore[union-attr]
             assert mailer.verification_token is not None
 
             before_verification = client.post(
@@ -126,6 +152,7 @@ def test_complete_email_authentication_lifecycle() -> None:
                 json={"email": email},
             )
             assert reset_request.status_code == 202
+            client.portal.call(dispatch_auth_mail, mailer)  # type: ignore[union-attr]
             assert mailer.password_reset_token is not None
 
             blocked_password = client.post(
@@ -145,6 +172,25 @@ def test_complete_email_authentication_lifecycle() -> None:
                 },
             )
             assert reset.status_code == 204
+            database = os.environ["JAHAN_DATABASE_URL"].replace(
+                "postgresql+asyncpg://", "postgresql://"
+            )
+            with psycopg.connect(database) as connection, connection.cursor() as cursor:
+                cursor.execute(
+                    """SELECT a.action FROM audit_logs a JOIN user_identities i
+                    ON i.user_id = a.entity_id WHERE i.provider_subject = %s""",
+                    (email,),
+                )
+                actions = [row[0] for row in cursor.fetchall()]
+                assert actions.count("auth.login.failed") == 5
+                assert "auth.account.locked" in actions and "auth.password.reset" in actions
+                cursor.execute(
+                    """SELECT n.event_code FROM notifications n JOIN user_identities i
+                    ON i.user_id = n.user_id WHERE i.provider_subject = %s""",
+                    (email,),
+                )
+                events = {row[0] for row in cursor.fetchall()}
+                assert {"auth.account.locked", "auth.password.reset"} <= events
 
             login = client.post(
                 "/api/v1/auth/login",

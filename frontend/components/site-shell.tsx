@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { JsonLd } from "./csp-nonce";
 
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
@@ -20,7 +21,7 @@ export function SiteShell({ locale, children, className }: { locale: Locale; chi
     <a className="skip-link" href="#main-content">{locale === "fa" ? "رفتن به محتوای اصلی" : "Skip to main content"}</a>
     <SiteHeader locale={locale} />
     <div id="main-content" tabIndex={-1}>{children}</div>
-    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema()).replaceAll("<", "\\u003c") }} />
+    <JsonLd data={organizationSchema()} />
     <SiteFooter locale={locale} />
     <FloatingConsultation locale={locale} />
     <MobileConsultation locale={locale} />

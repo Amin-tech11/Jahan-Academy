@@ -9,33 +9,25 @@ from redis import Redis
 
 from app.core.celery_app import celery_app
 from app.core.config import get_settings
-from app.core.database import dispose_database, session_factory
-from app.modules.operational.retention import RetentionRepository
+from app.modules.operational.maintenance import run as maintenance_run
 from app.modules.operational.sheets_backup import backup_day, scheduled_through
 
 
-async def enforce_retention() -> dict[str, int]:
-    settings = get_settings()
-    try:
-        async with session_factory() as session:
-            repository = RetentionRepository(session)
-            anonymized = await repository.anonymize_expired_leads(
-                years=settings.lead_retention_years, limit=settings.retention_batch_size
-            )
-            expired_keys = await repository.remove_expired_idempotency_keys()
-            await session.commit()
-            structlog.get_logger(__name__).info(
-                "retention_enforced",
-                anonymized_leads=anonymized,
-                expired_idempotency_keys=expired_keys,
-            )
-            return {"anonymized_leads": anonymized, "expired_idempotency_keys": expired_keys}
-    finally:
-        await dispose_database()
+@celery_app.task(name="jahan.operational.deliver_security_notifications")  # type: ignore[untyped-decorator]
+def deliver_security_notifications_task() -> dict[str, int | str]:
+    from app.modules.identity.security_notifications import run
+
+    return asyncio.run(run(apply=True))
+
+
+async def enforce_retention() -> dict[str, int | bool | str]:
+    result = await maintenance_run(apply=True)
+    structlog.get_logger(__name__).info("retention_enforced", **result)
+    return result
 
 
 @celery_app.task(name="jahan.operational.enforce_retention")  # type: ignore[untyped-decorator]
-def enforce_retention_task() -> dict[str, int]:
+def enforce_retention_task() -> dict[str, int | bool | str]:
     return asyncio.run(enforce_retention())
 
 
@@ -69,7 +61,7 @@ def recover_sheets_task(through: str) -> dict[str, int]:
             key = f"sheets-backup:{settings.sheets_backup_spreadsheet_id}:{target}"
             if not state.exists(key):
                 result = asyncio.run(backup_day(target))
-                if result["status"] not in {"saved", "already_saved", "empty"}:
+                if result["status"] not in {"saved", "already_saved", "empty", "expired"}:
                     raise RuntimeError("Backup was not completed; do not checkpoint")
                 state.set(key, json.dumps(result))
                 structlog.get_logger(__name__).info("consultation_sheets_backup", **result)

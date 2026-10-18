@@ -7,6 +7,7 @@ from fastapi.testclient import TestClient
 from redis.asyncio import Redis
 
 from app.core.config import Settings, get_settings
+from app.core.work_budget import heavy_work_slot
 from app.main import app
 from app.modules.identity.abuse import AuthAbuseControl
 from app.shared.exceptions import ApplicationError
@@ -15,6 +16,27 @@ pytestmark = pytest.mark.skipif(
     os.getenv("JAHAN_RUN_INTEGRATION") != "1",
     reason="requires isolated Redis",
 )
+
+
+def test_crypto_saturation_returns_retryable_error_without_breaking_health() -> None:
+    identifier = f"busy-{uuid4().hex}@example.com"
+    with TestClient(app) as client:
+        assert heavy_work_slot.acquire(blocking=False)
+        try:
+            response = client.post(
+                "/api/v1/auth/login", json={"email": identifier, "password": "wrong"}
+            )
+            assert response.status_code == 503
+            assert response.json()["error"]["code"] == "AUTH_CRYPTO_BUSY"
+            assert response.headers["Retry-After"] == "1"
+            assert response.headers["Cache-Control"] == "no-store"
+            assert client.get("/health/ready").status_code == 200
+        finally:
+            heavy_work_slot.release()
+        response = client.post(
+            "/api/v1/auth/login", json={"email": identifier, "password": "wrong"}
+        )
+        assert response.status_code == 401
 
 
 def test_http_limits_normalized_login_and_combined_email_requests() -> None:

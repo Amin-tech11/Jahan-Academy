@@ -1,6 +1,7 @@
 "use client";
 
 import Script from "next/script";
+import { useCspNonce } from "./csp-nonce";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { GA_MEASUREMENT_ID, analyticsHostAllowed, analyticsPageLocation, analyticsReferrer } from "@/lib/google-analytics";
@@ -27,6 +28,7 @@ function recordPage(pathname: string) {
 }
 
 export function GoogleAnalytics() {
+  const nonce = useCspNonce();
   const pathname = usePathname();
   const [enabled, setEnabled] = useState(false);
   useEffect(() => {
@@ -37,7 +39,7 @@ export function GoogleAnalytics() {
   }, [enabled, pathname]);
 
   if (!enabled || !analyticsPageLocation(pathname)) return null;
-  return <Script id="jahan-google-analytics" src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`} strategy="afterInteractive" onReady={() => {
+  return <Script nonce={nonce} id="jahan-google-analytics" src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`} strategy="afterInteractive" onReady={() => {
     const target = window as AnalyticsWindow;
     if (!target.jahanAnalytics) {
       target.dataLayer ??= [];

@@ -11,6 +11,7 @@ from fastapi.testclient import TestClient
 from app.core.config import get_settings
 from app.core.database import session_factory
 from app.main import app
+from app.modules.identity.auth_mail import deliver
 from app.modules.identity.authorization import AuthorizationContext, RoleGrant
 from app.modules.identity.dependencies import (
     auth_security,
@@ -21,6 +22,12 @@ from app.modules.identity.mailer import AuthMailer
 from app.modules.identity.staff_repository import StaffRepository
 from app.modules.identity.staff_service import StaffManagementService
 
+
+async def dispatch_auth_mail(mailer: AuthMailer) -> None:
+    async with session_factory() as session:
+        await deliver(session, mailer, get_settings())
+
+
 pytestmark = pytest.mark.skipif(
     os.getenv("JAHAN_RUN_INTEGRATION") != "1",
     reason="requires migrated PostgreSQL",
@@ -28,6 +35,9 @@ pytestmark = pytest.mark.skipif(
 
 
 class CapturingMailer(AuthMailer):
+    async def send_security_notice(self, email: str, subject: str, body: str) -> None:
+        pass
+
     def __init__(self) -> None:
         self.password_resets: list[tuple[str, str]] = []
 
@@ -142,6 +152,7 @@ def test_staff_administration_lifecycle_roles_and_access_recovery() -> None:
                 "consultant",
                 "content_editor",
             }
+            client.portal.call(dispatch_auth_mail, mailer)  # type: ignore[union-attr]
             assert mailer.password_resets[-1][0] == "team.member@jahanacademy.dev"
 
             listed = client.get("/api/v1/admin/staff", params={"q": "team.member"})
@@ -172,6 +183,7 @@ def test_staff_administration_lifecycle_roles_and_access_recovery() -> None:
             assert recovered.status_code == 202, recovered.text
             assert recovered.json()["data"]["active"] is True
 
+            client.portal.call(dispatch_auth_mail, mailer)  # type: ignore[union-attr]
             reset = client.post(
                 "/api/v1/auth/password-resets",
                 json={

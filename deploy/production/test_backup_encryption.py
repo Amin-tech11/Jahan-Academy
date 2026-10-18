@@ -6,6 +6,7 @@ import os
 import shutil
 import subprocess
 import tempfile
+import time
 import unittest
 from pathlib import Path
 
@@ -49,8 +50,11 @@ if '-o' in sys.argv and os.environ.get('FAIL_ENCRYPT'):
 os.execv({self.real_age!r}, [{self.real_age!r}, *sys.argv[1:]])
 """)
         self.command("scp", """#!/usr/bin/env python3
-import os, shutil, sys
+import os, shutil, signal, sys, time
 from pathlib import Path
+if os.environ.get('HANG_COPY'):
+    signal.signal(signal.SIGTERM, signal.SIG_IGN)
+    time.sleep(60)
 if os.environ.get('FAIL_COPY'):
     raise SystemExit(10)
 out = Path(os.environ['TEST_ROOT'], 'offsite'); out.mkdir(exist_ok=True)
@@ -63,7 +67,7 @@ shutil.copy(sys.argv[-2], out)
         path.chmod(0o755)
 
     def run_backup(self):
-        return subprocess.run(["bash", str(self.script)], env=self.env, capture_output=True)
+        return subprocess.run(["bash", str(self.script)], env=self.env, capture_output=True, timeout=20)
 
     def archives(self):
         return list((self.root / "backups").glob("*.dump.age"))
@@ -131,6 +135,33 @@ shutil.copy(sys.argv[-2], out)
         self.assertEqual(len(copied), 1)
         self.assertEqual(subprocess.check_output([self.real_age, "-d", "-i", str(self.identity), str(copied[0])]), self.payload)
         self.assert_no_plaintext_or_partial()
+
+    def test_stalled_copy_has_deadline_and_lock_is_released(self):
+        (self.root / "offsite-backup.env").write_text("OFFSITE_SSH_TARGET=test@backup.example:/test\n")
+        for deadline in ("BACKUP_TRANSFER_TIMEOUT_SECONDS", "BACKUP_TIMEOUT_SECONDS"):
+            with self.subTest(deadline=deadline):
+                self.env[deadline] = "1"
+                self.env["HANG_COPY"] = "1"
+                started = time.monotonic()
+                self.assertNotEqual(self.run_backup().returncode, 0)
+                self.assertLess(time.monotonic()-started, 10)
+                self.assert_no_plaintext_or_partial()
+                self.env.pop("HANG_COPY")
+                self.env.pop(deadline)
+                before = len(self.archives())
+                self.assertEqual(self.run_backup().returncode, 0)
+                self.assertEqual(len(self.archives()), before+1)
+
+    def test_copy_failure_does_not_prevent_retention(self):
+        self.assertEqual(self.run_backup().returncode, 0)
+        old, = self.archives()
+        for path in (old, old.with_suffix(".age.sha256")):
+            os.utime(path, (time.time()-16*86400, time.time()-16*86400))
+        (self.root / "offsite-backup.env").write_text("OFFSITE_SSH_TARGET=test@backup.example:/test\n")
+        self.env["FAIL_COPY"] = "1"
+        self.assertNotEqual(self.run_backup().returncode, 0)
+        self.assertFalse(old.exists())
+        self.assertEqual(len(self.archives()), 1)
 
     @unittest.skipUnless(os.getenv("BACKUP_TEST_SOURCE_DSN") and os.getenv("BACKUP_TEST_RESTORE_DSN"),
                          "optional full restore drill uses disposable PostgreSQL databases")

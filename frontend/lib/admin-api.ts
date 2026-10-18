@@ -1,3 +1,5 @@
+import { trackAdminActivity } from "./admin-activity.ts";
+import { requestReauthentication } from "./admin-reauth.ts";
 export type RecordData = Record<string, unknown>;
 export class AdminError extends Error {
   status: number;
@@ -8,6 +10,7 @@ export class AdminError extends Error {
 }
 let accessToken = "";
 let refreshPromise: Promise<RecordData> | null = null;
+let stopActivity: (() => void) | undefined;
 export function restoreAdminSession(): Promise<RecordData> {
   if (!refreshPromise)
     refreshPromise = adminRequest("/auth/refresh", "POST", {})
@@ -22,9 +25,21 @@ export function restoreAdminSession(): Promise<RecordData> {
 }
 export function clearAdminSession() {
   accessToken = "";
+  stopActivity?.(); stopActivity = undefined;
 }
 export function acceptAdminSession(data: RecordData) {
   accessToken = String(data.accessToken ?? "");
+  if (data.mfaEnrollmentRequired) { stopActivity?.(); stopActivity = undefined; }
+  if (typeof window !== "undefined" && accessToken && !data.mfaEnrollmentRequired && !stopActivity)
+    stopActivity = trackAdminActivity(window, async () => {
+      try { await adminRequest("/auth/activity", "POST", {}); }
+      catch (error) {
+        if (error instanceof AdminError && error.status === 401) {
+          try { await restoreAdminSession(); await adminRequest("/auth/activity", "POST", {}); }
+          catch { clearAdminSession(); window.dispatchEvent(new Event("admin-session-expired")); }
+        }
+      }
+    });
 }
 export async function adminRequest(
   path: string,
@@ -33,6 +48,7 @@ export async function adminRequest(
   version?: number,
   signal?: AbortSignal,
   retried = false,
+  reauthToken?: string,
 ): Promise<RecordData> {
   if (
     !/^\/(admin\/|auth\/|users\/me(?:\/panel-access)?$|reporting\/dashboard)/.test(path) ||
@@ -50,6 +66,7 @@ export async function adminRequest(
       "Content-Type": "application/json",
       ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
       ...(version ? { "If-Match": `"${version}"` } : {}),
+      ...(reauthToken ? { "X-Reauth-Token": reauthToken } : {}),
     },
     ...(body === undefined ? {} : { body: JSON.stringify(body) }),
   });
@@ -64,7 +81,11 @@ export async function adminRequest(
         window.dispatchEvent(new Event("admin-session-expired"));
       throw new AdminError(401, "نشست منقضی شده است؛ دوباره وارد شوید.");
     }
-    return adminRequest(path, method, body, version, signal, true);
+    return adminRequest(path, method, body, version, signal, true, reauthToken);
+  }
+  if (response.status === 403 && payload.error?.code === "REAUTH_REQUIRED" && !reauthToken) {
+    const token = await requestReauthentication({ method, path });
+    return adminRequest(path, method, body, version, signal, retried, token);
   }
   if (!response.ok) {
     const messages: Record<number, string> = {
@@ -77,10 +98,20 @@ export async function adminRequest(
       503: "سرویس موردنیاز موقتاً در دسترس نیست؛ کمی بعد تلاش کنید.",
     };
     const codes: Record<string, string> = {
+      MEDIA_PDF_ACTIVE_CONTENT_REJECTED: "PDF دارای محتوای فعال یا فرم تعاملی است؛ نسخهٔ ساده ارسال کنید.",
+      MEDIA_PDF_ENCRYPTED: "PDF رمزدار قابل بررسی نیست؛ نسخهٔ بدون رمز ارسال کنید.",
+      MEDIA_PDF_LIMIT_EXCEEDED: "بررسی این PDF از محدودیت مجاز فراتر رفت؛ نسخهٔ ساده‌تر ارسال کنید.",
+      MEDIA_IMAGE_LIMIT_EXCEEDED: "حجم یا ابعاد تصویر برای پردازش امن بیش از حد مجاز است؛ تصویر کوچک‌تری ارسال کنید.",
+      MEDIA_VALIDATOR_BUSY: "ظرفیت بررسی فایل فعلاً مشغول است؛ کمی بعد دوباره تلاش کنید.",
+      MEDIA_QUOTA_EXCEEDED: "سهمیهٔ بارگذاری پر شده است؛ فایل‌های غیرضروری را حذف کنید یا پس از پاک‌سازی دوباره تلاش کنید.",
+      MEDIA_VALIDATOR_UNAVAILABLE: "بررسی امن فایل فعلاً در دسترس نیست؛ کمی بعد دوباره تلاش کنید.",
+      REAUTH_REQUIRED: "تأیید هویت منقضی شده است؛ عملیات را دوباره انجام دهید.",
+      REAUTH_UNAVAILABLE: "تأیید هویت موقتاً در دسترس نیست؛ کمی بعد تلاش کنید.",
       PASSWORD_LENGTH: "رمز جدید باید بین ۱۵ و ۱۲۸ کاراکتر باشد.",
       PASSWORD_COMMON_OR_COMPROMISED: "این رمز رایج است؛ یک عبارت منحصربه‌فرد انتخاب کنید.",
       PASSWORD_POLICY_UNAVAILABLE: "بررسی امنیت رمز موقتاً در دسترس نیست؛ کمی بعد تلاش کنید.",
       AUTH_LIMITER_UNAVAILABLE: "ورود موقتاً در دسترس نیست؛ کمی بعد تلاش کنید.",
+      AUTH_CRYPTO_BUSY: "سامانه مشغول است؛ کمی بعد دوباره تلاش کنید.",
       MFA_REQUIRED: "کد اپ احراز هویت یا یکی از کدهای بازیابی را وارد کنید.",
       MFA_INVALID: "کد احراز هویت معتبر نیست یا قبلاً مصرف شده است.",
       MFA_SETUP_EXPIRED: "مهلت راه‌اندازی تمام شده است؛ پنجره را ببندید و راه‌اندازی تازه‌ای آغاز کنید.",

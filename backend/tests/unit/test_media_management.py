@@ -6,6 +6,7 @@ import io
 import pytest
 from PIL import Image
 from pydantic import ValidationError
+from pypdf import PdfWriter
 
 from app.modules.media.schemas import UploadIntentRequest
 from app.modules.media.validation import MediaContentValidator, MediaValidationError
@@ -45,7 +46,12 @@ def test_validator_rejects_executable_and_active_pdf() -> None:
     assert executable.value.code == "MEDIA_EXECUTABLE_REJECTED"
 
     with pytest.raises(MediaValidationError) as active_pdf:
-        validator.validate(b"%PDF-1.7\n/JavaScript true\n%%EOF", "application/pdf")
+        writer = PdfWriter()
+        writer.add_blank_page(width=100, height=100)
+        writer.add_js("void(0)")
+        output = io.BytesIO()
+        writer.write(output)
+        validator.validate(output.getvalue(), "application/pdf")
     assert active_pdf.value.code == "MEDIA_PDF_ACTIVE_CONTENT_REJECTED"
 
 

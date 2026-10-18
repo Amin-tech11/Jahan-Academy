@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
+from typing import Literal
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator, model_validator
@@ -66,6 +67,14 @@ class MfaPasswordRequest(ApiModel):
 
 class MfaProofRequest(MfaPasswordRequest):
     code: str = Field(min_length=6, max_length=64)
+
+
+class ReauthRequest(MfaProofRequest):
+    method: Literal["POST", "PATCH", "PUT"]
+    path: str = Field(
+        max_length=128,
+        pattern=r"^/admin/staff(?:/[0-9a-fA-F-]{36}(?:/(?:roles|access-recovery|panel-access))?)?$",
+    )
 
 
 class PasswordResetConfirmRequest(ApiModel):
