@@ -11,10 +11,17 @@ from fastapi.testclient import TestClient
 from app.core.config import get_settings
 from app.core.database import session_factory
 from app.main import app
+from app.modules.identity.auth_mail import deliver
 from app.modules.identity.dependencies import auth_security, auth_service
 from app.modules.identity.mailer import AuthMailer
 from app.modules.identity.repository import AuthRepository
 from app.modules.identity.service import AuthService
+
+
+async def dispatch_auth_mail(mailer: AuthMailer) -> None:
+    async with session_factory() as session:
+        await deliver(session, mailer, get_settings())
+
 
 pytestmark = pytest.mark.skipif(
     os.getenv("JAHAN_RUN_INTEGRATION") != "1",
@@ -68,6 +75,21 @@ def test_complete_email_authentication_lifecycle() -> None:
                 },
             )
             assert registration.status_code == 202
+            duplicate = client.post(
+                "/api/v1/auth/register",
+                json={
+                    "email": email,
+                    "password": original_password,
+                    "firstName": "Auth",
+                    "lastName": "Flow",
+                    "locale": "fa",
+                    "acceptedTermsVersion": "1.0",
+                    "acceptedPrivacyVersion": "1.0",
+                },
+            )
+            assert duplicate.status_code == registration.status_code
+            assert duplicate.json() == registration.json()
+            client.portal.call(dispatch_auth_mail, mailer)  # type: ignore[union-attr]
             assert mailer.verification_token is not None
 
             before_verification = client.post(
@@ -130,6 +152,7 @@ def test_complete_email_authentication_lifecycle() -> None:
                 json={"email": email},
             )
             assert reset_request.status_code == 202
+            client.portal.call(dispatch_auth_mail, mailer)  # type: ignore[union-attr]
             assert mailer.password_reset_token is not None
 
             blocked_password = client.post(

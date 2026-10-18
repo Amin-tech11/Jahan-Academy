@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import logging
 from collections.abc import Mapping
 from datetime import UTC, datetime, timedelta
 from math import ceil
@@ -8,6 +7,7 @@ from typing import Any
 from uuid import UUID
 
 from app.core.config import Settings
+from app.modules.identity.auth_mail import enqueue
 from app.modules.identity.authorization import AuthorizationContext
 from app.modules.identity.domain import StaffRoleCode
 from app.modules.identity.mailer import AuthMailer
@@ -25,8 +25,6 @@ from app.modules.identity.schemas import (
 from app.modules.identity.security import AuthSecurity
 from app.modules.identity.staff_repository import StaffRepository
 from app.shared.exceptions import ApplicationError
-
-logger = logging.getLogger(__name__)
 
 
 class StaffManagementService:
@@ -126,8 +124,10 @@ class StaffManagementService:
             before=None,
             after=self._safe_state(staff),
         )
+        await enqueue(
+            self._repository.session, self._settings, row["identity_id"], "reset", reset_token
+        )
         await self._repository.session.commit()
-        await self._send_recovery_email(email, reset_token)
         return staff
 
     async def list(
@@ -306,8 +306,10 @@ class StaffManagementService:
             before=self._safe_state(before),
             after=self._safe_state(after),
         )
+        await enqueue(
+            self._repository.session, self._settings, row["identity_id"], "reset", reset_token
+        )
         await self._repository.session.commit()
-        await self._send_recovery_email(after.email, reset_token)
         return after
 
     async def _ensure_not_last_active_super_admin(
@@ -335,12 +337,6 @@ class StaffManagementService:
 
     def _password_reset_expiry(self) -> datetime:
         return datetime.now(UTC) + timedelta(minutes=self._settings.password_reset_minutes)
-
-    async def _send_recovery_email(self, email: str, token: str) -> None:
-        try:
-            await self._mailer.send_password_reset(email, token)
-        except Exception as error:
-            logger.error("staff_access_recovery_email_failed (%s)", type(error).__name__)
 
     @staticmethod
     def _view(values: Mapping[str, Any]) -> StaffView:

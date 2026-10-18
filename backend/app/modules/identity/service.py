@@ -6,12 +6,12 @@ from datetime import UTC, datetime, timedelta
 from typing import Any
 from uuid import UUID
 
-import structlog
 from sqlalchemy.exc import IntegrityError
 
 from app.core.config import Settings
 from app.core.redis import get_redis
 from app.modules.identity.abuse import AuthAbuseControl
+from app.modules.identity.auth_mail import enqueue
 from app.modules.identity.mailer import AuthMailer
 from app.modules.identity.mfa import MfaSecurity
 from app.modules.identity.password_work import password_work
@@ -25,8 +25,6 @@ from app.modules.identity.schemas import (
 )
 from app.modules.identity.security import AccessClaims, AuthSecurity, validate_password_strength
 from app.shared.exceptions import ApplicationError
-
-logger = structlog.get_logger()
 
 
 @dataclass(frozen=True, slots=True)
@@ -59,16 +57,13 @@ class AuthService:
         self._require_email_delivery()
         validate_password_strength(request.password)
         email = self._normalize_email(str(request.email))
+        password_hash = await password_work(self._security.hash_password, request.password)
         if await self._repository.email_exists(email):
-            raise ApplicationError(
-                code="IDENTITY_ALREADY_EXISTS",
-                message="An account already exists for this email.",
-                status_code=409,
-            )
+            return
         try:
             account = await self._repository.create_pending_user(
                 email=email,
-                password_hash=await password_work(self._security.hash_password, request.password),
+                password_hash=password_hash,
                 first_name=request.first_name,
                 last_name=request.last_name,
                 locale=request.locale,
@@ -76,17 +71,15 @@ class AuthService:
                 privacy_version=request.accepted_privacy_version,
             )
             token = await self._new_email_challenge(account)
+            await enqueue(
+                self._repository.session, self._settings, account.identity.id, "verify", token
+            )
             await self._repository.session.commit()
         except IntegrityError as exc:
             await self._repository.session.rollback()
             if getattr(exc.orig, "sqlstate", None) == "23505":
-                raise ApplicationError(
-                    code="IDENTITY_ALREADY_EXISTS",
-                    message="An account already exists for this email.",
-                    status_code=409,
-                ) from exc
+                return
             raise
-        await self._send_verification(email, token)
 
     async def resend_email_verification(self, email_input: str) -> None:
         self._require_email_delivery()
@@ -95,8 +88,10 @@ class AuthService:
         if account is None or account.identity.verified_at is not None:
             return
         token = await self._new_email_challenge(account)
+        await enqueue(
+            self._repository.session, self._settings, account.identity.id, "verify", token
+        )
         await self._repository.session.commit()
-        await self._send_verification(email, token)
 
     async def verify_email(
         self, token: str, ip_address: str | None, user_agent: str | None
@@ -345,11 +340,8 @@ class AuthService:
             self._security.token_hash(token),
             datetime.now(UTC) + timedelta(minutes=self._settings.password_reset_minutes),
         )
+        await enqueue(self._repository.session, self._settings, account.identity.id, "reset", token)
         await self._repository.session.commit()
-        try:
-            await self._mailer.send_password_reset(email, token)
-        except Exception as error:
-            logger.error("password_reset_email_delivery_failed", error_type=type(error).__name__)
 
     async def reset_password(self, request: PasswordResetConfirmRequest) -> None:
         validate_password_strength(request.new_password)
@@ -571,12 +563,6 @@ class AuthService:
             email_verified=account.identity.verified_at is not None,
             status=account.user.status,
         )
-
-    async def _send_verification(self, email: str, token: str) -> None:
-        try:
-            await self._mailer.send_email_verification(email, token)
-        except Exception as error:
-            logger.error("verification_email_delivery_failed", error_type=type(error).__name__)
 
     def _require_email_delivery(self) -> None:
         if not self._settings.email_delivery_enabled:

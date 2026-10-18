@@ -29,6 +29,9 @@ def notice(event: str) -> tuple[str, str]:
 async def deliver_pending(
     session: AsyncSession, mailer: AuthMailer, settings: Settings
 ) -> dict[str, int | str]:
+    from app.modules.identity.auth_mail import deliver
+
+    recovery = await deliver(session, mailer, settings)
     if not settings.email_delivery_enabled:
         return {"status": "email_not_configured", "sent": 0, "failed": 0}
     rows = (
@@ -48,7 +51,7 @@ async def deliver_pending(
         .mappings()
         .all()
     )
-    sent, failed = 0, 0
+    sent, failed = recovery["sent"], recovery["failed"]
     for row in rows:
         try:
             subject, body = notice(row["event_code"])
@@ -87,7 +90,12 @@ async def run(*, apply: bool) -> dict[str, int | str]:
                     text("""SELECT count(*) FROM notification_deliveries
                     WHERE provider = 'auth-security' AND status IN ('pending','failed')""")
                 )
-                return {"status": "dry_run", "pending": int(count or 0)}
+                auth_count = await session.scalar(text("SELECT count(*) FROM auth_mail_outbox"))
+                return {
+                    "status": "dry_run",
+                    "pending": int(count or 0),
+                    "pending_auth_mail": int(auth_count or 0),
+                }
             settings = get_settings()
             return await deliver_pending(session, SmtpAuthMailer(settings), settings)
     finally:
