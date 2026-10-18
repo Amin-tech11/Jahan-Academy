@@ -34,7 +34,7 @@ test("audit snippets are unique, complete and consistent across metadata surface
       assert.equal(metadata.alternates.languages.en, `https://jahanacademi.ir/en${path}`);
     }
   }
-  assert.equal(descriptions.size, 32);
+  assert.equal(descriptions.size, 52);
   assert.notEqual(pageMetadata("fa", "", "Fallback").title, pageMetadata("en", "", "Fallback").title);
 });
 

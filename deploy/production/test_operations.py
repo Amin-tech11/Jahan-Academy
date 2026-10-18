@@ -58,7 +58,44 @@ class OperationsTests(unittest.TestCase):
             frontend = (root / "frontend.env").read_text()
             self.assertNotIn("private-session-value", frontend)
             self.assertNotIn(values["JAHAN_MFA_ENCRYPTION_KEY"], frontend)
+            self.assertIn("ADMIN_CSRF_COOKIE=jahan_csrf\n", frontend)
             self.assertEqual((root / "runtime.env").stat().st_mode & 0o777, 0o600)
+
+    def test_admin_proxy_uses_backend_csrf_cookie_name(self):
+        # Mock Linux-only chmod on Windows; exercise the actual generated env files.
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            template = root / "template"
+            template.write_text("@GATEWAY@")
+            for name in (None, "jahan_test_csrf", "custom_csrf"):
+                with self.subTest(cookie_name=name):
+                    contents = "JAHAN_SESSION_SECRET=private-session-value\n"
+                    if name is not None:
+                        contents += f"JAHAN_CSRF_COOKIE_NAME={name}\n"
+                    (root / "runtime.env").write_text(contents)
+                    with (
+                        patch.object(runtime, "PROJECT_ROOT", root.resolve()),
+                        patch.object(runtime.os, "fchmod", create=True),
+                    ):
+                        runtime.prepare(root, template, "172.19.0.1")
+                        runtime.prepare(root, template, "172.19.0.1")
+                    frontend = (root / "frontend.env").read_text()
+                    self.assertIn(
+                        f"ADMIN_CSRF_COOKIE={name or 'jahan_csrf'}\n", frontend
+                    )
+                    self.assertNotIn("private-session-value", frontend)
+                    self.assertEqual(frontend.count("ADMIN_CSRF_COOKIE="), 1)
+
+    def test_invalid_csrf_cookie_name_fails_before_writing_runtime(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            contents = "JAHAN_CSRF_COOKIE_NAME=invalid;cookie\n"
+            (root / "runtime.env").write_text(contents)
+            with patch.object(runtime, "PROJECT_ROOT", root.resolve()):
+                with self.assertRaisesRegex(ValueError, "Invalid CSRF cookie name"):
+                    runtime.prepare(root, root / "missing", "172.19.0.1")
+            self.assertEqual((root / "runtime.env").read_text(), contents)
+            self.assertFalse((root / "frontend.env").exists())
 
     def test_monitor_detects_missing_services_stale_jobs_and_docker_failure(self):
         with tempfile.TemporaryDirectory() as directory:
