@@ -5,6 +5,7 @@ from __future__ import annotations
 import base64
 import ipaddress
 import os
+import re
 import secrets
 import sys
 from pathlib import Path
@@ -23,6 +24,11 @@ def prepare(root: Path, template: Path, gateway: str) -> None:
         for line in lines
         if line and not line.startswith("#") and "=" in line
     )
+    # The admin proxy must forward the same double-submit cookie the API expects.
+    # This is a cookie name, never a CSRF token or an authentication secret.
+    csrf_cookie_name = values.get("JAHAN_CSRF_COOKIE_NAME", "jahan_csrf")
+    if not re.fullmatch(r"[A-Za-z0-9_-]+", csrf_cookie_name):
+        raise ValueError("Invalid CSRF cookie name")
     key = values.get("JAHAN_TRUSTED_PROXY_SECRET") or secrets.token_urlsafe(48)
     if len(key) < 32 or not all(c.isalnum() or c in "_-" for c in key):
         raise ValueError("Invalid proxy credential")
@@ -44,6 +50,7 @@ def prepare(root: Path, template: Path, gateway: str) -> None:
         runtime: "\n".join(lines) + "\n",
         root
         / "frontend.env": "API_INTERNAL_URL=http://backend:8000\nADMIN_API_URL=http://backend:8000\nADMIN_PUBLIC_ORIGIN=https://jahanacademi.ir\nNEXT_PUBLIC_API_BASE_URL=/api/v1\n"
+        + f"ADMIN_CSRF_COOKIE={csrf_cookie_name}\n"
         + f"JAHAN_TRUSTED_PROXY_SECRET={key}\n",
         root
         / "proxy-headers.conf": "proxy_set_header X-Jahan-Client-IP $remote_addr;\n"

@@ -22,6 +22,21 @@ afterEach(() => {
 });
 const resource = (id) => resources.find((item) => item.id === id);
 
+test("CSRF failures explain the security validation problem without suggesting missing permissions", async () => {
+  let calls = 0;
+  globalThis.fetch = async () => {
+    calls++;
+    return Response.json({ error: { code: "CSRF_FAILED" } }, { status: 403 });
+  };
+  await assert.rejects(adminRequest("/auth/mfa/setup", "POST", { password: "synthetic" }), error => {
+    assert.equal(error.status, 403);
+    assert.match(error.message, /اعتبار امنیتی/);
+    assert.doesNotMatch(error.message, /مجوز ندارید/);
+    return true;
+  });
+  assert.equal(calls, 1);
+});
+
 test("consultation columns follow the requested RTL order", () => {
   assert.deepEqual(resource("leads").columns, [
     "reference", "fullName", "mobile", "email", "age", "occupation", "gender",

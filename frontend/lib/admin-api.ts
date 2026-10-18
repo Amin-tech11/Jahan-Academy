@@ -119,6 +119,7 @@ export async function adminRequest(
       MFA_REQUIRED_FOR_STAFF: "ورود دومرحله‌ای برای حساب‌های پنل الزامی است و غیرفعال نمی‌شود.",
       EMAIL_SERVICE_UNAVAILABLE: "بازیابی ایمیلی فعلاً فعال نیست. با مدیر سایت تماس بگیرید.",
       INVALID_CREDENTIALS: "نام کاربری یا رمز عبور صحیح نیست.",
+      CSRF_FAILED: "اعتبار امنیتی درخواست تأیید نشد؛ صفحه را تازه کنید و دوباره وارد شوید. اگر خطا ادامه داشت با مدیر سایت تماس بگیرید.",
     };
     const details = payload.error?.fieldErrors
       ? Object.entries(payload.error.fieldErrors)
