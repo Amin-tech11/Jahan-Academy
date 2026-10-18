@@ -114,6 +114,7 @@ export async function adminRequest(
       AUTH_CRYPTO_BUSY: "سامانه مشغول است؛ کمی بعد دوباره تلاش کنید.",
       MFA_REQUIRED: "کد اپ احراز هویت یا یکی از کدهای بازیابی را وارد کنید.",
       MFA_INVALID: "کد احراز هویت معتبر نیست یا قبلاً مصرف شده است.",
+      MFA_SETUP_EXPIRED: "مهلت راه‌اندازی تمام شده است؛ پنجره را ببندید و راه‌اندازی تازه‌ای آغاز کنید.",
       MFA_ENROLLMENT_REQUIRED: "پیش از دسترسی به پنل، ورود دومرحله‌ای را فعال کنید.",
       MFA_REQUIRED_FOR_STAFF: "ورود دومرحله‌ای برای حساب‌های پنل الزامی است و غیرفعال نمی‌شود.",
       EMAIL_SERVICE_UNAVAILABLE: "بازیابی ایمیلی فعلاً فعال نیست. با مدیر سایت تماس بگیرید.",
@@ -129,7 +130,9 @@ export async function adminRequest(
       : "";
     throw new AdminError(
       response.status,
-      (codes[String(payload.error?.code)] ?? messages[response.status] ??
+      ((payload.error?.code === "MFA_INVALID" && path === "/auth/mfa/confirm"
+        ? "کد ۶رقمی با کلید این راه‌اندازی مطابقت ندارد؛ حسابی را بررسی کنید که با همین QR به اپ اضافه کردید."
+        : codes[String(payload.error?.code)]) ?? messages[response.status] ??
         payload.error?.message ??
         "ذخیره یا دریافت اطلاعات انجام نشد.") + (details ? ` ${details}` : ""),
     );

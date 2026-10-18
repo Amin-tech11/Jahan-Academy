@@ -43,6 +43,8 @@ for (const fromLogin of [false, true]) {
     await expect(dialog).toBeVisible();
     await dialog.locator('input[name="password"]').fill("Synthetic-Password-2026");
     await dialog.getByRole("button", { name: "آغاز فعال‌سازی" }).click();
+    await expect(dialog.getByText("SYNTHETIC-SETUP-KEY", { exact: true })).toBeHidden();
+    await dialog.getByText("راهنمای ورود دستی در SafeAuth", { exact: true }).click();
     await expect(dialog.getByText("SYNTHETIC-SETUP-KEY", { exact: true })).toBeVisible();
     await dialog.locator('input[name="code"]').fill("123456");
     await dialog.getByRole("button", { name: "تأیید و دریافت کدهای بازیابی" }).click();
