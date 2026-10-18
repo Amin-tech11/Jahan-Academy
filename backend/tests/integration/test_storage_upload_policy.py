@@ -11,7 +11,13 @@ from botocore.client import Config  # type: ignore[import-untyped]
 from fastapi.testclient import TestClient
 from pydantic import SecretStr
 from pypdf import PdfWriter
-from pypdf.generic import DictionaryObject, NameObject, TextStringObject
+from pypdf.generic import (
+    ArrayObject,
+    DecodedStreamObject,
+    DictionaryObject,
+    NameObject,
+    TextStringObject,
+)
 
 from app.core.config import Settings
 from app.main import app
@@ -69,16 +75,30 @@ def test_pdf_publication_uses_real_storage_and_structural_policy() -> None:
         storage._internal.create_bucket(Bucket=bucket)
     try:
         with TestClient(app) as api, httpx.Client() as http:
-            for active in [False, True]:
+            for case in ["passive", "javascript", "indirect-3d"]:
+                active = case != "passive"
                 writer = PdfWriter()
-                writer.add_blank_page(width=100, height=100)
-                if active:
+                page = writer.add_blank_page(width=100, height=100)
+                if case == "javascript":
                     writer.root_object[NameObject("/OpenAction")] = DictionaryObject(
                         {
                             NameObject("/S"): NameObject("/JavaScript"),
                             NameObject("/JS"): TextStringObject("void(0)"),
                         }
                     )
+                elif case == "indirect-3d":
+                    stream = DecodedStreamObject()
+                    stream.set_data(b"synthetic non-executable 3D fixture")
+                    stream[NameObject("/Type")] = NameObject("/3D")
+                    stream[NameObject("/Subtype")] = NameObject("/U3D")
+                    annotation = DictionaryObject(
+                        {
+                            NameObject("/Type"): NameObject("/Annot"),
+                            NameObject("/Subtype"): writer._add_object(NameObject("/3D")),
+                            NameObject("/3DD"): writer._add_object(stream),
+                        }
+                    )
+                    page[NameObject("/Annots")] = ArrayObject([writer._add_object(annotation)])
                 output = io.BytesIO()
                 writer.write(output)
                 content = output.getvalue()

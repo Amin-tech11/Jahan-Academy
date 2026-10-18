@@ -141,3 +141,69 @@ def test_parser_timeout_cannot_publish(monkeypatch: pytest.MonkeyPatch) -> None:
     with pytest.raises(MediaValidationError) as error:
         validate(raw_pdf())
     assert error.value.code == "MEDIA_PDF_LIMIT_EXCEEDED"
+
+
+@pytest.mark.parametrize(
+    "subtype", ["/3D", "/Screen", "/Sound", "/Movie", "/FileAttachment", "/RichMedia"]
+)
+def test_indirect_annotation_subtypes_are_rejected(subtype: str) -> None:
+    writer = PdfWriter()
+    page = writer.add_blank_page(width=100, height=100)
+    annotation = DictionaryObject(
+        {
+            NameObject("/Type"): NameObject("/Annot"),
+            NameObject("/Subtype"): writer._add_object(NameObject(subtype)),
+        }
+    )
+    page[NameObject("/Annots")] = ArrayObject([writer._add_object(annotation)])
+    output = io.BytesIO()
+    writer.write(output)
+    with pytest.raises(MediaValidationError) as error:
+        validate(output.getvalue())
+    assert error.value.code == "MEDIA_PDF_ACTIVE_CONTENT_REJECTED"
+
+
+@pytest.mark.parametrize("field,value", [("/S", "/JavaScript"), ("/Type", "/Action")])
+def test_indirect_action_discriminators_are_resolved(field: str, value: str) -> None:
+    writer = PdfWriter()
+    writer.add_blank_page(width=100, height=100)
+    writer.root_object[NameObject("/PolicyFixture")] = DictionaryObject(
+        {
+            NameObject(field): writer._add_object(NameObject(value)),
+        }
+    )
+    output = io.BytesIO()
+    writer.write(output)
+    with pytest.raises(MediaValidationError) as error:
+        validate(output.getvalue())
+    assert error.value.code == "MEDIA_PDF_ACTIVE_CONTENT_REJECTED"
+
+
+def test_shared_object_cannot_lose_action_context() -> None:
+    writer = PdfWriter()
+    page = writer.add_blank_page(width=100, height=100)
+    action = writer._add_object(DictionaryObject({NameObject("/S"): NameObject("/UnknownAction")}))
+    # Traversal sees the benign-context reference first, then must inspect /A again.
+    page[NameObject("/A")] = action
+    page[NameObject("/PolicyFixture")] = action
+    output = io.BytesIO()
+    writer.write(output)
+    with pytest.raises(MediaValidationError) as error:
+        validate(output.getvalue())
+    assert error.value.code == "MEDIA_PDF_ACTIVE_CONTENT_REJECTED"
+
+
+def test_safe_indirect_link_values_remain_supported() -> None:
+    writer = PdfWriter()
+    page = writer.add_blank_page(width=100, height=100)
+    action = DictionaryObject(
+        {
+            NameObject("/Type"): writer._add_object(NameObject("/Action")),
+            NameObject("/S"): writer._add_object(NameObject("/URI")),
+            NameObject("/URI"): writer._add_object(TextStringObject("https://example.com/guide")),
+        }
+    )
+    page[NameObject("/A")] = writer._add_object(action)
+    output = io.BytesIO()
+    writer.write(output)
+    validate(output.getvalue())

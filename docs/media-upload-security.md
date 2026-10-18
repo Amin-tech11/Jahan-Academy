@@ -11,6 +11,10 @@ object streams, instead of matching raw byte substrings. It rejects JavaScript,
 automatic/additional actions, external launch actions, embedded files, interactive
 forms/XFA, multimedia and other unsafe action types. Ordinary static PDFs and explicit
 HTTP(S) link annotations remain supported. Keywords in inert strings are not actions.
+Security discriminators (`/Subtype`, `/S`, `/Type`) and URI values are resolved before
+comparison, including chained references. Cyclic/excessive scalar references fail
+closed. Traversal tracks action context separately so a shared object first visited
+in a benign context cannot bypass later action checks.
 
 Encrypted and malformed PDFs fail closed. Public file upload is for passive documents:
 fillable and some digitally signed PDFs containing AcroForm must be exported as a
@@ -18,13 +22,29 @@ static PDF first. No PDF is rendered, executed or sent to an external inspection
 The original inspected/scanned bytes are still what gets published; the earlier
 quarantine replacement fix is preserved. ClamAV remains a separate defense.
 
-Inspection runs in a separate Python process, with a 10-second parent timeout, 25 MiB
-input cap, traversal/depth limits, and one worker slot per API process. On Linux the
-worker additionally has hard 8-second CPU and 192 MiB address-space limits. Windows
-uses the parent timeout and input/traversal/worker-slot limits. Failure, timeout or an
-unavailable parser never publishes the file. Validation runs off the API event loop.
-If the single worker slot is busy, the API returns a retryable 503 and leaves the intent
-pending rather than permanently rejecting an otherwise valid document.
+PDF and image inspection run in disposable Python processes with a 10-second parent
+timeout and hard 8-second CPU / 192 MiB memory limits. Linux uses resource limits;
+Windows uses an enforced Job Object (committed process memory and user-mode CPU).
+Failure to establish limits returns a retryable 503, never an unchecked publication.
+PDF input remains capped at 25 MiB, with traversal/depth limits.
+
+Images have a 15 MiB compressed-input cap and a 64 MiB decoded-raster budget, accounted
+conservatively as four bytes per pixel (at most 16,777,216 pixels, or a stricter
+configured pixel limit). JPEG, PNG and WebP remain supported; animated/multiframe
+images are rejected. Large images that previously fit the 40-million-pixel declaration
+limit may now need resizing. A static 4096x4096 PNG at the new raster budget is tested.
+Decoder metadata/temporary allocations are additionally bounded by the worker's OS
+memory limit. The API itself never opens or decodes image content with Pillow.
+
+One admission slot per API process spans storage reads, inspection, scanning and
+publication, before large buffers are read. Both file types share inspection capacity.
+Busy requests return retryable 503 and roll back to pending. Cancellation waits for
+outstanding native I/O/inspection to finish before releasing admission, so abandoned
+requests cannot accumulate background buffers. Larger configured limits and legacy
+intents cannot bypass input caps. Multiple API processes multiply the worker budget;
+deployment memory must be sized accordingly. ClamAV and immutable-byte publication
+remain in place. No migration, dependency change or automatic retry of mutations is
+introduced.
 
 ## Storage policy and panel
 
@@ -64,14 +84,31 @@ publishes a passive PDF and rejects an active one before it reaches the public b
 That focused flow uses a synthetic authorized actor and a disabled malware scanner to
 isolate the new PDF policy; it does not claim an antivirus end-to-end test.
 
-Local backend suite: 201 unit/architecture/contract tests passed. Full integration suite:
-49 passed. Frontend Node suite: 218 passed. Ruff, formatting, mypy, TypeScript and
-the production build passed. Seven panel browser tests passed on localhost:5000,
-including signed multipart upload, MFA, step-up and password-policy journeys.
-Both Persian and English home-page browser checks also passed, including hydration,
-metadata, keyboard navigation and accessibility (nine browser tests in total).
-The latest isolated Linux worker also accepted a passive PDF under its 192 MiB cap.
-Remote CI has not been run.
+The 2026-10-18 regression tests cover indirect annotation/action discriminators,
+shared-object action context, safe indirect links, image decoding outside the API,
+large-raster rejection, malformed images, timeout, unavailable isolation, memory-cap
+enforcement, concurrent admission, cancellation and retry after a scanner failure.
+The real-MinIO publication test now also rejects the indirect 3D annotation fixture.
+Native allocation probes deny 256 MiB under the 192 MiB cap on both Windows and Linux;
+the Linux probe uses a disposable network-isolated container and accepts a legitimate
+4096x4096 PNG. These are bounded regression probes, not a production load test or a
+claim that every decoder/parser vulnerability has been eliminated.
+
+Final local results: 224 backend unit/architecture/contract tests, 49 full integration
+tests, 218 frontend Node tests and nine browser tests passed. The three focused media
+integration tests passed again after the final legacy-input guards. Ruff, formatting,
+mypy, TypeScript and the production build passed. Browser coverage on localhost:5000
+includes multipart upload, mandatory MFA, step-up, password policy and both home-page
+locales (hydration, accessibility, metadata and keyboard navigation). Panel browser
+journeys mock API responses; database/real-storage inspection is covered separately
+by integration tests. No real-user account or production database was changed.
+Only the dedicated local develop API was restarted to load the changes. Disposable
+test services are removed afterward. Remote CI, push, merge and deployment were not run.
+
+The previously reported aggregate upload-quota/abandoned-object cleanup and external
+Sheets retention gaps are outside these two fixes and remain for follow-up.
 
 References: [S3 POST policy generation](https://docs.aws.amazon.com/boto3/latest/reference/services/s3/client/generate_presigned_post.html),
 [pypdf release](https://pypi.org/project/pypdf/6.21.1/).
+Resource references: [Windows Job Object limits](https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-jobobject_extended_limit_information),
+[Pillow security guidance](https://pillow.readthedocs.io/en/stable/handbook/security.html).

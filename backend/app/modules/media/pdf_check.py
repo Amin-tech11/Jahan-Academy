@@ -3,14 +3,11 @@
 from __future__ import annotations
 
 import io
-import logging
-import sys
 from urllib.parse import urlsplit
 
 from pypdf import PdfReader
 from pypdf.generic import ArrayObject, DictionaryObject, IndirectObject
 
-MAX_INPUT = 25 * 1024 * 1024
 FORBIDDEN = {
     "/AA",
     "/OpenAction",
@@ -51,6 +48,19 @@ ACTIVE_ACTIONS = {
 }
 
 
+def resolved(obj: DictionaryObject, key: str) -> object:
+    """Resolve scalar references before applying policy, including chained references."""
+    value = obj.get(key)
+    seen: set[tuple[int, int]] = set()
+    while isinstance(value, IndirectObject):
+        reference = value.idnum, value.generation
+        if reference in seen or len(seen) >= 100:
+            raise ValueError("Cyclic or excessive scalar indirection")
+        seen.add(reference)
+        value = value.get_object()
+    return value
+
+
 def check(content: bytes) -> int:
     reader = PdfReader(io.BytesIO(content), strict=True, root_object_recovery_limit=0)
     if reader.is_encrypted:
@@ -58,13 +68,13 @@ def check(content: bytes) -> int:
     root = reader.trailer["/Root"]
     if (
         not isinstance(root, DictionaryObject)
-        or root.get("/Type") != "/Catalog"
+        or resolved(root, "/Type") != "/Catalog"
         or "/Pages" not in root
     ):
         return 2
     stack: list[tuple[object, int, bool]] = [(reader.trailer, 0, False)]
-    references: set[tuple[int, int]] = set()
-    containers: set[int] = set()
+    references: set[tuple[int, int, bool]] = set()
+    containers: set[tuple[int, bool]] = set()
     count = 0
     while stack:
         obj, depth, action = stack.pop()
@@ -72,26 +82,28 @@ def check(content: bytes) -> int:
         if depth > 100 or count > 50000:
             return 4
         if isinstance(obj, IndirectObject):
-            reference = obj.idnum, obj.generation
+            reference = obj.idnum, obj.generation, action
             if reference in references:
                 continue
             references.add(reference)
             stack.append((obj.get_object(), depth + 1, action))
         elif isinstance(obj, DictionaryObject):
-            if id(obj) in containers:
+            identity = id(obj), action
+            if identity in containers:
                 continue
-            containers.add(id(obj))
+            containers.add(identity)
             # pypdf resolves name escapes and compressed object streams before this check.
-            if FORBIDDEN.intersection(obj) or obj.get("/Subtype") in ACTIVE_SUBTYPES:
+            if FORBIDDEN.intersection(obj) or resolved(obj, "/Subtype") in ACTIVE_SUBTYPES:
                 return 3
-            subtype = obj.get("/S")
+            subtype = resolved(obj, "/S")
             if subtype in ACTIVE_ACTIONS:
                 return 3
-            if action or obj.get("/Type") == "/Action":
+            is_action = action or resolved(obj, "/Type") == "/Action"
+            if is_action:
                 if subtype not in {"/GoTo", "/URI"}:
                     return 3
             if subtype == "/URI":
-                uri = str(obj.get("/URI", ""))
+                uri = str(resolved(obj, "/URI") or "")
                 parsed = urlsplit(uri)
                 if (
                     parsed.scheme not in {"http", "https"}
@@ -103,34 +115,10 @@ def check(content: bytes) -> int:
                 (
                     value,
                     depth + 1,
-                    name == "/A" or (name == "/Next" and (action or obj.get("/Type") == "/Action")),
+                    name == "/A" or (name == "/Next" and is_action),
                 )
                 for name, value in obj.items()
             )
         elif isinstance(obj, ArrayObject):
             stack.extend((value, depth + 1, action) for value in obj)
     return 0
-
-
-def main() -> int:
-    # Linux production containers additionally enforce hard CPU/address-space limits.
-    if sys.platform != "win32":
-        import resource
-
-        resource.setrlimit(resource.RLIMIT_AS, (192 * 1024 * 1024, 192 * 1024 * 1024))
-        resource.setrlimit(resource.RLIMIT_CPU, (8, 8))
-    sys.setrecursionlimit(512)
-    logging.disable(logging.CRITICAL)
-    content = sys.stdin.buffer.read(MAX_INPUT + 1)
-    if len(content) > MAX_INPUT:
-        return 4
-    try:
-        return check(content)
-    except (MemoryError, RecursionError):
-        return 4
-    except Exception:
-        return 2
-
-
-if __name__ == "__main__":
-    sys.exit(main())

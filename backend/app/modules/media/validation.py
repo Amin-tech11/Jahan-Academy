@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import hashlib
-import io
+import json
 import socket
 import struct
 import subprocess
@@ -12,11 +12,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Protocol
 
-from PIL import Image, UnidentifiedImageError
-
 from app.modules.media.domain import IMAGE_MIME_TYPES
 
-_PDF_SLOT = threading.BoundedSemaphore(1)
+_INSPECTION_SLOT = threading.BoundedSemaphore(1)
 
 
 class MediaValidationError(Exception):
@@ -77,8 +75,6 @@ class ClamAvScanner:
 
 
 class MediaContentValidator:
-    FORMAT_MIME = {"JPEG": "image/jpeg", "PNG": "image/png", "WEBP": "image/webp"}
-
     def __init__(self, max_image_pixels: int) -> None:
         self._max_image_pixels = max_image_pixels
 
@@ -103,43 +99,66 @@ class MediaContentValidator:
         )
 
     def _validate_image(self, content: bytes) -> tuple[str, int, int]:
+        if len(content) > 15 * 1024 * 1024:
+            raise MediaValidationError("MEDIA_IMAGE_LIMIT_EXCEEDED")
+        result = self._inspect(content, "image", str(self._max_image_pixels))
+        errors = {
+            2: "MEDIA_IMAGE_INVALID",
+            3: "MEDIA_IMAGE_FORMAT_NOT_ALLOWED",
+            4: "MEDIA_IMAGE_LIMIT_EXCEEDED",
+            5: "MEDIA_IMAGE_DIMENSIONS_INVALID",
+        }
+        if result.returncode != 0:
+            raise MediaValidationError(errors.get(result.returncode, "MEDIA_IMAGE_LIMIT_EXCEEDED"))
         try:
-            with Image.open(io.BytesIO(content)) as image:
-                detected = self.FORMAT_MIME.get(image.format or "")
-                width, height = image.size
-                if detected is None:
-                    raise MediaValidationError("MEDIA_IMAGE_FORMAT_NOT_ALLOWED")
-                if width < 1 or height < 1 or width * height > self._max_image_pixels:
-                    raise MediaValidationError("MEDIA_IMAGE_DIMENSIONS_INVALID")
-                image.verify()
-            with Image.open(io.BytesIO(content)) as image:
-                image.load()
-        except MediaValidationError:
-            raise
-        except (UnidentifiedImageError, OSError, ValueError, Image.DecompressionBombError) as exc:
+            detected, width, height = json.loads(result.stdout)
+            if (
+                detected not in IMAGE_MIME_TYPES
+                or type(width) is not int
+                or type(height) is not int
+                or width < 1
+                or height < 1
+                or width * height > min(self._max_image_pixels, 64 * 1024 * 1024 // 4)
+            ):
+                raise ValueError("Invalid worker result")
+            return str(detected), width, height
+        except (ValueError, TypeError) as exc:
             raise MediaValidationError("MEDIA_IMAGE_INVALID") from exc
-        return detected, width, height
+
+    @staticmethod
+    def _inspect(content: bytes, kind: str, *args: str) -> subprocess.CompletedProcess[bytes]:
+        if not _INSPECTION_SLOT.acquire(blocking=False):
+            raise MalwareScanError("MEDIA_VALIDATOR_BUSY")
+        try:
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    "-I",
+                    str(Path(__file__).with_name("media_worker.py")),
+                    kind,
+                    *args,
+                ],
+                input=content,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.DEVNULL,
+                timeout=10,
+                check=False,
+            )
+        except (subprocess.TimeoutExpired, OSError) as error:
+            code = "MEDIA_IMAGE_LIMIT_EXCEEDED" if kind == "image" else "MEDIA_PDF_LIMIT_EXCEEDED"
+            raise MediaValidationError(code) from error
+        finally:
+            _INSPECTION_SLOT.release()
+        if result.returncode == 6:
+            raise MalwareScanError("MEDIA_VALIDATOR_UNAVAILABLE")
+        return result
 
     def _validate_pdf(self, content: bytes) -> str:
         if not content.startswith(b"%PDF-") or b"%%EOF" not in content[-2048:]:
             raise MediaValidationError("MEDIA_PDF_INVALID")
         if len(content) > 25 * 1024 * 1024:
             raise MediaValidationError("MEDIA_PDF_LIMIT_EXCEEDED")
-        if not _PDF_SLOT.acquire(blocking=False):
-            raise MalwareScanError("PDF_VALIDATOR_BUSY")
-        try:
-            result = subprocess.run(
-                [sys.executable, "-I", str(Path(__file__).with_name("pdf_check.py"))],
-                input=content,
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-                timeout=10,
-                check=False,
-            )
-        except (subprocess.TimeoutExpired, OSError) as error:
-            raise MediaValidationError("MEDIA_PDF_LIMIT_EXCEEDED") from error
-        finally:
-            _PDF_SLOT.release()
+        result = self._inspect(content, "pdf")
         if result.returncode == 3:
             raise MediaValidationError("MEDIA_PDF_ACTIVE_CONTENT_REJECTED")
         if result.returncode == 4:
