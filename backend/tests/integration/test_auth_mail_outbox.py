@@ -133,3 +133,100 @@ async def test_outbox_rolls_back_atomically_and_concurrent_workers_do_not_double
     finally:
         _cleanup(user, [])
         await dispose_database()
+
+
+async def test_smtp_wait_does_not_block_replacement_or_delete_new_message() -> None:
+    user = _seed_super_admin()
+    settings = Settings(_env_file=None, environment="test")
+    mailer = AsyncMock(spec=AuthMailer)
+    started, release = asyncio.Event(), asyncio.Event()
+
+    async def stalled_send(*args: object) -> None:
+        started.set()
+        await release.wait()
+
+    mailer.send_password_reset.side_effect = stalled_send
+    task = None
+    try:
+        async with session_factory() as session:
+            repo = AuthRepository(session)
+            account = await repo.get_account_by_user_id(user)
+            assert account is not None
+            identity = account.identity.id
+            await repo.create_password_reset(
+                identity,
+                AuthSecurity.token_hash("old-token"),
+                datetime.now(UTC) + timedelta(minutes=15),
+            )
+            await enqueue(session, settings, identity, "reset", "old-token")
+            await session.commit()
+
+        async def worker() -> dict[str, int]:
+            async with session_factory() as session:
+                return await deliver(
+                    session, mailer, settings, AuthSecurity.token_hash("old-token")
+                )
+
+        task = asyncio.create_task(worker())
+        await asyncio.wait_for(started.wait(), 5)
+        async with session_factory() as session:
+            await session.execute(text("SET LOCAL lock_timeout='500ms'"))
+            await enqueue(session, settings, identity, "reset", "new-token")
+            await session.commit()
+        release.set()
+        assert (await asyncio.wait_for(task, 5))["sent"] == 1
+        async with session_factory() as session:
+            assert await session.scalar(
+                text("SELECT token_hash FROM auth_mail_outbox")
+            ) == AuthSecurity.token_hash("new-token")
+    finally:
+        release.set()
+        if task is not None:
+            await task
+        _cleanup(user, [])
+        await dispose_database()
+
+
+async def test_stalled_delivery_times_out_and_abandoned_lease_is_recoverable(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from app.modules.identity import auth_mail
+
+    monkeypatch.setattr(auth_mail, "SEND_TIMEOUT_SECONDS", 0.02)
+    user = _seed_super_admin()
+    settings = Settings(_env_file=None, environment="test")
+    mailer = AsyncMock(spec=AuthMailer)
+
+    async def stalled(*args: object) -> None:
+        await asyncio.sleep(60)
+
+    try:
+        async with session_factory() as session:
+            repo = AuthRepository(session)
+            account = await repo.get_account_by_user_id(user)
+            assert account is not None
+            await repo.create_password_reset(
+                account.identity.id,
+                AuthSecurity.token_hash("lease-token"),
+                datetime.now(UTC) + timedelta(minutes=15),
+            )
+            await enqueue(session, settings, account.identity.id, "reset", "lease-token")
+            await session.execute(
+                text("UPDATE auth_mail_outbox SET next_attempt_at=now()+interval '2 minutes'")
+            )
+            await session.commit()
+            assert (await deliver(session, mailer, settings))["sent"] == 0
+            await session.execute(
+                text("UPDATE auth_mail_outbox SET next_attempt_at=now()-interval '1 second'")
+            )
+            await session.commit()
+            mailer.send_password_reset.side_effect = stalled
+            assert (await asyncio.wait_for(deliver(session, mailer, settings), 5))["failed"] == 1
+            assert await session.scalar(text("SELECT attempt_count FROM auth_mail_outbox")) == 1
+            await session.execute(text("UPDATE auth_mail_outbox SET next_attempt_at=now()"))
+            await session.commit()
+            mailer.send_password_reset.side_effect = None
+            assert (await deliver(session, mailer, settings))["sent"] == 1
+    finally:
+        _cleanup(user, [])
+        await dispose_database()

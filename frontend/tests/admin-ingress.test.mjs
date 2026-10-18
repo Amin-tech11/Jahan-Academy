@@ -27,3 +27,12 @@ test("early rejected requests still consume the request budget", () => {
   assert.throws(()=>admit("invalid-login",now), {status:429});
   admit("invalid-login",now+60001)();
 });
+
+test("a throttled client cannot spend other clients' global budget", () => {
+  const now = Date.now()+400000;
+  for(let i=0;i<60;i++) admit("noisy",now)();
+  for(let i=0;i<1000;i++) assert.throws(()=>admit("noisy",now), {status:429});
+  for(let c=0;c<4;c++) for(let i=0;i<60;i++) admit(`fresh-${c}`,now)();
+  assert.throws(()=>admit("global-full",now), {status:429});
+  admit("global-full",now+60001)();
+});

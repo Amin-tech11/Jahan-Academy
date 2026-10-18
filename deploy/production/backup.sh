@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 umask 077
+# GNU timeout supervises the entire process group, including stalled children.
+# The inner invocation owns the lock; no lock descriptor survives the deadline.
+if [ "${1:-}" != "--bounded-run" ]; then
+  exec timeout --signal=TERM --kill-after=5s "${BACKUP_TIMEOUT_SECONDS:-1800}s" bash "$0" --bounded-run
+fi
 root=/opt/jahan-academy-test
 cd "$root"
 exec 9>"$root/backup.lock"
@@ -18,6 +23,7 @@ finish() {
   exit "$code"
 }
 trap finish EXIT
+trap 'exit 124' TERM INT
 
 # Public recipient only; private identities belong on a separate recovery host.
 # Existing offsite configs carrying AGE_RECIPIENT remain supported.
@@ -44,13 +50,15 @@ mv "$file.partial" "$file"
 (cd "$destination" && sha256sum "$(basename "$file")") > "$file.sha256.partial"
 mv "$file.sha256.partial" "$file.sha256"
 
+# Retain the new completed encrypted backup before pruning, independently of SSH.
+find "$destination" -maxdepth 1 -type f -name 'jahan-*.dump.age*' -mtime +14 -delete
+
 offsite=not_configured
 if [ -f "$root/offsite-backup.env" ]; then
-  scp -q -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=15 "$file" "$OFFSITE_SSH_TARGET/"
-  scp -q -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=15 "$file.sha256" "$OFFSITE_SSH_TARGET/"
+  timeout --foreground --signal=TERM --kill-after=5s "${BACKUP_TRANSFER_TIMEOUT_SECONDS:-300}s" scp -q -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=15 "$file" "$OFFSITE_SSH_TARGET/"
+  timeout --foreground --signal=TERM --kill-after=5s "${BACKUP_TRANSFER_TIMEOUT_SECONDS:-300}s" scp -q -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=15 "$file.sha256" "$OFFSITE_SSH_TARGET/"
   touch "$root/offsite-backup-success"
   offsite=success
 fi
 # Legacy plaintext copies are not silently removed or counted as encrypted backups.
-find "$destination" -maxdepth 1 -type f -name 'jahan-*.dump.age*' -mtime +14 -delete
 printf '{"time":"%s","backup":"success","encrypted":true,"offsite":"%s"}\n' "$stamp" "$offsite" >> "$root/operations.jsonl"

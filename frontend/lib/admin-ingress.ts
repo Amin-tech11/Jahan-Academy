@@ -11,7 +11,9 @@ export function admit(client: string, now = Date.now()): () => void {
   if (now - windowStart >= 60_000) { windowStart = now; total = 0; }
   for (const [key, value] of clients) if (value.until <= now) clients.delete(key);
   const entry = clients.get(client) ?? { count: 0, until: now + 60_000 };
-  if (++total > 300 || ++entry.count > 60 || active >= 8 || clients.size >= 4096) throw new IngressError(429);
+  if (entry.count >= 60 || active >= 8 || (!clients.has(client) && clients.size >= 4096) || total >= 300) throw new IngressError(429);
+  total++;
+  entry.count++;
   clients.set(client, entry);
   active++;
   let released = false;

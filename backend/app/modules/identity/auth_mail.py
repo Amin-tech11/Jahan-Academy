@@ -1,5 +1,6 @@
 """Private, encrypted, expiring outbox. Successful delivery erases the token copy."""
 
+import asyncio
 import base64
 import hmac
 from datetime import UTC, datetime, timedelta
@@ -12,6 +13,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.config import Settings
 from app.modules.identity.mailer import AuthMailer
 from app.modules.identity.security import AuthSecurity
+
+SEND_TIMEOUT_SECONDS = 15
 
 
 def cipher(settings: Settings) -> Fernet:
@@ -63,39 +66,56 @@ async def deliver(
             AND t.consumed_at IS NULL AND t.expires_at>now()))""")
     )
     result = {"sent": 0, "failed": 0}
-    if settings.email_delivery_enabled:
-        rows = (
+    await session.commit()
+    if not settings.email_delivery_enabled:
+        return result
+    # Claim one message at a time. The committed due timestamp doubles as a lease
+    # generation, so an obsolete worker cannot finalize a newer worker's claim.
+    for _ in range(20):
+        row = (
             (
                 await session.execute(
-                    text("""SELECT o.*, i.provider_subject AS email
-            FROM auth_mail_outbox o JOIN user_identities i ON i.id=o.identity_id
-            WHERE o.next_attempt_at<=now() AND (CAST(:hash AS text) IS NULL OR o.token_hash=:hash)
-            ORDER BY o.next_attempt_at LIMIT 20 FOR UPDATE OF o SKIP LOCKED"""),
+                    text("""WITH candidate AS (
+            SELECT id FROM auth_mail_outbox
+            WHERE next_attempt_at<=now() AND expires_at>now()
+              AND (CAST(:hash AS text) IS NULL OR token_hash=:hash)
+            ORDER BY next_attempt_at LIMIT 1 FOR UPDATE SKIP LOCKED
+        ) UPDATE auth_mail_outbox o
+          SET next_attempt_at=clock_timestamp()+interval '2 minutes'
+          FROM candidate c, user_identities i
+          WHERE o.id=c.id AND i.id=o.identity_id
+          RETURNING o.*, i.provider_subject AS email"""),
                     {"hash": token_hash},
                 )
             )
             .mappings()
-            .all()
+            .first()
         )
-        for row in rows:
-            try:
-                token = cipher(settings).decrypt(row["ciphertext"].encode()).decode()
+        await session.commit()
+        if row is None:
+            break
+        claim = {"id": row["id"], "lease": row["next_attempt_at"]}
+        try:
+            token = cipher(settings).decrypt(row["ciphertext"].encode()).decode()
+            async with asyncio.timeout(SEND_TIMEOUT_SECONDS):
                 if row["kind"] == "reset":
                     await mailer.send_password_reset(row["email"], token)
                 else:
                     await mailer.send_email_verification(row["email"], token)
-            except Exception:
-                result["failed"] += 1
-                await session.execute(
-                    text("""UPDATE auth_mail_outbox
-                    SET attempt_count=attempt_count+1, next_attempt_at=now()+interval '1 minute'
-                    WHERE id=:id"""),
-                    {"id": row["id"]},
-                )
-            else:
-                result["sent"] += 1
-                await session.execute(
-                    text("DELETE FROM auth_mail_outbox WHERE id=:id"), {"id": row["id"]}
-                )
-    await session.commit()
+        except Exception:
+            result["failed"] += 1
+            await session.execute(
+                text("""UPDATE auth_mail_outbox
+                SET attempt_count=attempt_count+1, next_attempt_at=now()+interval '1 minute'
+                WHERE id=:id AND next_attempt_at=:lease"""),
+                claim,
+            )
+        else:
+            result["sent"] += 1
+            await session.execute(
+                text("""DELETE FROM auth_mail_outbox
+                WHERE id=:id AND next_attempt_at=:lease"""),
+                claim,
+            )
+        await session.commit()
     return result
