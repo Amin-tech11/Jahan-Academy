@@ -29,12 +29,19 @@ const nextConfig: NextConfig = {
     }));
   },
   async redirects() {
+    const archiveRedirects = ["fa", "en"].flatMap(locale =>
+      ["news", "guides"].map(archive => ({
+        source: `/${locale}/${archive}`,
+        destination: `/${locale}/articles`,
+        statusCode: 301,
+      })),
+    );
     if (process.env.JAHAN_PANEL === "admin") {
-      return [{ source: "/", destination: "/admin", permanent: false }];
+      return [...archiveRedirects, { source: "/", destination: "/admin", permanent: false }];
     }
-    return process.env.JAHAN_DESTINATION_PANEL === "1"
+    return [...archiveRedirects, ...(process.env.JAHAN_DESTINATION_PANEL === "1"
       ? [{ source: "/", destination: "/fa/countries/canada", permanent: false }]
-      : [];
+      : [])];
   },
   // Separate build locks allow panel dev servers to share one checkout.
   distDir: process.env.JAHAN_PERFORMANCE_BUILD === "1" ? ".next-audit" : process.env.JAHAN_DEV_PORT === "3200" ? ".next-3200" : ".next",
