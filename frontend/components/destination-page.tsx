@@ -50,10 +50,6 @@ export function DestinationPage({ destination: d, locale, universities, relatedD
   }, [d.slug, locale]);
 
   return <SiteShell locale={locale}><main ref={pageRef} className={styles.page} data-destination={d.slug}>
-    <div className={styles.topline} data-destination-motion="fade"><div className={styles.container}>
-      <nav aria-label={t("مسیر صفحه", "Breadcrumb")} className={styles.breadcrumb}><Link href={`/${locale}`}>{t("خانه", "Home")}</Link><span>/</span><Link href={`/${locale}/countries`}>{t("مقصدهای تحصیلی", "Study destinations")}</Link><span>/</span><span aria-current="page">{d.name[locale]}</span></nav>
-    </div></div>
-
     <section className={styles.hero}><div className={`${styles.container} ${styles.heroGrid}`}>
       <div className={styles.heroCopy} data-destination-motion="side">
         <h1>{t("آینده‌ات را در", "Find your future in")}<br /><span className={styles.countryName} style={{ backgroundImage: `url(/destinations/word-flags/${d.slug}.svg)` }}>{d.name[locale]}</span> {t("بساز", "")}</h1>
