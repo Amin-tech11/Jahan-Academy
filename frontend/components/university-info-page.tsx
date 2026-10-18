@@ -1,4 +1,5 @@
 import { PanelConsultationCallout } from "@/components/panel-consultation-callout";
+import { UniversityAdmissionsSection } from "@/components/university-admissions";
 import { PreparedImage as Image } from "@/components/prepared-image";
 import Link from "next/link";
 import { SiteShell } from "@/components/site-shell";
@@ -97,6 +98,7 @@ export function UniversityInfoPage({ university: u, locale }: { university: Univ
       <h3 id="university-notes-title">{fa ? "نکات مهم" : "Important notes"}</h3>
       {u.notes.map((note) => <p key={note.title.en}><strong>{note.title[locale]}:</strong> {note.text[locale]}</p>)}
     </section>}
+    <UniversityAdmissionsSection slug={u.slug} locale={locale} />
     {!!u.features.length && <section className={styles.lifeSection}>
       <h3 className={styles.subheading}>{fa ? "زندگی در این دانشگاه" : "Life at this university"}</h3>
       <div className={styles.highlights}>{u.features.map((feature, index) => <article className={styles.lifeCard} key={feature.title.en}>

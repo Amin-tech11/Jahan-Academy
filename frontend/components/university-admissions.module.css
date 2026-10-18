@@ -1,0 +1,15 @@
+.section { margin-block: 2rem; color: #202833; min-width: 0; }
+.section > p { line-height: 1.9; }
+.review { color: #596574; font-size: .85rem; }
+.programmes { display: grid; gap: 1.25rem; }
+.programme { padding: clamp(1rem, 3vw, 1.5rem); border: 1px solid #dce4eb; border-radius: 1rem; background: #fff; min-width: 0; }
+.programme h3 { margin: 0 0 .65rem; font-size: 1.1rem; color: #103b5b; line-height: 1.7; }
+.scope { margin-block: 0 1rem; color: #596574; line-height: 1.8; }
+.programme dl { margin: 0; }
+.row { padding-block: 1rem; border-top: 1px solid #e5ebef; }
+.row dt { font-weight: 700; line-height: 1.7; }
+.row dd { margin: .4rem 0 0; }
+.row dd p { margin: 0; line-height: 1.9; overflow-wrap: anywhere; }
+.sources { display: flex; flex-wrap: wrap; gap: .5rem 1rem; list-style: none; padding: 0; margin: .65rem 0 0; font-size: .83rem; }
+.sources a { display: inline-block; padding-block: .35rem; color: #145b85; text-decoration: underline; text-underline-offset: .2em; line-height: 1.7; }
+.sources a:focus-visible { outline: 2px solid #145b85; outline-offset: 3px; border-radius: .15rem; }
