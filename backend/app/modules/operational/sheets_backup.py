@@ -330,6 +330,10 @@ async def prepare_day(day: str) -> dict[str, Any]:
     # Validate before opening the database, including the disabled service-account mode.
     if day_bounds(date.fromisoformat(day))[1] > datetime.now(UTC):
         raise ValueError("Only complete Tehran days may be backed up")
+    if date.fromisoformat(day) <= datetime.now(UTC).astimezone(TEHRAN).date() - timedelta(
+        days=get_settings().sheets_snapshot_retention_days
+    ):
+        raise ValueError("Snapshot is outside the retention window")
     try:
         async with session_factory() as session, session.begin():
             await session.execute(text("SET TRANSACTION READ ONLY"))
@@ -355,8 +359,13 @@ async def backup_day(day: str) -> dict[str, str | int]:
     start, end = day_bounds(date.fromisoformat(day))
     if end > datetime.now(UTC):
         raise ValueError("Only complete Tehran days may be backed up")
+    if date.fromisoformat(day) <= datetime.now(UTC).astimezone(TEHRAN).date() - timedelta(
+        days=settings.sheets_snapshot_retention_days
+    ):
+        return {"status": "expired", "day": day}
     try:
         async with session_factory() as session, session.begin():
+            await session.execute(text("SELECT pg_advisory_xact_lock(720029)"))
             # Transaction-scoped lock releases even on a failed remote write.
             locked = await session.scalar(
                 text("SELECT pg_try_advisory_xact_lock(:key)"),
@@ -364,12 +373,20 @@ async def backup_day(day: str) -> dict[str, str | int]:
             )
             if not locked:
                 raise RuntimeError("Another worker is saving this backup; retry later")
-            values = await day_values(session, day)
-            if not values:
-                return {"status": "empty", "day": day, "rows": 0}
             async with httpx.AsyncClient(timeout=60) as client:
                 token = await google_token(client, settings.sheets_backup_credentials_file)
                 client.headers["Authorization"] = f"Bearer {token}"
+                from app.modules.operational.sheets_retention import reconcile
+
+                await reconcile(
+                    client,
+                    session,
+                    settings.sheets_backup_spreadsheet_id,
+                    settings.sheets_snapshot_retention_days,
+                )
+                values = await day_values(session, day)
+                if not values:
+                    return {"status": "empty", "day": day, "rows": 0}
                 status = await write_snapshot(
                     client, settings.sheets_backup_spreadsheet_id, day, values
                 )

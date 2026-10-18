@@ -105,8 +105,10 @@ by integration tests. No real-user account or production database was changed.
 Only the dedicated local develop API was restarted to load the changes. Disposable
 test services are removed afterward. Remote CI, push, merge and deployment were not run.
 
-The previously reported aggregate upload-quota/abandoned-object cleanup and external
-Sheets retention gaps are outside these two fixes and remain for follow-up.
+The aggregate upload-quota/abandoned-object cleanup and managed Sheets snapshot
+retention fixes are documented in [media-sheets-retention.md](media-sheets-retention.md).
+That document also describes the separate limits concerning Google revision history
+and independently copied/exported data.
 
 References: [S3 POST policy generation](https://docs.aws.amazon.com/boto3/latest/reference/services/s3/client/generate_presigned_post.html),
 [pypdf release](https://pypi.org/project/pypdf/6.21.1/).

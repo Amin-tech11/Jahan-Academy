@@ -94,6 +94,7 @@ class MediaService:
             "attribution": payload.get("attribution"),
         }
         try:
+            await self._repository.reserve_quota(actor.user_id, size_bytes, self._settings)
             row = await self._repository.create_intent(values)
             upload_url = await self._storage.create_upload_url(
                 row["bucket"],
@@ -101,6 +102,7 @@ class MediaService:
                 mime_type,
                 self._settings.media_upload_expiry_seconds,
                 size_bytes,
+                deadline=expires_at,
             )
             await self._repository.audit(
                 actor_user_id=actor.user_id,

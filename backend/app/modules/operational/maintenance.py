@@ -10,12 +10,15 @@ from sqlalchemy import text
 
 from app.core.config import get_settings
 from app.core.database import dispose_database, session_factory
+from app.modules.media.cleanup import cleanup_uploads
+from app.modules.media.storage import S3MediaStorage
 from app.modules.operational.retention import EXPIRED_LEAD_PREDICATE, RetentionRepository
+from app.modules.operational.sheets_retention import cleanup_sheets
 
 
-async def run(*, apply: bool) -> dict[str, int | bool]:
+async def run(*, apply: bool) -> dict[str, int | bool | str]:
     settings = get_settings()
-    result: dict[str, int | bool] = {
+    result: dict[str, int | bool | str] = {
         "apply": apply,
         "eligible_leads": 0,
         "anonymized_leads": 0,
@@ -38,13 +41,22 @@ async def run(*, apply: bool) -> dict[str, int | bool]:
                     count = await repository.anonymize_expired_leads(
                         years=settings.lead_retention_years, limit=settings.retention_batch_size
                     )
-                    result["anonymized_leads"] += count
+                    result["anonymized_leads"] = int(result["anonymized_leads"]) + count
                     await session.commit()
                     if count < settings.retention_batch_size:
                         break
                 result[
                     "expired_idempotency_keys"
                 ] = await repository.remove_expired_idempotency_keys()
+                await session.commit()
+                sheets = await cleanup_sheets(session, settings)
+                result["sheets_status"] = str(sheets["status"])
+                result["sheets_removed_rows"] = int(sheets.get("removed_rows", 0))
+                result["sheets_expired_tabs"] = int(sheets.get("expired_tabs", 0))
+                await session.commit()
+                result["media_cleaned"] = await cleanup_uploads(
+                    session, S3MediaStorage(settings), settings
+                )
                 await session.commit()
             return result
     finally:

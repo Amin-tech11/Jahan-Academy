@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import io
 import os
+from datetime import datetime
 from uuid import UUID, uuid4
 
 import psycopg
@@ -29,7 +30,14 @@ class FakeStorage:
         self.pending: tuple[str, str, str] | None = None
 
     async def create_upload_url(
-        self, bucket: str, object_key: str, content_type: str, expires_seconds: int, size_bytes: int
+        self,
+        bucket: str,
+        object_key: str,
+        content_type: str,
+        expires_seconds: int,
+        size_bytes: int,
+        *,
+        deadline: datetime | None = None,
     ) -> UploadForm:
         del expires_seconds, size_bytes
         self.pending = bucket, object_key, content_type
