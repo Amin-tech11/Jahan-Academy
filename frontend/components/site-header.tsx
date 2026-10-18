@@ -16,6 +16,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
   const copy = siteCopy[locale];
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [destinationsExpanded, setDestinationsExpanded] = useState(false);
   const [ready, setReady] = useState(false);
   const previousPath = useRef(pathname);
   const headerRef = useRef<HTMLElement>(null);
@@ -101,17 +102,23 @@ export function SiteHeader({ locale }: { locale: Locale }) {
     const active = pathname === href || (item.href && pathname.startsWith(`${href}/`));
     if (item.href === "/countries") {
       const destinations = [...headerDestinations].sort((a, b) => a[locale].localeCompare(b[locale], locale));
-      const options = <div className="nav-destinations-list" dir={locale === "fa" ? "rtl" : "ltr"}>
+      const options = <div className="nav-destinations-list" id={desktop ? undefined : "mobile-destinations-list"} hidden={!desktop && !destinationsExpanded} dir={locale === "fa" ? "rtl" : "ltr"}>
+        {!desktop && <Link href={href} onClick={() => setOpen(false)}>{locale === "fa" ? "مشاهدهٔ همهٔ مقصدها" : "View all destinations"}</Link>}
         {destinations.map((destination) => <Link key={destination.slug} href={`/${locale}/countries/${destination.slug}`} onClick={() => setOpen(false)}><span className="nav-destination-flag" aria-hidden="true"><Image src={`/destinations/flags/${destination.slug}.svg`} alt="" width={28} height={28} /></span><span>{destination[locale]}</span></Link>)}
       </div>;
       if (desktop) return <div className="nav-destinations nav-destinations--desktop" key={href}>
         <Link className="nav-destinations-trigger" href={href} aria-current={active ? "page" : undefined}>{item.label}<svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="m2 4 4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg></Link>
         {options}
       </div>;
-      return <details className="nav-destinations" key={href}>
-        <summary aria-current={active ? "page" : undefined}>{item.label}</summary>
+      return <div className="nav-destinations nav-destinations--mobile" key={href}>
+        <div className="mobile-destinations-row">
+          <Link href={href} aria-current={pathname === href ? "page" : undefined} onClick={() => setOpen(false)}>{locale === "fa" ? "مقصدهای تحصیلی" : item.label}</Link>
+          <button className="mobile-destinations-toggle" type="button" aria-label={locale === "fa" ? "باز و بسته کردن فهرست کشورها" : "Toggle country list"} aria-expanded={destinationsExpanded} aria-controls="mobile-destinations-list" onClick={() => setDestinationsExpanded(value => !value)}>
+            <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="m6 9 6 6 6-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+          </button>
+        </div>
         {options}
-      </details>;
+      </div>;
     }
     return <Link key={href} href={href} aria-current={active ? "page" : undefined} onClick={() => setOpen(false)}>{item.label}</Link>;
   });
