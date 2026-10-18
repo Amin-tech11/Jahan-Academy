@@ -33,7 +33,10 @@ export function SiteFooter({ locale }: { locale: Locale }) {
               <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M8 4H5v17h14V4h-3M9 2h6v4H9zM8 11h8M8 15h5" /></svg>
               <span>{fa ? "تکمیل فرم ارزیابی اولیه" : "Complete your initial assessment"}</span>
             </Link>
-            <Link className={styles.contactLink} href={path("/privacy")}>{fa ? "حریم خصوصی" : "Privacy policy"}</Link>
+            <Link className={styles.contactLink} href={path("/privacy")}>
+              <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6l8-3Z" /><path d="m8 12 3 3 5-6" /></svg>
+              <span>{fa ? "حریم خصوصی" : "Privacy policy"}</span>
+            </Link>
           </div>
         </div>
       </div>
