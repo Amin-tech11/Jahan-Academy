@@ -11,6 +11,7 @@ from pypdf import PdfWriter
 
 from app.core.config import Settings
 from app.modules.identity.authorization import AuthorizationContext
+from app.modules.identity.password_work import password_work
 from app.modules.media.repository import MediaRepository
 from app.modules.media.service import MediaService
 from app.modules.media.storage import MediaStorage, S3MediaStorage, StoredObject
@@ -153,6 +154,9 @@ async def test_concurrent_confirmation_is_rejected_before_storage_read_and_can_r
         first.confirm(asset_id, hashlib.sha256(content).hexdigest(), actor)
     )
     await asyncio.wait_for(entered.wait(), 2)
+    with pytest.raises(ApplicationError) as busy:
+        await password_work(lambda: None)
+    assert busy.value.code == "AUTH_CRYPTO_BUSY"
     if cancel_first:
         first_task.cancel()
         await asyncio.sleep(0)

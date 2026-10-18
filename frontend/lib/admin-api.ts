@@ -111,6 +111,7 @@ export async function adminRequest(
       PASSWORD_COMMON_OR_COMPROMISED: "این رمز رایج است؛ یک عبارت منحصربه‌فرد انتخاب کنید.",
       PASSWORD_POLICY_UNAVAILABLE: "بررسی امنیت رمز موقتاً در دسترس نیست؛ کمی بعد تلاش کنید.",
       AUTH_LIMITER_UNAVAILABLE: "ورود موقتاً در دسترس نیست؛ کمی بعد تلاش کنید.",
+      AUTH_CRYPTO_BUSY: "سامانه مشغول است؛ کمی بعد دوباره تلاش کنید.",
       MFA_REQUIRED: "کد اپ احراز هویت یا یکی از کدهای بازیابی را وارد کنید.",
       MFA_INVALID: "کد احراز هویت معتبر نیست یا قبلاً مصرف شده است.",
       MFA_ENROLLMENT_REQUIRED: "پیش از دسترسی به پنل، ورود دومرحله‌ای را فعال کنید.",

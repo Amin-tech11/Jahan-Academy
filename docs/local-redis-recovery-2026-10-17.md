@@ -1,5 +1,14 @@
 # Local Redis recovery — 2026-10-17
 
+Update 2026-10-18: both archives described below have now been protected with
+Windows DPAPI CurrentUser in the develop checkout. Their current paths end in
+`.tar.gz.dpapi` and `.dump.dpapi`, respectively. The original plaintext files were
+removed only after decrypting the saved ciphertext and matching the SHA-256 values
+below. Those hashes identify the **decrypted archive contents**, not ciphertext.
+The original paths below document the recovery as performed on October 17.
+See [local backup protection and recovery](auth-resource-and-local-backups.md)
+before restoring. No database or Redis restore was performed during encryption.
+
 Scope: existing develop checkout, preview http://localhost:5000. No source code,
 home-page implementation/assets, branch, port or Redis configuration was changed.
 No push, PR, merge, remote CI or production deployment was performed.

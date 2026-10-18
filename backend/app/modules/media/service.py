@@ -3,7 +3,6 @@ from __future__ import annotations
 import asyncio
 import math
 import secrets
-import threading
 from collections.abc import Awaitable
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
@@ -12,6 +11,7 @@ from uuid import UUID
 from sqlalchemy.exc import IntegrityError
 
 from app.core.config import Settings
+from app.core.work_budget import heavy_work_slot
 from app.modules.identity.authorization import AuthorizationContext
 from app.modules.media.domain import (
     EXTENSIONS_BY_MIME,
@@ -30,7 +30,7 @@ from app.modules.media.validation import (
 )
 from app.shared.exceptions import ApplicationError
 
-_MEDIA_PROCESSING_SLOT = threading.BoundedSemaphore(1)
+_MEDIA_PROCESSING_SLOT = heavy_work_slot
 
 
 async def _complete_io[T](operation: Awaitable[T]) -> T:

@@ -3,6 +3,7 @@ from __future__ import annotations
 from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 from functools import lru_cache
+from threading import Lock
 from typing import Annotated
 
 from fastapi import Depends, Request
@@ -47,8 +48,17 @@ class CurrentUser:
 
 
 @lru_cache
-def auth_security() -> AuthSecurity:
+def _cached_auth_security() -> AuthSecurity:
     return AuthSecurity(get_settings())
+
+
+_security_lock = Lock()
+
+
+def auth_security() -> AuthSecurity:
+    # lru_cache alone does not serialize concurrent cold-cache misses.
+    with _security_lock:
+        return _cached_auth_security()
 
 
 def auth_abuse(

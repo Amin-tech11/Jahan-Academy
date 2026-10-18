@@ -11,6 +11,7 @@ from app.core.config import Settings
 from app.modules.identity.authorization import AuthorizationContext
 from app.modules.identity.domain import StaffRoleCode
 from app.modules.identity.mailer import AuthMailer
+from app.modules.identity.password_work import password_work
 from app.modules.identity.schemas import (
     StaffAccessRecoveryRequest,
     StaffCreateRequest,
@@ -99,7 +100,9 @@ class StaffManagementService:
 
         staff_id = await self._repository.create_staff(
             email=email,
-            password_hash=self._security.hash_password(self._security.new_opaque_token()),
+            password_hash=await password_work(
+                self._security.hash_password, self._security.new_opaque_token()
+            ),
             first_name=payload.first_name,
             last_name=payload.last_name,
             preferred_locale=payload.preferred_locale,

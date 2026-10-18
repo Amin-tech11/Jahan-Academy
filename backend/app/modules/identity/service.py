@@ -14,6 +14,7 @@ from app.core.redis import get_redis
 from app.modules.identity.abuse import AuthAbuseControl
 from app.modules.identity.mailer import AuthMailer
 from app.modules.identity.mfa import MfaSecurity
+from app.modules.identity.password_work import password_work
 from app.modules.identity.repository import AccountRecord, AuthRepository, SessionRecord
 from app.modules.identity.schemas import (
     LoginRequest,
@@ -63,7 +64,7 @@ class AuthService:
         try:
             account = await self._repository.create_pending_user(
                 email=email,
-                password_hash=self._security.hash_password(request.password),
+                password_hash=await password_work(self._security.hash_password, request.password),
                 first_name=request.first_name,
                 last_name=request.last_name,
                 locale=request.locale,
@@ -118,15 +119,17 @@ class AuthService:
             email = self._normalize_email(str(request.email))
             account = await self._repository.get_account_by_email(email)
         if account is None or account.identity.password_hash is None:
-            self._security.perform_dummy_password_check(request.password)
+            await password_work(self._security.perform_dummy_password_check, request.password)
             raise self._invalid_credentials()
 
         now = datetime.now(UTC)
         await self._abuse.check_account("login", account.user.id)
         if account.user.locked_until and account.user.locked_until > now:
-            self._security.perform_dummy_password_check(request.password)
+            await password_work(self._security.perform_dummy_password_check, request.password)
             raise self._invalid_credentials()
-        if not self._security.verify_password(account.identity.password_hash, request.password):
+        if not await password_work(
+            self._security.verify_password, account.identity.password_hash, request.password
+        ):
             await self._record_mfa_failure(account)
             raise self._invalid_credentials()
         if account.identity.verified_at is None or account.user.status == "pending":
@@ -154,7 +157,7 @@ class AuthService:
 
         replacement_hash = None
         if self._security.password_needs_rehash(account.identity.password_hash):
-            replacement_hash = self._security.hash_password(request.password)
+            replacement_hash = await password_work(self._security.hash_password, request.password)
         await self._repository.register_successful_login(account, replacement_hash)
         await self._abuse.clear_failures(account.user.id)
         issued = await self._issue_session(account, ip_address, user_agent)
@@ -343,7 +346,7 @@ class AuthService:
         validate_password_strength(request.new_password)
         account = await self._repository.consume_password_reset(
             self._security.token_hash(request.token),
-            self._security.hash_password(request.new_password),
+            await password_work(self._security.hash_password, request.new_password),
         )
         if account is None:
             raise ApplicationError(
@@ -377,7 +380,9 @@ class AuthService:
             raise ApplicationError(
                 code="ACCOUNT_LOCKED", message="Account temporarily locked.", status_code=403
             )
-        if not self._security.verify_password(account.identity.password_hash, password):
+        if not await password_work(
+            self._security.verify_password, account.identity.password_hash, password
+        ):
             await self._record_mfa_failure(account)
             raise self._invalid_credentials()
         return account

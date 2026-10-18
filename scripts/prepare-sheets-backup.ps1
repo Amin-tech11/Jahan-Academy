@@ -6,6 +6,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+Import-Module (Join-Path $PSScriptRoot 'LocalBackupProtection.psm1') -Force
 $taskBackend = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../backend'))
 if (-not (Test-Path -LiteralPath (Join-Path $taskBackend '.venv/pyvenv.cfg'))) {
     throw 'The backend Linux test environment is missing. Follow GOOGLE_SHEETS_BACKUP.md to prepare it.'
@@ -35,8 +36,9 @@ if ($LASTEXITCODE -ne 0) { throw 'Daily snapshot preparation failed; do not writ
 $taskPayload = $taskJson | ConvertFrom-Json
 $taskOutbox = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../.backup-outbox'))
 [System.IO.Directory]::CreateDirectory($taskOutbox) | Out-Null
-$taskOutput = Join-Path $taskOutbox ($taskPayload.day + '.json')
-[System.IO.File]::WriteAllText($taskOutput, $taskJson, [System.Text.UTF8Encoding]::new($false))
+$taskOutput = Join-Path $taskOutbox ($taskPayload.day + '-' + [Guid]::NewGuid().ToString('N') + '.json.dpapi')
+Write-ProtectedBackup -LiteralPath $taskOutput -Bytes ([Text.UTF8Encoding]::new($false).GetBytes($taskJson))
+Remove-ExpiredProtectedOutbox -Directory $taskOutbox
 [ordered]@{
     status = $taskPayload.status
     day = $taskPayload.day
@@ -44,4 +46,5 @@ $taskOutput = Join-Path $taskOutbox ($taskPayload.day + '.json')
     sheetTitle = $taskPayload.sheetTitle
     sheetId = $taskPayload.sheetId
     payloadPath = $taskOutput
+    payloadFormat = 'windows-dpapi-current-user'
 } | ConvertTo-Json -Compress

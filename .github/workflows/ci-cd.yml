@@ -29,6 +29,18 @@ env:
   COMPOSE_FILE: docker-compose.yml:docker-compose.ci.yml
 
 jobs:
+  local-backup-protection:
+    name: Windows local backup protection
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Verify DPAPI backup and safe failure behavior
+        shell: pwsh
+        run: ./scripts/test-local-backup-protection.ps1 -TestDirectory (Join-Path $env:RUNNER_TEMP ([guid]::NewGuid().ToString('N')))
+
   lint:
     name: Lint
     runs-on: ubuntu-24.04
@@ -317,7 +329,7 @@ jobs:
 
   build:
     name: Build
-    needs: [integration-tests, browser-tests]
+    needs: [integration-tests, browser-tests, local-backup-protection]
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     steps:
