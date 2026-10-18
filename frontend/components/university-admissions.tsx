@@ -23,7 +23,7 @@ export function UniversityAdmissionsSection({ slug, locale }: { slug: string; lo
       <p className={styles.scope}>{programme.scope[locale]}</p>
       <dl>{programme.rows.map(row => <div className={styles.row} key={row.kind}>
         <dt>{labels[row.kind][locale]}</dt>
-        <dd><p>{row.text[locale]}</p><ul className={styles.sources} aria-label={`${fa ? "منابع" : "Sources"}: ${labels[row.kind][locale]}`}>{row.sources.map(source => <li key={source.url}><a href={source.url} target="_blank" rel="noopener noreferrer">{source.label[locale]}<span aria-hidden="true"> ↗</span></a></li>)}</ul></dd>
+        <dd><p>{row.text[locale]}</p></dd>
       </div>)}</dl>
     </article>)}</div>
   </section>;
