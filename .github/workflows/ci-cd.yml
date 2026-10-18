@@ -205,6 +205,10 @@ jobs:
       - name: Run unit, architecture, and contract tests
         run: uv run pytest tests/unit tests/architecture tests/contract -v
 
+      - name: Test restricted production SSH gateway
+        working-directory: .
+        run: python -m unittest discover -s deploy/production -p test_ssh_gateway.py -v
+
   integration-tests:
     name: Integration Tests
     needs: unit-tests
@@ -534,9 +538,7 @@ jobs:
           trap 'rm -f "$key" "$hosts"' EXIT
           options=(-i "$key" -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$hosts" -o ConnectTimeout=15)
           remote="$SSH_USER@$SSH_HOST"
-          path="/opt/jahan-academy-test/releases/$MAIN_SHA"
-          git archive --format=tar.gz --output="$RUNNER_TEMP/main-release.tar.gz" HEAD
-          ssh "${options[@]}" -p "$SSH_PORT" "$remote" "mkdir -p '$path'"
-          scp "${options[@]}" -P "$SSH_PORT" "$RUNNER_TEMP/main-release.tar.gz" "$remote:$path/source.tar.gz"
-          ssh "${options[@]}" -p "$SSH_PORT" "$remote" "tar -xzf '$path/source.tar.gz' -C '$path'"
-          printf '%s' "$REGISTRY_TOKEN" | ssh "${options[@]}" -p "$SSH_PORT" "$remote" "set -eu; umask 077; export DOCKER_CONFIG=\$(mktemp -d); trap 'rm -rf \"\$DOCKER_CONFIG\"' EXIT; docker login ghcr.io -u '$REGISTRY_USER' --password-stdin > /dev/null; bash '$path/deploy/production/release.sh' '$MAIN_SHA' '$BACKEND_DIGEST' '$FRONTEND_DIGEST'"
+          # The server key is forced to ssh-gateway.py: no shell, SCP, or forwarding.
+          # The gateway independently checks current main/CI and fetches its official source.
+          printf '%s' "$REGISTRY_TOKEN" | ssh "${options[@]}" -p "$SSH_PORT" "$remote" \
+            "jahan-deploy $MAIN_SHA $BACKEND_DIGEST $FRONTEND_DIGEST $REGISTRY_USER"
