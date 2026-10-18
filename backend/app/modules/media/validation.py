@@ -5,7 +5,7 @@ import hashlib
 import json
 import socket
 import struct
-import subprocess
+import subprocess  # nosec B404
 import sys
 import threading
 from dataclasses import dataclass
@@ -130,7 +130,8 @@ class MediaContentValidator:
         if not _INSPECTION_SLOT.acquire(blocking=False):
             raise MalwareScanError("MEDIA_VALIDATOR_BUSY")
         try:
-            result = subprocess.run(
+            # Fixed isolated worker/argv, bounded runtime, no shell; content enters stdin only.
+            result = subprocess.run(  # nosec B603
                 [
                     sys.executable,
                     "-I",
