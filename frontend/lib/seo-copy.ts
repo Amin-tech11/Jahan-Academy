@@ -31,6 +31,54 @@ export const seoCopy: Record<string, Partial<Record<Locale, SeoCopy>>> = {
   "/universities/australian-national-university": {
     en: { description: "Explore the Australian National University in Canberra: discover its academic profile, research and student life to help plan your study in Australia." },
   },
+  "/services/education-consultation": {
+    fa: { description: "با مشاوره مسیر تحصیلی جهان آکادمی، هدف، سوابق، بودجه و زمان اقدام خود را بررسی کنید؛ با مدارک موردنیاز جلسه و روند انتخاب گام بعدی آشنا شوید." },
+    en: { description: "Review your study goals, academic background, budget and timeline with Jahan Academy. Learn what to prepare for a consultation and how to plan your next step." },
+  },
+  "/services/document-review": {
+    fa: { description: "با خدمت بررسی مدارک جهان آکادمی آشنا شوید؛ رزومه، انگیزه‌نامه و مدارک پرونده را با الزامات مقصد مقایسه کنید و محدوده بازبینی و روند کار را بشناسید." },
+    en: { description: "Explore Jahan Academy's document review service for CVs, statements of purpose and application files. Learn what to prepare and how the review process works." },
+  },
+  "/universities/adelaide-university": {
+    fa: { description: "دانشگاه آدلاید در استرالیای جنوبی را بشناسید؛ معرفی پردیس‌های شهری و منطقه‌ای، حوزه‌های آموزشی و فضای زندگی دانشجویی برای بررسی گزینه تحصیل." },
+    en: { description: "Explore Adelaide University in South Australia: discover its metropolitan and regional campuses, academic areas and student life as you compare study options." },
+  },
+  "/universities/catholic-university-of-the-sacred-heart": {
+    en: { description: "Discover the Catholic University of the Sacred Heart in Italy: explore its campuses, academic areas and student settings to compare your study options." },
+  },
+  "/universities/chalmers-university-of-technology": {
+    en: { description: "Explore Chalmers University of Technology in Gothenburg: discover its campus environment and focus on engineering, science, technology and architecture." },
+  },
+  "/universities/delft-university-of-technology": {
+    en: { description: "Discover Delft University of Technology in the Netherlands: explore its academic profile, campus facilities and student environment as you plan your studies." },
+  },
+  "/universities/durham-university": {
+    en: { description: "Explore Durham University in the United Kingdom: learn about its academic profile, campus setting and student life to help compare your university options." },
+  },
+  "/universities/karolinska-institute": {
+    fa: { description: "مؤسسه کارولینسکا در سوئد را بشناسید؛ معرفی پردیس‌های سولنا و فلمینگزبرگ، آموزش پزشکی و سلامت، پژوهش زیست‌پزشکی و محیط زندگی دانشجویی." },
+    en: { description: "Explore Karolinska Institutet in Sweden: discover its Solna and Flemingsberg campuses, medical and health education, biomedical research and student life." },
+  },
+  "/universities/kth-royal-institute-of-technology": {
+    fa: { description: "با مؤسسه سلطنتی فناوری KTH در استکهلم آشنا شوید؛ محیط پردیس، زندگی دانشجویی و حوزه‌های مهندسی، کامپیوتر، علوم طبیعی و معماری را بررسی کنید." },
+    en: { description: "Discover KTH Royal Institute of Technology in Stockholm: explore campus life and academic focus on engineering, computing, natural sciences and architecture." },
+  },
+  "/universities/polytechnic-university-of-milan": {
+    en: { description: "Explore Politecnico di Milano in Italy: discover the Leonardo and Bovisa campuses and its academic focus on engineering, architecture and design." },
+  },
+  "/universities/polytechnic-university-of-turin": {
+    en: { description: "Discover Politecnico di Torino in Italy: explore its engineering, architecture and design profile, campus settings and student life in Turin." },
+  },
+  "/universities/tampere-university": {
+    en: { description: "Explore Tampere University in Finland: discover its academic profile, campus environment and student life to help compare your international study options." },
+  },
+  "/universities/the-university-of-auckland": {
+    fa: { description: "دانشگاه اوکلند در نیوزیلند را بشناسید؛ معرفی پردیس شهری نزدیک آلبرت پارک، حوزه‌های علوم، مهندسی، مدیریت و سلامت و فضای زندگی دانشجویی." },
+    en: { description: "Explore the University of Auckland in New Zealand: discover its City Campus near Albert Park, academic areas and student life as you compare study options." },
+  },
+  "/universities/university-of-otago": {
+    en: { description: "Discover the University of Otago in Dunedin, New Zealand: explore its campus, student life and academic areas spanning health, science, humanities and business." },
+  },
 };
 
 const countryDescriptions: Record<string, Record<Locale, string>> = {
