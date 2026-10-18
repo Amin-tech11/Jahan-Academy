@@ -70,5 +70,6 @@ class PanelAccessService:
             before={"sections": before.sections},
             after={"sections": sorted(sections)},
         )
+        await self.repository.revoke_sessions(staff_id)
         await self.repository.session.commit()
         return await self.get(actor, staff_id)

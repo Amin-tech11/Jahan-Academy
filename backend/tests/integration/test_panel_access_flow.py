@@ -47,12 +47,14 @@ def test_real_sessions_follow_grants_revocations_and_super_admin_protection() ->
                 )
         with TestClient(app) as client:
             tokens = {}
+            recovery_codes = {}
             for user_id, email in emails.items():
                 result = login_enrolled_staff(client, {"email": email}, password)
                 assert result.status_code == 200, result.text
                 tokens[user_id] = {
                     "Authorization": f"Bearer {result.json()['data']['accessToken']}"
                 }
+                recovery_codes[user_id] = iter(result.extensions["unused_recovery_codes"])
             admin, staff = tokens[admin_id], tokens[staff_id]
             path = f"/api/v1/admin/staff/{staff_id}/panel-access"
             own = "/api/v1/users/me/panel-access"
@@ -81,6 +83,24 @@ def test_real_sessions_follow_grants_revocations_and_super_admin_protection() ->
             )
             assert granted.status_code == 200, granted.text
             assert granted.json()["data"]["version"] == 2
+            assert client.get(own, headers=staff).status_code == 401
+            assert (
+                client.post(
+                    "/api/v1/auth/refresh",
+                    headers={"X-CSRF-Token": str(client.cookies.get("jahan_csrf"))},
+                ).status_code
+                == 401
+            )
+            signed_in = client.post(
+                "/api/v1/auth/login",
+                json={
+                    "email": emails[staff_id],
+                    "password": password,
+                    "mfaCode": next(recovery_codes[staff_id]),
+                },
+            )
+            assert signed_in.status_code == 200, signed_in.text
+            staff = {"Authorization": f"Bearer {signed_in.json()['data']['accessToken']}"}
             assert client.get("/api/v1/admin/universities", headers=staff).status_code == 200
             assert client.get("/api/v1/admin/programs", headers=staff).status_code == 403
             stale = client.put(path, headers={**admin, "If-Match": '"1"'}, json={"sections": []})
@@ -91,6 +111,17 @@ def test_real_sessions_follow_grants_revocations_and_super_admin_protection() ->
             assert denied.status_code == 403
             revoked = client.put(path, headers={**admin, "If-Match": '"2"'}, json={"sections": []})
             assert revoked.status_code == 200, revoked.text
+            assert client.get(own, headers=staff).status_code == 401
+            signed_in = client.post(
+                "/api/v1/auth/login",
+                json={
+                    "email": emails[staff_id],
+                    "password": password,
+                    "mfaCode": next(recovery_codes[staff_id]),
+                },
+            )
+            assert signed_in.status_code == 200, signed_in.text
+            staff = {"Authorization": f"Bearer {signed_in.json()['data']['accessToken']}"}
             assert client.get(own, headers=staff).json()["data"]["sections"] == []
             assert client.get("/api/v1/admin/leads", headers=staff).status_code == 403
             assert client.get("/api/v1/admin/universities", headers=staff).status_code == 403

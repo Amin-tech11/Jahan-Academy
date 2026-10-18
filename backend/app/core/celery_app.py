@@ -14,6 +14,10 @@ celery_app.conf.update(
     task_acks_late=True,
     worker_prefetch_multiplier=1,
     beat_schedule={
+        "deliver-security-notifications": {
+            "task": "jahan.operational.deliver_security_notifications",
+            "schedule": 60.0,
+        },
         "dispatch-noura-outbox": {
             "task": "jahan.integrations.dispatch_noura_outbox",
             "schedule": 10.0,

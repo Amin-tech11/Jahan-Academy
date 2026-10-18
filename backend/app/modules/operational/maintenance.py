@@ -49,15 +49,28 @@ async def run(*, apply: bool) -> dict[str, int | bool | str]:
                     "expired_idempotency_keys"
                 ] = await repository.remove_expired_idempotency_keys()
                 await session.commit()
-                sheets = await cleanup_sheets(session, settings)
+                # Independent transactions: neither remote system may starve the other.
+                failures: list[Exception] = []
+                try:
+                    result["media_cleaned"] = await cleanup_uploads(
+                        session, S3MediaStorage(settings), settings
+                    )
+                    await session.commit()
+                except Exception as error:
+                    await session.rollback()
+                    failures.append(error)
+                try:
+                    sheets = await cleanup_sheets(session, settings)
+                    await session.commit()
+                except Exception as error:
+                    await session.rollback()
+                    failures.append(error)
+                    sheets = {"status": "failed"}
                 result["sheets_status"] = str(sheets["status"])
                 result["sheets_removed_rows"] = int(sheets.get("removed_rows", 0))
                 result["sheets_expired_tabs"] = int(sheets.get("expired_tabs", 0))
-                await session.commit()
-                result["media_cleaned"] = await cleanup_uploads(
-                    session, S3MediaStorage(settings), settings
-                )
-                await session.commit()
+                if failures:
+                    raise ExceptionGroup("Independent retention jobs failed", failures)
             return result
     finally:
         await dispose_database()

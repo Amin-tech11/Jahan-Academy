@@ -31,6 +31,30 @@ class SessionRecord:
 
 
 class AuthRepository:
+    async def audit_security_event(
+        self, user_id: UUID | None, action: str, ip_hash: str | None, user_agent: str | None
+    ) -> None:
+        await self.session.execute(
+            text("""INSERT INTO audit_logs
+                (actor_user_id, action, entity_type, entity_id, ip_hash, user_agent)
+                VALUES (:id, :action, 'user', :id, :ip, :agent)"""),
+            {"id": user_id, "action": action, "ip": ip_hash, "agent": user_agent},
+        )
+
+    async def queue_security_notice(self, user_id: UUID, event: str) -> None:
+        from app.modules.identity.security_notifications import notice
+
+        title, body = notice(event)
+        await self.session.execute(
+            text("""WITH n AS (
+                INSERT INTO notifications (user_id, event_code, title, body)
+                VALUES (:id, :event, :title, :body) RETURNING id
+            ) INSERT INTO notification_deliveries
+                (notification_id, user_id, channel, provider)
+                SELECT id, :id, 'email', 'auth-security' FROM n"""),
+            {"id": user_id, "event": event, "title": title, "body": body},
+        )
+
     async def requires_staff_mfa(self, user_id: UUID) -> bool:
         return bool(
             await self.session.scalar(

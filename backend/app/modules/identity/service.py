@@ -44,11 +44,15 @@ class AuthService:
         mailer: AuthMailer,
         settings: Settings,
         abuse: AuthAbuseControl | None = None,
+        ip_address: str | None = None,
+        user_agent: str | None = None,
     ) -> None:
         self._repository = repository
         self._security = security
         self._mailer = mailer
         self._settings = settings
+        self._ip_address = ip_address
+        self._user_agent = user_agent
         self._abuse = abuse if abuse is not None else AuthAbuseControl(get_redis(), settings)
 
     async def register(self, request: RegisterRequest) -> None:
@@ -111,6 +115,7 @@ class AuthService:
     async def login(
         self, request: LoginRequest, ip_address: str | None, user_agent: str | None
     ) -> IssuedTokens:
+        self._ip_address, self._user_agent = ip_address, user_agent
         if request.username is not None:
             account = await self._repository.get_staff_account_by_username(
                 request.username.casefold()
@@ -120,17 +125,21 @@ class AuthService:
             account = await self._repository.get_account_by_email(email)
         if account is None or account.identity.password_hash is None:
             await password_work(self._security.perform_dummy_password_check, request.password)
+            await self._audit_security_event(None, "auth.login.failed")
+            await self._repository.session.commit()
             raise self._invalid_credentials()
 
         now = datetime.now(UTC)
         await self._abuse.check_account("login", account.user.id)
         if account.user.locked_until and account.user.locked_until > now:
             await password_work(self._security.perform_dummy_password_check, request.password)
+            await self._audit_security_event(account.user.id, "auth.login.blocked")
+            await self._repository.session.commit()
             raise self._invalid_credentials()
         if not await password_work(
             self._security.verify_password, account.identity.password_hash, request.password
         ):
-            await self._record_mfa_failure(account)
+            await self._record_mfa_failure(account, "auth.login.failed")
             raise self._invalid_credentials()
         if account.identity.verified_at is None or account.user.status == "pending":
             raise ApplicationError(
@@ -356,6 +365,8 @@ class AuthService:
             )
         await self._repository.revoke_all_user_sessions(account.user.id)
         await self._abuse.clear_failures(account.user.id)
+        await self._audit_security_event(account.user.id, "auth.password.reset")
+        await self._repository.queue_security_notice(account.user.id, "auth.password.reset")
         await self._repository.session.commit()
 
     async def mfa_status(self, user_id: UUID) -> dict[str, object]:
@@ -387,13 +398,27 @@ class AuthService:
             raise self._invalid_credentials()
         return account
 
-    async def _record_mfa_failure(self, account: AccountRecord) -> None:
+    async def _audit_security_event(self, user_id: UUID | None, action: str) -> None:
+        await self._repository.audit_security_event(
+            user_id,
+            action,
+            self._security.fingerprint_hash(self._ip_address),
+            (self._user_agent or "")[:500] or None,
+        )
+
+    async def _record_mfa_failure(
+        self, account: AccountRecord, action: str = "auth.mfa.failed"
+    ) -> None:
         count, lock_seconds = await self._abuse.register_failure(account.user.id)
         await self._repository.register_failed_login(
             account.user,
             count,
             timedelta(seconds=lock_seconds),
         )
+        await self._audit_security_event(account.user.id, action)
+        if lock_seconds:
+            await self._audit_security_event(account.user.id, "auth.account.locked")
+            await self._repository.queue_security_notice(account.user.id, "auth.account.locked")
         await self._repository.session.commit()
 
     async def mfa_setup(self, email: str, password: str) -> dict[str, str]:
@@ -430,6 +455,7 @@ class AuthService:
         )
         await self._repository.revoke_all_user_sessions(account.user.id)
         await self._repository.audit_mfa(account.user.id, "auth.mfa.enabled")
+        await self._repository.queue_security_notice(account.user.id, "auth.mfa.enabled")
         await self._repository.session.commit()
         return codes
 
@@ -473,6 +499,7 @@ class AuthService:
         await self._repository.delete_mfa(account.user.id)
         await self._repository.revoke_all_user_sessions(account.user.id)
         await self._repository.audit_mfa(account.user.id, "auth.mfa.disabled")
+        await self._repository.queue_security_notice(account.user.id, "auth.mfa.disabled")
         await self._repository.session.commit()
 
     async def _new_email_challenge(self, account: AccountRecord) -> str:

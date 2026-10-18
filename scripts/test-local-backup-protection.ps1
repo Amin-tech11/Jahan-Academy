@@ -41,4 +41,7 @@ Write-ProtectedBackup $taskCurrent $taskBytes
 Write-ProtectedBackup $taskOther $taskBytes
 Remove-ExpiredProtectedOutbox -Directory $taskOutbox
 if ((Test-Path $taskOld) -or -not (Test-Path $taskCurrent) -or -not (Test-Path $taskOther)) { throw 'Outbox cleanup scope violated.' }
-Write-Output '6 local backup checks passed: roundtrip, plaintext removal, tamper, conflict, locked-source safety, scoped expiry.'
+Write-ProtectedBackup $taskOld $taskBytes
+$null = & (Join-Path $PSScriptRoot 'cleanup-local-backups.ps1') -Directory $taskOutbox -Apply
+if ((Test-Path $taskOld) -or -not (Test-Path $taskCurrent) -or -not (Test-Path $taskOther)) { throw 'Independent cleanup scope violated.' }
+Write-Output '7 local backup checks passed: roundtrip, plaintext removal, tamper, conflict, locked-source safety, scoped expiry, standalone expiry.'

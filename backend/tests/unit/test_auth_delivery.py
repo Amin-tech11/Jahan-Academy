@@ -20,6 +20,11 @@ async def test_email_links_use_fragments_and_bounded_tls_delivery() -> None:
         assert send.call_args.kwargs["start_tls"]
         await SmtpAuthMailer(settings).send_email_verification("test@example.com", "t" * 40)
         assert "/verify-email#token=" in send.call_args.args[0].get_content()
+        await SmtpAuthMailer(settings).send_security_notice(
+            "test@example.com", "Security notification", "Your password was reset."
+        )
+        assert send.call_args.args[0]["Subject"] == "Security notification"
+        assert "Your password was reset." in send.call_args.args[0].get_content()
 
 
 async def test_unavailable_delivery_is_explicit_and_does_not_lookup_accounts() -> None:

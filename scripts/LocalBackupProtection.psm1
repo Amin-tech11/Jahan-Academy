@@ -83,7 +83,8 @@ function Remove-ExpiredProtectedOutbox {
     $cutoff = [TimeZoneInfo]::ConvertTimeBySystemTimeZoneId([DateTime]::UtcNow, 'Iran Standard Time').Date.AddDays(-$RetentionDays)
     foreach ($item in Get-ChildItem -LiteralPath $root -File -Force) {
         if ($item.Name -notmatch '^(\d{4}-\d{2}-\d{2})(?:-[a-f0-9]{32})?\.json\.dpapi$') { continue }
-        $day = [DateTime]::ParseExact($Matches[1], 'yyyy-MM-dd', [Globalization.CultureInfo]::InvariantCulture)
+        $day = [DateTime]::MinValue
+        if (-not [DateTime]::TryParseExact($Matches[1], 'yyyy-MM-dd', [Globalization.CultureInfo]::InvariantCulture, [Globalization.DateTimeStyles]::None, [ref]$day)) { continue }
         if ($day -le $cutoff) {
             # Never delete a foreign/corrupt file merely because its name resembles an outbox.
             $null = Read-ProtectedBackup -LiteralPath $item.FullName

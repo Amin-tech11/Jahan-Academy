@@ -28,6 +28,9 @@ pytestmark = pytest.mark.skipif(
 
 
 class CapturingMailer(AuthMailer):
+    async def send_security_notice(self, email: str, subject: str, body: str) -> None:
+        pass
+
     def __init__(self) -> None:
         self.password_resets: list[tuple[str, str]] = []
 

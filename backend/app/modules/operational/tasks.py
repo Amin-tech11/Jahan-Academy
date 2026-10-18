@@ -13,6 +13,13 @@ from app.modules.operational.maintenance import run as maintenance_run
 from app.modules.operational.sheets_backup import backup_day, scheduled_through
 
 
+@celery_app.task(name="jahan.operational.deliver_security_notifications")  # type: ignore[untyped-decorator]
+def deliver_security_notifications_task() -> dict[str, int | str]:
+    from app.modules.identity.security_notifications import run
+
+    return asyncio.run(run(apply=True))
+
+
 async def enforce_retention() -> dict[str, int | bool | str]:
     result = await maintenance_run(apply=True)
     structlog.get_logger(__name__).info("retention_enforced", **result)

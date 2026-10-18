@@ -75,6 +75,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 35 3 * * * root bash /opt/jahan-academy-test/backup.sh >> /opt/jahan-academy-test/maintenance.log 2>&1
 15 4 * * * root bash /opt/jahan-academy-test/retention.sh >> /opt/jahan-academy-test/maintenance.log 2>&1
 */10 * * * * root flock -n /opt/jahan-academy-test/media-cleanup.lock docker compose -p jahan-academy-test --project-directory /opt/jahan-academy-test exec -T backend /app/.venv/bin/python -m app.modules.media.cleanup --apply >> /opt/jahan-academy-test/maintenance.log 2>&1
+* * * * * root flock -n /opt/jahan-academy-test/security-notifications.lock docker compose -p jahan-academy-test --project-directory /opt/jahan-academy-test exec -T backend /app/.venv/bin/python -m app.modules.identity.security_notifications --apply >> /opt/jahan-academy-test/maintenance.log 2>&1
 */5 * * * * root flock -n /opt/jahan-academy-test/monitor.lock python3 /opt/jahan-academy-test/monitor.py >> /opt/jahan-academy-test/maintenance.log 2>&1
 CRON
 cat > /etc/logrotate.d/jahan-academy <<'ROTATE'

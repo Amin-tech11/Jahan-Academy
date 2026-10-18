@@ -68,3 +68,10 @@ $backupPayload = [Text.Encoding]::UTF8.GetString($backupBytes) | ConvertFrom-Jso
 
 این تغییر هیچ تب گوگل یا worker فعال را تغییر نمی‌دهد. راهنمای بازیابی و حفاظت
 نسخه‌های قدیمی: [auth-resource-and-local-backups.md](docs/auth-resource-and-local-backups.md).
+
+پاک‌سازی خروجی‌های روزانه اکنون ابزار مستقل `scripts/cleanup-local-backups.ps1`
+دارد. نصب زمان‌بندی با `scripts/install-local-backup-retention.ps1` تحت همان حساب
+ویندوز انجام می‌شود: روزانه ساعت ۹ محلی و هنگام ورود حساب اجرا می‌شود؛ اجرای
+عقب‌افتاده در اولین فرصت دنبال می‌شود. روی این دستگاه نصب و اجرای موفق آن تأیید
+شده است. ابزار مستقل به دیتابیس، گوگل یا ساخت خروجی تازه وابسته نیست. در زمان
+خاموشی دستگاه یا خروج از حساب، اجرای DPAPI تا ورود بعدی به تعویق می‌افتد.

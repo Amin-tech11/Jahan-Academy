@@ -4,6 +4,7 @@ import os
 from collections.abc import AsyncIterator
 from uuid import uuid4
 
+import psycopg
 import pytest
 from fastapi.testclient import TestClient
 
@@ -22,6 +23,9 @@ pytestmark = pytest.mark.skipif(
 
 
 class CapturingMailer(AuthMailer):
+    async def send_security_notice(self, email: str, subject: str, body: str) -> None:
+        pass
+
     verification_token: str | None = None
     password_reset_token: str | None = None
 
@@ -145,6 +149,25 @@ def test_complete_email_authentication_lifecycle() -> None:
                 },
             )
             assert reset.status_code == 204
+            database = os.environ["JAHAN_DATABASE_URL"].replace(
+                "postgresql+asyncpg://", "postgresql://"
+            )
+            with psycopg.connect(database) as connection, connection.cursor() as cursor:
+                cursor.execute(
+                    """SELECT a.action FROM audit_logs a JOIN user_identities i
+                    ON i.user_id = a.entity_id WHERE i.provider_subject = %s""",
+                    (email,),
+                )
+                actions = [row[0] for row in cursor.fetchall()]
+                assert actions.count("auth.login.failed") == 5
+                assert "auth.account.locked" in actions and "auth.password.reset" in actions
+                cursor.execute(
+                    """SELECT n.event_code FROM notifications n JOIN user_identities i
+                    ON i.user_id = n.user_id WHERE i.provider_subject = %s""",
+                    (email,),
+                )
+                events = {row[0] for row in cursor.fetchall()}
+                assert {"auth.account.locked", "auth.password.reset"} <= events
 
             login = client.post(
                 "/api/v1/auth/login",

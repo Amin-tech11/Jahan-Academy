@@ -22,6 +22,8 @@ def test_login_requires_exactly_one_valid_identifier() -> None:
 
 async def test_unknown_staff_name_uses_dummy_check_and_rejects_login() -> None:
     repository = Mock()
+    repository.audit_security_event = AsyncMock()
+    repository.session = AsyncMock()
     repository.get_staff_account_by_username = AsyncMock(return_value=None)
     security = Mock()
     service = AuthService.__new__(AuthService)

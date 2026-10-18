@@ -68,6 +68,7 @@ def auth_abuse(
 
 
 def auth_service(
+    request: Request,
     session: Annotated[AsyncSession, Depends(database_session)],
     settings: Annotated[Settings, Depends(get_settings)],
     abuse: Annotated[AuthAbuseControl, Depends(auth_abuse)],
@@ -78,6 +79,8 @@ def auth_service(
         mailer=SmtpAuthMailer(settings),
         settings=settings,
         abuse=abuse,
+        ip_address=request.client.host if request.client else None,
+        user_agent=request.headers.get("user-agent"),
     )
 
 
