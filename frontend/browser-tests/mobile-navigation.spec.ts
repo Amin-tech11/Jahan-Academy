@@ -21,6 +21,40 @@ test("slow scripts do not expose an unresponsive menu button", async ({ page }) 
 });
 
 for (const locale of ["fa", "en"]) {
+  test(`${locale}: destination title and country toggle have independent actions`, async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto(`/${locale}/privacy`);
+    await page.reload();
+    await page.locator(".mobile-menu-toggle").click();
+    const menu = page.locator("dialog.mobile-nav");
+    const title = menu.locator(".mobile-destinations-row > a");
+    const countryToggle = menu.locator(".mobile-destinations-toggle");
+    for (const control of [title, countryToggle]) {
+      const bounds = await control.boundingBox();
+      expect(bounds!.width).toBeGreaterThanOrEqual(44);
+      expect(bounds!.height).toBeGreaterThanOrEqual(44);
+    }
+    await countryToggle.focus();
+    await countryToggle.press("Space");
+    await expect(countryToggle).toHaveAttribute("aria-expanded", "true");
+    await expect(page).toHaveURL(new RegExp(`/${locale}/privacy$`));
+    const countries = menu.locator("#mobile-destinations-list");
+    await expect(countries.locator("a").first()).toHaveAttribute("href", `/${locale}/countries`);
+    await countryToggle.press("Enter");
+    await expect(countries).toBeHidden();
+    await title.click();
+    await expect(page).toHaveURL(new RegExp(`/${locale}/countries$`));
+    await expect(menu).toBeHidden();
+    await page.locator(".mobile-menu-toggle").click();
+    await countryToggle.click();
+    await countries.locator("a").first().click();
+    await expect(menu).toBeHidden();
+    await expect(page).toHaveURL(new RegExp(`/${locale}/countries$`));
+    await page.locator(".mobile-menu-toggle").click();
+    await countries.locator('a[href$="/germany"]').click();
+    await expect(page).toHaveURL(new RegExp(`/${locale}/countries/germany$`));
+    await expect(menu).toBeHidden();
+  });
   for (const width of [320, 360, 390, 430, 600, 768, 820, 1024, 1194]) {
     test(`${locale} ${width}: touch menu fits and restores focus`, async ({ page }) => {
       await page.setViewportSize({ width, height: 844 });
@@ -37,8 +71,11 @@ for (const locale of ["fa", "en"]) {
       await expect(page.locator(".mobile-nav__close")).toBeFocused();
       await page.keyboard.press("Shift+Tab");
       expect(await menu.evaluate(node => node.contains(document.activeElement))).toBe(true);
-      await menu.locator("summary").click();
-      await expect(menu.locator("details")).toHaveAttribute("open", "");
+      const countryToggle = menu.locator(".mobile-destinations-toggle");
+      await countryToggle.click();
+      await expect(countryToggle).toHaveAttribute("aria-expanded", "true");
+      await expect(menu.locator("#mobile-destinations-list")).toBeVisible();
+      await expect(page).toHaveURL(new RegExp(`/${locale}/privacy$`));
       await page.keyboard.press("Escape");
       await expect(menu).not.toBeVisible();
       await expect(toggle).toBeFocused();
