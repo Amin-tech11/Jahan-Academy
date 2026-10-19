@@ -30,7 +30,9 @@ export default async function NewsDetail({ params }: Props) {
   if (!news) notFound();
   return <SiteShell locale={locale} className={styles.page}>
     <main className={styles.main}><article className={styles.article} aria-labelledby="news-title">
-      <Link href={`/${locale}/articles#journal-news`}>{locale === "fa" ? "بازگشت به اخبار مجله" : "Back to journal news"}</Link>
+      <div className={styles.newsActions}>
+        <Link className={styles.newsBackButton} dir={locale === "fa" ? "rtl" : "ltr"} href={`/${locale}/articles#journal-news`}>{locale === "fa" ? "بازگشت به اخبار مجله" : "Back to journal news"}<span aria-hidden="true">←</span></Link>
+      </div>
       <header className={styles.header}>
         <p>{news.category[locale]}</p><h1 id="news-title">{news.title[locale]}</h1>
         <p className={styles.date}>{locale === "fa" ? "انتشار جهان آکادمی: " : "Jahan Academy publication: "}<time dateTime={news.date}>{blogDate(news.date, locale)}</time>
