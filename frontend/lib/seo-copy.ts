@@ -4,8 +4,8 @@ type SeoCopy = { title?: string; description: string };
 // Search snippets are edited separately from visible headings and introductory copy.
 export const seoCopy: Record<string, Partial<Record<Locale, SeoCopy>>> = {
   "": {
-    fa: { title: "مشاوره تحصیل در خارج و پذیرش دانشگاه | جهان آکادمی", description: "با جهان آکادمی مقصد و دانشگاه مناسب خود را پیدا کنید؛ خدمات مشاوره تحصیلی، بررسی مدارک و راهنمای برنامه‌ریزی برای پذیرش و تحصیل در خارج." },
-    en: { title: "Study Abroad Advice & University Planning | Jahan Academy", description: "Explore study destinations and universities with Jahan Academy. Get advice on course choices, application documents and planning your study abroad journey." },
+    fa: { description: "با جهان آکادمی مقصد و دانشگاه مناسب خود را پیدا کنید؛ خدمات مشاوره تحصیلی، بررسی مدارک و راهنمای برنامه‌ریزی برای پذیرش و تحصیل در خارج." },
+    en: { description: "Explore study destinations and universities with Jahan Academy. Get advice on course choices, application documents and planning your study abroad journey." },
   },
   "/consultation": {
     fa: { description: "برای انتخاب کشور، دانشگاه و مسیر پذیرش با مشاوران جهان آکادمی گفت‌وگو کنید؛ با ثبت اطلاعات تحصیلی و هدف خود، درخواست مشاوره را شروع کنید." },
@@ -127,4 +127,89 @@ const countryDescriptions: Record<string, Record<Locale, string>> = {
 export function getSeoCopy(locale: Locale, path: string): SeoCopy | undefined {
   const country = path.startsWith("/countries/") ? countryDescriptions[path.slice("/countries/".length)] : undefined;
   return country ? { description: country[locale] } : seoCopy[path]?.[locale];
+}
+
+// Describe the public page's actual scope; avoid dates and unsupported rankings.
+const titles: Record<string, Record<Locale, string>> = {
+  "": {
+    fa: "مشاوره تحصیل در خارج و پذیرش دانشگاه | جهان آکادمی",
+    en: "Study Abroad Advice & Applications | Jahan Academy",
+  },
+  "/about": {
+    fa: "درباره جهان آکادمی؛ مشاوره تحصیل در خارج",
+    en: "About Jahan Academy | Study Abroad Guidance",
+  },
+  "/countries": {
+    fa: "مقایسه کشورها برای تحصیل در خارج | جهان آکادمی",
+    en: "Compare Study Abroad Destinations | Jahan Academy",
+  },
+  "/universities": {
+    fa: "معرفی دانشگاه‌های خارج از کشور | جهان آکادمی",
+    en: "Explore Universities Abroad | Jahan Academy",
+  },
+  "/services": {
+    fa: "خدمات اپلای و مشاوره تحصیلی | جهان آکادمی",
+    en: "Study Abroad & Application Services | Jahan Academy",
+  },
+  "/services/education-consultation": {
+    fa: "مشاوره تحصیل در خارج؛ انتخاب مسیر | جهان آکادمی",
+    en: "Study Abroad Consultation | Jahan Academy",
+  },
+  "/services/document-review": {
+    fa: "بررسی رزومه و انگیزه‌نامه اپلای | جهان آکادمی",
+    en: "CV & Statement of Purpose Review | Jahan Academy",
+  },
+  "/consultation": {
+    fa: "فرم ارزیابی تحصیلی برای اپلای | جهان آکادمی",
+    en: "Study Abroad Assessment Form | Jahan Academy",
+  },
+  "/free-consultation": {
+    fa: "درخواست مشاوره رایگان تحصیل در خارج | جهان آکادمی",
+    en: "Free Study Abroad Consultation | Jahan Academy",
+  },
+  "/articles": {
+    fa: "راهنماهای تحصیل در خارج | مجله جهان آکادمی",
+    en: "Study Abroad Guides | Jahan Academy Journal",
+  },
+  "/privacy": {
+    fa: "سیاست حریم خصوصی | جهان آکادمی",
+    en: "Privacy Policy | Jahan Academy",
+  },
+  "/guides/germany-study-residence-guide": {
+    fa: "تحصیل در آلمان؛ شهریه، تمکن و اقامت | جهان آکادمی",
+    en: "Study in Germany: Tuition & Residence Guide | Jahan Academy",
+  },
+  "/guides/netherlands-study-residence-guide": {
+    fa: "تحصیل در هلند؛ پذیرش و اقامت دانشجویی | جهان آکادمی",
+    en: "Study in the Netherlands: Admission & Residence | Jahan Academy",
+  },
+  "/guides/uk-study-visa-guide": {
+    fa: "ویزای تحصیلی انگلستان؛ پذیرش و تمکن مالی | جهان آکادمی",
+    en: "UK Study & Student Visa Guide | Jahan Academy",
+  },
+  "/guides/italy-study-guide": {
+    fa: "تحصیل در ایتالیا؛ رشته‌ها، هزینه‌ها و بورسیه | جهان آکادمی",
+    en: "Study in Italy: Courses, Costs & Scholarships | Jahan Academy",
+  },
+  "/guides/austria-study-guide": {
+    fa: "تحصیل در اتریش؛ مقاطع و شرایط پذیرش | جهان آکادمی",
+    en: "Study in Austria: Degrees & Admission Guide | Jahan Academy",
+  },
+};
+
+export function pageTitle(locale: Locale, path: string, fallback: string): string {
+  return titles[path]?.[locale] ?? fallback;
+}
+
+export function countryTitle(locale: Locale, name: string): string {
+  if (locale === "fa") return `تحصیل در ${name}؛ دانشگاه‌ها و هزینه‌ها | جهان آکادمی`;
+  const country = name === "Netherlands" ? "the Netherlands" : name === "United Kingdom" ? "the UK" : name;
+  return `Study in ${country}: Universities & Costs | Jahan Academy`;
+}
+
+export function universityTitle(locale: Locale, name: string, slug: string): string {
+  const computerScience = slug === "mcgill-university" || slug === "dalhousie-university";
+  return locale === "fa"
+    ? `${name}؛ ${computerScience ? "پذیرش علوم کامپیوتر" : "معرفی و رشته‌ها"} | جهان آکادمی`
+    : `${name}: ${computerScience ? "Computer Science Admissions" : "Profile"} | Jahan Academy`;
 }

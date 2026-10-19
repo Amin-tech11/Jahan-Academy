@@ -39,8 +39,8 @@ test("audit snippets are unique, complete and consistent across metadata surface
 });
 
 test("pages outside the audit retain their explicit metadata", () => {
-  const metadata = pageMetadata("fa", "/guides/germany-study-residence-guide", "Guide title", "Guide description");
+  const metadata = pageMetadata("fa", "/guides/unlisted-study-guide", "Guide title", "Guide description");
   assert.equal(metadata.title, "Guide title");
   assert.equal(metadata.description, "Guide description");
-  assert.equal(metadata.alternates.canonical, "https://jahanacademi.ir/fa/guides/germany-study-residence-guide");
+  assert.equal(metadata.alternates.canonical, "https://jahanacademi.ir/fa/guides/unlisted-study-guide");
 });

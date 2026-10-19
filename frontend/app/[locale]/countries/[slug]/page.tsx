@@ -6,6 +6,7 @@ import { destinationFaqs } from "@/lib/destination-faqs";
 import { homeUniversities } from "@/lib/home-universities";
 import { isLocale } from "@/lib/site-content";
 import { pageMetadata } from "@/lib/site-seo";
+import { countryTitle } from "@/lib/seo-copy";
 import { BreadcrumbSchema } from "@/components/breadcrumb-schema";
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
@@ -15,7 +16,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
   const destination = findDestination(slug);
   if (!isLocale(locale) || !destination) return {};
-  return pageMetadata(locale, `/countries/${slug}`, `${locale === "fa" ? "تحصیل در" : "Study in"} ${destination.name[locale]} | Jahan Academy`, destination.tagline[locale]);
+  return pageMetadata(locale, `/countries/${slug}`, countryTitle(locale, destination.name[locale]), destination.tagline[locale]);
 }
 
 export default async function CountryPage({ params }: Props) {
