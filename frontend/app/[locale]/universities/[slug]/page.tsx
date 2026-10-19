@@ -4,6 +4,7 @@ import { UniversityInfoPage } from "@/components/university-info-page";
 import { getUniversityInfo } from "@/lib/get-university-info";
 import { isLocale } from "@/lib/site-content";
 import { pageMetadata } from "@/lib/site-seo";
+import { universityTitle } from "@/lib/seo-copy";
 import { BreadcrumbSchema } from "@/components/breadcrumb-schema";
 import { homeUniversities } from "@/lib/home-universities";
 
@@ -14,7 +15,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
   if (!isLocale(locale)) return {};
   const university = await getUniversityInfo(slug, locale);
-  return university ? pageMetadata(locale, `/universities/${slug}`, `${university.name[locale]} | Jahan Academy`, university.summary[locale]) : {};
+  return university ? pageMetadata(locale, `/universities/${slug}`, universityTitle(locale, university.name[locale], slug), university.summary[locale]) : {};
 }
 
 export default async function UniversityDetail({ params }: Props) {
