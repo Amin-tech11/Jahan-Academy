@@ -151,8 +151,8 @@ export async function HomePage({ locale }: { locale: Locale }) {
     <section className="home-section home-process" aria-labelledby="home-process-title"><div className="shell">
       <h2 id="home-process-title" className="home-destinations__title">{content.processTitle}</h2>
       <HomeJourneyProgress>{content.processSteps.map((step, index) => <HomeJourneyStep key={step.number} number={step.number} title={step.title} text={step.text} locale={locale}
-        rail={<div className="home-process__rail" aria-hidden="true"><svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M50 0 C50 18 15 32 50 50 C85 68 50 82 50 100" /></svg><span className="home-process__number">{Number(step.number)}</span></div>}
-        media={<div className="home-process__media"><Image src={processImages[index]} alt="" fill sizes="(max-width: 1199px) 90vw, 40vw" /></div>} />)}</HomeJourneyProgress>
+        rail={<div key="rail" className="home-process__rail" aria-hidden="true"><svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M50 0 C50 18 15 32 50 50 C85 68 50 82 50 100" /></svg><span className="home-process__number">{Number(step.number)}</span></div>}
+        media={<div key="media" className="home-process__media"><Image src={processImages[index]} alt="" fill sizes="(max-width: 1199px) 90vw, 40vw" /></div>} />)}</HomeJourneyProgress>
     </div></section>
 
     {visibleArticles.length > 0 && <section className="home-section" aria-labelledby="home-articles-title"><div className="shell">
