@@ -53,10 +53,11 @@ test("site identity uses a single domain and references the existing organizatio
 });
 
 test("sitemap includes the canonical journal rather than duplicate archive aliases", () => {
-  const { default: sitemap } = load("app/sitemap.ts", { "@/lib/blog-guides": { blogGuides: [] }, "@/lib/destination-content": { destinations: [] }, "@/lib/home-universities": { homeUniversities: [] }, "@/lib/site-content": content, "@/lib/site-seo": seo });
+  const { default: sitemap } = load("app/sitemap.ts", { "@/lib/university-news": { universityNews: [{ slug: "verified-news" }] }, "@/lib/blog-guides": { blogGuides: [] }, "@/lib/destination-content": { destinations: [] }, "@/lib/home-universities": { homeUniversities: [] }, "@/lib/site-content": content, "@/lib/site-seo": seo });
   const urls = sitemap().map(item => item.url);
   for (const locale of ["fa", "en"]) {
     assert.ok(urls.includes(`https://jahanacademi.ir/${locale}/articles`));
+    assert.ok(urls.includes(`https://jahanacademi.ir/${locale}/news/verified-news`));
     assert.ok(!urls.includes(`https://jahanacademi.ir/${locale}/news`));
     assert.ok(!urls.includes(`https://jahanacademi.ir/${locale}/guides`));
   }

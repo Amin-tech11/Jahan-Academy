@@ -1,3 +1,4 @@
+import { universityNews } from "@/lib/university-news";
 import "@/app/home.css";
 import { PreparedImage as Image } from "@/components/prepared-image";
 import { HomeFeatureIcon } from "@/components/home-feature-icon";
@@ -75,7 +76,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
   const copy = siteCopy[locale];
   const content = getHomeContent(locale);
   const brand = brandContent[locale];
-  const visibleArticles = [...articles].sort((a, b) => b.date.localeCompare(a.date));
+  const visibleArticles = [...articles, ...universityNews].sort((a, b) => b.date.localeCompare(a.date));
 
   return <SiteShell locale={locale}><HomeMotion>
     <h1 className="sr-only">{locale === "fa" ? "جهان آکادمی؛ راهنمای مسیر تحصیل بین‌المللی" : "Jahan Academy: guidance for your international study journey"}</h1>

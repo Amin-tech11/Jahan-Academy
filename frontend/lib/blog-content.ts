@@ -6,6 +6,7 @@ export type BlogPost = {
   title: Localized<string>;
   excerpt: Localized<string>;
   date: string;
+  image?: string;
 };
 export type BlogFilter = "all" | BlogPost["type"];
 export type BlogSort = "newest" | "oldest";
@@ -44,7 +45,7 @@ export const blogCopy = {
     intro: "مقالات، راهنماها و تازه‌های جهان آکادمی؛ همراه شما در مسیر یک انتخاب آگاهانه.",
     home: "صفحه اصلی", featured: "برای شروع بخوانید", latest: "تازه‌ترین مطالب", all: "همه مطالب",
     article: "مقالات", news: "اخبار", guide: "راهنماها", search: "جست‌وجو در مطالب", placeholder: "درباره چه موضوعی می‌خواهید بخوانید؟",
-    sectionTitles: { news: "جدیدترین اخبار مهاجرتی", article: "جدیدترین مقالات", guide: "راهنماهای مهاجرتی" },
+    sectionTitles: { news: "جدیدترین اخبار دانشگاهی و مهاجرتی", article: "جدیدترین مقالات", guide: "راهنماهای مهاجرتی" },
     sort: "ترتیب انتشار", newest: "جدیدترین", oldest: "قدیمی‌ترین", results: "مطلب", read: "مطالعه مطلب",
     empty: "مطلبی با این مشخصات پیدا نشد", emptyHint: "عبارت دیگری جست‌وجو کنید یا فیلترها را پاک کنید.",
     reset: "نمایش همه مطالب", published: "تاریخ انتشار", guides: "از آگاهی تا انتخاب", guideText: "مسیر تحصیلی هر فرد متفاوت است. با شناخت شرایط خود، پرسش‌های دقیق‌تری بپرسید.",
@@ -57,7 +58,7 @@ export const blogCopy = {
     intro: "Articles, guides and updates from Jahan Academy, for a more informed academic journey.",
     home: "Home", featured: "Start your reading here", latest: "Latest stories", all: "All stories",
     article: "Articles", news: "News", guide: "Guides", search: "Search stories", placeholder: "What would you like to read about?",
-    sectionTitles: { news: "Latest Immigration News", article: "Latest Articles", guide: "Immigration Guides" },
+    sectionTitles: { news: "Latest University and Immigration News", article: "Latest Articles", guide: "Immigration Guides" },
     sort: "Publication order", newest: "Newest first", oldest: "Oldest first", results: "stories", read: "Read story",
     empty: "No matching stories", emptyHint: "Try another search or clear the filters.",
     reset: "Show all stories", published: "Published", guides: "From discovery to decision", guideText: "Every academic journey is different. Understand your circumstances and ask better questions.",
@@ -67,7 +68,8 @@ export const blogCopy = {
   },
 } as const;
 
-export function blogImage(post: BlogPost) {
+export function blogImage(post: Pick<BlogPost, "slug" | "image">) {
+  if (post.image) return post.image;
   if (post.slug === "germany-study-residence-guide") return "/blog/guides/germany-collage.webp";
   if (post.slug === "netherlands-study-residence-guide") return "/blog/guides/netherlands-collage.webp";
   if (post.slug === "uk-study-visa-guide") return "/blog/guides/uk-collage.webp";

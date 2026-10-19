@@ -1,3 +1,4 @@
+import { universityNews } from "@/lib/university-news";
 import { PreparedImage as Image } from "@/components/prepared-image";
 import { PublicPanelsMotion } from "./public-panels-motion";
 import { BlogArchive } from "@/components/blog-archive";
@@ -11,7 +12,7 @@ import "@/app/blog.css";
 
 export function BlogPage({ locale }: { locale: Locale; initialType?: BlogFilter }) {
   const copy = blogCopy[locale];
-  const posts = selectBlogPosts([...articles, ...blogGuides], locale);
+  const posts = selectBlogPosts([...articles, ...universityNews, ...blogGuides], locale);
   const sections = ["news", "article", "guide"] as const;
   return <SiteShell locale={locale}><PublicPanelsMotion panel="blog" className="journal-page">
     <section className="journal-campus-hero" aria-label={copy.title}><Image src="/blog/library-hero.webp" alt="" fill sizes="100vw" preload/><div aria-hidden="true" className="journal-campus-overlay"/><p className="public-hero-brand" lang="en" dir="ltr">JAHAN ACADEMY</p></section>
