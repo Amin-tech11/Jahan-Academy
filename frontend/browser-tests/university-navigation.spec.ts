@@ -1,13 +1,14 @@
 import { test, expect } from "@playwright/test";
 
 for (const locale of ["fa", "en"]) {
-  test(`${locale}: university profile tab returns to a bounded university grid`, async ({ page }) => {
+  test(`${locale}: university profile opens in the same tab and returns to a bounded university grid`, async ({ page }) => {
     await page.goto(`/${locale}/universities`);
-    const popupPromise = page.waitForEvent("popup");
+    const profile = page;
+    const pageCount = page.context().pages().length;
     await page.locator(".home-university-card").first().click();
-    const profile = await popupPromise;
     await profile.emulateMedia({ reducedMotion: "reduce" });
     await profile.waitForURL(new RegExp(`/${locale}/universities/[^/]+$`));
+    expect(page.context().pages()).toHaveLength(pageCount);
     await profile.getByRole("navigation", { name: locale === "fa" ? "ناوبری اصلی" : "Main navigation", exact: true })
       .locator(`a[href="/${locale}/universities"]`).click();
     await expect(profile).toHaveURL(new RegExp(`/${locale}/universities$`));
