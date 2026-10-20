@@ -1,5 +1,6 @@
 "use client";
 import { MfaSettings } from "./mfa-settings";
+import AnalyticsDashboard from "./analytics-dashboard";
 import SiteSelect from "../../components/site-select";
 
 import Login from "./login";
@@ -16,6 +17,7 @@ import { canChangeLeadStatus, saveLeadChanges } from "../../lib/admin-lead-statu
 import { leadSearchFields, leadSearchParams, type LeadSearchField } from "../../lib/admin-lead-search";
 
 const sectionIconPaths: Record<string, string> = {
+  analytics: "M4 20V10M10 20V4M16 20v-7M22 20H2",
   dashboard: "M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z",
   leads: "M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M10 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M20 8v6M23 11h-6",
   universities: "M3 21h18M5 21V7l7-4 7 4v14M9 9h.01M15 9h.01M9 13h.01M15 13h.01M10 21v-4h4v4",
@@ -1340,7 +1342,7 @@ export default function AdminPanel() {
           </button>
           <div>
             <small>فضای مدیریت /</small>
-            <b>{section === "access" ? "مدیریت دسترسی" : resource?.title ?? "نمای کلی"}</b>
+            <b>{section === "access" ? "مدیریت دسترسی" : section === "analytics" ? "آمار بازدید سایت" : resource?.title ?? "نمای کلی"}</b>
           </div>
           <div className="adm-account">
             <MfaSettings />
@@ -1373,7 +1375,7 @@ export default function AdminPanel() {
         </header>
         <main className="adm-content">
           <ErrorBox message={logoutError} />
-          {accessError ? <><ErrorBox message={accessError} /><button onClick={() => setAccessRetry(value => value + 1)}>بررسی دوباره دسترسی</button></> : !access ? <p role="status">در حال بررسی دسترسی‌ها…</p> : !visibleSections(access).some(item => item.id === section) ? <p className="adm-empty">در حال حاضر دسترسی به بخشی از پنل برای شما فعال نیست. با مدیر سازمان تماس بگیرید.</p> : section === "access" && access.isSuperAdmin ? <AccessManager /> : resource ? (
+          {accessError ? <><ErrorBox message={accessError} /><button onClick={() => setAccessRetry(value => value + 1)}>بررسی دوباره دسترسی</button></> : !access ? <p role="status">در حال بررسی دسترسی‌ها…</p> : !visibleSections(access).some(item => item.id === section) ? <p className="adm-empty">در حال حاضر دسترسی به بخشی از پنل برای شما فعال نیست. با مدیر سازمان تماس بگیرید.</p> : section === "analytics" && access.isSuperAdmin ? <AnalyticsDashboard /> : section === "access" && access.isSuperAdmin ? <AccessManager /> : resource ? (
             <ResourceList key={resource.id} resource={resource} />
           ) : (
             <Dashboard navigate={navigate} />

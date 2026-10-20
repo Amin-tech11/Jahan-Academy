@@ -23,7 +23,7 @@ SECTION_PERMISSIONS: dict[str, frozenset[str]] = {
     },
 }
 DELEGABLE_SECTIONS = frozenset(SECTION_PERMISSIONS)
-ALL_SECTIONS = DELEGABLE_SECTIONS | {"staff", "audit", "access"}
+ALL_SECTIONS = DELEGABLE_SECTIONS | {"staff", "audit", "access", "analytics"}
 DEFAULT_SECTIONS = frozenset({"leads"})
 
 
@@ -31,6 +31,8 @@ def section_for_path(path: str) -> str | None:
     path = path.removeprefix("/api/v1")
     if path == "/reporting/dashboard":
         return "dashboard"
+    if path in {"/reporting/analytics", "/reporting/analytics/realtime"}:
+        return "analytics"
     if not path.startswith("/admin/"):
         return None
     parts = path.strip("/").split("/")

@@ -17,6 +17,8 @@ async function proxy(
     relative === "users/me" ||
     relative === "users/me/panel-access" ||
     relative === "reporting/dashboard" ||
+    relative === "reporting/analytics" ||
+    relative === "reporting/analytics/realtime" ||
     /^auth\/mfa(?:\/(setup|confirm|disable))?$/.test(relative) ||
     /^auth\/(login|refresh|logout|activity|reauthenticate|password-reset-requests|password-resets|email-verifications)$/.test(
       relative,

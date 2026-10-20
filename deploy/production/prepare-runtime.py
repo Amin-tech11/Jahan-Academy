@@ -29,6 +29,9 @@ def prepare(root: Path, template: Path, gateway: str) -> None:
     csrf_cookie_name = values.get("JAHAN_CSRF_COOKIE_NAME", "jahan_csrf")
     if not re.fullmatch(r"[A-Za-z0-9_-]+", csrf_cookie_name):
         raise ValueError("Invalid CSRF cookie name")
+    analytics_secrets = root / "analytics-secrets"
+    analytics_secrets.mkdir(mode=0o700, exist_ok=True)
+    analytics_secrets.chmod(0o700)
     key = values.get("JAHAN_TRUSTED_PROXY_SECRET") or secrets.token_urlsafe(48)
     if len(key) < 32 or not all(c.isalnum() or c in "_-" for c in key):
         raise ValueError("Invalid proxy credential")

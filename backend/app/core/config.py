@@ -72,6 +72,9 @@ class Settings(BaseSettings):
     api_rate_limit: int = Field(default=120, ge=10, le=10_000)
     api_rate_window_seconds: int = Field(default=60, ge=10, le=3600)
     monitoring_token: SecretStr | None = None
+    analytics_enabled: bool = False
+    analytics_property_id: str = Field(default="558971968", pattern=r"^[1-9][0-9]{0,19}$")
+    analytics_credentials_file: str = "/run/secrets/google-analytics/service-account.json"
     lead_retention_years: int = Field(default=3, ge=1, le=10)
     retention_batch_size: int = Field(default=200, ge=1, le=1000)
     sheets_backup_enabled: bool = False

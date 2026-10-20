@@ -4,6 +4,7 @@ export { superAdminSections, type PanelAccess } from "./admin-access-policy";
 
 export const panelSections = [
   { id: "dashboard", title: "نمای کلی", group: "گزارش‌ها" },
+  { id: "analytics", title: "آمار بازدید سایت", group: "گزارش‌ها" },
   ...resources.map(({ id, title, group }) => ({ id, title, group })),
   { id: "access", title: "مدیریت دسترسی", group: "مدیریت سازمان" },
 ];
