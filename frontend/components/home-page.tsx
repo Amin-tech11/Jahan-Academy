@@ -7,6 +7,7 @@ import heroImageAssets from "@/lib/hero-image-assets.json";
 import { HomeMotion } from "@/components/home-motion";
 import { HomeConsultation } from "@/components/home-consultation";
 import { HomeFaq } from "@/components/home-faq";
+import { HomeSocialBanners } from "@/components/home-social-banners";
 import { HomeNewsTicker } from "@/components/home-news-ticker";
 import { HomeJourneyProgress } from "@/components/home-journey-progress";
 import { HomeJourneyStep } from "@/components/home-journey-step";
@@ -165,6 +166,8 @@ export async function HomePage({ locale }: { locale: Locale }) {
       <div className="home-faq__intro"><h2 id="home-faq-title">{locale === "fa" ? "سوالات متداول" : "Frequently Asked Questions"}</h2></div>
       <HomeFaq items={brand.faqs.slice(0, 5)} />
     </div></section>
+
+    <HomeSocialBanners locale={locale} />
 
     <section className="home-closing" id="home-consultation" aria-labelledby="home-closing-title">
       <div className="shell">

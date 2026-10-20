@@ -20,7 +20,7 @@ test("public pages expose external references only in rankings, editorial source
         if (!/^https?:\/\//.test(href)) return [];
         const host = new URL(href).hostname;
         if (["jahanacademi.ir", "www.jahanacademi.ir"].includes(host)) return [];
-        if (anchor.closest("footer") && ["t.me", "www.instagram.com", "wa.me"].includes(host)) return [];
+        if (anchor.closest("footer, #home-social") && ["t.me", "www.instagram.com", "wa.me"].includes(host)) return [];
         if (anchor.closest("#university-rankings")) return [];
         if (editorial && anchor.closest("section[aria-labelledby='guide-sources'], section[aria-labelledby='news-sources']")) return [];
         return [href];
