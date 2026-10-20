@@ -9,11 +9,19 @@ const require = createRequire(import.meta.url);
 const ts = require("typescript");
 const sharp = createRequire(require.resolve("next/package.json"))("sharp");
 const assets = JSON.parse(readFileSync(new URL("../lib/hero-image-assets.json", import.meta.url)));
+const news = JSON.parse(readFileSync(new URL("../lib/university-news-data.json", import.meta.url)));
 const loaderUrl = new URL("../lib/hero-image-loader.ts", import.meta.url);
 const exports = {};
 vm.runInNewContext(ts.transpileModule(readFileSync(loaderUrl, "utf8"), {
   compilerOptions: { module: ts.ModuleKind.CommonJS, esModuleInterop: true },
 }).outputText, { exports, require: createRequire(loaderUrl) });
+
+test("every university news cover has prepared critical image variants", () => {
+  for (const story of news) {
+    assert(assets[story.image]?.length > 0, story.image);
+    assert.equal(exports.hasPreparedImage(story.image), true, story.image);
+  }
+});
 
 test("responsive critical images preserve aspect ratio, avoid upscaling and have immutable content identities", async () => {
   for (const [src, variants] of Object.entries(assets)) {
