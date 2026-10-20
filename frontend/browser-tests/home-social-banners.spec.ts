@@ -9,7 +9,7 @@ for (const locale of ["fa", "en"]) {
     for (const width of [390, 1440]) {
       await page.setViewportSize({ width, height: 1000 });
       await section.scrollIntoViewIfNeeded();
-      await expect.poll(() => section.locator("img").evaluateAll(images => images.every(image => image.complete && image.naturalWidth > 0))).toBe(true);
+      await expect.poll(() => section.locator("img").evaluateAll(images => images.every(image => image instanceof HTMLImageElement && image.complete && image.naturalWidth > 0))).toBe(true);
       const boxes = await section.locator("a").evaluateAll(nodes => nodes.map(node => {
         const box = node.getBoundingClientRect();
         return { width: box.width, height: box.height, top: box.top };
