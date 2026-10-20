@@ -28,7 +28,7 @@ from app.modules.reporting.analytics_schemas import (
 )
 from app.shared.exceptions import ApplicationError
 
-TOKEN_URL = "https://oauth2.googleapis.com/token"
+GOOGLE_OAUTH_ENDPOINT = "https://oauth2.googleapis.com/token"
 API_URL = "https://analyticsdata.googleapis.com/v1beta/properties/"
 METRICS = ["activeUsers", "newUsers", "sessions", "screenPageViews", "engagementRate"]
 Days = Literal[7, 28, 90]
@@ -110,7 +110,7 @@ class AnalyticsService:
                 {
                     "iss": credentials["client_email"],
                     "scope": "https://www.googleapis.com/auth/analytics.readonly",
-                    "aud": TOKEN_URL,
+                    "aud": GOOGLE_OAUTH_ENDPOINT,
                     "iat": now,
                     "exp": now + 3600,
                 },
@@ -123,7 +123,7 @@ class AnalyticsService:
         except (OSError, ValueError, KeyError, TypeError, jwt.PyJWTError):
             raise failure("ANALYTICS_CREDENTIALS_INVALID") from None
         response = await client.post(
-            TOKEN_URL,
+            GOOGLE_OAUTH_ENDPOINT,
             data={"grant_type": "urn:ietf:params:oauth:grant-type:jwt-bearer", "assertion": proof},
         )
         if response.status_code != 200:

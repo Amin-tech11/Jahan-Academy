@@ -15,7 +15,7 @@ from redis.asyncio import Redis
 from redis.exceptions import RedisError
 
 from app.core.config import Settings
-from app.modules.reporting.analytics_service import METRICS, TOKEN_URL, AnalyticsService
+from app.modules.reporting.analytics_service import GOOGLE_OAUTH_ENDPOINT, METRICS, AnalyticsService
 from app.shared.exceptions import ApplicationError
 
 
@@ -80,10 +80,10 @@ def analytics(tmp_path: Path) -> tuple[AnalyticsService, Mock, list[httpx.Reques
 
     def handler(request: httpx.Request) -> httpx.Response:
         calls.append(request)
-        if str(request.url) == TOKEN_URL:
+        if str(request.url) == GOOGLE_OAUTH_ENDPOINT:
             assertion = parse_qs(request.content.decode())["assertion"][0]
             claims = jwt.decode(
-                assertion, key.public_key(), algorithms=["RS256"], audience=TOKEN_URL
+                assertion, key.public_key(), algorithms=["RS256"], audience=GOOGLE_OAUTH_ENDPOINT
             )
             assert claims["scope"] == "https://www.googleapis.com/auth/analytics.readonly"
             assert claims["iss"] == "synthetic@example.iam.gserviceaccount.com"
@@ -212,7 +212,7 @@ async def test_google_failures_are_never_returned_as_zero_activity(
     service, _, _ = analytics
 
     def handler(request: httpx.Request) -> httpx.Response:
-        if str(request.url) == TOKEN_URL:
+        if str(request.url) == GOOGLE_OAUTH_ENDPOINT:
             return httpx.Response(200, json={"access_token": "synthetic"})
         return httpx.Response(status, json={"error": "private-upstream-error-not-for-browser"})
 
@@ -244,7 +244,7 @@ async def test_empty_google_report_is_legitimate_zero_activity(
     service, _, _ = analytics
 
     def handler(request: httpx.Request) -> httpx.Response:
-        if str(request.url) == TOKEN_URL:
+        if str(request.url) == GOOGLE_OAUTH_ENDPOINT:
             return httpx.Response(200, json={"access_token": "synthetic"})
         return httpx.Response(200, json=report(["activeUsers"], [], []))
 
@@ -258,7 +258,7 @@ async def test_changed_metric_headers_are_an_error_not_incorrectly_labeled_value
     service, _, _ = analytics
 
     def handler(request: httpx.Request) -> httpx.Response:
-        if str(request.url) == TOKEN_URL:
+        if str(request.url) == GOOGLE_OAUTH_ENDPOINT:
             return httpx.Response(200, json={"access_token": "synthetic"})
         return httpx.Response(200, json=report(["sessions"], [], [["99"]]))
 
