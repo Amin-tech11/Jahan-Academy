@@ -1,5 +1,5 @@
 export type PanelAccess = { sections: string[]; isSuperAdmin: boolean; version?: number };
-export const superAdminSections = new Set(["staff", "audit", "access"]);
+export const superAdminSections = new Set(["staff", "audit", "access", "analytics"]);
 export function filterPanelSections<T extends { id: string }>(sections: T[], access: PanelAccess | null): T[] {
   if (!access) return [];
   return sections.filter(section => access.isSuperAdmin || (

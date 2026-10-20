@@ -7,7 +7,8 @@ test("public pages expose external references only in rankings, editorial source
   const paths = [...(await sitemap.text()).matchAll(/<loc>(.*?)<\/loc>/g)]
     .map(match => new URL(match[1]).pathname);
   expect(paths.length).toBeGreaterThan(50);
-  await page.goto("/fa", { waitUntil: "domcontentloaded" });
+  // Parse fetched HTML in a stable document, independent of app navigation/HMR.
+  await page.goto("about:blank");
   for (const path of paths) {
     const response = await request.get(path);
     expect(response.ok(), path).toBe(true);
@@ -21,7 +22,7 @@ test("public pages expose external references only in rankings, editorial source
         if (["jahanacademi.ir", "www.jahanacademi.ir"].includes(host)) return [];
         if (anchor.closest("footer") && ["t.me", "www.instagram.com", "wa.me"].includes(host)) return [];
         if (anchor.closest("#university-rankings")) return [];
-        if (editorial && anchor.closest("section[aria-labelledby='guide-sources']")) return [];
+        if (editorial && anchor.closest("section[aria-labelledby='guide-sources'], section[aria-labelledby='news-sources']")) return [];
         return [href];
       });
     }, { html: await response.text(), path });

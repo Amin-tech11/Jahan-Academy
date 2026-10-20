@@ -8,4 +8,11 @@
 .content p { margin: 0 0 24px; white-space: pre-line; }
 .content section + section { margin-top: 28px; }
 .content h2 { margin: 24px 0 12px; color: #123b78; font-size: 24px; line-height: 1.7; }
+.newsFigure { margin: 0 0 28px; }
+.newsFigure img { display: block; width: 100%; height: auto; border-radius: 12px; }
+.newsFigure figcaption { margin-top: 10px; font-size: 12px; line-height: 1.9; color: #66717f; }
+.newsActions { display: flex; direction: ltr; justify-content: flex-start; margin-bottom: 24px; }
+.newsBackButton { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; max-width: 100%; padding: 10px 18px; border: 1px solid #123b78; border-radius: 10px; background: #123b78; color: #fff; font-size: 14px; font-weight: 700; line-height: 1.8; text-decoration: none; }
+.newsBackButton:hover { background: #0b2b5b; }
+.newsBackButton:focus-visible { outline: 3px solid #b89754; outline-offset: 4px; }
 @media (max-width: 600px) { .main { padding: 20px 16px; } .article { padding: 24px 20px; } .content { font-size: 16px; } }

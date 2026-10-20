@@ -60,6 +60,7 @@ class OperationsTests(unittest.TestCase):
             self.assertNotIn(values["JAHAN_MFA_ENCRYPTION_KEY"], frontend)
             self.assertIn("ADMIN_CSRF_COOKIE=jahan_csrf\n", frontend)
             self.assertEqual((root / "runtime.env").stat().st_mode & 0o777, 0o600)
+            self.assertEqual((root / "analytics-secrets").stat().st_mode & 0o777, 0o700)
 
     def test_admin_proxy_uses_backend_csrf_cookie_name(self):
         # Mock Linux-only chmod on Windows; exercise the actual generated env files.

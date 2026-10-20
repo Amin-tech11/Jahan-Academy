@@ -40,3 +40,9 @@ Requirement → Data/API/Permission Design → Implementation → Unit Tests →
 ## Production source
 
 The user designated `main` as the production source on 2026-10-11. Use `develop` for changes and localhost:5000. Release through an authorized develop-to-main PR after successful applicable CI/CD checks, then deploy the merged main commit to Jahan Academy's isolated server services. Never deploy unmerged develop directly. Preserve the unrelated Niyayesh Seir site and record the deployed main SHA and rollback instructions.
+
+## University news reference chat
+
+- The user designated chat `01a15379-bb27-7be2-9934-b7d8df9c9905` as a reference chat on 2026-10-19, with the same cross-project authority as `Develop:5000` and `admin:3500`.
+- This chat may implement user-requested work across panels and shared code. Its default implementation checkout is `F:/Jahan Academy/.worktrees/develop`, branch `develop`, preview `http://localhost:5000`. Verify branch and working-tree state before edits. Cross-panel work explicitly requested by the user is authorized without separate panel permission.
+- Preserve existing panel ports and unrelated changes. Reference status does not authorize unsolicited destructive operations, production deployment, or merging/rebasing branches without an explicit user instruction.

@@ -51,7 +51,7 @@ export async function adminRequest(
   reauthToken?: string,
 ): Promise<RecordData> {
   if (
-    !/^\/(admin\/|auth\/|users\/me(?:\/panel-access)?$|reporting\/dashboard)/.test(path) ||
+    !/^\/(admin\/|auth\/|users\/me(?:\/panel-access)?$|reporting\/(?:dashboard|analytics(?:\/realtime)?)(?:\?|$))/.test(path) ||
     path.includes("..")
   )
     throw new Error("Invalid admin endpoint");
@@ -98,6 +98,14 @@ export async function adminRequest(
       503: "سرویس موردنیاز موقتاً در دسترس نیست؛ کمی بعد تلاش کنید.",
     };
     const codes: Record<string, string> = {
+      ANALYTICS_CREDENTIALS_INVALID: "فایل حساب سرویس Google Analytics در سرور موجود یا معتبر نیست؛ تنظیمات اتصال را بررسی کنید.",
+      ANALYTICS_AUTH_FAILED: "احراز هویت حساب سرویس گوگل انجام نشد؛ اعتبار کلید و ساعت سرور را بررسی کنید.",
+      ANALYTICS_ACCESS_DENIED: "حساب سرویس به این Property دسترسی ندارد یا Google Analytics Data API فعال نیست.",
+      ANALYTICS_QUOTA_EXCEEDED: "سهمیهٔ گزارش‌گیری گوگل موقتاً پر شده است؛ کمی بعد دوباره تلاش کنید.",
+      ANALYTICS_UPSTREAM_FAILED: "گزارش گوگل موقتاً در دسترس نیست؛ دوباره تلاش کنید.",
+      ANALYTICS_INVALID_REPORT: "پاسخ گزارش گوگل قابل پردازش نیست؛ دوباره تلاش کنید.",
+      ANALYTICS_CACHE_UNAVAILABLE: "سرویس کش گزارش‌ها در دسترس نیست؛ کمی بعد دوباره تلاش کنید.",
+      ANALYTICS_REFRESH_BUSY: "به‌روزرسانی گزارش در حال انجام است؛ چند لحظه بعد دوباره تلاش کنید.",
       MEDIA_PDF_ACTIVE_CONTENT_REJECTED: "PDF دارای محتوای فعال یا فرم تعاملی است؛ نسخهٔ ساده ارسال کنید.",
       MEDIA_PDF_ENCRYPTED: "PDF رمزدار قابل بررسی نیست؛ نسخهٔ بدون رمز ارسال کنید.",
       MEDIA_PDF_LIMIT_EXCEEDED: "بررسی این PDF از محدودیت مجاز فراتر رفت؛ نسخهٔ ساده‌تر ارسال کنید.",

@@ -12,7 +12,7 @@ import { headerDestinations, type Locale } from "@/lib/site-content";
 import { universityInfoPath } from "@/lib/university-info-model";
 
 function UniversityCard({ university, locale }: { university: HomeUniversity; locale: Locale }) {
-  return <a className="home-university-card" href={universityInfoPath(locale, university.slug)} target="_blank" rel="noopener noreferrer" aria-label={`${university.name} — ${locale === "fa" ? "اطلاعات دانشگاه (تب جدید)" : "University information (new tab)"}`}>
+  return <a className="home-university-card" href={universityInfoPath(locale, university.slug)} aria-label={`${university.name} — ${locale === "fa" ? "اطلاعات دانشگاه" : "University information"}`}>
     <div className="home-university-card__media">
       <Image src={university.image} alt={locale === "fa" ? `نمایی از ${university.name}` : `View of ${university.name}`} fill sizes="(max-width: 600px) calc(100vw - 32px), (max-width: 800px) calc((100vw - 68px) / 2), (max-width: 1208px) calc((100vw - 88px) / 3), 374px" />
     </div>

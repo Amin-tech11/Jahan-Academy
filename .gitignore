@@ -46,3 +46,5 @@ lint-hardening.log
 .pytest-hardening-*/
 .operations-hardening/
 requirements-hardening-audit.txt
+# Private GA4 service-account mount; never commit JSON credentials.
+analytics-secrets/

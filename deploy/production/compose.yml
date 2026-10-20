@@ -41,6 +41,8 @@ services:
       db: {condition: service_healthy}
   backend:
     <<: *api
+    volumes:
+      - ./analytics-secrets:/run/secrets/google-analytics:ro
     depends_on:
       migrate: {condition: service_completed_successfully}
       redis: {condition: service_healthy}

@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import test from "node:test";
 import vm from "node:vm";
-import { blogHref } from "../lib/blog-content.ts";
+import { blogHref, blogImage } from "../lib/blog-content.ts";
 const require = createRequire(import.meta.url);
 const ts = require("typescript");
 const source = readFileSync(new URL("../components/home-news-ticker.tsx", import.meta.url), "utf8");
@@ -20,7 +20,7 @@ function setup(items = [], locale = "fa") {
       if (name === "react/jsx-runtime") return { jsx: (type, props) => ({ type, props }), jsxs: (type, props) => ({ type, props }) };
       if (name === "next/image" || name === "next/link") return { default: () => null };
       if (name === "@/components/prepared-image") return { PreparedImage: () => null };
-      if (name === "@/lib/blog-content") return { blogHref };
+      if (name === "@/lib/blog-content") return { blogHref, blogImage };
       throw new Error(name);
     },
   });
