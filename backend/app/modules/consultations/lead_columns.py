@@ -33,6 +33,7 @@ COLUMN_SQL = {
     ),
     "englishProficiency": answer("مهارت زبان انگلیسی", "English proficiency"),
     "requestCreatedAt": "l.created_at::text",
+    "contactTime": answer("زمان مناسب تماس|زمان ترجیحی تماس", "Preferred contact time"),
     "requestType": (
         "CASE WHEN array_length(string_to_array(trim(l.message), E'\\n'), 1) = 3 "
         f"AND {answer('تحصیلات', 'Education')} IS NOT NULL "

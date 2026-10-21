@@ -90,6 +90,7 @@ export const labels: Record<string, string> = {
   assignee: "مشاور",
   createdAt: "تاریخ ثبت",
   requestCreatedAt: "تاریخ ثبت درخواست",
+  contactTime: "زمان تماس با لید",
   requestType: "نوع درخواست",
   updatedAt: "آخرین تغییر",
   country: "کشور",
@@ -156,7 +157,7 @@ export const resources: Resource[] = [
     columns: [
       "reference", "fullName", "mobile", "email", "age", "occupation", "gender",
       "education", "maritalStatus", "investmentBudget", "englishProficiency",
-      "requestCreatedAt", "requestType", "status",
+      "requestCreatedAt", "contactTime", "requestType", "status",
     ],
     fields: [
       f("firstName", "نام", "text", true),

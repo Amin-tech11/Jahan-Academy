@@ -1,3 +1,4 @@
+import { contactTimes } from "../lib/contact-times.ts";
 import { createRequestKey } from "../lib/request-key.ts";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -14,8 +15,9 @@ function setup(mobile, fail = false, sourcePage) {
   class ApiError extends Error {}
   vm.runInNewContext(ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX } }).outputText, {
     module, exports: module.exports, Date, crypto: { randomUUID: () => "same-retry-key" },
-    FormData: class { get(key) { return { firstName: " Ali ", lastName: " Ahmadi ", mobile, occupation: "Student", contactTime: "Morning", privacyConsent: "on", contactConsent: "on" }[key]; } },
+    FormData: class { get(key) { return { firstName: " Ali ", lastName: " Ahmadi ", mobile, occupation: "Student", contactTime: "12:30 - 1", privacyConsent: "on", contactConsent: "on" }[key]; } },
     require(name) {
+      if (name === "@/lib/contact-times") return { contactTimes };
       if (name === "@/lib/request-key") return { createRequestKey };
       if (name === "react") return { useId: () => "form", useRef: () => ref, useState: (value) => [value, () => {}] };
       if (name === "react/jsx-runtime") return { jsx: (type, props) => ({ type, props }), jsxs: (type, props) => ({ type, props }) };
@@ -53,7 +55,7 @@ test("home form sends normalized contact details, consents and preferred time wi
   assert.equal(options.body.mobile, "+989120000000");
   assert.equal(options.body.privacyConsent, true);
   assert.equal(options.body.contactConsent, true);
-  assert.match(options.body.message, /Morning/);
+  assert.match(options.body.message, /12:30 - 1/);
   assert.equal(options.body.source.pageUrl, "/en/#home-consultation");
   assert.equal(options.headers["Idempotency-Key"], app.calls[1].options.headers["Idempotency-Key"]);
   const consents = app.form.props.children.filter((child) => child?.type === "label");

@@ -1,3 +1,4 @@
+import { contactTimes } from "../lib/contact-times.ts";
 import { createRequestKey } from "../lib/request-key.ts";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -11,7 +12,7 @@ const source = readFileSync(new URL("../components/destination-consultation.tsx"
 function setup({ locale = "en", values = {}, fail = false, pending = false } = {}) {
   const calls = [], refs = [], states = [];
   let refIndex = 0, stateIndex = 0, release;
-  const data = { firstName: " Ali ", lastName: " Ahmadi ", mobile: "۰۹۱۲۰۰۰۰۰۰۰", occupation: "Student", contactTime: "Morning", privacyConsent: "on", contactConsent: "on", ...values };
+  const data = { firstName: " Ali ", lastName: " Ahmadi ", mobile: "۰۹۱۲۰۰۰۰۰۰۰", occupation: "Student", contactTime: "12:30 - 1", privacyConsent: "on", contactConsent: "on", ...values };
   const module = { exports: {} };
   let key = 0;
   class ApiError extends Error {}
@@ -19,6 +20,7 @@ function setup({ locale = "en", values = {}, fail = false, pending = false } = {
     module, exports: module.exports, Date, crypto: { randomUUID: () => `key-${++key}` },
     FormData: class { get(key) { return data[key] ?? null; } },
     require(name) {
+      if (name === "@/lib/contact-times") return { contactTimes };
       if (name === "./use-public-form-feedback") return { usePublicFormFeedback: () => ({ ready: true, formProps: {}, fieldProps: () => ({}), message: () => null, mark() {}, serverErrors() {} }) };
       if (name === "./site-select") return { default: "select" };
       if (name === "@/lib/request-key") return { createRequestKey };
@@ -61,7 +63,7 @@ test("destination form submits normalized details and current country/source in 
     assert.equal(options.body.desiredCountryText, locale === "fa" ? "آلمان" : "Germany");
     assert.equal(options.body.source.pageUrl, `/${locale}/countries/germany#destination-consultation`);
     assert.equal(options.body.privacyConsent, true); assert.equal(options.body.contactConsent, true);
-    assert.match(options.body.message, /Morning/);
+    assert.match(options.body.message, /12:30 - 1/);
     assert.equal(app.render().props.role, "status"); assert.equal(app.states[2], "R1");
   }
 });
@@ -69,7 +71,7 @@ test("failed destination requests preserve retry keys, with a new key for change
   const app = setup({ fail: true }); await app.submit(); await app.submit();
   assert.equal(app.states[0], "error");
   assert.equal(app.calls[0].options.headers["Idempotency-Key"], app.calls[1].options.headers["Idempotency-Key"]);
-  app.data.contactTime = "Evening"; await app.submit();
+  app.data.contactTime = "3:30 - 4"; await app.submit();
   assert.notEqual(app.calls[1].options.headers["Idempotency-Key"], app.calls[2].options.headers["Idempotency-Key"]);
 });
 test("destination form prevents concurrent duplicate submissions", async () => {

@@ -47,3 +47,19 @@ test("changing gender removes a stale self-description from the patch", () => {
   assert.equal(body.gender, "male");
   assert.equal(edit({}, { gender: "self_described", genderSelfDescription: "Custom" }).genderSelfDescription, "Custom");
 });
+
+
+test("contact time supports every existing form label, legacy values and absent answers", () => {
+  for (const label of ["زمان مناسب تماس", "زمان ترجیحی تماس", "Preferred contact time"]) {
+    const row = { message: `${label}: 12:30 - 1` };
+    assert.equal(leadCell(row, "contactTime"), "12:30 - 1");
+    assert.equal(leadCell(row, "requestType"), "مشاوره");
+    assert.equal("message" in edit(row, { occupation: "Engineer" }), false);
+    assert.equal(leadCell(edit(row, { education: "Degree" }), "contactTime"), "12:30 - 1");
+  }
+  assert.equal(leadCell({ message: "زمان مناسب تماس: صبح" }, "contactTime"), "صبح");
+  assert.equal(leadCell({ message: "Preferred contact time: Any time" }, "contactTime"), "Any time");
+  for (const message of [null, "", "زمان مناسب تماس: ", "Notes: contact me"]) {
+    assert.equal(leadCell({ message }, "contactTime"), undefined);
+  }
+});
