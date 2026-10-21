@@ -78,62 +78,12 @@ class LeadSearchField(StrEnum):
 
 
 LEAD_STATUS_TRANSITIONS: dict[LeadStatus, frozenset[LeadStatus]] = {
-    LeadStatus.NEW: frozenset({LeadStatus.ASSIGNED, LeadStatus.CLOSED}),
-    LeadStatus.ASSIGNED: frozenset(
-        {LeadStatus.INITIAL_CONTACT, LeadStatus.UNANSWERED, LeadStatus.CONTACTED, LeadStatus.CLOSED}
-    ),
-    LeadStatus.INITIAL_CONTACT: frozenset(
-        {
-            LeadStatus.UNANSWERED,
-            LeadStatus.CONTACTED,
-            LeadStatus.QUALIFIED,
-            LeadStatus.NOT_QUALIFIED,
-            LeadStatus.CLOSED,
-        }
-    ),
-    LeadStatus.UNANSWERED: frozenset(
-        {LeadStatus.INITIAL_CONTACT, LeadStatus.CONTACTED, LeadStatus.CLOSED}
-    ),
-    LeadStatus.CONTACTED: frozenset(
-        {
-            LeadStatus.INITIAL_CONTACT,
-            LeadStatus.UNANSWERED,
-            LeadStatus.QUALIFIED,
-            LeadStatus.NOT_QUALIFIED,
-            LeadStatus.CLOSED,
-        }
-    ),
-    LeadStatus.QUALIFIED: frozenset(
-        {LeadStatus.CONVERTED, LeadStatus.NOT_QUALIFIED, LeadStatus.CLOSED}
-    ),
-    LeadStatus.NOT_QUALIFIED: frozenset({LeadStatus.QUALIFIED, LeadStatus.CLOSED}),
-    LeadStatus.CONVERTED: frozenset({LeadStatus.CLOSED}),
-    LeadStatus.CLOSED: frozenset(
-        {
-            LeadStatus.NEW,
-            LeadStatus.ASSIGNED,
-            LeadStatus.INITIAL_CONTACT,
-            LeadStatus.UNANSWERED,
-            LeadStatus.CONTACTED,
-            LeadStatus.QUALIFIED,
-            LeadStatus.NOT_QUALIFIED,
-            LeadStatus.CONVERTED,
-        }
-    ),
+    current: frozenset(LeadStatus) - {current} for current in LeadStatus
 }
 
 
-STATUSES_REQUIRING_ASSIGNEE = frozenset(
-    {
-        LeadStatus.ASSIGNED,
-        LeadStatus.INITIAL_CONTACT,
-        LeadStatus.UNANSWERED,
-        LeadStatus.CONTACTED,
-        LeadStatus.QUALIFIED,
-        LeadStatus.NOT_QUALIFIED,
-        LeadStatus.CONVERTED,
-    }
-)
+# Call outcomes do not imply ownership. Only explicit assignment requires an assignee.
+STATUSES_REQUIRING_ASSIGNEE = frozenset({LeadStatus.ASSIGNED})
 
 
 @dataclass(frozen=True, slots=True)

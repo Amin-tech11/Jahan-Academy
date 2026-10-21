@@ -33,3 +33,13 @@ def test_facets_exclude_only_their_own_filter_and_sort_is_whitelisted() -> None:
         column_order("age; DROP TABLE users", "asc")
     with pytest.raises(ApplicationError):
         column_order("age", "desc; DROP TABLE users")
+
+
+def test_contact_time_filters_are_allowed_and_parameterized() -> None:
+    filters = parse_column_filters('{"contactTime":["12:30 - 1"]}')
+    params: dict[str, object] = {}
+    where = apply_column_filters("1=1", params, filters)
+    assert "زمان مناسب تماس|زمان ترجیحی تماس|Preferred contact time" in where
+    assert "12:30 - 1" not in where
+    assert params == {"column_values_0": ["12:30 - 1"]}
+    assert "substring(l.message" in column_order("contactTime", "asc")

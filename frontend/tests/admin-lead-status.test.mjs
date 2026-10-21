@@ -15,11 +15,16 @@ test("assigned is absent from consultation choices while legacy records remain r
   assert.equal(calls[0][2].toStatus, "contacted");
 });
 
-test("workflow choices respect assignment, terminal states and archive", () => {
+test("all outcomes are available without assignment or ordered stages, including reopening", () => {
   assert.equal(canChangeLeadStatus({ status: "new" }, "assigned"), false);
   assert.equal(canChangeLeadStatus({ status: "new" }, "closed"), true);
   assert.equal(canChangeLeadStatus(lead, "contacted"), true);
-  assert.equal(canChangeLeadStatus(lead, "converted"), false);
+  assert.equal(canChangeLeadStatus(lead, "converted"), true);
+  for (const current of [...leadStatuses, "assigned"]) {
+    for (const next of leadStatuses) {
+      assert.equal(canChangeLeadStatus({ status: current, assignee: null }, next), current !== next);
+    }
+  }
   assert.equal(canChangeLeadStatus({ ...lead, status: "closed" }, "new"), true);
   assert.equal(canChangeLeadStatus({ ...lead, status: "closed" }, "contacted"), true);
   assert.equal(canChangeLeadStatus({ ...lead, status: "closed" }, "closed"), false);
@@ -89,15 +94,15 @@ test("unchanged status does not transition, invalid selection saves nothing", as
   await saveLeadChanges(request, lead, { occupation: "Engineer" }, "assigned", () => {});
   assert.equal(calls.length, 1);
   assert.equal(calls[0][1], "PATCH");
-  await assert.rejects(saveLeadChanges(request, lead, { occupation: "Engineer" }, "converted", () => assert.fail()));
+  await assert.rejects(saveLeadChanges(request, lead, { occupation: "Engineer" }, "invalid", () => assert.fail()));
   assert.equal(calls.length, 1);
 });
 
-test("call statuses are available, save with versions, and preserve assignment/archive restrictions", async () => {
+test("call statuses save without assignment while preserving versions and archive restrictions", async () => {
   for (const status of ["initial_contact", "unanswered"]) {
     assert.ok(leadStatuses.includes(status)); assert.ok(labels[status]);
     assert.equal(canChangeLeadStatus(lead, status), true);
-    assert.equal(canChangeLeadStatus({ ...lead, assignee: null }, status), false);
+    assert.equal(canChangeLeadStatus({ ...lead, assignee: null }, status), true);
     assert.equal(canChangeLeadStatus({ ...lead, archived: true }, status), false);
     const calls = [];
     await saveLeadChanges(async (...args) => { calls.push(args); return {}; }, lead, undefined, status, () => {});

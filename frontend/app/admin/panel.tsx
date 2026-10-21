@@ -603,11 +603,7 @@ function Editor({
                   </label>
                   <p id="lead-status-help" className="adm-wide">
                     {source.status === "assigned" && "این رکورد قبلاً ارجاع شده است. "}
-                    {source.archived ? "وضعیت درخواست بایگانی‌شده قابل تغییر نیست." : source.status === "closed"
-                      ? "این درخواست بسته شده است؛ برای پیگیری دوباره، یکی از وضعیت‌های مجاز را انتخاب کنید."
-                      : !source.assignee
-                        ? "برای وضعیت‌های پیگیری، ابتدا باید مسئول درخواست تعیین شده باشد؛ در حال حاضر فقط بستن درخواست مجاز است."
-                        : "وضعیت‌های قابل انتخاب بر اساس مرحله فعلی درخواست نمایش داده می‌شوند."}
+                    {source.archived ? "وضعیت درخواست بایگانی‌شده قابل تغییر نیست." : "وضعیت را بر اساس نتیجهٔ تماس یا پیگیری انتخاب کنید؛ تعیین مسئول و طی‌کردن مراحل قبلی لازم نیست."}
                     {" "}تغییر وضعیت با «ذخیره تغییرات» ثبت می‌شود.
                   </p>
                 </div>
@@ -1149,7 +1145,7 @@ function ResourceList({ resource }: { resource: Resource }) {
                       }
                     } : undefined}>
                     {resource.columns.map((column) => (
-                      <td key={column} dir={["mobile", "email", "reference"].includes(column) ? "ltr" : undefined}>
+                      <td key={column} dir={["mobile", "email", "reference", "contactTime"].includes(column) ? "ltr" : undefined}>
                         {resource.id === "leads" && column === "reference" ? (
                           <button className="adm-link" onClick={() => setEditor({ item: row })} aria-label={`مشاهده درخواست ${row.reference}`}>{displayValue(row.reference)}</button>
                         ) : ["status", "syncStatus", "uploadStatus"].includes(

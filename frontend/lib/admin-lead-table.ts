@@ -10,6 +10,7 @@ export function serverColumnParams(filters: ColumnFilters, sort: ColumnSort | nu
 export function facetLabel(column: string, value: string): string {
   if (value === "—") return value;
   if (column === "fullName") return value;
+  if (column === "contactTime") return value;
   if (column === "requestType") return value === "assessment" ? "ارزیابی" : "مشاوره";
   if (column === "requestCreatedAt") return columnText({ createdAt: value }, column);
   if (["education", "englishProficiency"].includes(column)) {

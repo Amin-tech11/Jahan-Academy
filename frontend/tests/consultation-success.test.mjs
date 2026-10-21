@@ -1,3 +1,4 @@
+import { contactTimes } from "../lib/contact-times.ts";
 import { createRequestKey } from "../lib/request-key.ts";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -19,6 +20,7 @@ function load(file, dependencies, globals = {}) {
   vm.runInNewContext(ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX } }).outputText, {
     module, exports: module.exports, ...globals,
     require(name) {
+      if (name === "@/lib/contact-times") return { contactTimes };
       if (name === "./site-select") return { default: "select" };
       if (name === "./use-public-form-feedback") return { usePublicFormFeedback: () => ({ ready: true, formProps: {}, fieldProps: () => ({}), message: () => null, mark() {}, serverErrors() {} }) };
       if (name === "@/lib/request-key") return { createRequestKey };

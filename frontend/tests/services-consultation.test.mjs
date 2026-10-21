@@ -1,3 +1,4 @@
+import { contactTimes } from "../lib/contact-times.ts";
 import { createRequestKey } from "../lib/request-key.ts";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -12,11 +13,12 @@ test("services consultation supplies the public API contract and keeps its retry
   const calls = [];
   const module = { exports: {} };
   const ref = { current: null };
-  const fields = { firstName: " API ", lastName: " Test ", mobile: "+12025550197", occupation: "Other", privacyConsent: "on", contactConsent: "on" };
+  const fields = { firstName: " API ", lastName: " Test ", mobile: "+12025550197", occupation: "Other", contactTime: "2 - 2:30", privacyConsent: "on", contactConsent: "on" };
   vm.runInNewContext(ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX } }).outputText, {
     module, exports: module.exports, Date, crypto: { randomUUID: () => "services-retry-key" },
     FormData: class { get(key) { return fields[key] ?? ""; } },
     require(name) {
+      if (name === "@/lib/contact-times") return { contactTimes };
       if (name === "./use-public-form-feedback") return { usePublicFormFeedback: () => ({ ready: true, formProps: {}, fieldProps: () => ({}), message: () => null, mark() {}, serverErrors() {} }) };
       if (name === "./site-select") return { default: "select" };
       if (name === "@/lib/request-key") return { createRequestKey: () => createRequestKey({ getRandomValues: crypto.getRandomValues.bind(crypto) }) };
@@ -38,6 +40,7 @@ test("services consultation supplies the public API contract and keeps its retry
   const { path, options } = calls[0];
   assert.equal(path, "/consultation-requests");
   assert.equal(options.body.firstName, "API");
+  assert.equal(options.body.message, "Preferred contact time: 2 - 2:30");
   assert.equal(options.body.intakeTerm, "unknown");
   assert.equal(options.body.startYear, new Date().getUTCFullYear());
   assert.ok(options.body.desiredCountryText);

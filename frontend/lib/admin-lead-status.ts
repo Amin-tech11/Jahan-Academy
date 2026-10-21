@@ -1,23 +1,12 @@
 import type { RecordData, adminRequest } from "./admin-api";
 
 // Mirrors the consultation workflow; the API remains authoritative for permissions.
-const transitions: Record<string, readonly string[]> = {
-  new: ["assigned", "closed"],
-  assigned: ["initial_contact", "unanswered", "contacted", "closed"],
-  initial_contact: ["unanswered", "contacted", "qualified", "not_qualified", "closed"],
-  unanswered: ["initial_contact", "contacted", "closed"],
-  contacted: ["initial_contact", "unanswered", "qualified", "not_qualified", "closed"],
-  qualified: ["converted", "not_qualified", "closed"],
-  not_qualified: ["qualified", "closed"],
-  converted: ["closed"],
-  closed: ["new", "assigned", "initial_contact", "unanswered", "contacted", "qualified", "not_qualified", "converted"],
-};
-const statusesRequiringAssignee = ["assigned", "initial_contact", "unanswered", "contacted", "qualified", "not_qualified", "converted"];
+const statuses = ["new", "initial_contact", "unanswered", "contacted", "qualified", "not_qualified", "converted", "closed"];
 
 export function canChangeLeadStatus(source: RecordData, status: string): boolean {
   return !source.archived &&
-    Boolean(transitions[String(source.status)]?.includes(status)) &&
-    (!statusesRequiringAssignee.includes(status) || Boolean(source.assignee));
+    source.status !== status &&
+    (statuses.includes(status) || (status === "assigned" && Boolean(source.assignee)));
 }
 
 export async function saveLeadChanges(
@@ -29,7 +18,7 @@ export async function saveLeadChanges(
 ): Promise<void> {
   const statusChanged = status !== source.status;
   if (statusChanged && !canChangeLeadStatus(source, status))
-    throw new Error("این تغییر وضعیت برای رکورد مجاز نیست؛ وضعیت فعلی و مسئول درخواست را بررسی کنید.");
+    throw new Error("این تغییر وضعیت برای رکورد مجاز نیست؛ وضعیت فعلی و بایگانی درخواست را بررسی کنید.");
   let saved = source;
   const path = `/admin/leads/${source.id}`;
   if (patch) {
