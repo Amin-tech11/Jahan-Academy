@@ -16,7 +16,8 @@ from app.shared.exceptions import ApplicationError
 def test_lead_transition_matrix_reaches_closed_and_allows_reopening() -> None:
     assert LeadStatus.ASSIGNED in LEAD_STATUS_TRANSITIONS[LeadStatus.NEW]
     assert LeadStatus.CONTACTED in LEAD_STATUS_TRANSITIONS[LeadStatus.ASSIGNED]
-    assert LeadStatus.CONVERTED not in LEAD_STATUS_TRANSITIONS[LeadStatus.CONTACTED]
+    for current in LeadStatus:
+        assert LEAD_STATUS_TRANSITIONS[current] == frozenset(LeadStatus) - {current}
     assert LeadStatus.CONVERTED in LEAD_STATUS_TRANSITIONS[LeadStatus.QUALIFIED]
     assert LEAD_STATUS_TRANSITIONS[LeadStatus.CLOSED] == frozenset(
         {
@@ -70,11 +71,12 @@ def test_assigned_writer_can_change_only_own_lead() -> None:
 
 
 @pytest.mark.parametrize("status", [LeadStatus.INITIAL_CONTACT, LeadStatus.UNANSWERED])
-def test_call_statuses_are_valid_and_require_assignment(status: LeadStatus) -> None:
+def test_call_statuses_do_not_require_assignment(status: LeadStatus) -> None:
     from app.modules.consultations.domain import STATUSES_REQUIRING_ASSIGNEE
 
     assert status in LEAD_STATUS_TRANSITIONS[LeadStatus.ASSIGNED]
     assert status in LEAD_STATUS_TRANSITIONS[LeadStatus.CLOSED]
-    assert status in STATUSES_REQUIRING_ASSIGNEE
+    assert status not in STATUSES_REQUIRING_ASSIGNEE
+    assert STATUSES_REQUIRING_ASSIGNEE == frozenset({LeadStatus.ASSIGNED})
     assert LeadStatus.CONTACTED in LEAD_STATUS_TRANSITIONS[status]
     assert LeadStatusTransitionRequest.model_validate({"toStatus": status}).to_status == status

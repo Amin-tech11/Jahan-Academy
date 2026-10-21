@@ -153,7 +153,7 @@ def test_assignment_transfer_status_workflow_and_history() -> None:
             invalid = client.post(
                 f"/api/v1/admin/leads/{lead_id}/status-transitions",
                 headers={"If-Match": '"3"'},
-                json={"toStatus": "converted"},
+                json={"toStatus": "contacted"},
             )
             assert invalid.status_code == 400
             assert invalid.json()["error"]["code"] == "INVALID_STATE_TRANSITION"
@@ -297,3 +297,79 @@ def test_call_statuses_persist_filter_and_record_history() -> None:
     finally:
         app.dependency_overrides.clear()
         _cleanup([actor], reference)
+
+
+@pytest.mark.parametrize("role", ["super_admin", "support", "consultant", "content_editor"])
+def test_all_outcomes_preserve_record_permissions_and_history(role: str) -> None:
+    actor = _create_staff(consultant=True)
+    other = _create_staff(consultant=True)
+    own_only = role in {"consultant", "content_editor"}
+    permissions = (
+        {"lead.read.assigned", "lead.write.assigned"}
+        if own_only
+        else {"lead.read.all", "lead.write.all"}
+    )
+    context_box = {"value": _context(actor, role, permissions)}
+
+    async def override() -> AuthorizationContext:
+        return context_box["value"]
+
+    app.dependency_overrides[authorization_context] = override
+    reference = None
+    try:
+        with TestClient(app) as client:
+            submitted = client.post(
+                "/api/v1/consultation-requests",
+                json=_payload(f"09{uuid4().int % 1_000_000_000:09d}"),
+            )
+            assert submitted.status_code == 201, submitted.text
+            reference = submitted.json()["data"]["reference"]
+            lead_id = _lead_id(reference)
+            if own_only:
+                with psycopg.connect(_sync_database_url()) as connection:
+                    connection.execute(
+                        "UPDATE leads SET assigned_consultant_id = %s WHERE id = %s",
+                        (actor, lead_id),
+                    )
+            outcomes = (
+                "initial_contact",
+                "unanswered",
+                "converted",
+                "qualified",
+                "not_qualified",
+                "closed",
+                "contacted",
+                "new",
+            )
+            for version, outcome in enumerate(outcomes, 1):
+                response = client.post(
+                    f"/api/v1/admin/leads/{lead_id}/status-transitions",
+                    headers={"If-Match": f'"{version}"'},
+                    json={"toStatus": outcome},
+                )
+                assert response.status_code == 200, response.text
+                assert response.json()["data"]["status"] == outcome
+                assert response.headers["etag"] == f'"{version + 1}"'
+            history = client.get(f"/api/v1/admin/leads/{lead_id}/history")
+            assert history.status_code == 200, history.text
+            assert [row["newStatus"] for row in history.json()["data"]["statuses"]] == [
+                *reversed(outcomes),
+                "new",
+            ]
+            context_box["value"] = _context(other, "consultant", {"lead.write.assigned"})
+            denied = client.post(
+                f"/api/v1/admin/leads/{lead_id}/status-transitions",
+                headers={"If-Match": '"9"'},
+                json={"toStatus": "contacted"},
+            )
+            assert denied.status_code == 403, denied.text
+            context_box["value"] = _context(actor, "support", {"lead.read.all"})
+            readonly = client.post(
+                f"/api/v1/admin/leads/{lead_id}/status-transitions",
+                headers={"If-Match": '"9"'},
+                json={"toStatus": "contacted"},
+            )
+            assert readonly.status_code == 403, readonly.text
+    finally:
+        app.dependency_overrides.clear()
+        _cleanup([actor, other], reference)
