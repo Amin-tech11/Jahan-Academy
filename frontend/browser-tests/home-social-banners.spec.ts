@@ -5,6 +5,9 @@ for (const locale of ["fa", "en"]) {
     await page.goto(`/${locale}`, { waitUntil: "domcontentloaded" });
     const section = page.locator("#home-social");
     await expect(section.locator("a")).toHaveCount(3);
+    for (const image of await section.locator("img").all()) {
+      await expect(image).toHaveAttribute("src", /-en-v2\.webp/);
+    }
     expect(await section.evaluate(node => node.previousElementSibling?.querySelector("#home-faq-title") !== null)).toBe(true);
     for (const width of [390, 1440]) {
       await page.setViewportSize({ width, height: 1000 });
