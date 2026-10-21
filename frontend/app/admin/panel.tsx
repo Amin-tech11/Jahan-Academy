@@ -1149,7 +1149,7 @@ function ResourceList({ resource }: { resource: Resource }) {
                       }
                     } : undefined}>
                     {resource.columns.map((column) => (
-                      <td key={column} dir={["mobile", "email", "reference"].includes(column) ? "ltr" : undefined}>
+                      <td key={column} dir={["mobile", "email", "reference", "contactTime"].includes(column) ? "ltr" : undefined}>
                         {resource.id === "leads" && column === "reference" ? (
                           <button className="adm-link" onClick={() => setEditor({ item: row })} aria-label={`مشاهده درخواست ${row.reference}`}>{displayValue(row.reference)}</button>
                         ) : ["status", "syncStatus", "uploadStatus"].includes(

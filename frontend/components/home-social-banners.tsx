@@ -15,7 +15,7 @@ export function HomeSocialBanners({ locale }: { locale: Locale }) {
     <div className={`shell ${styles.grid}`}>
       {banners.map(banner => <a key={banner.key} className={styles.banner} href={socialLinks[banner.key]} target="_blank" rel="noopener noreferrer"
         aria-label={`${fa ? banner.fa : banner.en} — ${fa ? "بازشدن در تب جدید" : "opens in a new tab"}`}>
-        <Image src={`/social/${banner.key}-en-v2.webp`} alt={banner.en} lang="en" width={1254} height={1254}
+        <Image src={`/social/${banner.key}-en-v3.webp`} alt={banner.en} lang="en" width={1254} height={1254}
           sizes="(max-width: 599px) calc(100vw - 32px), (max-width: 1199px) calc((100vw - 80px) / 3), 384px" />
       </a>)}
     </div>

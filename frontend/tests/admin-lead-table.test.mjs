@@ -6,7 +6,7 @@ registerHooks({ resolve(specifier, context, next) {
   if (specifier.startsWith("./") && !specifier.endsWith(".ts") && context.parentURL?.includes("/lib/admin-")) return next(`${specifier}.ts`, context);
   return next(specifier, context);
 } });
-const { columnText, columnValues, filterLeadRows, sortLeadRows, loadAllLeadRows } = await import("../lib/admin-lead-table.ts");
+const { columnText, facetLabel, columnValues, filterLeadRows, sortLeadRows, loadAllLeadRows } = await import("../lib/admin-lead-table.ts");
 const { leadWorkbook } = await import("../lib/admin-lead-export.ts");
 const { resources } = await import("../lib/admin-resources.ts");
 
@@ -67,20 +67,24 @@ test("partial, changed and failed data never produce a partial export", async ()
 test("Excel roundtrip keeps RTL columns, text phone/formula payloads, filters and banding", async () => {
   const { default: ExcelJS } = await import("exceljs");
   const columns = resources.find(resource => resource.id === "leads").columns;
-  const rows = [{ id: "1", reference: "JA-ONE", firstName: "=1+1", lastName: "Test", mobile: "+989123456789", age: 30, status: "closed" }, { id: "2", reference: "JA-TWO", firstName: "Amin", status: "new" }];
+  const rows = [{ id: "1", reference: "JA-ONE", firstName: "=1+1", lastName: "Test", mobile: "+989123456789", age: 30, message: "زمان مناسب تماس: 12:30 - 1", status: "closed" }, { id: "2", reference: "JA-TWO", firstName: "Amin", status: "new" }];
   const buffer = await leadWorkbook(rows, columns);
   const workbook = new ExcelJS.Workbook();
   await workbook.xlsx.load(buffer);
   const sheet = workbook.worksheets[0];
   assert.equal(sheet.rowCount, 3);
-  assert.equal(sheet.columnCount, 14);
+  assert.equal(sheet.columnCount, 15);
   assert.equal(sheet.views[0].rightToLeft, true);
   assert.equal(sheet.getCell("A1").value, "کد پیگیری");
-  assert.equal(sheet.getCell("N1").value, "وضعیت");
+  assert.equal(sheet.getCell("O1").value, "وضعیت");
+  assert.equal(sheet.getCell("L1").value, "تاریخ ثبت درخواست");
+  assert.equal(sheet.getCell("M1").value, "زمان تماس با لید");
+  assert.equal(sheet.getCell("N1").value, "نوع درخواست");
+  assert.equal(sheet.getCell("M2").value, "12:30 - 1");
   assert.equal(sheet.getCell("C2").value, "+98 912 345 6789");
   assert.equal(sheet.getCell("B2").type, ExcelJS.ValueType.String);
   assert.equal(sheet.getCell("B2").value, "=1+1 Test");
-  assert.equal(sheet.getCell("N2").value, "بسته‌شده");
+  assert.equal(sheet.getCell("O2").value, "بسته‌شده");
   assert.equal(sheet.getCell("A1").alignment.horizontal, "center");
   assert.equal(sheet.getCell("A1").fill.fgColor.argb, "FF123B78");
   assert.equal(sheet.getCell("A1").font.color.argb, "FFFFFFFF");
@@ -91,4 +95,12 @@ test("Excel roundtrip keeps RTL columns, text phone/formula payloads, filters an
   await empty.xlsx.load(await leadWorkbook([], columns));
   assert.equal(empty.worksheets[0].rowCount, 1);
   empty.worksheets[0].getRow(1).eachCell(cell => assert.equal(cell.font.name, "B_Nazanin"));
+});
+
+
+test("contact time filter and facet preserve the actual submitted answer", () => {
+  const rows = [{ id: "1", message: "زمان مناسب تماس: 10 - 10:30" }, { id: "2", message: "زمان ترجیحی تماس: 2 - 2:30" }, { id: "3" }];
+  assert.equal(facetLabel("contactTime", "2 - 2:30"), "2 - 2:30");
+  assert.equal(columnText(rows[2], "contactTime"), "—");
+  assert.deepEqual(filterLeadRows(rows, { contactTime: ["2 - 2:30"] }).map(row => row.id), ["2"]);
 });

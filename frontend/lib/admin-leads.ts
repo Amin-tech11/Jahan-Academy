@@ -13,16 +13,20 @@ const choiceLabels: Record<string, string> = {
   "20k_40k": "۲۰٬۰۰۰ تا ۴۰٬۰۰۰", "40k_plus": "بیش از ۴۰٬۰۰۰",
 };
 
-function assessmentValue(message: unknown, column: string): string | undefined {
+function labeledValue(message: unknown, labels: readonly string[]): string | undefined {
   if (typeof message !== "string") return undefined;
   for (const line of message.split(/\r?\n/)) {
     const separator = line.indexOf(":");
     if (separator < 0) continue;
-    if (assessmentLabels[column]?.includes(line.slice(0, separator).trim())) {
+    if (labels.includes(line.slice(0, separator).trim())) {
       return line.slice(separator + 1).trim() || undefined;
     }
   }
   return undefined;
+}
+
+function assessmentValue(message: unknown, column: string): string | undefined {
+  return labeledValue(message, assessmentLabels[column] ?? []);
 }
 
 export function leadDate(value: unknown): string {
@@ -37,6 +41,7 @@ export function leadCell(row: RecordData, column: string): unknown {
   if (column === "mobile" && typeof row.mobile === "string") {
     return row.mobile.replace(/^(\+98)(\d{3})(\d{3})(\d{4})$/, "$1 $2 $3 $4");
   }
+  if (column === "contactTime") return labeledValue(row.message, ["زمان مناسب تماس", "زمان ترجیحی تماس", "Preferred contact time"]);
   if (column === "requestCreatedAt") return leadDate(row.createdAt);
   if (column === "requestType") {
     // Legacy assessment submissions store these three required, labeled answers.

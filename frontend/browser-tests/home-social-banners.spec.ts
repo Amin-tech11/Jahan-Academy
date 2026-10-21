@@ -6,7 +6,7 @@ for (const locale of ["fa", "en"]) {
     const section = page.locator("#home-social");
     await expect(section.locator("a")).toHaveCount(3);
     for (const image of await section.locator("img").all()) {
-      await expect(image).toHaveAttribute("src", /-en-v2\.webp/);
+      await expect(image).toHaveAttribute("src", /-en-v3\.webp/);
     }
     expect(await section.evaluate(node => node.previousElementSibling?.querySelector("#home-faq-title") !== null)).toBe(true);
     for (const width of [390, 1440]) {

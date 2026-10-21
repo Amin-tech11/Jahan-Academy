@@ -135,3 +135,31 @@ def test_reference_and_budget_sort_numerically_in_postgresql() -> None:
             )
             rows = connection.execute(str(text(query).compile())).fetchall()
             assert [row[0] for row in rows] == ["JA-1", "JA-2", "JA-10"]
+
+
+def test_contact_time_column_reads_all_form_labels_and_filters_in_postgresql() -> None:
+    from sqlalchemy import create_engine, text
+
+    from app.modules.consultations.lead_columns import apply_column_filters, column_expression
+
+    database = os.environ["JAHAN_DATABASE_URL"].replace(
+        "postgresql+asyncpg://", "postgresql+psycopg://"
+    )
+    source = """(VALUES
+        (1, 'زمان مناسب تماس: 12:30 - 1'),
+        (2, 'زمان ترجیحی تماس: 2 - 2:30'),
+        (3, 'Preferred contact time: 3:30 - 4'),
+        (4, 'زمان مناسب تماس: صبح'),
+        (5, NULL)) AS l(id, message)"""
+    engine = create_engine(database)
+    try:
+        with engine.connect() as connection:
+            expression = column_expression("contactTime")
+            rows = connection.execute(text(f"SELECT {expression} FROM {source} ORDER BY id"))
+            assert rows.scalars().all() == ["12:30 - 1", "2 - 2:30", "3:30 - 4", "صبح", "—"]
+            params: dict[str, object] = {}
+            where = apply_column_filters("1=1", params, {"contactTime": ["2 - 2:30"]})
+            filtered = connection.execute(text(f"SELECT id FROM {source} WHERE {where}"), params)
+            assert filtered.scalars().all() == [2]
+    finally:
+        engine.dispose()
