@@ -42,7 +42,7 @@ test("support sees the submitted contact time between request date and request t
     if (path.endsWith("/admin/leads")) return route.fulfill({ json: { data: [{ id: "time-test", reference: "JA-TIME", firstName: "آزمایش", lastName: "تماس", message: "زمان مناسب تماس: 12:30 - 1", createdAt: "2026-10-21T08:00:00Z", status: "new" }], meta: { total: 1 } } });
     return route.fulfill({ json: { data: [], meta: { total: 0 } } });
   });
-  await page.goto("/admin");
+  await page.goto("/admin", { waitUntil: "domcontentloaded" });
   const table = page.locator("table").filter({ hasText: "JA-TIME" });
   await expect(table).toBeVisible();
   const headers = await table.locator("thead th").allTextContents();
