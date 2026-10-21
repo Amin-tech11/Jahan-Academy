@@ -6,7 +6,7 @@ for (const locale of ["fa", "en"]) {
   for (const path of ["/free-consultation", "/countries", "/countries/germany", "/services", "/articles"]) {
     test(`${locale}${path} offers the office half-hour contact slots`, async ({ page }) => {
       await page.setViewportSize({ width: locale === "fa" ? 390 : 1440, height: 900 });
-      await page.goto(`/${locale}${path}`);
+      await page.goto(`/${locale}${path}`, { waitUntil: "domcontentloaded" });
       const select = page.locator('select[name="contactTime"]').first();
       await expect(select).toBeAttached();
       const noPreference = locale === "fa" ? "فرقی ندارد" : path === "/services" ? "No preference" : "Any time";
@@ -14,10 +14,21 @@ for (const locale of ["fa", "en"]) {
       expect(await select.inputValue()).toBe(path === "/services" ? "" : noPreference);
       const trigger = select.locator("..").getByRole("combobox");
       await trigger.click();
+      const list = page.getByRole("listbox");
+      await expect(list).toHaveAttribute("dir", locale === "fa" ? "rtl" : "ltr");
+      const selected = list.locator('[role="option"][aria-selected="true"]');
+      const selectedPositions = await selected.locator("span").evaluateAll(nodes => nodes.map(node => node.getBoundingClientRect().left));
+      expect(selectedPositions).toHaveLength(2);
+      expect(locale === "fa" ? selectedPositions[1] < selectedPositions[0] : selectedPositions[1] > selectedPositions[0]).toBe(true);
       await page.getByRole("option", { name: "12:30 - 1", exact: true }).click();
       await expect(trigger).toHaveText("12:30 - 1");
       await expect(select).toHaveValue("12:30 - 1");
-      expect(await trigger.evaluate(el => getComputedStyle(el).direction)).toBe("ltr");
+      expect(await trigger.evaluate(el => getComputedStyle(el).direction)).toBe(locale === "fa" ? "rtl" : "ltr");
+      const triggerPositions = await trigger.evaluate(el => [...el.children].map(node => node.getBoundingClientRect().left));
+      expect(locale === "fa" ? triggerPositions[1] < triggerPositions[0] : triggerPositions[1] > triggerPositions[0]).toBe(true);
+      await trigger.click();
+      await expect(page.getByRole("option", { name: "12:30 - 1", exact: true })).toHaveAttribute("aria-selected", "true");
+      await trigger.press("Escape");
     });
   }
 }
