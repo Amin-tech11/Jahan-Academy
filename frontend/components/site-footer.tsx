@@ -16,7 +16,7 @@ export function SiteFooter({ locale }: { locale: Locale }) {
             <h3>{fa ? "راه‌های ارتباط با ما" : "Contact details"}</h3>
             <div className={styles.contactLink}>
               <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="m5 3 4 1 1 5-3 2c2 3 3 4 6 6l2-3 5 1 1 4c-1 3-4 3-7 2C8 19 5 16 3 10 2 7 2 4 5 3Z" /></svg>
-              <span>{fa ? "شماره تماس در واتس‌اپ و تلگرام" : "Contact number on WhatsApp and Telegram"}<a className={styles.detailValue} href="tel:+989196017164" dir="ltr">+98 919 601 7164</a>
+              <span>{fa ? "شماره تماس در واتس‌اپ و تلگرام" : "Contact number on WhatsApp and Telegram"}<a data-yektanet-contact className={styles.detailValue} href="tel:+989196017164" dir="ltr">+98 919 601 7164</a>
               </span>
             </div>
             <div className={styles.contactLink}>
