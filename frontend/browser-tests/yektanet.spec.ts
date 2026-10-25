@@ -11,6 +11,8 @@ test('public head has a nonce; localhost and admin never load advertising', asyn
   expect(response?.headers()['content-security-policy']).toContain(`'nonce-${nonce}'`);
   await page.goto('/admin', { waitUntil: 'domcontentloaded' });
   await expect(page.locator('#jahan-yektanet')).toHaveCount(0);
+  await page.goto('/reset-password', { waitUntil: 'domcontentloaded' });
+  await expect(page.locator('#jahan-yektanet')).toHaveCount(0);
   expect(requests).toEqual([]);
 });
 

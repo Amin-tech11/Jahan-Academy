@@ -13,7 +13,7 @@ import "@/app/shared-consultation.css";
 import "@/app/public-responsive.css";
 import "@/app/public-hero-brand.css";
 
-export async function PublicDocument({ children, locale }: { children: ReactNode; locale: Locale }) {
+export async function PublicDocument({ children, locale, advertising = false }: { children: ReactNode; locale: Locale; advertising?: boolean }) {
   const nonce = (await headers()).get("x-nonce") ?? undefined;
-  return <html lang={locale} dir={locale === "fa" ? "rtl" : "ltr"}><head><script id="jahan-yektanet" nonce={nonce} dangerouslySetInnerHTML={{ __html: yektanetBootstrap }} /></head><body><CspNonceProvider nonce={nonce}>{children}</CspNonceProvider></body></html>;
+  return <html lang={locale} dir={locale === "fa" ? "rtl" : "ltr"}><head>{advertising && <script id="jahan-yektanet" nonce={nonce} dangerouslySetInnerHTML={{ __html: yektanetBootstrap }} />}</head><body><CspNonceProvider nonce={nonce}>{children}</CspNonceProvider></body></html>;
 }

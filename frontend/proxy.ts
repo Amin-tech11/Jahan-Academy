@@ -8,9 +8,10 @@ export function proxy(request: NextRequest) {
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
   const storage = storageOrigin(process.env.ADMIN_STORAGE_ORIGIN);
   const analytics = admin ? "" : " https://www.google-analytics.com https://region1.google-analytics.com https://www.googletagmanager.com";
-  const adImages = admin ? "" : " https://ua.yektanet.com https://plus.sabavision.com";
-  const adConnections = admin ? "" : " https://ua.yektanet.com https://event.yektanet.com https://audience.yektanet.com";
-  const policy = `default-src 'self'; script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""}; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:${analytics}${adImages}; font-src 'self'; connect-src 'self'${admin && storage ? ` ${storage}` : ""}${analytics}${adConnections}${process.env.NODE_ENV === "development" ? " ws:" : ""};${admin ? "" : " frame-src https://cdn.yektanet.com https://maps.google.com https://www.google.com/maps/;"} object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'`;
+  const advertising = /^\/(fa|en)(\/|$)/.test(request.nextUrl.pathname) && !/^\/(fa|en)\/admin(\/|$)/.test(request.nextUrl.pathname);
+  const adImages = !advertising ? "" : " https://ua.yektanet.com https://plus.sabavision.com";
+  const adConnections = !advertising ? "" : " https://ua.yektanet.com https://event.yektanet.com https://audience.yektanet.com";
+  const policy = `default-src 'self'; script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""}; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:${analytics}${adImages}; font-src 'self'; connect-src 'self'${admin && storage ? ` ${storage}` : ""}${analytics}${adConnections}${process.env.NODE_ENV === "development" ? " ws:" : ""};${admin ? "" : " frame-src https://maps.google.com https://www.google.com/maps/" + (advertising ? " https://cdn.yektanet.com" : "") + ";"} object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'`;
   headers.set("x-nonce", nonce);
   headers.set("content-security-policy", policy);
   const response = NextResponse.next({ request: { headers } });
