@@ -13,6 +13,10 @@ export type UniversityNews = Omit<BlogPost, "type"> & {
   imageCaption: Localized<string>;
   sources: Array<{ title: string; url: string }>;
   articleId: string;
+  metaDescription?: Localized<string>;
+  sectionsFa?: Array<{ heading: string; paragraphs: string[] }>;
+  imageWidth?: number;
+  imageHeight?: number;
 };
 
 export const universityNews = data as UniversityNews[];

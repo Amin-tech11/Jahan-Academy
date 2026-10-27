@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
   const news = universityNews.find(item => item.slug === slug);
   if (!news || !isLocale(locale)) return {};
-  const metadata = pageMetadata(locale, `/news/${news.slug}`, news.seoTitle[locale], news.excerpt[locale]);
+  const metadata = pageMetadata(locale, `/news/${news.slug}`, news.seoTitle[locale], news.metaDescription?.[locale] ?? news.excerpt[locale]);
   return { ...metadata,
     openGraph: { ...metadata.openGraph, type: "article", publishedTime: news.date,
       images: [{ url: `${siteOrigin}${news.image}`, alt: news.imageAlt[locale] }] },
@@ -39,12 +39,15 @@ export default async function NewsDetail({ params }: Props) {
           {" | "}{locale === "fa" ? "تاریخ منبع: " : "Source date: "}<time dateTime={news.sourceDate}>{blogDate(news.sourceDate, locale)}</time></p>
       </header>
       <figure className={styles.newsFigure}>
-        <PreparedImage src={news.image} alt={news.imageAlt[locale]} width={1672} height={941} sizes="(max-width: 900px) 100vw, 800px" preload />
+        <PreparedImage src={news.image} alt={news.imageAlt[locale]} width={news.imageWidth ?? 1672} height={news.imageHeight ?? 941} sizes="(max-width: 900px) 100vw, 800px" preload />
         <figcaption>{news.imageCaption[locale]}</figcaption>
       </figure>
       <div className={styles.content}>
         <p><strong>{news.excerpt[locale]}</strong></p>
-        {news.paragraphs[locale].map((paragraph, index) => <p key={index}>{paragraph}</p>)}
+        {locale === "fa" && news.sectionsFa ? news.sectionsFa.map((section, index) => <section key={index}>
+          {section.heading && <h2>{section.heading}</h2>}
+          {section.paragraphs.map((paragraph, paragraphIndex) => <p key={paragraphIndex}>{paragraph}</p>)}
+        </section>) : news.paragraphs[locale].map((paragraph, index) => <p key={index}>{paragraph}</p>)}
         <section aria-labelledby="news-sources"><h2 id="news-sources">{locale === "fa" ? "منبع رسمی خبر" : "Official news source"}</h2>
           <ul>{news.sources.map(source => <li key={source.url}><a href={source.url} target="_blank" rel="noopener noreferrer">{source.title}</a></li>)}</ul>
         </section>
