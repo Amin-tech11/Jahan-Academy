@@ -15,6 +15,9 @@ const sources = new Set([
   "/universities/hero/classical-campus.png", "/destinations/world-map-hero-wide.png",
   "/free-consultation.webp", "/home-trust-office-meeting.webp", "/brand/jahan-academy-official.png", "/assessment-hero-office.webp", "/home-trust-consultation.png",
 ]);
+// News covers may live in dated subdirectories; use the catalog as the source of truth.
+const news = JSON.parse(await readFile(path.join(root, "lib/university-news-data.json"), "utf8"));
+for (const story of news) sources.add(story.image);
 for (const dir of ["journey", "services", "destinations", "destinations/collage", "universities", "university-info", "blog/guides", "blog/news"]) {
   for (const item of await readdir(path.join(publicDir, dir), { withFileTypes: true })) {
     if (item.isFile() && /\.(png|jpe?g|webp)$/i.test(item.name) && !/logo/i.test(item.name)) sources.add(`/${dir}/${item.name}`);
