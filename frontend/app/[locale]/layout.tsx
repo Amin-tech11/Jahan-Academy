@@ -12,5 +12,5 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 export default async function LocaleLayout({ children, params }: { children: ReactNode; params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  return <PublicDocument locale={locale}>{children}</PublicDocument>;
+  return <PublicDocument locale={locale} advertising>{children}</PublicDocument>;
 }
