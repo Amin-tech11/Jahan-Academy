@@ -555,7 +555,7 @@ jobs:
           set -euo pipefail
           [[ "$SSH_HOST" =~ ^[a-zA-Z0-9.-]+$ && "$SSH_USER" =~ ^[a-zA-Z0-9_-]+$ && "$SSH_PORT" =~ ^[0-9]+$ ]]
           [[ "$MAIN_SHA" =~ ^[0-9a-f]{40}$ ]]
-          [[ "$REGISTRY_USER" =~ ^[a-zA-Z0-9_\[\]-]+$ ]]
+          [[ "$REGISTRY_USER" =~ ^[a-zA-Z0-9_-]+(\[bot\])?$ ]]
           test -n "$SSH_PRIVATE_KEY" && test -n "$SSH_KNOWN_HOSTS"
           umask 077
           key="$RUNNER_TEMP/jahan-deploy-key"
