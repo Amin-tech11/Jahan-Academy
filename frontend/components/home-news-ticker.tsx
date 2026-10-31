@@ -6,7 +6,7 @@ import { useRef, type PointerEvent } from "react";
 import type { Locale } from "@/lib/site-content";
 import { blogHref, blogImage, type BlogPost } from "@/lib/blog-content";
 
-type NewsItem = Pick<BlogPost, "slug" | "type" | "title" | "date">;
+type NewsItem = Pick<BlogPost, "slug" | "type" | "title" | "date" | "image">;
 const covers: Record<string, string> = {
   "prepare-for-consultation": "/journey/profile-assessment.png",
   "choosing-a-study-destination": "/destinations/united-kingdom.png",
@@ -59,7 +59,7 @@ export function HomeNewsTicker({ items, locale }: { items: NewsItem[]; locale: L
   };
 
   const entries = (duplicate: boolean) => <div className="home-news__group" aria-hidden={duplicate || undefined}>
-    {items.map((item) => <Link className="home-news__card" href={blogHref(item, locale)} key={item.slug} tabIndex={duplicate ? -1 : undefined} dir={locale === "fa" ? "rtl" : "ltr"} draggable={false}>
+    {items.map((item) => <Link prefetch={false} className="home-news__card" href={blogHref(item, locale)} key={item.slug} tabIndex={duplicate ? -1 : undefined} dir={locale === "fa" ? "rtl" : "ltr"} draggable={false}>
       <Image src={covers[item.slug] ?? blogImage(item)} alt="" fill sizes="(max-width: 600px) 80vw, 384px" className="home-news__image" draggable={false} />
       <div className="home-news__caption"><h3>{item.title[locale]}</h3><div className="home-news__meta"><span>{locale === "fa" ? (item.type === "news" ? "خبر" : "مقاله") : (item.type === "news" ? "News" : "Article")}</span><time dateTime={item.date}>{item.date}</time></div></div>
     </Link>)}

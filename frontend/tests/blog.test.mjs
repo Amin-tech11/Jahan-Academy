@@ -1,11 +1,21 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { selectBlogPosts, blogDate, blogHref, normalizeSearch } from "../lib/blog-content.ts";
+import { blogPreview, selectBlogPosts, blogDate, blogHref, normalizeSearch } from "../lib/blog-content.ts";
 import { blogGuides, blogFaq } from "../lib/blog-guides.ts";
 
 const post = (slug, date, type = "article", title = "انتخاب مقصد تحصیلی") => ({ slug, date, type, title: { fa: title, en: "Choosing a destination" }, excerpt: { fa: "آماده‌سازی مشاوره", en: "Prepare for consultation" } });
 const posts = [post("old", "2026-01-01"), post("new", "2026-09-22", "news"), post("middle", "2026-05-20")];
 const now = Date.parse("2026-10-03T00:00:00Z");
+
+test("archive previews preserve cards and search without transferring article bodies", () => {
+  const full = { ...posts[0], image: "/news.webp", paragraphs: { fa: ["body".repeat(10000)], en: ["body"] }, sources: [{ url: "https://example.com" }], sectionsFa: [{ heading: "Details" }] };
+  const preview = blogPreview(full);
+  assert.deepEqual(preview, { ...posts[0], image: "/news.webp" });
+  assert.equal(blogHref(preview, "fa"), blogHref(full, "fa"));
+  assert.deepEqual(selectBlogPosts([preview], "en", { now, query: "Prepare" }), [preview]);
+  assert(Buffer.byteLength(JSON.stringify(preview)) < Buffer.byteLength(JSON.stringify(full)) / 10);
+  assert.equal(full.paragraphs.fa.length, 1);
+});
 
 test("publication chronology sorts mixed articles and news without mutating source", () => {
   assert.deepEqual(selectBlogPosts(posts, "fa", { now }).map(p => p.slug), ["new", "middle", "old"]);

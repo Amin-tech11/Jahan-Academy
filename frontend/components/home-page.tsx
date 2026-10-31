@@ -12,6 +12,7 @@ import { HomeNewsTicker } from "@/components/home-news-ticker";
 import { HomeJourneyProgress } from "@/components/home-journey-progress";
 import { HomeJourneyStep } from "@/components/home-journey-step";
 import Link from "next/link";
+import { blogImage } from "@/lib/blog-content";
 import type { ReactNode } from "react";
 
 import { localPath, SiteShell } from "@/components/site-shell";
@@ -78,8 +79,13 @@ export async function HomePage({ locale }: { locale: Locale }) {
   const content = getHomeContent(locale);
   const brand = brandContent[locale];
   const visibleArticles = [...articles, ...universityNews].sort((a, b) => b.date.localeCompare(a.date));
+  const newsCards = visibleArticles.map(post => ({ slug: post.slug, type: post.type, title: post.title, date: post.date, image: blogImage(post) }));
+  const mobileHero = heroImageAssets["/home-hero-mobile-campus.webp"].map(({ url, width }) => `${url} ${width}w`).join(", ");
+  const desktopHero = heroImageAssets["/home-hero-campus-v2.png"].map(({ url, width }) => `${url} ${width}w`).join(", ");
 
   return <SiteShell locale={locale}><HomeMotion>
+    <link rel="preload" as="image" imageSrcSet={mobileHero} imageSizes="100vw" media="(max-width: 767px)" fetchPriority="high" />
+    <link rel="preload" as="image" imageSrcSet={desktopHero} imageSizes="100vw" media="(min-width: 768px)" fetchPriority="high" />
     <h1 className="sr-only">{locale === "fa" ? "جهان آکادمی؛ راهنمای مسیر تحصیل بین‌المللی" : "Jahan Academy: guidance for your international study journey"}</h1>
     <div className={`home-hero home-hero--${locale}`}>
       <picture>
@@ -159,7 +165,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
 
     {visibleArticles.length > 0 && <section className="home-section" aria-labelledby="home-articles-title"><div className="shell">
       <h2 id="home-articles-title" className="home-destinations__title" dir={locale === "fa" ? "rtl" : "ltr"}><Link href={localPath(locale, "/articles")}>{locale === "fa" ? "خبر ها" : "News"}<svg className="home-destinations__title-arrow" aria-hidden="true" width="14" height="16" viewBox="0 0 14 16" fill="currentColor"><path d="M1 8 12 1v14L1 8Z" /></svg></Link></h2>
-      <HomeNewsTicker items={visibleArticles} locale={locale} />
+      <HomeNewsTicker items={newsCards} locale={locale} />
     </div></section>}
 
     <section className="home-section home-section--soft" aria-labelledby="home-faq-title"><div className="shell home-faq__grid">

@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { PreparedImage as Image } from "@/components/prepared-image";
 import type { Locale } from "@/lib/site-content";
 import { socialLinks } from "@/lib/social-links";
 import styles from "./home-social-banners.module.css";
