@@ -11,6 +11,11 @@ export type BlogPost = {
 export type BlogFilter = "all" | BlogPost["type"];
 export type BlogSort = "newest" | "oldest";
 
+/** Only card data crosses the server/client boundary; article bodies stay on detail pages. */
+export function blogPreview(post: BlogPost): BlogPost {
+  return { slug: post.slug, type: post.type, title: post.title, excerpt: post.excerpt, date: post.date, image: post.image };
+}
+
 export function normalizeSearch(value: string) {
   return value.normalize("NFKC").replace(/ي/g, "ی").replace(/ك/g, "ک")
     .replace(/[\u064B-\u065F\u0670\u0640]/g, "").replace(/[\u200c\u200d\s]+/g, " ").trim().toLocaleLowerCase();

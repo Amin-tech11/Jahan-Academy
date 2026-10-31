@@ -725,6 +725,23 @@
       "bytes": 78980
     }
   ],
+  "/consultation-specialist.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/0ef26be5fb285d03-480.webp",
+      "bytes": 29082
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/0ef26be5fb285d03-768.webp",
+      "bytes": 50902
+    },
+    {
+      "width": 981,
+      "url": "/hero-assets/0ef26be5fb285d03-981.webp",
+      "bytes": 74360
+    }
+  ],
   "/destinations/australia-twilight.png": [
     {
       "width": 480,
@@ -3067,6 +3084,57 @@
       "width": 1444,
       "url": "/hero-assets/e71bcea652d141d4-1444.webp",
       "bytes": 79470
+    }
+  ],
+  "/social/instagram-en-v3.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/bd07e94453144fef-480.webp",
+      "bytes": 41440
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/bd07e94453144fef-768.webp",
+      "bytes": 80568
+    },
+    {
+      "width": 1254,
+      "url": "/hero-assets/bd07e94453144fef-1254.webp",
+      "bytes": 159574
+    }
+  ],
+  "/social/telegram-en-v3.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/509d3123368f4ba1-480.webp",
+      "bytes": 34878
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/509d3123368f4ba1-768.webp",
+      "bytes": 65098
+    },
+    {
+      "width": 1254,
+      "url": "/hero-assets/509d3123368f4ba1-1254.webp",
+      "bytes": 138054
+    }
+  ],
+  "/social/whatsapp-en-v3.webp": [
+    {
+      "width": 480,
+      "url": "/hero-assets/e1a627783bdfade1-480.webp",
+      "bytes": 32706
+    },
+    {
+      "width": 768,
+      "url": "/hero-assets/e1a627783bdfade1-768.webp",
+      "bytes": 57966
+    },
+    {
+      "width": 1254,
+      "url": "/hero-assets/e1a627783bdfade1-1254.webp",
+      "bytes": 114136
     }
   ],
   "/universities/aalborg-university.jpg": [

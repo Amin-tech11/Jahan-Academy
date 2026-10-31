@@ -6,13 +6,13 @@ import { BlogNavigation } from "@/components/blog-navigation";
 import { BlogConsultation } from "@/components/blog-consultation";
 import { SiteShell } from "@/components/site-shell";
 import { articles, type Locale } from "@/lib/site-content";
-import { blogCopy, selectBlogPosts, type BlogFilter } from "@/lib/blog-content";
+import { blogCopy, blogPreview, selectBlogPosts, type BlogFilter } from "@/lib/blog-content";
 import { blogGuides } from "@/lib/blog-guides";
 import "@/app/blog.css";
 
 export function BlogPage({ locale }: { locale: Locale; initialType?: BlogFilter }) {
   const copy = blogCopy[locale];
-  const posts = selectBlogPosts([...articles, ...universityNews, ...blogGuides], locale);
+  const posts = selectBlogPosts([...articles, ...universityNews, ...blogGuides], locale).map(blogPreview);
   const sections = ["news", "article", "guide"] as const;
   return <SiteShell locale={locale}><PublicPanelsMotion panel="blog" className="journal-page">
     <section className="journal-campus-hero" aria-label={copy.title}><Image src="/blog/library-hero.webp" alt="" fill sizes="100vw" preload/><div aria-hidden="true" className="journal-campus-overlay"/><p className="public-hero-brand" lang="en" dir="ltr">JAHAN ACADEMY</p></section>

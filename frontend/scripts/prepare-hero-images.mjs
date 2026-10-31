@@ -14,6 +14,7 @@ const sources = new Set([
   "/home-hero-documentary.png", "/blog/library-hero.webp",
   "/universities/hero/classical-campus.png", "/destinations/world-map-hero-wide.png",
   "/free-consultation.webp", "/home-trust-office-meeting.webp", "/brand/jahan-academy-official.png", "/assessment-hero-office.webp", "/home-trust-consultation.png",
+  "/consultation-specialist.webp", "/social/whatsapp-en-v3.webp", "/social/telegram-en-v3.webp", "/social/instagram-en-v3.webp",
 ]);
 // News covers may live in dated subdirectories; use the catalog as the source of truth.
 const news = JSON.parse(await readFile(path.join(root, "lib/university-news-data.json"), "utf8"));
