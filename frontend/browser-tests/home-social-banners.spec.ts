@@ -1,12 +1,15 @@
 import { test, expect } from "@playwright/test";
+import assets from "../lib/hero-image-assets.json";
+
+const bannerSources = ["/social/whatsapp-en-v3.webp", "/social/telegram-en-v3.webp", "/social/instagram-en-v3.webp"] as const;
 
 for (const locale of ["fa", "en"]) {
   test(`${locale}: social banners follow FAQ, match footer destinations and open safely`, async ({ page, context }) => {
     await page.goto(`/${locale}`, { waitUntil: "domcontentloaded" });
     const section = page.locator("#home-social");
     await expect(section.locator("a")).toHaveCount(3);
-    for (const image of await section.locator("img").all()) {
-      await expect(image).toHaveAttribute("src", /-en-v3\.webp/);
+    for (const [index, image] of (await section.locator("img").all()).entries()) {
+      expect(assets[bannerSources[index]].map(variant => variant.url)).toContain(await image.getAttribute("src"));
     }
     expect(await section.evaluate(node => node.previousElementSibling?.querySelector("#home-faq-title") !== null)).toBe(true);
     for (const width of [390, 1440]) {
