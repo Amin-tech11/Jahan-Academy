@@ -20,8 +20,9 @@ export function HomeNewsTicker({ items, locale }: { items: NewsItem[]; locale: L
   const suppressClick = useRef(false);
 
   const startDrag = (event: PointerEvent<HTMLDivElement>) => {
-    if (!event.isPrimary || event.button !== 0) return;
     suppressClick.current = false;
+    // Touch/pen scrolling belongs to the browser, including inertia and vertical panning.
+    if (event.pointerType !== "mouse" || !event.isPrimary || event.button !== 0) return;
     gesture.current = { id: event.pointerId, startX: event.clientX, startY: event.clientY, lastX: event.clientX, dragged: false };
   };
   const moveDrag = (event: PointerEvent<HTMLDivElement>) => {
