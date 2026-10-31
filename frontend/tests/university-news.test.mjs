@@ -6,8 +6,8 @@ import { blogHref, blogImage, selectBlogPosts } from "../lib/blog-content.ts";
 const news = JSON.parse(readFileSync(new URL("../lib/university-news-data.json", import.meta.url), "utf8"));
 
 test("all prepared news stories have bilingual copy, unique reading routes and matching artwork", () => {
-  assert.equal(news.length, 25);
-  assert.equal(new Set(news.map(item => item.slug)).size, 25);
+  assert.equal(news.length, 45);
+  assert.equal(new Set(news.map(item => item.slug)).size, 45);
   for (const item of news) {
     assert.equal(item.type, "news");
     assert.ok(existsSync(new URL(`../public${item.image}`, import.meta.url)));

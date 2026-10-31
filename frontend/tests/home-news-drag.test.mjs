@@ -26,7 +26,7 @@ function setup(items = [], locale = "fa") {
   });
   const output = module.exports.HomeNewsTicker({ items, locale });
   const handlers = output.props.children.props;
-  const event = (x, y = 0) => ({ isPrimary: true, button: 0, pointerId: 1, clientX: x, clientY: y, currentTarget: viewport, preventDefault() {} });
+  const event = (x, y = 0, pointerType = "mouse") => ({ pointerType, isPrimary: true, button: 0, pointerId: 1, clientX: x, clientY: y, currentTarget: viewport, preventDefault() {} });
   return { animation, viewport, handlers, event, output };
 }
 test("ticker news, article and guide cards navigate to the matching reading route in both languages", () => {
@@ -61,8 +61,24 @@ test("ordinary clicks stay navigable and vertical touch gestures leave page scro
   let prevented = false;
   app.handlers.onClickCapture({ preventDefault() { prevented = true; }, stopPropagation() {} });
   assert.equal(prevented, false);
-  app.handlers.onPointerDown(app.event(100));
-  app.handlers.onPointerMove(app.event(102, 40));
+  app.handlers.onPointerDown(app.event(100, 0, "touch"));
+  app.handlers.onPointerMove(app.event(102, 40, "touch"));
   assert.equal(app.viewport.dataset.dragging, undefined);
   assert.equal(app.animation.currentTime, 15000);
+});
+
+test("touch and pen gestures leave horizontal scrolling and subsequent link taps to the browser", () => {
+  for (const pointerType of ["touch", "pen"]) {
+    const app = setup();
+    let prevented = false;
+    const event = x => ({ ...app.event(x, 0, pointerType), preventDefault() { prevented = true; } });
+    app.handlers.onPointerDown(event(200));
+    app.handlers.onPointerMove(event(40));
+    app.handlers.onPointerUp(event(40));
+    app.handlers.onClickCapture({ preventDefault() { prevented = true; }, stopPropagation() {} });
+    assert.equal(prevented, false);
+    assert.equal(app.animation.currentTime, 15000);
+    assert.equal(app.viewport.scrollLeft, 0);
+    assert.equal(app.viewport.dataset.dragging, undefined);
+  }
 });

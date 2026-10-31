@@ -169,6 +169,15 @@
   .home-news__image { transition: none; }
 }
 
+/* Native touch scrolling preserves momentum and leaves vertical page gestures available. */
+@media (max-width: 1199px), (any-pointer: coarse) {
+  .home-news__viewport { overflow-x: auto; overflow-y: hidden; touch-action: auto; overscroll-behavior-x: contain; cursor: auto; scroll-snap-type: x proximity; }
+  .home-news__track { width: max-content; animation: none; transform: none; }
+  .home-news__group { width: auto; flex-wrap: nowrap; padding-right: 1rem; }
+  .home-news__group[aria-hidden="true"] { display: none; }
+  .home-news__card { scroll-snap-align: start; }
+}
+
 .home-closing { padding-block: 2.5rem; color: var(--color-brand-950); background: #fff; }
 .home-closing__inner { display: flex; align-items: center; justify-content: space-between; gap: 2rem; }
 .home-closing h2 { color: var(--color-brand-950); }
